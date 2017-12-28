@@ -1,0 +1,15 @@
+{
+  "name": "figma-linux",
+  "version": "0.01",
+  "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
+  "main": "src/index.js",
+  "repository": "git@github.com:ChugunovRoman/figma-linux.git",
+  "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron src/index.js"
+  },
+  "dependencies": {
+    "electron": "^1.7.10"
+  }
+}

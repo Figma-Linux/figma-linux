@@ -11,5 +11,12 @@
   },
   "dependencies": {
     "electron": "^1.7.10"
-  }
+  },
+  "keywords": [
+    "Figma",
+    "Electron",
+    "linux",
+    "app",
+    "ubuntu"
+  ]
 }

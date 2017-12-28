@@ -1,6 +1,7 @@
 node_modules
 *.log
 dist
+build
 config
 gui
 Figma-app*

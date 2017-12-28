@@ -14,3 +14,6 @@ cd figma-linux
 npm i && npm start
 ```
 
+## [Download](https://github.com/ChugunovRoman/figma-linux/releases)
+
+PS: After install and authorized in Figma app, you need press the F5 button.

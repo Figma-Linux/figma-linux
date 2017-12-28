@@ -2,7 +2,8 @@ const electron = require('electron');
 const {
     shell,
     app,
-    BrowserWindow
+    BrowserWindow,
+    globalShortcut
 } = electron;
 
 const HOMEPAGE = 'https://www.figma.com/'
@@ -21,6 +22,7 @@ const winOptions = {
 
 app.on('ready', () => {
     let window = new BrowserWindow(winOptions);
+    let zoom = 0.7;
 
     window.setMenuBarVisibility(false);
     window.loadURL(HOMEPAGE);
@@ -32,6 +34,23 @@ app.on('ready', () => {
             shell.openExternal(url)
         };
     })
+
+    globalShortcut.register('CommandOrControl+-', () => {
+        zoom -= 0.1; 
+        window.webContents.setZoomFactor(zoom);
+    });
+    globalShortcut.register('CommandOrControl+=', () => {
+        zoom += 0.1; 
+        window.webContents.setZoomFactor(zoom);
+    });
+    globalShortcut.register('Shift+CommandOrControl+-', () => {
+        zoom -= 0.05; 
+        window.webContents.setZoomFactor(zoom);
+    });
+    globalShortcut.register('Shift+CommandOrControl+=', () => {
+        zoom += 0.05; 
+        window.webContents.setZoomFactor(zoom);
+    });
 
     window.on('closed', () => {
         window = null;

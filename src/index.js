@@ -1,10 +1,9 @@
-const electron = require('electron');
-const shorcuts = require('./shorcuts');
 const {
     shell,
     app,
     BrowserWindow
-} = electron;
+} = require('electron');
+const shorcuts = require('./shortcuts');
 
 const HOME = 'https://www.figma.com/'
 const winOptions = {

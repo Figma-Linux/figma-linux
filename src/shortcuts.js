@@ -1,4 +1,4 @@
-const { globalShortcut } = require('electron').electron;
+const { globalShortcut } = require('electron');
 
 module.exports = function(window) {
     let zoom = 0.7;

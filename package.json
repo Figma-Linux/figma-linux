@@ -7,10 +7,17 @@
   "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
   "license": "MIT",
   "scripts": {
-    "start": "electron src/index.js"
+    "start": "electron src/index.js",
+    "pack": "electron-packager ./ Figma-app --paltform=Linux --arch=x64 --executable-name=figma-linux --overwrite ./build",
+    "deb": "electron-installer-debian --src ./Figma-app-linux-x64 --dest ./build/installers --arch=amd64"
   },
   "dependencies": {
     "electron": "^1.7.10"
+  },
+  "devDependencies": {
+    "electron-installer-debian": "^0.7.1",
+    "electron-packager": "^10.1.0",
+    "electron-webpack": "^1.11.0"
   },
   "keywords": [
     "Figma",

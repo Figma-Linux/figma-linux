@@ -19,4 +19,7 @@ module.exports = function(window) {
         zoom += 0.05; 
         window.webContents.setZoomFactor(zoom);
     });
+    globalShortcut.register('F5', () => {
+        window.reload();
+    });
 }

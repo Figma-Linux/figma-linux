@@ -4,6 +4,8 @@ This package, its a web wrapper of the [Figma-web-app](https://figma.com) packed
 
 ## Run
 git clone git@github.com:ChugunovRoman/figma-linux.git
+
 cd figma-linux
+
 npm i && npm start
 

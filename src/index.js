@@ -1,12 +1,12 @@
 const electron = require('electron');
+const shorcuts = require('./shorcuts');
 const {
     shell,
     app,
-    BrowserWindow,
-    globalShortcut
+    BrowserWindow
 } = electron;
 
-const HOMEPAGE = 'https://www.figma.com/'
+const HOME = 'https://www.figma.com/'
 const winOptions = {
     width: 1200,
     height: 900,
@@ -22,35 +22,19 @@ const winOptions = {
 
 app.on('ready', () => {
     let window = new BrowserWindow(winOptions);
-    let zoom = 0.7;
 
     window.setMenuBarVisibility(false);
-    window.loadURL(HOMEPAGE);
+    window.loadURL(HOME);
 
-    window.webContents.on('will-navigate', (ev, url) => {
+    window.webContents.on('will-navigate', (event, url) => {
         parts = url.split("/");
-        if (parts[0] + "//" + parts[2] != HOMEPAGE) {
-            ev.preventDefault()
+        if (parts[0] + "//" + parts[2] != HOME) {
+            event.preventDefault()
             shell.openExternal(url)
         };
     })
 
-    globalShortcut.register('CommandOrControl+-', () => {
-        zoom -= 0.1; 
-        window.webContents.setZoomFactor(zoom);
-    });
-    globalShortcut.register('CommandOrControl+=', () => {
-        zoom += 0.1; 
-        window.webContents.setZoomFactor(zoom);
-    });
-    globalShortcut.register('Shift+CommandOrControl+-', () => {
-        zoom -= 0.05; 
-        window.webContents.setZoomFactor(zoom);
-    });
-    globalShortcut.register('Shift+CommandOrControl+=', () => {
-        zoom += 0.05; 
-        window.webContents.setZoomFactor(zoom);
-    });
+    shorcuts(window);
 
     window.on('closed', () => {
         window = null;

@@ -1,6 +1,5 @@
 node_modules
 *.log
-build
 dist
 config
 gui

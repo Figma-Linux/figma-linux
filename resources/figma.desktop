@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Castle Arena
+Icon=${SNAP}/meta/gui/icon.png
+Categories=Graphic;
+Exec=figma
+Terminal=false

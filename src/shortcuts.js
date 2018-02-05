@@ -1,6 +1,6 @@
 const { globalShortcut } = require('electron');
 
-module.exports = function(window) {
+module.exports = (window) => {
     let zoom = 0.7;
 
     globalShortcut.register('CommandOrControl+-', () => {
@@ -18,8 +18,5 @@ module.exports = function(window) {
     globalShortcut.register('Shift+CommandOrControl+=', () => {
         zoom += 0.05; 
         window.webContents.setZoomFactor(zoom);
-    });
-    globalShortcut.register('F5', () => {
-        window.reload();
     });
 }

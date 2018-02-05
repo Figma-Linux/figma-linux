@@ -4,6 +4,7 @@ const {
     BrowserWindow
 } = require('electron');
 const shorcuts = require('./shortcuts');
+const menu = require('./menu');
 
 const HOME = 'https://www.figma.com/'
 const winOptions = {
@@ -34,6 +35,7 @@ app.on('ready', () => {
     })
 
     shorcuts(window);
+    menu(window);
 
     window.on('closed', () => {
         window = null;

@@ -4,5 +4,6 @@ dist
 config
 gui
 build
+*.deb
 *.bak
 Figma-app*

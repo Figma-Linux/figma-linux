@@ -1,0 +1,24 @@
+{
+    "name": "figma-linux",
+    "productName": "Figma",
+    "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
+    "productDescription": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
+    "src": "Figma-app-linux-x64",
+    "dest": "build/installers/",
+    "icon": {
+        "48x48": "resources/figma48.png",
+        "64x64": "resources/figma64.png",
+        "128x128": "resources/figma128.png",
+        "256x256": "resources/figma256.png"
+    },
+    "categories": [
+        "graphics"
+    ],
+    "section": "graphics",
+    "lintianOverrides": [
+        "changelog-file-missing-in-native-package"
+    ],
+    "arch": "amd64",
+
+    "revision": "1"
+}

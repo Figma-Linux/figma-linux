@@ -1,0 +1,50 @@
+{
+  "name": "figma-linux",
+  "version": "0.0.3",
+  "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
+  "main": "src/main/index.js",
+  "repository": "git@github.com:ChugunovRoman/figma-linux.git",
+  "homepage": "https://github.com/ChugunovRoman/figma-linux",
+  "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron src/main/index.js",
+    "pack:deb": "redrun -s clear build deb",
+    "clear": "rm -rf Figma-app-linux-x64 ./build/app/*",
+    "build": "electron-packager ./ Figma-app --ignore=\"(\\.git|node_modules|build|\\.bak|\\.log|yarn)\" --paltform=Linux --arch=x64 --executable-name=figma-linux --overwrite ./build",
+    "deb": "electron-installer-debian --config ./config/debpack.json"
+  },
+  "dependencies": {
+    "electron": "^1.8.4",
+    "electron-args": "^0.1.0",
+    "parse-json": "^4.0.0",
+    "raven": "^2.4.1",
+    "raven-js": "^3.22.3",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.6",
+    "redrun": "^6.0.4",
+    "redux": "^3.7.2",
+    "styled-components": "^3.1.6"
+  },
+  "devDependencies": {
+    "@types/react": "^16.0.38",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-redux": "^5.0.15",
+    "@types/redux": "^3.6.0",
+    "awesome-typescript-loader": "^3.4.1",
+    "electron-installer-debian": "^0.7.1",
+    "electron-packager": "^10.1.0",
+    "electron-webpack": "^1.11.0",
+    "source-map-loader": "^0.2.3",
+    "typescript": "^2.7.2",
+    "webpack": "^3.11.0"
+  },
+  "keywords": [
+    "Figma",
+    "linux",
+    "Electron",
+    "desktop",
+    "app"
+  ]
+}

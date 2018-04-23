@@ -9,6 +9,7 @@
   "license": "MIT",
   "scripts": {
     "start": "electron src/main/index.js",
+
     "pack:deb": "redrun -s clear build deb",
     "clear": "rm -rf Figma-app-linux-x64 ./build/app/*",
     "build": "electron-packager ./ Figma-app --ignore=\"(\\.git|node_modules|build|\\.bak|\\.log|yarn)\" --paltform=Linux --arch=x64 --executable-name=figma-linux --overwrite ./build",

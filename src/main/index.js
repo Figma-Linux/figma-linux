@@ -9,8 +9,6 @@ const url = require('url');
 
 const shorcuts = require('./shortcuts');
 const menu = require('./menu');
-require('./args')(app);
-
 
 const HOME = 'https://www.figma.com'
 const winOptions = {
@@ -29,8 +27,6 @@ const winOptions = {
 
 app.on('ready', () => {
     let window = new BrowserWindow(winOptions);
-
-    // window.webContents.openDevTools();
 
     window.setMenuBarVisibility(false);
     window.loadURL(HOME);

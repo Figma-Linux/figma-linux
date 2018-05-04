@@ -1,37 +1,40 @@
-const parseArgs = require('electron-args');
 const pjson = require('./../../package.json');
 
-const cli = parseArgs(`
-    figma-linux
-
-    Usage
-        $ figma-linux [options]
-
-    Options
-        -h  show help
-        -v  show version
-        -n  launch app without frame [Default: false]
-`, {
-    alias: {
-        h: 'help'
-    },
-    default: {
-        n: false
-    }
-});
-const argv = cli.flags;
-
-
 module.exports = function(app) {
-    console.log(cli.flags);
-    console.log(cli.input);
-    console.log(cli.input[0]);
+    const argv = process.argv;
 
-    console.log(typeof pjson.version === 'string' ? pjson.version : 'I don\'t know' );
-    if (argv.v) {
-        console.log(typeof pjson.version === 'string' ? pjson.version : 'I don\'t know' );
+    let withoutFrame = true;
+
+    if (argv.includes('-v')) {
+        console.log(typeof pjson.version === 'string' ? pjson.version : '0.0.4' );
         process.exit(0);
     }
-    
+
+    if (argv.includes('-h')) {
+        const help = `
+figma-linux
+
+Unofficial desktop application for linux. This application based on the Electron.js.
+
+use:
+    figma-linux [options]
+
+    OPTIONS:
+        -h      this reference.
+        -f      launch app without window frame.
+        -v      show version of application.
+        `;
+
+        console.log(help);
+        process.exit(0);
+    }
+
+    if (argv.includes('-f')) {
+        withoutFrame = false;
+    }
+
+    return {
+        withoutFrame
+    };
 } 
 

@@ -9,12 +9,13 @@ const url = require('url');
 
 const shorcuts = require('./shortcuts');
 const menu = require('./menu');
+const argv = require('./args')(app);
 
 const HOME = 'https://www.figma.com'
 const winOptions = {
     width: 1200,
     height: 900,
-    frame: false,
+    frame: argv.withoutFrame,
     webPreferences: {
         nodeIntegration: false,
         'web-security': false,

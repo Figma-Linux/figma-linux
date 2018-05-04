@@ -1,6 +1,6 @@
 {
   "name": "figma-linux",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
   "main": "src/main/index.js",
   "repository": "git@github.com:ChugunovRoman/figma-linux.git",
@@ -9,7 +9,6 @@
   "license": "MIT",
   "scripts": {
     "start": "electron src/main/index.js",
-
     "pack:deb": "redrun -s clear build deb",
     "clear": "rm -rf Figma-app-linux-x64 ./build/app/*",
     "build": "electron-packager ./ Figma-app --ignore=\"(\\.git|node_modules|build|\\.bak|\\.log|yarn)\" --paltform=Linux --arch=x64 --executable-name=figma-linux --overwrite ./build",
@@ -17,8 +16,6 @@
   },
   "dependencies": {
     "electron": "^1.8.4",
-    "electron-args": "^0.1.0",
-    "parse-json": "^4.0.0",
     "raven": "^2.4.1",
     "raven-js": "^3.22.3",
     "react": "^16.2.0",

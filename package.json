@@ -10,9 +10,11 @@
   "scripts": {
     "start": "electron src/main/index.js",
     "pack:deb": "redrun -s clear build deb",
+    "pack:snap": "redrun -s clear build snap",
     "clear": "rm -rf Figma-app-linux-x64 ./build/app/*",
     "build": "electron-packager ./ Figma-app --ignore=\"(\\.git|node_modules|build|\\.bak|\\.log|yarn)\" --paltform=Linux --arch=x64 --executable-name=figma-linux --overwrite ./build",
-    "deb": "electron-installer-debian --config ./config/debpack.json"
+    "deb": "electron-installer-debian --config ./config/debpack.json",
+    "snap": "electron-installer-snap --parts=config/snapconfig.yaml"
   },
   "dependencies": {
     "electron": "^1.8.4",
@@ -32,6 +34,7 @@
     "@types/redux": "^3.6.0",
     "awesome-typescript-loader": "^3.4.1",
     "electron-installer-debian": "^0.7.1",
+    "electron-installer-snap": "^2.0.1",
     "electron-packager": "^10.1.0",
     "electron-webpack": "^1.11.0",
     "source-map-loader": "^0.2.3",

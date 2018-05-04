@@ -4,7 +4,7 @@
     "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
     "productDescription": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
     "src": "Figma-app-linux-x64",
-    "dest": "build/installers/",
+    "dest": "build/installers/deb/",
     "icon": {
         "48x48": "resources/figma48.png",
         "64x64": "resources/figma64.png",

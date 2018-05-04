@@ -1,0 +1,15 @@
+name: figma-linux
+executable-name: figma-linux
+summary: 'Unofficial desktop application for linux'
+description: |
+  Figma is the first interface design tool based in the browser, making it easier for teams to create software.
+
+src: ./Figma-app-linux-x64/
+dest: ./build/installers/snap/
+
+parts:
+  figma-linux:
+    source: .
+    plugin: dump
+    stage-packages:
+    - libgconf2-4

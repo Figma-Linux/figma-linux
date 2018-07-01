@@ -1,6 +1,6 @@
 {
   "name": "figma-linux",
-  "version": "0.0.4",
+  "version": "0.0.4-2",
   "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
   "main": "main/main.js",
   "repository": "git@github.com:ChugunovRoman/figma-linux.git",
@@ -11,8 +11,6 @@
     "start": "electron main/main.js"
   },
   "dependencies": {
-    "raven": "^2.4.1",
-    "raven-js": "^3.22.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",

@@ -22,6 +22,7 @@ export default (window: BrowserWindow) => {
         }
     }));
 
-    Menu.setApplicationMenu(menu);
+    window.setMenu(menu);
+    // Menu.setApplicationMenu(menu);
     window.setMenuBarVisibility(false);
 }

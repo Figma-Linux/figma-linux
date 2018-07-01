@@ -1,5 +1,4 @@
 import {
-    shell,
     app,
     net,
     session,
@@ -27,22 +26,28 @@ const winOptions: Electron.BrowserWindowConstructorOptions = {
     }
 };
 
+app.on('browser-window-created', (event, window) => {
+    window.setMenu(null);
+});
+
 app.on('ready', () => {
     let window = new BrowserWindow(winOptions);
 
-    window.loadURL(HOME);
+    window.loadURL(`${HOME}/login`);
+    // console.log(`load url: ${HOME}/login`);
+    
 
-    window.webContents.on('will-navigate', (event, url) => {
-        const parts = url.split("/");
-        if (parts[0] + "//" + parts[2] != HOME) {
-            event.preventDefault()
-            shell.openExternal(url)
-        };
-    });
+    // window.webContents.on('will-navigate', (event, url) => {
+    //     const parts = url.split("/");
+
+    //     if (parts[0] + "//" + parts[2] != HOME) {
+    //         event.preventDefault();
+    //         shell.openExternal(url);
+    //     };
+    // });
 
     shorcuts(window);
     menu(window);
-
 
     window.webContents.on('will-navigate', (event, newUrl) => {
         const currentUrl = event.sender.getURL();
@@ -61,6 +66,8 @@ app.on('ready', () => {
             window.reload();
             return;
         }
+
+        console.log('will-navigate event, to: ', to);
 
         if (to.pathname === '/logout') {
             net.request(`${HOME}/logout`).on('response', response => {
@@ -81,8 +88,13 @@ app.on('ready', () => {
                             app.quit();
                         });
                     }
+
+                    if (response.statusCode >= 400) {
+                        session.defaultSession!.clearStorageData();
+                        window.webContents.loadURL(`${HOME}/login`);
+                    }
                 });
-            }).end();;
+            }).end();
 
             event.preventDefault();
             return;

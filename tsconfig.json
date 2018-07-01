@@ -1,0 +1,27 @@
+{
+    "extends": "./node_modules/electron-webpack/tsconfig-base.json",
+    "compilerOptions": {
+        "outDir": "./assets/js",
+        "noImplicitAny": true,
+        "target": "esnext",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "typeRoots": ["node_modules/@types"],
+        "allowJs": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "strictPropertyInitialization": false,
+        "noImplicitThis": false,
+        "jsx": "react"
+    },
+    "include": [
+        "./src/main/index.ts",
+        "./src/rerender/index.tsx"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

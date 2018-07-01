@@ -1,24 +1,24 @@
-const {
-    shell,
+import {
     app,
     net,
     session,
     BrowserWindow,
-} = require('electron');
-const url = require('url');
+} from 'electron';
+import * as url from "url";
 
-const shorcuts = require('./shortcuts');
-const menu = require('./menu');
-const argv = require('./args')(app);
+import shorcuts from './shortcuts';
+import menu from './menu';
+import getArgv from './Args';
 
-const HOME = 'https://www.figma.com'
-const winOptions = {
+const argv = getArgv();
+const HOME = 'https://www.figma.com';
+const winOptions: Electron.BrowserWindowConstructorOptions = {
     width: 1200,
     height: 900,
     frame: argv.withoutFrame,
     webPreferences: {
         nodeIntegration: false,
-        'web-security': false,
+        webSecurity: false,
         webgl: true,
         experimentalFeatures: true,
         experimentalCanvasFeatures: true,
@@ -26,23 +26,28 @@ const winOptions = {
     }
 };
 
+app.on('browser-window-created', (event, window) => {
+    window.setMenu(null);
+});
+
 app.on('ready', () => {
     let window = new BrowserWindow(winOptions);
 
-    window.setMenuBarVisibility(false);
-    window.loadURL(HOME);
+    window.loadURL(`${HOME}/login`);
+    // console.log(`load url: ${HOME}/login`);
+    
 
-    window.webContents.on('will-navigate', (event, url) => {
-        parts = url.split("/");
-        if (parts[0] + "//" + parts[2] != HOME) {
-            event.preventDefault()
-            shell.openExternal(url)
-        };
-    });
+    // window.webContents.on('will-navigate', (event, url) => {
+    //     const parts = url.split("/");
+
+    //     if (parts[0] + "//" + parts[2] != HOME) {
+    //         event.preventDefault();
+    //         shell.openExternal(url);
+    //     };
+    // });
 
     shorcuts(window);
     menu(window);
-
 
     window.webContents.on('will-navigate', (event, newUrl) => {
         const currentUrl = event.sender.getURL();
@@ -62,17 +67,19 @@ app.on('ready', () => {
             return;
         }
 
+        console.log('will-navigate event, to: ', to);
+
         if (to.pathname === '/logout') {
             net.request(`${HOME}/logout`).on('response', response => {
                 response.on('data', chunk => {});
-                response.on('error', err => {
+                response.on('error', (err: Error) => {
                     console.log('Request error: ', err);
                 });
                 response.on('end', () => {
                     console.log('response.statusCode: ', response.statusCode);
                     if (response.statusCode >= 200 && response.statusCode <= 299) {
 
-                        session.defaultSession.cookies.flushStore(() => {
+                        session.defaultSession!.cookies.flushStore(() => {
                             const reload = () => app.relaunch({
                                 args: process.argv.slice(1).concat(['--reset'])
                             });
@@ -81,8 +88,13 @@ app.on('ready', () => {
                             app.quit();
                         });
                     }
+
+                    if (response.statusCode >= 400) {
+                        session.defaultSession!.clearStorageData();
+                        window.webContents.loadURL(`${HOME}/login`);
+                    }
                 });
-            }).end();;
+            }).end();
 
             event.preventDefault();
             return;
@@ -93,13 +105,13 @@ app.on('ready', () => {
     //     console.log('did-navigate event args:', event.sender.getURL());
     // });
 
-    window.webContents.on('new-window', (...args) => {
-        console.log('new-window event args:', args);
-    });
+    // window.webContents.on('new-window', (...args) => {
+    //     console.log('new-window event args:', args);
+    // });
 
-    window.on('closed', () => {
-        window = null;
-    });
+    // window.on('closed', () => {
+    //     window = null;
+    // });
 });
 
 app.on('window-all-closed', () => {

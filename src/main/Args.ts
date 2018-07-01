@@ -1,6 +1,6 @@
 const pjson = require('./../../package.json');
 
-module.exports = function(app) {
+export default () => {
     const argv = process.argv;
 
     let withoutFrame = true;
@@ -36,5 +36,4 @@ use:
     return {
         withoutFrame
     };
-} 
-
+}

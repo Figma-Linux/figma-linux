@@ -1,0 +1,71 @@
+{
+    "appId": "figma-linux",
+    "productName": "figma-linux",
+    "extraMetadata": "main/main.js",
+    "icon": "resources",
+    "files": [
+        "**/*"
+    ],
+    "directories": {
+        "app": "dist/",
+        "buildResources": "build/installers",
+        "output": "build/installers"
+    },
+
+    "appImage": {
+        "systemIntegration": "doNotAsk"
+    },
+
+    "linux": {
+        "description": "Unofficial desktop application for linux",
+        "icon": "resources/figma256.png",
+        "category": "Graphic",
+        "depends": [
+            "libgconf2-4"
+        ],
+        "target": [
+            {
+                "target": "AppImage",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            },
+            {
+                "target": "deb",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            },
+            {
+                "target": "freebsd",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            },
+            {
+                "target": "pacman",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            },
+            {
+                "target": "zip",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            },
+            {
+                "target": "rpm",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
+            }
+        ]
+    }
+}

@@ -1,6 +1,6 @@
-const { globalShortcut } = require('electron');
+import { globalShortcut, BrowserWindow } from 'electron';
 
-module.exports = (window) => {
+export default (window: BrowserWindow) => {
     let zoom = 0.7;
 
     globalShortcut.register('CommandOrControl+-', () => {

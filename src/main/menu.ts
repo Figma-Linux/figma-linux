@@ -1,8 +1,8 @@
-const { Menu, MenuItem } = require('electron');
+import { Menu, MenuItem, BrowserWindow } from 'electron';
 
 const menu = new Menu();
 
-module.exports = (window) => {
+export default (window: BrowserWindow) => {
 
     menu.append(new MenuItem({
         label: 'Window',
@@ -23,4 +23,5 @@ module.exports = (window) => {
     }));
 
     Menu.setApplicationMenu(menu);
+    window.setMenuBarVisibility(false);
 }

@@ -23,6 +23,7 @@
     }
   },
   "dependencies": {
+    "electron-devtools-installer": "^2.2.4",
     "raven": "^2.4.1",
     "raven-js": "^3.22.3",
     "react": "^16.2.0",

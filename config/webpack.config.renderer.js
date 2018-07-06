@@ -1,4 +1,3 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const path = require('path');
@@ -6,9 +5,44 @@ const path = require('path');
 const rootFolder = process.cwd();
 
 const dev = {
+    module: {
+        rules: [
+            {
+                test: /\.sass$/,
+                use: [
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ]
+            }
+        ]
+    },
+
     resolve: {
-        modules: ["node_modules", "react"],
-        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json"]
+        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json", ".scss"],
+        modules: [
+            "node_modules", 
+            "preact"],
+        alias: {
+            'components': path.resolve(rootFolder, 'src/renderer/components'),
+            'store': path.resolve(rootFolder, 'src/renderer/store'),
+            'react': 'preact-compat',
+            'react-dom': 'preact-compat',
+            'create-react-class': 'preact-compat/lib/create-react-class',
+            'react-dom-factories': 'preact-compat/lib/react-dom-factories'
+        }
     },
 
     devtool: 'source-map',

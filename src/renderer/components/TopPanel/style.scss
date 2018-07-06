@@ -1,0 +1,40 @@
+.panel {
+	display: grid;
+	grid-template: "a b c";
+	grid-template-columns: auto 1fr auto;
+	background-color: #2c2c2c;
+}
+
+.panelButton {
+	display: inline-flex;
+	flex-direction: row;
+	align-content: center;
+}
+
+.main {
+	padding: 4px 6px 4px 4px;
+	&:hover {
+		background-color: #050505;
+		cursor: pointer;
+	}
+}
+
+.panelSettings {
+	display: flex;
+	align-items: center;
+	padding: 0px 6px 6px 4px;
+	&:hover {
+		background-color: #050505;
+		cursor: pointer;
+	}
+}
+
+.newTab {
+	display: flex;
+	align-items: center;
+	padding: 2px 6px;
+	&:hover {
+		background-color: #050505;
+		cursor: pointer;
+	}
+}

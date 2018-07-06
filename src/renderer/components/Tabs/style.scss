@@ -1,0 +1,26 @@
+.tabBar {
+	display: flex;
+}
+
+.tab {
+	display: inline-flex;
+	align-items: center;
+	padding: 0px 10px;
+	&:hover {
+		background-color: #050505;
+	}
+	& > span {
+		user-select: none;
+		cursor: default;
+		font: {
+			size: 10px;
+		}
+		color: #fff;
+	}
+}
+.tabClose {
+	margin: 0px 0px 3px 10px;
+	&:hover {
+		cursor: pointer;
+	}
+}

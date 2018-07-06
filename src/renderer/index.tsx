@@ -1,8 +1,18 @@
-import * as React from 'react';
-import { render } from 'react-dom';
+import { h, render } from 'preact';
+import { Provider } from "mobx-preact";
+import stores from "./stores";
+
+import App from "./components";
+import { isDev } from "./util";
+
+// onError(err => {
+// 	console.log('Mobx error: ', err);
+// });
+let root: string = isDev ? 'app' : 'react-page';
 
 render(
-    <h1>Figma</h1>,
-    document.getElementById('app')
-);
-
+	<Provider { ...stores } >
+		<App />
+	</Provider>,
+	document.getElementById(root)
+)

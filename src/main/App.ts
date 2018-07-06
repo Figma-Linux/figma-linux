@@ -23,7 +23,7 @@ class App implements IApp {
             height: 900,
             frame: withoutFrame,
             webPreferences: {
-                nodeIntegration: false,
+                nodeIntegration: true,
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,

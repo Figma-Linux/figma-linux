@@ -2,7 +2,7 @@ import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-insta
 import * as electron from "electron";
 import * as url from "url";
 
-import { isDev } from "./util";
+import { isDev, winUrlDev, winUrlProd } from "./util";
 import shortcuts from "./shortcuts";
 
 declare type WindowType = 'main' | 'tab';
@@ -29,13 +29,13 @@ class WindowManager implements IWindowManager {
         electron.app.on('ready', () => {
             console.log('options: ', options);
             this.mainWindow = new electron.BrowserWindow(options);
-            this.mainWindow.loadURL(`${this.home}/login`);
+            this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
             this.mainWindow.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
             shortcuts(this.mainWindow);
 
+            if (isDev) this.devtools();
             if (isDev) this.mainWindow.webContents.toggleDevTools();
-		    if (isDev) this.devtools();
         });
         electron.app.on('window-all-closed', this.onWindowAllClosed);
     }

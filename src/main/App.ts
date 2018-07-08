@@ -1,7 +1,7 @@
 import * as electron from "electron";
-import Args from "./Args";
+import Args from "./utils/Args";
 
-import WindowManager from "./WindowManager";
+import WindowManager from "./webContent/WindowManager";
 
 interface IApp {
     windowManager: WindowManager;

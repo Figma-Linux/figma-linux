@@ -1,13 +1,45 @@
 /// <reference path="../../../@types/common/index.d.ts" />
 /// <reference path="../../../@types/renderer/stores/index.d.ts" />
-
-import { observable } from "mobx";
+import * as E from "electron";
+import { observable, action, autorun, toJS } from "mobx";
 
 class Tabs implements ITabsStore {
 	@observable tabs: Array<Tab> = [];
+	@observable current: number = 1;
+
+	constructor() {
+		this.events();
+	}
+
+	@action addTab = (id: number, url: string) => {
+		this.tabs.push({
+			id,
+			name: 'Untitled',
+			url
+		});
+	}
+
+	@action deleteTab = (id: number) => {
+		this.tabs = this.tabs.filter(t => t.id != id);
+	}
+
+	@action setFocus = (id: number) => {
+		this.current = id;
+	}
+
+	private events = () => {
+		E.ipcRenderer.on('tabadded', (sender, data) => {
+			this.addTab(data.id, data.url);
+			this.setFocus(data.id);
+		});
+	}
 }
 
 const tabs: Tabs = new Tabs();
+
+autorun(() => {
+	console.log('autorun, tabs: ', toJS(tabs.tabs));
+});
 
 export default tabs;
 export {

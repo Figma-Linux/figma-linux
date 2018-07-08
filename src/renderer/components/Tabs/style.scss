@@ -18,9 +18,22 @@
 		color: #fff;
 	}
 }
+.active {
+	background-color: #050505;
+}
+
 .tabClose {
 	margin: 0px 0px 3px 10px;
 	&:hover {
+		cursor: pointer;
+	}
+}
+.newTab {
+	display: flex;
+	align-items: center;
+	padding: 2px 6px;
+	&:hover {
+		background-color: #050505;
 		cursor: pointer;
 	}
 }

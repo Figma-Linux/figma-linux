@@ -11,6 +11,7 @@
     "start": "electron main/main.js"
   },
   "dependencies": {
+    "electron-devtools-installer": "^2.2.4",
     "mobx": "^5.0.3",
     "mobx-preact": "^3.0.0",
     "preact": "^8.2.9",

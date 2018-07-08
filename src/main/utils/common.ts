@@ -2,8 +2,6 @@
 import { resolve } from "path";
 import { format as formatUrl } from "url";
 
-const isDev = process.env.NODE_ENV !== 'production';
-
 const winUrlDev = `http://localhost:${process.env.ELECTRON_WEBPACK_WDS_PORT}`;
 
 const winUrlProd = formatUrl({
@@ -14,6 +12,5 @@ const winUrlProd = formatUrl({
 
 export {
     winUrlDev,
-    winUrlProd,
-    isDev
+    winUrlProd
 }

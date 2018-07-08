@@ -10,7 +10,11 @@ class Tabs implements ITabs {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                webSecurity: false
+                webSecurity: false,
+                webgl: true,
+                experimentalFeatures: true,
+                experimentalCanvasFeatures: true,
+                zoomFactor: 0.7
             }
         });
 

@@ -12,7 +12,9 @@
 }
 
 .main {
-	padding: 4px 6px 4px 4px;
+	display: flex;
+	align-items: center;
+	padding: 6px 8px 6px 6px;
 	&:hover {
 		background-color: #050505;
 		cursor: pointer;

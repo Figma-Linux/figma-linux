@@ -4,7 +4,6 @@ import * as url from "url";
 
 import Tabs from "./Tabs";
 import {
-    shortcuts,
     isDev,
     winUrlDev,
     winUrlProd,
@@ -37,15 +36,13 @@ class WindowManager implements IWindowManager {
 
             const tab = Tabs.newTab(`${home}/login`, {
                 x: 0,
-                y: 19,
+                y: 25,
                 width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height-19
+                height: this.mainWindow.getContentBounds().height-25
             });
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
             this.mainWindow.setBrowserView(tab);
-
-            shortcuts(this.mainWindow);
 
             if (isDev) this.devtools();
             if (isDev) this.mainWindow.webContents.toggleDevTools();
@@ -61,9 +58,9 @@ class WindowManager implements IWindowManager {
         E.ipcMain.on(NEWTAB, () => {
             let view = Tabs.newTab(`${this.home}/login`, {
                 x: 0,
-                y: 19,
+                y: 25,
                 width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height-19
+                height: this.mainWindow.getContentBounds().height-25
             });
             this.mainWindow.setBrowserView(view);
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);

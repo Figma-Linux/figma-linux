@@ -8,7 +8,9 @@ class Tabs implements ITabs {
     public static newTab = (url: string, options: E.Rectangle) => {
         const tab = new E.BrowserView({
             webPreferences: {
-                nodeIntegration: false
+                nodeIntegration: false,
+                contextIsolation: true,
+                webSecurity: false
             }
         });
 

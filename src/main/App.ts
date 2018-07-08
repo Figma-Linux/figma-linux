@@ -1,4 +1,4 @@
-import * as electron from "electron";
+import * as E from "electron";
 import Args from "./utils/Args";
 
 import WindowManager from "./webContent/WindowManager";
@@ -18,7 +18,7 @@ class App implements IApp {
         }
 
         const { withoutFrame } = Args();
-        const options: electron.BrowserWindowConstructorOptions = {
+        const options: E.BrowserWindowConstructorOptions = {
             width: 1200,
             height: 900,
             frame: withoutFrame,

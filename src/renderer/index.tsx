@@ -1,5 +1,6 @@
-import { h, render } from 'preact';
-import { Provider } from "mobx-preact";
+import { render } from 'react-dom';
+import { h } from 'preact';
+const { Provider } = require('mobx-preact');
 import stores from "./stores";
 
 import App from "./components";

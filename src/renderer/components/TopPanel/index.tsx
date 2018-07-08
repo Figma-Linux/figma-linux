@@ -1,6 +1,7 @@
 import * as E from "electron";
-import { h, Component } from "preact";
-import { observer, connect } from "mobx-preact";
+import { Component } from "react";
+import { h } from 'preact';
+const { observer, connect } = require('mobx-preact');
 
 import Panel from "./toppanel";
 import './style.scss'
@@ -14,25 +15,25 @@ interface TopPanelProps {
 class TopPanel extends Component<TopPanelProps, {}> {
     props: TopPanelProps;
 
-    constructor(props) {
+    constructor(props: TopPanelProps) {
         super(props);
 
         this.props = props;
     }
 
-    onMainTab = (e: Event) => {
+    private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event) => {
         e.stopImmediatePropagation();
         e.stopPropagation();
 
         E.ipcRenderer.send('maintab');
-        this.props.tabs.setFocus(1);
+        this.props.tabs!.setFocus(1);
     }
 
     render() {
         return (
             <Panel
+                current={this.props.tabs!.current}
                 onMainTab={this.onMainTab}
-                current={this.props.tabs.current}
             />
         );
     }

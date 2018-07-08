@@ -1,4 +1,5 @@
-import { h, Component } from "preact";
+import { Component } from "react";
+import { h } from 'preact';
 
 import TopPanel from "./TopPanel";
 import './style.scss'
@@ -8,7 +9,7 @@ interface AppProps { }
 class App extends Component<AppProps, {}> {
     props: AppProps;
 
-    constructor(props) {
+    constructor(props: AppProps) {
         super(props);
 
         this.props = props;

@@ -28,7 +28,7 @@ class Tabs implements ITabsStore {
 	}
 
 	private events = () => {
-		E.ipcRenderer.on('tabadded', (sender, data) => {
+		E.ipcRenderer.on('tabadded', (sender: any, data: Tab) => {
 			this.addTab(data.id, data.url);
 			this.setFocus(data.id);
 		});

@@ -35,7 +35,6 @@ class Tabs extends Component<TabsProps, {}> {
 
         if (id !== currentTabId) return;
 
-        console.log('close, index: ', index);
         this.props.tabs.setFocus(
             index != 0 ? 
                 tabs[index > 0 ? index-1 : index].id

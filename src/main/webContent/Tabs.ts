@@ -1,29 +1,22 @@
 import * as E from "electron";
 
-interface ITabs {
-    // tabs: Array<E.BrowserView>;
-
-    // newTab(options: E.BrowserWindowConstructorOptions, url: string) : void;
-    // close(index: number): void;
-    // reloadAll(): void;
-}
+interface ITabs { }
 
 class Tabs implements ITabs {
     private static tabs: Array<E.BrowserView> = [];
 
-    public static newTab = (url: string) => {
+    public static newTab = (url: string, options: E.Rectangle) => {
         const tab = new E.BrowserView({
             webPreferences: {
                 nodeIntegration: false
             }
         });
 
-        tab.setBounds({
-            x: 0,
-            y: 19,
-            width: 300,
-            height: 200
+        tab.setAutoResize({
+            width: true,
+            height: true
         });
+        tab.setBounds(options);
         tab.webContents.loadURL(url);
 
         Tabs.tabs.push(tab);
@@ -32,11 +25,18 @@ class Tabs implements ITabs {
     }
 
     public static reloadAll = () => {
-        const iterator = Tabs.tabs[Symbol.iterator]();
+        Tabs.tabs.forEach(t => !t.isDestroyed() ? t.webContents.reload() : '');
+    }
 
-        for (let tab of iterator) {
-            tab.webContents.reload();
-        }
+    public static closeAll = () => {
+        Tabs.tabs = Tabs.tabs.filter(t => {
+            if (t.id != 1) {
+                t.destroy();
+                return false;
+            } else {
+                return true;
+            }
+        });
     }
 
     public static close = (id: number) => {

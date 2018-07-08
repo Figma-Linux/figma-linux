@@ -32,6 +32,11 @@ class Tabs implements ITabsStore {
 			this.addTab(data.id, data.url);
 			this.setFocus(data.id);
 		});
+
+		E.ipcRenderer.on('closealltab', () => {
+			this.current = 1;
+			this.tabs = [];
+		});
 	}
 }
 

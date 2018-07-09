@@ -14,7 +14,7 @@ class Tabs implements ITabs {
                 webgl: true,
                 experimentalFeatures: true,
                 experimentalCanvasFeatures: true,
-                zoomFactor: 0.7
+                zoomFactor: 0.8
             }
         });
 

@@ -1,6 +1,7 @@
 import * as E from "electron";
 import Args from "./utils/Args";
 
+
 import WindowManager from "./webContent/WindowManager";
 
 interface IApp {
@@ -28,7 +29,7 @@ class App implements IApp {
                 webgl: true,
                 experimentalFeatures: true,
                 experimentalCanvasFeatures: true,
-                zoomFactor: 0.7
+                zoomFactor: 0.8
             }
         }
 

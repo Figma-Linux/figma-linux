@@ -1,7 +1,7 @@
-import { globalShortcut, WebContents } from 'electron';
+import { globalShortcut } from 'electron';
 import * as E from "electron";
 
-export default (webContents: WebContents) => {
+export default () => {
     const allWebContents: Array<E.WebContents> = E.webContents.getAllWebContents();
     let zoom = 0.7;
 

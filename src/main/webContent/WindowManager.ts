@@ -43,6 +43,7 @@ class WindowManager implements IWindowManager {
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
             this.mainWindow.setBrowserView(tab);
+            this.mainWindow.on('resize', this.onResize);
 
             if (isDev) this.devtools();
             if (isDev) this.mainWindow.webContents.toggleDevTools();
@@ -141,14 +142,28 @@ class WindowManager implements IWindowManager {
             return;
         }
     }
+
     private onWindowAllClosed = () => {
         if(process.platform !== 'darwin') {
             E.app.quit();
         }
     }
+
     private onBrowserWindowCreated = (event: E.Event, window: E.BrowserWindow) => {
         window.setMenu(null);
     }
+
+    private onResize = () => {
+        const browserViews = E.BrowserView.getAllViews();
+
+        browserViews.forEach(bw => bw.setBounds({
+            x: 0,
+            y: 25,
+            width: this.mainWindow.getContentBounds().width,
+            height: this.mainWindow.getContentBounds().height-25
+        }));
+    }
+
     private devtools = () => {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => console.log(`Added Extension:  ${name}`))

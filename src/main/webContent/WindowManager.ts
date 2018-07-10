@@ -5,6 +5,7 @@ import * as url from "url";
 import Tabs from "./Tabs";
 import {
     isDev,
+    shortcuts,
     winUrlDev,
     winUrlProd,
     NEWTAB,
@@ -19,6 +20,7 @@ interface IWindowManager {
     home: string;
     mainWindow: E.BrowserWindow;
 
+    getZoom(): Promise<number>;
     reloadAllWindows(): void;
 }
 
@@ -30,21 +32,22 @@ class WindowManager implements IWindowManager {
         this.home = home;
 
         E.app.on('browser-window-created', this.onBrowserWindowCreated);
-        E.app.on('ready', () => {
+        E.app.on('ready', async () => {
             this.mainWindow = new E.BrowserWindow(options);
             this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
             const tab = Tabs.newTab(`${home}/login`, {
                 x: 0,
-                y: 25,
+                y: 28 / await this.getZoom(),
                 width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height-25
+                height: this.mainWindow.getContentBounds().height - 28 / await this.getZoom()
             });
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
             this.mainWindow.setBrowserView(tab);
             this.mainWindow.on('resize', this.onResize);
 
+            shortcuts(this.mainWindow);
             if (isDev) this.devtools();
             if (isDev) this.mainWindow.webContents.toggleDevTools();
         });
@@ -55,13 +58,18 @@ class WindowManager implements IWindowManager {
 
     reloadAllWindows = () => {}
 
+    getZoom = (): Promise<number> => new Promise((resolve) => {
+        this.mainWindow.webContents.getZoomFactor(z => resolve(z));
+    });
+
     private addIpc = () => {
-        E.ipcMain.on(NEWTAB, () => {
+        E.ipcMain.on(NEWTAB, async () => {
+            console.log('await this.getZoom(): ', await this.getZoom());
             let view = Tabs.newTab(`${this.home}/login`, {
                 x: 0,
-                y: 25,
+                y: 28 / await this.getZoom(),
                 width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height-25
+                height: this.mainWindow.getContentBounds().height - 28 / await this.getZoom()
             });
             this.mainWindow.setBrowserView(view);
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
@@ -168,7 +176,7 @@ class WindowManager implements IWindowManager {
 		installExtension(REACT_DEVELOPER_TOOLS)
 			.then((name) => console.log(`Added Extension:  ${name}`))
 			.catch((err) => console.log('An error occurred: ', err));
-	}
+    }
 }
 
 export default WindowManager;

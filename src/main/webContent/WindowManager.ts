@@ -21,6 +21,7 @@ interface IWindowManager {
     mainWindow: E.BrowserWindow;
 
     getZoom(): Promise<number>;
+    setZoom(zoom: number): void;
     reloadAllWindows(): void;
 }
 
@@ -36,18 +37,28 @@ class WindowManager implements IWindowManager {
             this.mainWindow = new E.BrowserWindow(options);
             this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
+            console.log('bounds main tab: ', {
+                x: 0,
+                y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
+                width: this.mainWindow.getContentBounds().width,
+                height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
+            });
             const tab = Tabs.newTab(`${home}/login`, {
                 x: 0,
-                y: 28 / await this.getZoom(),
+                y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
                 width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height - 28 / await this.getZoom()
+                height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
             });
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
-
+            
             this.mainWindow.setBrowserView(tab);
             this.mainWindow.on('resize', this.onResize);
+            shortcuts();
+            setTimeout(() => {
+                this.setZoom(0.9);
+                this.onResize();
+            }, 600);
 
-            shortcuts(this.mainWindow);
             if (isDev) this.devtools();
             if (isDev) this.mainWindow.webContents.toggleDevTools();
         });
@@ -62,14 +73,22 @@ class WindowManager implements IWindowManager {
         this.mainWindow.webContents.getZoomFactor(z => resolve(z));
     });
 
+    setZoom = (zoom: number) => {
+        const tabs = Tabs.getAll();
+
+        this.mainWindow.webContents.setZoomFactor(zoom);
+
+        tabs.forEach(t => t.webContents.setZoomFactor(zoom));
+    };
+
+
     private addIpc = () => {
         E.ipcMain.on(NEWTAB, async () => {
-            console.log('await this.getZoom(): ', await this.getZoom());
             let view = Tabs.newTab(`${this.home}/login`, {
                 x: 0,
-                y: 28 / await this.getZoom(),
+                y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
                 width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height - 28 / await this.getZoom()
+                height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
             });
             this.mainWindow.setBrowserView(view);
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
@@ -161,14 +180,14 @@ class WindowManager implements IWindowManager {
         window.setMenu(null);
     }
 
-    private onResize = () => {
+    private onResize = async () => {
         const browserViews = E.BrowserView.getAllViews();
 
-        browserViews.forEach(bw => bw.setBounds({
+        browserViews.forEach(async bw => bw.setBounds({
             x: 0,
-            y: 25,
+            y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
             width: this.mainWindow.getContentBounds().width,
-            height: this.mainWindow.getContentBounds().height-25
+            height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
         }));
     }
 

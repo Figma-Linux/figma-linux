@@ -24,12 +24,12 @@ class App implements IApp {
             height: 900,
             frame: withoutFrame,
             webPreferences: {
+                zoomFactor: 0.9,
                 nodeIntegration: true,
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                experimentalCanvasFeatures: true,
-                zoomFactor: 0.8
+                experimentalCanvasFeatures: true
             }
         }
 

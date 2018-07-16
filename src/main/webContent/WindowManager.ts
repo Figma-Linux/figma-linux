@@ -53,7 +53,12 @@ class WindowManager implements IWindowManager {
             
             this.mainWindow.setBrowserView(tab);
             this.mainWindow.on('resize', this.onResize);
+            this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.onResize(e), 100));
+            this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.onResize(e), 100));
+            this.mainWindow.on('close', this.onWindowAllClosed);
+
             shortcuts();
+
             setTimeout(() => {
                 this.setZoom(0.9);
                 this.onResize();
@@ -180,9 +185,16 @@ class WindowManager implements IWindowManager {
         window.setMenu(null);
     }
 
-    private onResize = async () => {
+    private onResize = async (event?: Event) => {
         const browserViews = E.BrowserView.getAllViews();
-
+        
+        console.log('onResize, event: ', event && event!.target);
+        console.log('onResize, bounds: ', {
+            x: 0,
+            y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
+            width: this.mainWindow.getContentBounds().width,
+            height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
+        });
         browserViews.forEach(async bw => bw.setBounds({
             x: 0,
             y: parseInt((28 * await this.getZoom()+'').substr(0,4)),

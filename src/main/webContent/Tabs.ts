@@ -1,20 +1,22 @@
 import * as E from "electron";
+import * as path from "path";
 
 interface ITabs { }
 
 class Tabs implements ITabs {
     private static tabs: Array<E.BrowserView> = [];
 
-    public static newTab = (url: string, options: E.Rectangle) => {
+    public static newTab = (url: string, options: E.Rectangle, preloadScript?: string) => {
         const tab = new E.BrowserView({
             webPreferences: {
-                zoomFactor: 0.9,
                 nodeIntegration: false,
                 contextIsolation: true,
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                experimentalCanvasFeatures: true
+                experimentalCanvasFeatures: true,
+                zoomFactor: 0.9,
+                preload: path.resolve(`${process.cwd()}/dist/`, 'middleware', preloadScript || '')
             }
         });
 
@@ -24,6 +26,7 @@ class Tabs implements ITabs {
         });
         tab.setBounds(options);
         tab.webContents.loadURL(url);
+        tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);
 
@@ -63,6 +66,7 @@ class Tabs implements ITabs {
     public static getAll = (): Array<E.BrowserView> => {
         return Tabs.tabs;
     }
+
 }
 
 export default Tabs;

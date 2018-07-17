@@ -37,18 +37,20 @@ class WindowManager implements IWindowManager {
             this.mainWindow = new E.BrowserWindow(options);
             this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
-            console.log('bounds main tab: ', {
-                x: 0,
-                y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
-                width: this.mainWindow.getContentBounds().width,
-                height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
+            E.session.defaultSession!.setPermissionRequestHandler((webContents, permission, callback) => {
+                const whitelist = [
+                    'fullscreen',
+                    'pointerLock',
+                ];
+                callback(!!whitelist.indexOf(permission));
             });
+
             const tab = Tabs.newTab(`${home}/login`, {
                 x: 0,
                 y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
                 width: this.mainWindow.getContentBounds().width,
                 height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
-            });
+            }, 'web.js');
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
             
             this.mainWindow.setBrowserView(tab);
@@ -60,7 +62,7 @@ class WindowManager implements IWindowManager {
             }, 600);
 
             if (isDev) this.devtools();
-            if (isDev) this.mainWindow.webContents.toggleDevTools();
+            // if (isDev) this.mainWindow.webContents.toggleDevTools();
         });
         E.app.on('window-all-closed', this.onWindowAllClosed);
 
@@ -89,7 +91,7 @@ class WindowManager implements IWindowManager {
                 y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
                 width: this.mainWindow.getContentBounds().width,
                 height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
-            });
+            }, 'web.js');
             this.mainWindow.setBrowserView(view);
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 

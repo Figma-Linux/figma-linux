@@ -1,7 +1,7 @@
 /// <reference path="../../../@types/common/index.d.ts" />
 /// <reference path="../../../@types/renderer/stores/index.d.ts" />
 import * as E from "electron";
-import { observable, action, autorun, toJS } from "mobx";
+import { observable, action } from "mobx";
 
 class Tabs implements ITabsStore {
 	@observable tabs: Array<Tab> = [];
@@ -14,7 +14,7 @@ class Tabs implements ITabsStore {
 	@action addTab = (id: number, url: string) => {
 		this.tabs.push({
 			id,
-			name: 'Untitled',
+			name: 'Figma',
 			url
 		});
 	}
@@ -41,10 +41,6 @@ class Tabs implements ITabsStore {
 }
 
 const tabs: Tabs = new Tabs();
-
-autorun(() => {
-	console.log('autorun, tabs: ', toJS(tabs.tabs));
-});
 
 export default tabs;
 export {

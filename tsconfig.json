@@ -19,6 +19,8 @@
         "strictPropertyInitialization": false,
         "noImplicitThis": false,
         "declaration": true,
+        "allowUnusedLabels": true,
+        "noUnusedLocals": false,
         "typeRoots": [
             "node_modules/@types"
         ],
@@ -30,7 +32,8 @@
     },
     "include": [
         "src/main/index.ts",
-        "src/rerender/index.tsx"
+        "src/rerender/index.tsx",
+        "src/middleware/web.ts"
     ],
     "exclude": [
         "node_modules",

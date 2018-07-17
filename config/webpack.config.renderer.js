@@ -5,6 +5,11 @@ const path = require('path');
 const rootFolder = process.cwd();
 
 const dev = {
+
+    entry: {
+        '../middleware/web': path.resolve(rootFolder, 'src/middleware/web.ts')
+    },
+
     module: {
         rules: [
             {

@@ -1,6 +1,8 @@
 import * as E from "electron";
 import * as path from "path";
 
+import { isDev } from "../utils";
+
 interface ITabs { }
 
 class Tabs implements ITabs {
@@ -16,7 +18,7 @@ class Tabs implements ITabs {
                 experimentalFeatures: true,
                 experimentalCanvasFeatures: true,
                 zoomFactor: 0.9,
-                preload: path.resolve(`${process.cwd()}/dist/`, 'middleware', preloadScript || '')
+                preload: path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '')
             }
         });
 
@@ -26,7 +28,7 @@ class Tabs implements ITabs {
         });
         tab.setBounds(options);
         tab.webContents.loadURL(url);
-        tab.webContents.toggleDevTools();
+        isDev && tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);
 
@@ -58,7 +60,7 @@ class Tabs implements ITabs {
             }
         });
     }
-    
+
     public static focus = (id: number): E.BrowserView => {
         return Tabs.tabs.find(t => t.id === id) as E.BrowserView;
     }

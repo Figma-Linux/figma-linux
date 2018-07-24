@@ -14,7 +14,7 @@ class Tabs implements ITabsStore {
 	@action addTab = (id: number, url: string) => {
 		this.tabs.push({
 			id,
-			name: 'Figma',
+			title: 'Figma',
 			url
 		});
 	}
@@ -36,6 +36,10 @@ class Tabs implements ITabsStore {
 		E.ipcRenderer.on('closealltab', () => {
 			this.current = 1;
 			this.tabs = [];
+		});
+
+		E.ipcRenderer.on('setTitle', (sender: any, data: { id: number, title: string }) => {
+			this.tabs = this.tabs.map(t => t.id === data.id ? { ...t, title: data.title } : t);
 		});
 	}
 }

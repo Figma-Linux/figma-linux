@@ -33,7 +33,8 @@
     "include": [
         "src/main/index.ts",
         "src/rerender/index.tsx",
-        "src/middleware/web.ts"
+        "src/middleware/loadMainContetnt.ts",
+        "src/middleware/loadContetnt.ts"
     ],
     "exclude": [
         "node_modules",

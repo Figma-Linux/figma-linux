@@ -7,7 +7,8 @@ const rootFolder = process.cwd();
 const dev = {
 
     entry: {
-        '../middleware/web': path.resolve(rootFolder, 'src/middleware/web.ts')
+        '../middleware/loadMainContetnt': path.resolve(rootFolder, 'src/middleware/loadMainContetnt.ts'),
+        '../middleware/loadContetnt': path.resolve(rootFolder, 'src/middleware/loadContetnt.ts')
     },
 
     module: {
@@ -39,7 +40,8 @@ const dev = {
         extensions: ['.ts', '.tsx', ".js", ".jsx", ".json", ".scss"],
         modules: [
             "node_modules", 
-            "preact"],
+            "preact"
+        ],
         alias: {
             'components': path.resolve(rootFolder, 'src/renderer/components'),
             'store': path.resolve(rootFolder, 'src/renderer/store'),

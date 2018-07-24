@@ -13,7 +13,8 @@ import {
     CLOSETAB,
     FOCUSTAB,
     CLOSEALLTAB,
-    MAINTAB
+    MAINTAB,
+    SETTITLE
 } from "../utils";
 
 interface IWindowManager {
@@ -37,26 +38,37 @@ class WindowManager implements IWindowManager {
             this.mainWindow = new E.BrowserWindow(options);
             this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
-            E.session.defaultSession!.setPermissionRequestHandler((webContents, permission, callback) => {
-                const whitelist = [
-                    'fullscreen',
-                    'pointerLock',
-                ];
-                callback(!!whitelist.indexOf(permission));
-            });
-
             const tab = Tabs.newTab(`${home}/login`, {
                 x: 0,
                 y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
                 width: this.mainWindow.getContentBounds().width,
                 height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
-            }, 'web.js');
-            tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
-            
+            }, 'loadMainContetnt.js');
+
             this.mainWindow.setBrowserView(tab);
+            tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
+            tab.webContents.on('new-window', (event: Event, url: string, fileName: string, disposition, options, additionalFeatures) => {
+                // console.log('mainWindow.webContents will-navigate: ', url, fileName, disposition, options, additionalFeatures);
+                let view;
+                
+                this.getZoom().then(zoom => {
+                    view = Tabs.newTab(`${url}`, {
+                        x: 0,
+                        y: parseInt((28 * zoom+'').substr(0,4)),
+                        width: this.mainWindow.getContentBounds().width,
+                        height: this.mainWindow.getContentBounds().height - parseInt((28 * zoom+'').substr(0,4))
+                    }, 'loadContetnt.js');
+                    
+                    view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
+
+                    this.mainWindow.setBrowserView(view);
+                    this.mainWindow.webContents.send(TABADDED, { id: view.id, url});
+                })
+            });
             this.mainWindow.on('resize', this.onResize);
             this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.onResize(e), 100));
             this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.onResize(e), 100));
+            this.mainWindow.on('move', (e: Event) => setTimeout(() => this.onResize(e), 100));
             this.mainWindow.on('close', this.onWindowAllClosed);
 
             shortcuts();
@@ -67,7 +79,7 @@ class WindowManager implements IWindowManager {
             }, 600);
 
             if (isDev) this.devtools();
-            // if (isDev) this.mainWindow.webContents.toggleDevTools();
+            if (isDev) this.mainWindow.webContents.toggleDevTools();
         });
         E.app.on('window-all-closed', this.onWindowAllClosed);
 
@@ -96,7 +108,7 @@ class WindowManager implements IWindowManager {
                 y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
                 width: this.mainWindow.getContentBounds().width,
                 height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
-            }, 'web.js');
+            }, 'loadMainContetnt.js');
             this.mainWindow.setBrowserView(view);
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
@@ -120,6 +132,9 @@ class WindowManager implements IWindowManager {
         });
         E.ipcMain.on(CLOSEALLTAB, () => {
             console.log('Close all tab');
+        });
+        E.ipcMain.on(SETTITLE, (event: Event, title: string) => {
+            this.mainWindow.webContents.send(SETTITLE, { id: this.mainWindow.getBrowserView()!.id, title })
         });
     }
 
@@ -154,7 +169,6 @@ class WindowManager implements IWindowManager {
                     if (response.statusCode >= 200 && response.statusCode <= 299) {
 
                         E.session.defaultSession!.cookies.flushStore(() => {
-
                             const view = Tabs.focus(1);
                             this.mainWindow.setBrowserView(view);
                             view.webContents.reload();
@@ -190,13 +204,6 @@ class WindowManager implements IWindowManager {
     private onResize = async (event?: Event) => {
         const browserViews = E.BrowserView.getAllViews();
         
-        console.log('onResize, event: ', event && event!.target);
-        console.log('onResize, bounds: ', {
-            x: 0,
-            y: parseInt((28 * await this.getZoom()+'').substr(0,4)),
-            width: this.mainWindow.getContentBounds().width,
-            height: this.mainWindow.getContentBounds().height - parseInt((28 * await this.getZoom()+'').substr(0,4))
-        });
         browserViews.forEach(async bw => bw.setBounds({
             x: 0,
             y: parseInt((28 * await this.getZoom()+'').substr(0,4)),

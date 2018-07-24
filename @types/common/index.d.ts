@@ -1,5 +1,5 @@
 interface Tab {
 	id: number;
-	name: string;
+	title: string;
 	url: string;
 }

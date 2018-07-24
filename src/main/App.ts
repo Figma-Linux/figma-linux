@@ -26,12 +26,14 @@ class App implements IApp {
             webPreferences: {
                 zoomFactor: 0.9,
                 nodeIntegration: true,
+                nodeIntegrationInWorker: false,
+                webviewTag: false,
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
                 experimentalCanvasFeatures: true
             }
-        }
+        };
 
         const home = 'https://www.figma.com';
         this.windowManager = new WindowManager(options, home);

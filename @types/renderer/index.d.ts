@@ -5,8 +5,8 @@ interface Window extends EventTarget, WindowTimers, WindowSessionStorage, Window
         version: number;
         fileBrowser: boolean;
 
-        postMessage(name: string, args: Array<string>, transferList: Array<string>): void;
-        promiseMessage(name: string, args: Array<string>, transferList: Array<string>): Promise<void>
+        postMessage(name: string, args?: any, transferList?: Array<string>): void;
+        promiseMessage(name: string, args?: any, transferList?: Array<string>): Promise<void>
         setMessageHandler(handler: Function): void;
     };
 }

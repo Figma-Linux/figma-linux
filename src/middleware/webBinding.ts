@@ -2,6 +2,7 @@
 
 import * as E from "electron";
 
+import { sendMsgToMain } from "./util";
 
 const API_VERSION = 9;
 let webPort: MessagePort;
@@ -35,7 +36,7 @@ const onWebMessage = (event: MessageEvent) => {
 
 }
 
-const initWebApi = (version: number) => {
+const initWebApi = (version: number, fileBrowser: boolean) => {
     const channel = new MessageChannel();
     const pendingPromises = new Map();
     let messageHandler: Function;
@@ -54,11 +55,13 @@ const initWebApi = (version: number) => {
         }
     }
 
+    console.log('initWebApi, fileBrowser: ', fileBrowser);
     window.__figmaDesktop = {
         version: version,
-        fileBrowser: false,
+        fileBrowser: fileBrowser,
         postMessage: function (name, args, transferList) {
             console.log('postMessage, name, args, transferList: ', name, args, transferList);
+            window.__figmaDesktop.fileBrowser = false;
             
             channel.port1.postMessage({ name, args }, transferList);
         },
@@ -71,6 +74,7 @@ const initWebApi = (version: number) => {
             });
         },
         setMessageHandler: function (handler) {
+            console.log('setMessageHandler: handler', handler);
             messageHandler = handler;
             tryFlushMessages();
         },
@@ -80,7 +84,7 @@ const initWebApi = (version: number) => {
         const msg = event.data;
 
         if (!msg) return;
-
+        console.log('channel.port1.onmessage, event: ', event);
         if (msg.promiseID != null) {
             const pendingPromise = pendingPromises.get(msg.promiseID);
             if (pendingPromise) {
@@ -104,25 +108,22 @@ const initWebApi = (version: number) => {
 
 const publicAPI: any = {
     setTitle(args: any) {
-        console.log('setTitle ,args: ', args);
-        // postMessageToMainProcess('updateTitle', args.getString('title'));
+        sendMsgToMain('setTitle', args.title);
     }
 }
 
-
-
-const init = () => {
+const init = (fileBrowser: boolean) => {
     window.addEventListener('message', event => {
         // console.log(`window message, ${event.origin} === ${location.origin}, data, ports: `, event.data, event.ports);
         webPort = event.ports[0];
         webPort.onmessage = onWebMessage;
         console.log(`window message, webPort: `, webPort);
+        // console.log('window.__figmaDesktop.fileBrowser: ', window.__figmaDesktop.fileBrowser);
+        // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });
 
-    E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION})`);
+    E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION}, ${fileBrowser})`);
 }
 
 
-init();
-
-// export default init;
+export default init;

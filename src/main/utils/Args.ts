@@ -6,7 +6,7 @@ export default () => {
     let withoutFrame = true;
 
     if (argv.indexOf('-v') != -1) {
-        console.log(typeof pjson.version === 'string' ? pjson.version : '0.0.4' );
+        console.log(typeof pjson.version === 'string' ? pjson.version : '0.1.0' );
         process.exit(0);
     }
 

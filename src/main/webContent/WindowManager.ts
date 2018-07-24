@@ -48,7 +48,6 @@ class WindowManager implements IWindowManager {
             this.mainWindow.setBrowserView(tab);
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
             tab.webContents.on('new-window', (event: Event, url: string, fileName: string, disposition, options, additionalFeatures) => {
-                // console.log('mainWindow.webContents will-navigate: ', url, fileName, disposition, options, additionalFeatures);
                 let view;
                 
                 this.getZoom().then(zoom => {
@@ -111,6 +110,23 @@ class WindowManager implements IWindowManager {
             }, 'loadMainContetnt.js');
             this.mainWindow.setBrowserView(view);
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
+            view.webContents.on('new-window', (event: Event, url: string, fileName: string, disposition, options, additionalFeatures) => {
+                let view;
+                
+                this.getZoom().then(zoom => {
+                    view = Tabs.newTab(`${url}`, {
+                        x: 0,
+                        y: parseInt((28 * zoom+'').substr(0,4)),
+                        width: this.mainWindow.getContentBounds().width,
+                        height: this.mainWindow.getContentBounds().height - parseInt((28 * zoom+'').substr(0,4))
+                    }, 'loadContetnt.js');
+                    
+                    view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
+
+                    this.mainWindow.setBrowserView(view);
+                    this.mainWindow.webContents.send(TABADDED, { id: view.id, url});
+                })
+            });
 
             this.mainWindow.webContents.send(TABADDED, { id: view.id, url: `${this.home}/login`});
         });

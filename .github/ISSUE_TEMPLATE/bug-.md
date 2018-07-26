@@ -5,7 +5,7 @@ about: Create a report to help us improve the app
 ---
 
 * App version: 
-  * Operating System (Platform and Version): 
+* Operating System (Platform and Version): 
 
 **Bug description**
 Describe what happened

@@ -78,7 +78,8 @@ class WindowManager implements IWindowManager {
             }, 600);
 
             if (isDev) this.devtools();
-            if (isDev) this.mainWindow.webContents.toggleDevTools();
+            if (isDev) this.mainWindow.webContents.openDevTools({ mode: 'detach' });
+            // if (isDev) this.mainWindow.webContents.toggleDevTools();
         });
         E.app.on('window-all-closed', this.onWindowAllClosed);
 

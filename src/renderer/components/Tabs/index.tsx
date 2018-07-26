@@ -1,4 +1,6 @@
+/// <reference path="../../../../@types/common/index.d.ts" />
 /// <reference path="../../../../@types/renderer/stores/index.d.ts" />
+
 import { ipcRenderer } from "electron";
 import { Component } from "react";
 import { h } from 'preact';
@@ -23,7 +25,7 @@ class Tabs extends Component<TabsProps, {}> {
         this.props = props;
     }
 
-    private close = (e: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
+    private close = (e: MouseEvent & Event, id: number) => {
         e.stopPropagation();
         e.stopImmediatePropagation();
         
@@ -44,12 +46,29 @@ class Tabs extends Component<TabsProps, {}> {
                 1
         );
     }
-    
+
     private newTab = () => {
         ipcRenderer.send('newtab');
     }
 
-    private focus = (e: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
+    private clickTab = (event: MouseEvent & Event, tab: Tab) => {
+        switch(event.button) {
+            // Handle left click, set focuse on the target tab 
+            case 0: {
+                this.focus(event, tab.id);
+            } break;
+            // Handle middle click, close tab
+            case 1: {
+                this.close(event, tab.id);
+            } break;
+            // Handle right click, invoke the popup menu
+            case 2: {
+                // console.log('clickTab right click, ', event.button);
+            } break;
+        }
+    }
+
+    private focus = (e: MouseEvent & Event, id: number) => {
         e.stopPropagation();
         e.stopImmediatePropagation();
 
@@ -63,10 +82,9 @@ class Tabs extends Component<TabsProps, {}> {
                 tabs={toJS(this.props.tabs) as ITabsStore}
                 close={this.close}
                 newTab={this.newTab}
-                focus={this.focus}
+                clickTab={this.clickTab}
             />
         )
-
     }
 }
 

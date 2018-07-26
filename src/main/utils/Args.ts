@@ -5,12 +5,12 @@ export default () => {
 
     let withoutFrame = true;
 
-    if (argv.includes('-v')) {
-        console.log(typeof pjson.version === 'string' ? pjson.version : '0.0.4' );
+    if (argv.indexOf('-v') != -1) {
+        console.log(typeof pjson.version === 'string' ? pjson.version : '0.1.0' );
         process.exit(0);
     }
 
-    if (argv.includes('-h')) {
+    if (argv.indexOf('-h') != -1) {
         const help = `
 figma-linux
 
@@ -29,7 +29,7 @@ use:
         process.exit(0);
     }
 
-    if (argv.includes('-f')) {
+    if (argv.indexOf('-f') != -1) {
         withoutFrame = false;
     }
 

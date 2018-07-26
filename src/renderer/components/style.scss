@@ -1,0 +1,19 @@
+$list: a b c d e f g h i j k l m n o p q r s t;
+
+
+html, body {
+	margin: 0;
+	padding: 0;
+	outline: none;
+	border: 0;
+
+	font: {
+		family: 'Roboto', sans-serif;
+	}
+}
+
+@each $i in $list {
+	.gridArea-#{$i} {
+		grid-area: #{$i}
+	}
+}

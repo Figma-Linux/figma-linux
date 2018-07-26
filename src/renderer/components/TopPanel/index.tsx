@@ -29,11 +29,16 @@ class TopPanel extends Component<TopPanelProps, {}> {
         this.props.tabs!.setFocus(1);
     }
 
+    private onHomeClick = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+        E.ipcRenderer.send('toHome');
+    }
+
     render() {
         return (
             <Panel
                 current={this.props.tabs!.current}
                 onMainTab={this.onMainTab}
+                onHomeClick={this.onHomeClick}
             />
         );
     }

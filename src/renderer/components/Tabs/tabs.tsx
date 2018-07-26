@@ -5,8 +5,8 @@ import { h } from 'preact';
 interface Props {
     tabs: ITabsStore;
 
-    close(e: MouseEvent & Event, id: number): void
-    clickTab(e: MouseEvent & Event, tab: Tab): void
+    close(e: React.MouseEvent<HTMLDivElement>, id: number): void
+    clickTab(e: React.MouseEvent<HTMLDivElement>, tab: Tab): void
     newTab(): void
 }
 

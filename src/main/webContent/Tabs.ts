@@ -28,7 +28,7 @@ class Tabs implements ITabs {
         });
         tab.setBounds(options);
         tab.webContents.loadURL(url);
-        // isDev && tab.webContents.toggleDevTools();
+        isDev && tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);
 

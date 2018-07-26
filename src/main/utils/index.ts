@@ -10,7 +10,8 @@ export {
 	TABADDED,
 	FOCUSTAB,
 	MAINTAB,
-	SETTITLE
+	SETTITLE,
+	TOHOME
 } from './constants';
 
 export {

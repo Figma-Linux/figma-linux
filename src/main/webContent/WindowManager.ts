@@ -14,7 +14,8 @@ import {
     FOCUSTAB,
     CLOSEALLTAB,
     MAINTAB,
-    SETTITLE
+    SETTITLE,
+    TOHOME
 } from "../utils";
 
 interface IWindowManager {
@@ -152,6 +153,15 @@ class WindowManager implements IWindowManager {
         });
         E.ipcMain.on(SETTITLE, (event: Event, title: string) => {
             this.mainWindow.webContents.send(SETTITLE, { id: this.mainWindow.getBrowserView()!.id, title })
+        });
+        E.ipcMain.on(TOHOME, (event: Event, title: string) => {
+            const currentView = this.mainWindow.getBrowserView();
+            const currentUrl = currentView && currentView.webContents.getURL() || '';
+            const go: boolean = url.parse(currentUrl).pathname !== '/files/recent';
+
+            console.log(`${url.parse(currentUrl).pathname} !== '/files/recent': ${url.parse(currentUrl).pathname !== '/files/recent'}`);
+
+            currentView && go && currentView!.webContents.loadURL(`${this.home}`);
         });
     }
 

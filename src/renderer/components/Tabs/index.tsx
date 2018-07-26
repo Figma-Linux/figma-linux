@@ -25,7 +25,7 @@ class Tabs extends Component<TabsProps, {}> {
         this.props = props;
     }
 
-    private close = (e: MouseEvent & Event, id: number) => {
+    private close = (e: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
         e.stopPropagation();
         e.stopImmediatePropagation();
         
@@ -51,7 +51,7 @@ class Tabs extends Component<TabsProps, {}> {
         ipcRenderer.send('newtab');
     }
 
-    private clickTab = (event: MouseEvent & Event, tab: Tab) => {
+    private clickTab = (event: React.MouseEvent<HTMLDivElement> & Event, tab: Tab) => {
         switch(event.button) {
             // Handle left click, set focuse on the target tab 
             case 0: {
@@ -68,7 +68,7 @@ class Tabs extends Component<TabsProps, {}> {
         }
     }
 
-    private focus = (e: MouseEvent & Event, id: number) => {
+    private focus = (e: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
         e.stopPropagation();
         e.stopImmediatePropagation();
 

@@ -7,6 +7,8 @@ const MAINTAB = 'maintab';
 
 const SETTITLE = 'setTitle';
 
+const TOHOME = 'toHome';
+
 export {
 	NEWTAB,
 	TABADDED,
@@ -15,5 +17,7 @@ export {
 	MAINTAB,
 	CLOSEALLTAB,
 
-	SETTITLE
+	SETTITLE,
+
+	TOHOME
 }

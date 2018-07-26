@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "electron-webpack dev",
     "start": "electron dist/main/main.js",
-    "build": "electron-webpack app && rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html",
+    "build": "electron-webpack app && rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
     "pack": "npm run build && npm run builder"
   },

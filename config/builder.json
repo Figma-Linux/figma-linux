@@ -13,6 +13,7 @@
     },
 
     "appImage": {
+        "category": "Graphics",
         "systemIntegration": "doNotAsk"
     },
 

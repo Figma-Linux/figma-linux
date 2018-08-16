@@ -12,6 +12,10 @@
         "output": "build/installers"
     },
 
+    "pacman": {
+        "depends": []
+    },
+
     "appImage": {
         "category": "Graphics",
         "systemIntegration": "doNotAsk"

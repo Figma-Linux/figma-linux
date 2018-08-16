@@ -50,6 +50,8 @@ class WindowManager implements IWindowManager {
             tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
             tab.webContents.on('new-window', (event: Event, url: string, fileName: string, disposition, options, additionalFeatures) => {
                 let view;
+
+                if (/start_google_sso/.test(url)) return;
                 
                 this.getZoom().then(zoom => {
                     view = Tabs.newTab(`${url}`, {
@@ -114,7 +116,9 @@ class WindowManager implements IWindowManager {
             view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
             view.webContents.on('new-window', (event: Event, url: string, fileName: string, disposition, options, additionalFeatures) => {
                 let view;
-                
+
+                if (/start_google_sso/.test(url)) return;
+
                 this.getZoom().then(zoom => {
                     view = Tabs.newTab(`${url}`, {
                         x: 0,

@@ -1,6 +1,6 @@
 {
   "name": "figma-linux",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
   "main": "main/main.js",
   "repository": "git@github.com:ChugunovRoman/figma-linux.git",

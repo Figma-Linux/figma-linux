@@ -1,5 +1,6 @@
 import * as E from "electron";
-import Tabs from "../webContent/Tabs";
+
+import Tabs from "./window/Tabs";
 
 export default () => {
     let zoom = 0.8;

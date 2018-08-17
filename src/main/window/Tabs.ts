@@ -1,7 +1,7 @@
 import * as E from "electron";
 import * as path from "path";
 
-import { isDev } from "../utils";
+import { isDev } from "Utils";
 
 interface ITabs { }
 
@@ -35,10 +35,6 @@ class Tabs implements ITabs {
         return tab;
     }
 
-    public static reloadAll = () => {
-        Tabs.tabs.forEach(t => !t.isDestroyed() ? t.webContents.reload() : '');
-    }
-
     public static closeAll = () => {
         Tabs.tabs = Tabs.tabs.filter(t => {
             if (t.id != 1) {
@@ -49,7 +45,7 @@ class Tabs implements ITabs {
             }
         });
     }
-
+    
     public static close = (id: number) => {
         Tabs.tabs = Tabs.tabs.filter(t => {
             if (t.id != id) {
@@ -61,13 +57,11 @@ class Tabs implements ITabs {
         });
     }
 
-    public static focus = (id: number): E.BrowserView => {
-        return Tabs.tabs.find(t => t.id === id) as E.BrowserView;
-    }
+    public static reloadAll = () => Tabs.tabs.forEach(t => !t.isDestroyed() ? t.webContents.reload() : '');
 
-    public static getAll = (): Array<E.BrowserView> => {
-        return Tabs.tabs;
-    }
+    public static focus = (id: number): E.BrowserView => Tabs.tabs.find(t => t.id === id) as E.BrowserView;
+
+    public static getAll = (): Array<E.BrowserView> => Tabs.tabs;
 
 }
 

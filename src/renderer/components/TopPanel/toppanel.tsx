@@ -1,6 +1,6 @@
 import { h } from 'preact';
 
-import Tabs from "./../Tabs";
+import Tabs from "Components/Tabs";
 
 interface TopPanelProps {
     current: number;

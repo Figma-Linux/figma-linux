@@ -8,7 +8,14 @@ const rootFolder = process.cwd();
 const dev = {
     resolve: {
         modules: ["node_modules", "react"],
-        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json"]
+        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json"],
+
+        alias: {
+            Components: path.resolve(rootFolder, 'src/renderer/components'),
+            Store: path.resolve(rootFolder, 'src/renderer/stores'),
+            Const: path.resolve(rootFolder, 'src/constants'),
+            Utils: path.resolve(rootFolder, 'src/utils')
+        }
     },
 
 

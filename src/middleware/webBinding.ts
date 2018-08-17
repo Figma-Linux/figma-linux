@@ -4,7 +4,7 @@ import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
-import { sendMsgToMain } from "./util";
+import { sendMsgToMain } from "Utils";
 
 const API_VERSION = 9;
 let webPort: MessagePort;
@@ -114,11 +114,9 @@ const publicAPI: any = {
     },
 
     writeFiles(args: any) {
-        console.log('writeFiles args: ', args);
         const files = args.files;
-        if (!Array.isArray(files) || files.length === 0) {
-            return;
-        }
+        if (!Array.isArray(files) || files.length === 0) return;
+
         let skipReplaceConfirmation = false;
         let directoryPath;
         if (files.length === 1 && !files[0].name.includes(path.sep)) {
@@ -127,30 +125,31 @@ const publicAPI: any = {
                 defaultPath: path.basename(originalFileName),
                 showsTagField: false,
             });
+
             if (savePath) {
                 directoryPath = path.dirname(savePath);
                 files[0].name = path.basename(savePath);
+
                 if (path.extname(files[0].name) === '') {
                     files[0].name += path.extname(originalFileName);
-                }
-                else {
+                } else {
                     skipReplaceConfirmation = true;
                 }
             }
-        }
-        else {
+        } else {
             const directories = E.remote.dialog.showOpenDialog({
                 properties: ['openDirectory', 'createDirectory'],
                 buttonLabel: 'Save',
             });
+
             if (!directories || directories.length !== 1) {
                 return;
             }
             directoryPath = directories[0];
         }
-        if (!directoryPath) {
-            return;
-        }
+
+        if (!directoryPath) return;
+    
         directoryPath = path.resolve(directoryPath);
         let filesToBeReplaced = 0;
         for (let file of files) {
@@ -177,9 +176,7 @@ const publicAPI: any = {
             try {
                 fs.accessSync(outputPath, fs.constants.R_OK);
                 ++filesToBeReplaced;
-            }
-            catch (ex) {
-            }
+            } catch (ex) { }
         }
         if (filesToBeReplaced > 0 && !skipReplaceConfirmation) {
             const single = filesToBeReplaced === 1;
@@ -204,17 +201,16 @@ const publicAPI: any = {
                     try {
                         dirPath = path.join(dirPath, part);
                         fs.mkdirSync(dirPath);
-                    }
-                    catch (ex) {
+                    } catch (ex) {
                     }
                 }
             }
+
             try {
                 const outputPath = path.join(directoryPath, file.name);
                 const opts = { encoding: 'binary' };
                 fs.writeFileSync(outputPath, Buffer.from(file.buffer), opts);
-            }
-            catch (ex) {
+            } catch (ex) {
                 E.remote.dialog.showMessageBox({
                     type: 'error',
                     title: 'Export Failed',

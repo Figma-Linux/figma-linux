@@ -1,8 +1,8 @@
 import * as E from "electron";
-import Args from "./utils/Args";
 
+import Args from "./Args";
 
-import WindowManager from "./webContent/WindowManager";
+import WindowManager from "./window/WindowManager";
 
 interface IApp {
     windowManager: WindowManager;
@@ -11,13 +11,32 @@ interface IApp {
 class App implements IApp {
     windowManager: WindowManager;
 
-    private static _instance: App;
-
     constructor() {
-        if (App._instance) {
-            throw new Error(`You don't can create instance of App class manually. Call the getInstance method.`);
+        const isSingleInstance = E.app.requestSingleInstanceLock();
+
+        if (!isSingleInstance) {
+            E.app.quit();
+            return;
+        } else {
+            if (this.windowManager && this.windowManager.mainWindow) {
+                this.windowManager.mainWindow.isMinimized() && this.windowManager.mainWindow.restore();
+                !this.windowManager.mainWindow.isVisible() && this.windowManager.mainWindow.show();
+    
+                this.windowManager.mainWindow.focus();
+            }
         }
 
+        this.appEvent();
+    }
+
+
+    private appEvent = () => {
+        E.app.on('ready', this.ready);
+        E.app.on('browser-window-created', (e, window) => window.setMenu(null));
+        E.app.on('window-all-closed', this.onWindowAllClosed);
+    }
+
+    private ready = () => {
         const { withoutFrame } = Args();
         const options: E.BrowserWindowConstructorOptions = {
             width: 1200,
@@ -36,19 +55,23 @@ class App implements IApp {
         };
 
         const home = 'https://www.figma.com';
+
         this.windowManager = new WindowManager(options, home);
     }
 
-    public static init = () => {
-        if (App._instance) {
-            return App._instance;
-        }
 
-        return App._instance = new App(); 
+    private onWindowAllClosed = () => {
+        if(process.platform !== 'darwin') {
+            E.app.quit();
+        }
     }
 }
 
-export default App;
+const init = () => {
+    new App;
+}
+
+export default init;
 export {
     IApp
 }

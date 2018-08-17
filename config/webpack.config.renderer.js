@@ -43,8 +43,10 @@ const dev = {
             "preact"
         ],
         alias: {
-            'components': path.resolve(rootFolder, 'src/renderer/components'),
-            'store': path.resolve(rootFolder, 'src/renderer/store'),
+            Components: path.resolve(rootFolder, 'src/renderer/components'),
+            Store: path.resolve(rootFolder, 'src/renderer/stores'),
+            Const: path.resolve(rootFolder, 'src/constants'),
+            Utils: path.resolve(rootFolder, 'src/utils'),
             'react': 'preact-compat',
             'react-dom': 'preact-compat',
             'create-react-class': 'preact-compat/lib/create-react-class',

@@ -8,6 +8,12 @@ import { sendMsgToMain } from "Utils";
 
 const API_VERSION = 9;
 let webPort: MessagePort;
+let fontMap: Map<string, string>;
+let resolveFontMapPromise = null;
+const fontMapPromise = new Promise((resolve, reject) => {
+    resolveFontMapPromise = resolve;
+});
+
 
 const onWebMessage = (event: MessageEvent) => {
     const msg = event.data;
@@ -111,6 +117,72 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
 const publicAPI: any = {
     setTitle(args: any) {
         sendMsgToMain('setTitle', args.title);
+    },
+
+    getClipboardData(args: any) {
+        return new Promise((resolve, reject) => {
+            if (E.clipboard.has('org.nspasteboard.ConcealedType')) {
+                reject(new Error('Clipboard unavailable'));
+                return;
+            }
+
+            const whitelistedFormats = [
+                'com.adobe.pdf',
+                'com.adobe.xd',
+                'com.bohemiancoding.sketch.v3',
+            ];
+
+            const formats = args.getArray('formats');
+
+            for (let format of formats) {
+                let data = null;
+
+                if (format === 'text/html') {
+                    const unsafeHTML = E.clipboard.readHTML().trim();
+                    if (unsafeHTML.includes('<!--(figma)') && unsafeHTML.includes('(/figma)-->')) {
+                        data = new Buffer(unsafeHTML);
+                    }
+                } else if (format === 'image/svg+xml') {
+                    data = E.clipboard.readBuffer(format);
+                    data = data.byteLength > 0 ? data : E.clipboard.readBuffer('Scalable Vector Graphics');
+                    data = data.byteLength > 0 ? data : E.clipboard.readBuffer('CorePasteboardFlavorType 0x53564720');
+                    if (data.byteLength === 0) {
+                        const unsafeText = E.clipboard.readText().trim();
+                        if (unsafeText.startsWith('<svg') && unsafeText.endsWith('</svg>')) {
+                            data = new Buffer(unsafeText);
+                        }
+                    }
+                } else if (format === 'image/jpeg' || format === 'image/png') {
+                    data = E.clipboard.readImage().toBitmap();
+                } else if (whitelistedFormats.indexOf(format) !== -1) {
+                    data = E.clipboard.readBuffer(format);
+                }
+
+                if (data && data.byteLength > 0) {
+                    const result = {
+                        data: data.buffer,
+                        format: format,
+                    };
+                    resolve({ data: result, transferList: [data.buffer] });
+                    return;
+                }
+            }
+            reject(new Error('Formats not found'));
+        });
+    },
+
+    setClipboardData(args: any) {
+        const format = args.format;
+        const data = Buffer.from(args.data);
+        if (['image/jpeg', 'image/png'].indexOf(format) !== -1) {
+            E.clipboard.writeImage(E.remote.nativeImage.createFromBuffer(data));
+        } else if (format === 'image/svg+xml') {
+            E.clipboard.writeText(data.toString());
+        } else if (format === 'application/pdf') {
+            E.clipboard.writeBuffer('Portable Document Format', data);
+        } else {
+            E.clipboard.writeBuffer(format, data);
+        }
     },
 
     writeFiles(args: any) {

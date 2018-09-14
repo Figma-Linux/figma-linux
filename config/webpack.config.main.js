@@ -6,9 +6,18 @@ const path = require('path');
 const rootFolder = process.cwd();
 
 const dev = {
+    module: {
+        rules: [
+            {
+                test: /\.node&/,
+                use: 'node-loader'
+            }
+        ]
+    },
+    
     resolve: {
-        modules: ["node_modules", "react"],
-        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json"],
+        modules: ['node_modules', 'react'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', 'node'],
 
         alias: {
             Components: path.resolve(rootFolder, 'src/renderer/components'),
@@ -27,6 +36,10 @@ const dev = {
         new CopyWebpackPlugin([
             {
                 from: path.join(rootFolder, 'src/package.json'),
+                to: path.join(rootFolder, 'dist/')
+            },
+            {
+                from: path.join(rootFolder, 'src/binding.node'),
                 to: path.join(rootFolder, 'dist/')
             },
             {

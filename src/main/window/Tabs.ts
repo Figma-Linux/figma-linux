@@ -2,6 +2,7 @@ import * as E from "electron";
 import * as path from "path";
 
 import { isDev } from "Utils";
+import Fonts from "../Fonts";
 
 interface ITabs { }
 
@@ -28,6 +29,12 @@ class Tabs implements ITabs {
         });
         tab.setBounds(options);
         tab.webContents.loadURL(url);
+        tab.webContents.on('dom-ready', () => {
+            let fonts = Fonts.getFonts([
+                '/usr/share/fonts'
+            ]);
+            tab.webContents.send('updateFonts', fonts);
+        });
         isDev && tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);

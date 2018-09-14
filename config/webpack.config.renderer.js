@@ -37,10 +37,10 @@ const dev = {
     },
 
     resolve: {
-        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json", ".scss"],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss'],
         modules: [
-            "node_modules", 
-            "preact"
+            'node_modules', 
+            'preact'
         ],
         alias: {
             Components: path.resolve(rootFolder, 'src/renderer/components'),

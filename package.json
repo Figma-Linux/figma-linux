@@ -12,6 +12,7 @@
     "start": "electron dist/main/main.js",
     "build": "electron-webpack app && rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
+    "rebuild": "electron-rebuild",
     "pack": "npm run build && npm run builder"
   },
   "electronWebpack": {
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "electron-devtools-installer": "^2.2.4",
+    "font-manager": "^0.3.0",
     "mobx": "^5.0.3",
     "mobx-preact": "^3.0.0",
     "preact": "^8.2.9",
@@ -48,10 +50,12 @@
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.11",
-    "electron": "^3.0.0-beta.5",
+    "electron": "^3.0.0-beta.12",
     "electron-builder": "^20.18.0",
+    "electron-rebuild": "^1.8.2",
     "electron-webpack": "^2.1.2",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
+    "node-loader": "^0.6.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",

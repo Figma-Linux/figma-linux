@@ -8,9 +8,9 @@ import { sendMsgToMain } from "Utils";
 
 const API_VERSION = 9;
 let webPort: MessagePort;
-let fontMap: Map<string, string>;
-let resolveFontMapPromise = null;
-const fontMapPromise = new Promise((resolve, reject) => {
+let fontMap: any = null;
+let resolveFontMapPromise: any = null;
+const fontMapPromise = new Promise(resolve => {
     resolveFontMapPromise = resolve;
 });
 
@@ -23,10 +23,9 @@ const onWebMessage = (event: MessageEvent) => {
     let resultPromise = undefined;
 
     try {
-        console.log('onWebMessage, publicAPI, msg: ', publicAPI, msg);
+        console.log('onWebMessage, msg: ', msg);
         resultPromise = msg.name && publicAPI && publicAPI[msg.name](msg.args);
-    }
-    finally {
+    } finally {
         if (msg.promiseID != null) {
             if (resultPromise instanceof Promise) {
                 resultPromise.then((result) => {
@@ -41,7 +40,6 @@ const onWebMessage = (event: MessageEvent) => {
             }
         }
     }
-
 }
 
 const initWebApi = (version: number, fileBrowser: boolean) => {
@@ -114,9 +112,58 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
     window.postMessage('init', location.origin, [channel.port2]);
 }
 
+const initWebBindings = () => {
+    E.ipcRenderer.on('updateFonts', (event: Event, fonts: any) => {
+        fontMap = fonts;
+        if (resolveFontMapPromise) {
+            resolveFontMapPromise();
+            resolveFontMapPromise = null;
+        }
+    })
+}
+
 const publicAPI: any = {
     setTitle(args: any) {
         sendMsgToMain('setTitle', args.title);
+    },
+
+    getFonts() {
+        return new Promise(resolve => fontMapPromise.then(() => resolve({ data: fontMap })));
+    },
+    getFontFile(args: any) {
+        return new Promise((resolve, reject) => {
+            const fontPath = args.path;
+
+            if (!fontMap) {
+                reject(new Error('No fonts'));
+                return;
+            }
+
+            const faces = fontMap[fontPath];
+            if (!faces || faces.length === 0) {
+                reject(new Error('Invalid path'));
+                return;
+            }
+
+            let postScriptName = faces[0].postscript;
+            try {
+                postScriptName = args.postscript;
+            } catch (ex) { }
+
+            fs.readFile(fontPath, (err, data) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                if (data.byteLength > 0) {
+                    resolve({ data: data.buffer, transferList: [data.buffer] });
+                    return;
+                }
+
+                reject(new Error('No data'));
+            });
+        });
     },
 
     getClipboardData(args: any) {
@@ -139,6 +186,7 @@ const publicAPI: any = {
 
                 if (format === 'text/html') {
                     const unsafeHTML = E.clipboard.readHTML().trim();
+
                     if (unsafeHTML.includes('<!--(figma)') && unsafeHTML.includes('(/figma)-->')) {
                         data = new Buffer(unsafeHTML);
                     }
@@ -146,6 +194,7 @@ const publicAPI: any = {
                     data = E.clipboard.readBuffer(format);
                     data = data.byteLength > 0 ? data : E.clipboard.readBuffer('Scalable Vector Graphics');
                     data = data.byteLength > 0 ? data : E.clipboard.readBuffer('CorePasteboardFlavorType 0x53564720');
+
                     if (data.byteLength === 0) {
                         const unsafeText = E.clipboard.readText().trim();
                         if (unsafeText.startsWith('<svg') && unsafeText.endsWith('</svg>')) {
@@ -163,6 +212,7 @@ const publicAPI: any = {
                         data: data.buffer,
                         format: format,
                     };
+
                     resolve({ data: result, transferList: [data.buffer] });
                     return;
                 }
@@ -174,6 +224,7 @@ const publicAPI: any = {
     setClipboardData(args: any) {
         const format = args.format;
         const data = Buffer.from(args.data);
+
         if (['image/jpeg', 'image/png'].indexOf(format) !== -1) {
             E.clipboard.writeImage(E.remote.nativeImage.createFromBuffer(data));
         } else if (format === 'image/svg+xml') {
@@ -305,6 +356,8 @@ const init = (fileBrowser: boolean) => {
         // console.log('window.__figmaDesktop.fileBrowser: ', window.__figmaDesktop.fileBrowser);
         // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });
+
+    initWebBindings();
 
     E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION}, ${fileBrowser})`);
 }

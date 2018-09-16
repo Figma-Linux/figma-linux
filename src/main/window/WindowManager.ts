@@ -116,7 +116,7 @@ class WindowManager implements IWindowManager {
         tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
         tab.webContents.on('new-window', this.onNewWindow);
 
-        this.mainWindow.webContents.send(TABADDED, { id: tab.id, url: `${this.home}/login`});
+        this.mainWindow.webContents.send(TABADDED, { id: tab.id, url: `${this.home}/login`, showBackBtn: true});
     }
 
     private onNewWindow = (event: Event, url: string) => {
@@ -129,7 +129,7 @@ class WindowManager implements IWindowManager {
         view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
         this.mainWindow.setBrowserView(view);
-        this.mainWindow.webContents.send(TABADDED, { id: view.id, url});
+        this.mainWindow.webContents.send(TABADDED, { id: view.id, url, showBackBtn: false});
     }
 
     private onMainWindowWillNavigate = (event: E.Event, newUrl: string) => {

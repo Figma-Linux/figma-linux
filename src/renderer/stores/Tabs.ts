@@ -2,7 +2,7 @@
 /// <reference path="../../../@types/renderer/stores/index.d.ts" />
 
 import * as E from "electron";
-import { observable, action } from "mobx";
+import { observable, action, toJS } from "mobx";
 
 class Tabs implements ITabsStore {
 	@observable tabs: Array<Tab> = [];
@@ -12,11 +12,12 @@ class Tabs implements ITabsStore {
 		this.events();
 	}
 
-	@action addTab = (id: number, url: string) => {
+	@action addTab = (options: {id: number, url: string, showBackBtn: boolean}) => {
 		this.tabs.push({
-			id,
+			id: options.id,
 			title: 'Figma',
-			url
+			url: options.url,
+			showBackBtn: options.showBackBtn
 		});
 	}
 
@@ -28,9 +29,13 @@ class Tabs implements ITabsStore {
 		this.current = id;
 	}
 
+	getTab = (id: number): Tab | undefined => {
+		return this.tabs.length !== 0 ? this.tabs.find(tab => tab.id === id) : undefined;
+	}; 
+
 	private events = () => {
 		E.ipcRenderer.on('tabadded', (sender: any, data: Tab) => {
-			this.addTab(data.id, data.url);
+			this.addTab({id: data.id, url: data.url, showBackBtn: data.showBackBtn});
 			this.setFocus(data.id);
 		});
 

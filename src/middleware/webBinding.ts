@@ -61,7 +61,6 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
         }
     }
 
-    console.log('initWebApi, fileBrowser: ', fileBrowser);
     window.__figmaDesktop = {
         version: version,
         fileBrowser: fileBrowser,
@@ -234,6 +233,43 @@ const publicAPI: any = {
         } else {
             E.clipboard.writeBuffer(format, data);
         }
+    },
+
+    newFile(args: any) {
+    console.log('newFile, args: ', args);
+        sendMsgToMain('newFile', args.info);
+    },
+    openFile(args: any) {
+    console.log('openFile, args: ', args);
+        sendMsgToMain('openTab', '/file/' + args.fileKey, args.title, undefined, args.target);
+    },
+    close(args: any) {
+    console.log('close, args: ', args);
+        sendMsgToMain('closeTab', args.suppressReopening);
+    },
+    setFileKey(args: any) {
+    console.log('setFileKey, args: ', args);
+        sendMsgToMain('updateFileKey', args.fileKey);
+    },
+    setLoading(args: any) {
+    console.log('setLoading, args: ', args);
+        sendMsgToMain('updateLoadingStatus', args.loading);
+    },
+    setSaved(args: any) {
+    console.log('setSaved, args: ', args);
+        sendMsgToMain('updateSaveStatus', args.saved);
+    },
+    updateActionState(args: any) {
+    console.log('updateActionState, args: ', args);
+        sendMsgToMain('updateActionState', args.state);
+    },
+    showFileBrowser() {
+    console.log('showFileBrowser');
+        sendMsgToMain('showFileBrowser');
+    },
+    setIsPreloaded() {
+    console.log('setIsPreloaded');
+        sendMsgToMain('setIsPreloaded');
     },
 
     writeFiles(args: any) {

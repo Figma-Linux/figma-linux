@@ -2,7 +2,9 @@ interface ITabsStore {
 	tabs: Array<Tab>;
 	current: number;
 
-	addTab(id: number, url: string): void; 
+	addTab(options: {id: number, url: string, showBackBtn: boolean}): void; 
 	setFocus(id: number): void;
 	deleteTab(id: number): void;
+
+	getTab(id: number): Tab | undefined;
 }

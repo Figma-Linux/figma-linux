@@ -30,7 +30,7 @@ class App implements IApp {
     }
 
 
-    private appEvent = () => {
+    private appEvent = () => {        
         E.app.on('ready', this.ready);
         E.app.on('browser-window-created', (e, window) => window.setMenu(null));
         E.app.on('window-all-closed', this.onWindowAllClosed);

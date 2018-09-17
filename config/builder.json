@@ -3,6 +3,11 @@
     "productName": "figma-linux",
     "extraMetadata": "main/main.js",
     "icon": "resources/icon",
+    "extraFiles": [
+        {
+            "from": "lib/"
+        }
+    ],
     "files": [
         "**/*"
     ],

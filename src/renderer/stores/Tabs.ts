@@ -4,6 +4,8 @@
 import * as E from "electron";
 import { observable, action, toJS } from "mobx";
 
+import * as Const from "Const";
+
 class Tabs implements ITabsStore {
 	@observable tabs: Array<Tab> = [];
 	@observable current: number = 1;
@@ -34,18 +36,22 @@ class Tabs implements ITabsStore {
 	}; 
 
 	private events = () => {
-		E.ipcRenderer.on('tabadded', (sender: any, data: Tab) => {
+		E.ipcRenderer.on(Const.TABADDED, (sender: any, data: Tab) => {
 			this.addTab({id: data.id, url: data.url, showBackBtn: data.showBackBtn});
 			this.setFocus(data.id);
 		});
 
-		E.ipcRenderer.on('closealltab', () => {
+		E.ipcRenderer.on(Const.CLOSEALLTAB, () => {
 			this.current = 1;
 			this.tabs = [];
 		});
 
-		E.ipcRenderer.on('setTitle', (sender: any, data: { id: number, title: string }) => {
+		E.ipcRenderer.on(Const.SETTITLE, (sender: any, data: { id: number, title: string }) => {
 			this.tabs = this.tabs.map(t => t.id === data.id ? { ...t, title: data.title } : t);
+		});
+
+		E.ipcRenderer.on(Const.UPDATEFILEKEY, (sender: any, data: { id: number, fileKey: string }) => {
+			this.tabs = this.tabs.map(t => t.id === data.id ? { ...t, fileKey: data.fileKey } : t);
 		});
 	}
 }

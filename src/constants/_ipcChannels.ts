@@ -6,6 +6,7 @@ const CLOSEALLTAB = 'closealltab';
 const MAINTAB = 'maintab';
 
 const SETTITLE = 'setTitle';
+const UPDATEFILEKEY = 'updateFileKey';
 
 const TOHOME = 'toHome';
 
@@ -18,6 +19,7 @@ export {
 	CLOSEALLTAB,
 
 	SETTITLE,
+	UPDATEFILEKEY,
 
 	TOHOME
 }

@@ -1,7 +1,7 @@
 import * as E from "electron";
 
+import * as Const from "Const";
 import Args from "./Args";
-
 import WindowManager from "./window/WindowManager";
 
 interface IApp {
@@ -54,7 +54,7 @@ class App implements IApp {
             }
         };
 
-        const home = 'https://www.figma.com';
+        const home = Const.HOMEPAGE;
 
         this.windowManager = new WindowManager(options, home);
     }

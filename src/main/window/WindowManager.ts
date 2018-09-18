@@ -4,17 +4,7 @@ import * as url from "url";
 
 import Tabs from "./Tabs";
 import shortcuts from "../shortcuts";
-import {
-    NEWTAB,
-    TABADDED,
-    CLOSETAB,
-    FOCUSTAB,
-    CLOSEALLTAB,
-    MAINTAB,
-    SETTITLE,
-    TOHOME,
-    TOPPANELHEIGHT
-} from "Const";
+import * as Const from "Const";
 import {
     isDev,
     winUrlDev,
@@ -71,9 +61,9 @@ class WindowManager implements IWindowManager {
 
 
     private addIpc = () => {
-        E.ipcMain.on(NEWTAB, async () => this.addTab('loadMainContetnt.js'));
+        E.ipcMain.on(Const.NEWTAB, async () => this.addTab('loadMainContetnt.js'));
 
-        E.ipcMain.on(CLOSETAB, (event: Event, id: number) => {
+        E.ipcMain.on(Const.CLOSETAB, (event: Event, id: number) => {
             const views = Tabs.getAll();
             const index: number = views.findIndex(t => t.id == id);
             const view = Tabs.focus(views[index > 0 ? index-1 : index].id);
@@ -82,25 +72,29 @@ class WindowManager implements IWindowManager {
             Tabs.close(id);
         });
 
-        E.ipcMain.on(FOCUSTAB, (event: Event, id: number) => {
+        E.ipcMain.on(Const.FOCUSTAB, (event: Event, id: number) => {
             const view = Tabs.focus(id);
             this.mainWindow.setBrowserView(view);
         });
 
-        E.ipcMain.on(MAINTAB, (event: Event) => {
+        E.ipcMain.on(Const.MAINTAB, (event: Event) => {
             const view = Tabs.focus(1);
             this.mainWindow.setBrowserView(view);
         });
 
-        E.ipcMain.on(CLOSEALLTAB, () => {
+        E.ipcMain.on(Const.CLOSEALLTAB, () => {
             console.log('Close all tab');
         });
 
-        E.ipcMain.on(SETTITLE, (event: Event, title: string) => {
-            this.mainWindow.webContents.send(SETTITLE, { id: this.mainWindow.getBrowserView()!.id, title })
+        E.ipcMain.on(Const.SETTITLE, (event: Event, title: string) => {
+            this.mainWindow.webContents.send(Const.SETTITLE, { id: this.mainWindow.getBrowserView()!.id, title })
         });
 
-        E.ipcMain.on(TOHOME, (event: Event, title: string) => {
+        E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
+            this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: this.mainWindow.getBrowserView()!.id, fileKey: key })
+        });
+
+        E.ipcMain.on(Const.TOHOME, (event: Event, title: string) => {
             const currentView = this.mainWindow.getBrowserView();
             const currentUrl = currentView && currentView.webContents.getURL() || '';
             const go: boolean = url.parse(currentUrl).pathname !== '/files/recent';
@@ -116,7 +110,7 @@ class WindowManager implements IWindowManager {
         tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
         tab.webContents.on('new-window', this.onNewWindow);
 
-        this.mainWindow.webContents.send(TABADDED, { id: tab.id, url: `${this.home}/login`, showBackBtn: true});
+        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url: `${this.home}/login`, showBackBtn: true});
     }
 
     private onNewWindow = (event: Event, url: string) => {
@@ -129,15 +123,13 @@ class WindowManager implements IWindowManager {
         view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
         this.mainWindow.setBrowserView(view);
-        this.mainWindow.webContents.send(TABADDED, { id: view.id, url, showBackBtn: false});
+        this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false});
     }
 
     private onMainWindowWillNavigate = (event: E.Event, newUrl: string) => {
         const currentUrl = event.sender.getURL();
 
         if (newUrl === currentUrl) {
-            // Tabs.reloadAll();
-
             event.preventDefault();
             return;
         }
@@ -168,7 +160,7 @@ class WindowManager implements IWindowManager {
 
                             Tabs.closeAll();
 
-                            this.mainWindow.webContents.send(CLOSEALLTAB);
+                            this.mainWindow.webContents.send(Const.CLOSEALLTAB);
                         });
                     }
 
@@ -186,9 +178,9 @@ class WindowManager implements IWindowManager {
 
     private getBounds = () => ({
         x: 0,
-        y: TOPPANELHEIGHT,
+        y: Const.TOPPANELHEIGHT,
         width: this.mainWindow.getContentBounds().width,
-        height: this.mainWindow.getContentBounds().height - TOPPANELHEIGHT
+        height: this.mainWindow.getContentBounds().height - Const.TOPPANELHEIGHT
     })
 
     private updateBuonds = (event?: Event) => E.BrowserView.getAllViews().forEach(bw => bw.setBounds(this.getBounds()))

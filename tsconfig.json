@@ -21,6 +21,7 @@
         "declaration": true,
         "allowUnusedLabels": true,
         "noUnusedLocals": false,
+        "strictNullChecks": false,
         "typeRoots": [
             "node_modules/@types"
         ],

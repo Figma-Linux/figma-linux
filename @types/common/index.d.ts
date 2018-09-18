@@ -3,4 +3,5 @@ interface Tab {
 	title: string;
 	url: string;
 	showBackBtn: boolean;
+	fileKey?: string;
 }

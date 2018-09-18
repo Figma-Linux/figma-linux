@@ -6,7 +6,8 @@ export {
 	FOCUSTAB,
 	MAINTAB,
 	SETTITLE,
-	TOHOME
+	TOHOME,
+	UPDATEFILEKEY
 } from './_ipcChannels';
 
 export {

@@ -1,4 +1,4 @@
-const binding = require('../binding.node');
+const binding = require('./binding.node');
 
 interface IFontsFigmaItem {
 	postscript: string;

@@ -61,7 +61,11 @@ class WindowManager implements IWindowManager {
     };
 
     openUrl = (url: string) => {
-        this.addTab('loadContetnt.js', url.replace(/figma:\//, Const.HOMEPAGE));
+        if (/figma:\/\//.test(url)) {
+            this.addTab('loadContetnt.js', url.replace(/figma:\//, Const.HOMEPAGE));
+        } else if (/https?:\/\//.test(url)) {
+            this.addTab('loadContetnt.js', url);
+        }
     }
 
 

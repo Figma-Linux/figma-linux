@@ -9,8 +9,8 @@ const dev = {
     module: {
         rules: [
             {
-                test: /\.node&/,
-                use: 'node-loader'
+                test: /\.node$/,
+                loader: 'native-ext-loader'
             }
         ]
     },
@@ -36,10 +36,6 @@ const dev = {
         new CopyWebpackPlugin([
             {
                 from: path.join(rootFolder, 'src/package.json'),
-                to: path.join(rootFolder, 'dist/')
-            },
-            {
-                from: path.join(rootFolder, 'src/binding.node'),
                 to: path.join(rootFolder, 'dist/')
             },
             {

@@ -1,4 +1,4 @@
-const pjson = require('./../../package.json');
+const { version } = require('./../../package.json');
 
 export default () => {
     const argv = process.argv;
@@ -7,11 +7,11 @@ export default () => {
     let figmaUrl = '';
 
     if (argv.indexOf('-v') != -1) {
-        console.log(typeof pjson.version === 'string' ? pjson.version : '0.1.0' );
+        console.log(typeof version === 'string' ? version : '0.1.0' );
         process.exit(0);
     }
 
-    const urlIndex = argv.findIndex(i => /^figma:\/\//.test(i));
+    const urlIndex = argv.findIndex(i => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i));
     if (urlIndex !== -1) {
         figmaUrl = argv[urlIndex];
     }

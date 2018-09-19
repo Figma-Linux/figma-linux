@@ -12,5 +12,6 @@ export {
 
 export {
 	HOMEPAGE,
-	TOPPANELHEIGHT
+	TOPPANELHEIGHT,
+	PROTOCOL
 } from './_other';

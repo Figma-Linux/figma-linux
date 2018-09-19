@@ -17,6 +17,7 @@ interface IWindowManager {
 
     getZoom(): Promise<number>;
     setZoom(zoom: number): void;
+    openUrl(url: string): void;
     reloadAllWindows(): void;
 }
 
@@ -58,6 +59,10 @@ class WindowManager implements IWindowManager {
 
         tabs.forEach(t => t.webContents.setZoomFactor(zoom));
     };
+
+    openUrl = (url: string) => {
+        this.addTab('loadContetnt.js', url.replace(/figma:\//, Const.HOMEPAGE));
+    }
 
 
     private addIpc = () => {

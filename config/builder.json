@@ -17,6 +17,14 @@
         "output": "build/installers"
     },
 
+    "protocols": [{
+        "name": "figma",
+        "role": "Viewer",
+        "schemes": [
+            "figma"
+        ]
+    }],
+
     "pacman": {
         "depends": []
     },

@@ -20,7 +20,7 @@ class App implements IApp {
         } else {
             E.app.on('second-instance', (cmdLine, workDir) => {
                 let projectLink = '';
-                const paramIndex: number = workDir.findIndex(i => i.startsWith('figma://'))
+                const paramIndex: number = workDir.findIndex((i: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i));
 
                 if (paramIndex !== -1) {
                     projectLink = workDir[paramIndex];

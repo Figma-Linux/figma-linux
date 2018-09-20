@@ -49,7 +49,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.11",
-    "electron": "^3.0.0-beta.12",
+    "electron": "^3.0.0",
     "electron-builder": "^20.28.4",
     "electron-rebuild": "^1.8.2",
     "electron-webpack": "^2.1.2",

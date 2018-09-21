@@ -21,13 +21,16 @@
         "declaration": true,
         "allowUnusedLabels": true,
         "noUnusedLocals": false,
+        "strictNullChecks": false,
         "typeRoots": [
             "node_modules/@types"
         ],
         "paths": {
-            "*": [
-                "node_modules/@types/*"
-            ]
+            "Components": ["src/renderer/components"],
+            "Store": ["src/renderer/stores"],
+            "Const": ["src/constants"],
+            "Utils": ["src/utils"],
+            "*": ["node_modules/@types/*"]
         },
     },
     "include": [
@@ -38,6 +41,7 @@
     ],
     "exclude": [
         "node_modules",
+        "biuld",
         "*.sass"
     ]
 }

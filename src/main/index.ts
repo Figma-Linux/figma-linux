@@ -1,4 +1,4 @@
-import App from "./App";
+import appInit from "./App";
 
 // Catch unhandling unexpected exceptions
 process.on('uncaughtException', (error: Error) => {
@@ -12,4 +12,4 @@ process.on('unhandledRejection', (reason: any) => {
     process.exit(1)
 });
 
-App.init();
+appInit();

@@ -6,9 +6,25 @@ const path = require('path');
 const rootFolder = process.cwd();
 
 const dev = {
+    module: {
+        rules: [
+            {
+                test: /\.node$/,
+                loader: 'native-ext-loader'
+            }
+        ]
+    },
+    
     resolve: {
-        modules: ["node_modules", "react"],
-        extensions: ['.ts', '.tsx', ".js", ".jsx", ".json"]
+        modules: ['node_modules', 'react'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', 'node'],
+
+        alias: {
+            Components: path.resolve(rootFolder, 'src/renderer/components'),
+            Store: path.resolve(rootFolder, 'src/renderer/stores'),
+            Const: path.resolve(rootFolder, 'src/constants'),
+            Utils: path.resolve(rootFolder, 'src/utils')
+        }
     },
 
 

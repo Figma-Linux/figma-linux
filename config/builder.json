@@ -3,6 +3,11 @@
     "productName": "figma-linux",
     "extraMetadata": "main/main.js",
     "icon": "resources/icon",
+    "extraFiles": [
+        {
+            "from": "lib/"
+        }
+    ],
     "files": [
         "**/*"
     ],
@@ -12,8 +17,22 @@
         "output": "build/installers"
     },
 
+    "protocols": [{
+        "name": "figma",
+        "role": "Viewer",
+        "schemes": [
+            "figma"
+        ]
+    }],
+
     "pacman": {
         "depends": []
+    },
+
+    "deb": {
+        "depends": [
+            "libgconf2-4"
+        ]
     },
 
     "appImage": {
@@ -25,9 +44,6 @@
         "description": "Unofficial desktop application for linux",
         "icon": "resources/icon",
         "category": "Graphic",
-        "depends": [
-            "libgconf2-4"
-        ],
         "target": [
             {
                 "target": "AppImage",

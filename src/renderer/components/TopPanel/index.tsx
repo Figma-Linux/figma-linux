@@ -39,6 +39,7 @@ class TopPanel extends Component<TopPanelProps, {}> {
                 current={this.props.tabs!.current}
                 onMainTab={this.onMainTab}
                 onHomeClick={this.onHomeClick}
+                getTab={this.props.tabs!.getTab}
             />
         );
     }

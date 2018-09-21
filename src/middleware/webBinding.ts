@@ -4,10 +4,16 @@ import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
-import { sendMsgToMain } from "./util";
+import { sendMsgToMain } from "Utils";
 
 const API_VERSION = 9;
 let webPort: MessagePort;
+let fontMap: any = null;
+let resolveFontMapPromise: any = null;
+const fontMapPromise = new Promise(resolve => {
+    resolveFontMapPromise = resolve;
+});
+
 
 const onWebMessage = (event: MessageEvent) => {
     const msg = event.data;
@@ -17,10 +23,9 @@ const onWebMessage = (event: MessageEvent) => {
     let resultPromise = undefined;
 
     try {
-        console.log('onWebMessage, publicAPI, msg: ', publicAPI, msg);
+        console.log('onWebMessage, msg: ', msg);
         resultPromise = msg.name && publicAPI && publicAPI[msg.name](msg.args);
-    }
-    finally {
+    } finally {
         if (msg.promiseID != null) {
             if (resultPromise instanceof Promise) {
                 resultPromise.then((result) => {
@@ -35,7 +40,6 @@ const onWebMessage = (event: MessageEvent) => {
             }
         }
     }
-
 }
 
 const initWebApi = (version: number, fileBrowser: boolean) => {
@@ -57,7 +61,6 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
         }
     }
 
-    console.log('initWebApi, fileBrowser: ', fileBrowser);
     window.__figmaDesktop = {
         version: version,
         fileBrowser: fileBrowser,
@@ -108,17 +111,171 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
     window.postMessage('init', location.origin, [channel.port2]);
 }
 
+const initWebBindings = () => {
+    E.ipcRenderer.on('updateFonts', (event: Event, fonts: any) => {
+        fontMap = fonts;
+        if (resolveFontMapPromise) {
+            resolveFontMapPromise();
+            resolveFontMapPromise = null;
+        }
+    })
+}
+
 const publicAPI: any = {
     setTitle(args: any) {
         sendMsgToMain('setTitle', args.title);
     },
 
-    writeFiles(args: any) {
-        console.log('writeFiles args: ', args);
-        const files = args.files;
-        if (!Array.isArray(files) || files.length === 0) {
-            return;
+    getFonts() {
+        return new Promise(resolve => fontMapPromise.then(() => resolve({ data: fontMap })));
+    },
+    getFontFile(args: any) {
+        return new Promise((resolve, reject) => {
+            const fontPath = args.path;
+
+            if (!fontMap) {
+                reject(new Error('No fonts'));
+                return;
+            }
+
+            const faces = fontMap[fontPath];
+            if (!faces || faces.length === 0) {
+                reject(new Error('Invalid path'));
+                return;
+            }
+
+            let postScriptName = faces[0].postscript;
+            try {
+                postScriptName = args.postscript;
+            } catch (ex) { }
+
+            fs.readFile(fontPath, (err, data) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                if (data.byteLength > 0) {
+                    resolve({ data: data.buffer, transferList: [data.buffer] });
+                    return;
+                }
+
+                reject(new Error('No data'));
+            });
+        });
+    },
+
+    getClipboardData(args: any) {
+        return new Promise((resolve, reject) => {
+            if (E.clipboard.has('org.nspasteboard.ConcealedType')) {
+                reject(new Error('Clipboard unavailable'));
+                return;
+            }
+
+            const whitelistedFormats = [
+                'com.adobe.pdf',
+                'com.adobe.xd',
+                'com.bohemiancoding.sketch.v3',
+            ];
+
+            const formats = args.getArray('formats');
+
+            for (let format of formats) {
+                let data = null;
+
+                if (format === 'text/html') {
+                    const unsafeHTML = E.clipboard.readHTML().trim();
+
+                    if (unsafeHTML.includes('<!--(figma)') && unsafeHTML.includes('(/figma)-->')) {
+                        data = new Buffer(unsafeHTML);
+                    }
+                } else if (format === 'image/svg+xml') {
+                    data = E.clipboard.readBuffer(format);
+                    data = data.byteLength > 0 ? data : E.clipboard.readBuffer('Scalable Vector Graphics');
+                    data = data.byteLength > 0 ? data : E.clipboard.readBuffer('CorePasteboardFlavorType 0x53564720');
+
+                    if (data.byteLength === 0) {
+                        const unsafeText = E.clipboard.readText().trim();
+                        if (unsafeText.startsWith('<svg') && unsafeText.endsWith('</svg>')) {
+                            data = new Buffer(unsafeText);
+                        }
+                    }
+                } else if (format === 'image/jpeg' || format === 'image/png') {
+                    data = E.clipboard.readImage().toBitmap();
+                } else if (whitelistedFormats.indexOf(format) !== -1) {
+                    data = E.clipboard.readBuffer(format);
+                }
+
+                if (data && data.byteLength > 0) {
+                    const result = {
+                        data: data.buffer,
+                        format: format,
+                    };
+
+                    resolve({ data: result, transferList: [data.buffer] });
+                    return;
+                }
+            }
+            reject(new Error('Formats not found'));
+        });
+    },
+
+    setClipboardData(args: any) {
+        const format = args.format;
+        const data = Buffer.from(args.data);
+
+        if (['image/jpeg', 'image/png'].indexOf(format) !== -1) {
+            E.clipboard.writeImage(E.remote.nativeImage.createFromBuffer(data));
+        } else if (format === 'image/svg+xml') {
+            E.clipboard.writeText(data.toString());
+        } else if (format === 'application/pdf') {
+            E.clipboard.writeBuffer('Portable Document Format', data);
+        } else {
+            E.clipboard.writeBuffer(format, data);
         }
+    },
+
+    newFile(args: any) {
+    console.log('newFile, args: ', args);
+        sendMsgToMain('newFile', args.info);
+    },
+    openFile(args: any) {
+    console.log('openFile, args: ', args);
+        sendMsgToMain('openTab', '/file/' + args.fileKey, args.title, undefined, args.target);
+    },
+    close(args: any) {
+    console.log('close, args: ', args);
+        sendMsgToMain('closeTab', args.suppressReopening);
+    },
+    setFileKey(args: any) {
+    console.log('setFileKey, args: ', args);
+        sendMsgToMain('updateFileKey', args.fileKey);
+    },
+    setLoading(args: any) {
+    console.log('setLoading, args: ', args);
+        sendMsgToMain('updateLoadingStatus', args.loading);
+    },
+    setSaved(args: any) {
+    console.log('setSaved, args: ', args);
+        sendMsgToMain('updateSaveStatus', args.saved);
+    },
+    updateActionState(args: any) {
+    console.log('updateActionState, args: ', args);
+        sendMsgToMain('updateActionState', args.state);
+    },
+    showFileBrowser() {
+    console.log('showFileBrowser');
+        sendMsgToMain('showFileBrowser');
+    },
+    setIsPreloaded() {
+    console.log('setIsPreloaded');
+        sendMsgToMain('setIsPreloaded');
+    },
+
+    writeFiles(args: any) {
+        const files = args.files;
+        if (!Array.isArray(files) || files.length === 0) return;
+
         let skipReplaceConfirmation = false;
         let directoryPath;
         if (files.length === 1 && !files[0].name.includes(path.sep)) {
@@ -127,30 +284,31 @@ const publicAPI: any = {
                 defaultPath: path.basename(originalFileName),
                 showsTagField: false,
             });
+
             if (savePath) {
                 directoryPath = path.dirname(savePath);
                 files[0].name = path.basename(savePath);
+
                 if (path.extname(files[0].name) === '') {
                     files[0].name += path.extname(originalFileName);
-                }
-                else {
+                } else {
                     skipReplaceConfirmation = true;
                 }
             }
-        }
-        else {
+        } else {
             const directories = E.remote.dialog.showOpenDialog({
                 properties: ['openDirectory', 'createDirectory'],
                 buttonLabel: 'Save',
             });
+
             if (!directories || directories.length !== 1) {
                 return;
             }
             directoryPath = directories[0];
         }
-        if (!directoryPath) {
-            return;
-        }
+
+        if (!directoryPath) return;
+    
         directoryPath = path.resolve(directoryPath);
         let filesToBeReplaced = 0;
         for (let file of files) {
@@ -177,9 +335,7 @@ const publicAPI: any = {
             try {
                 fs.accessSync(outputPath, fs.constants.R_OK);
                 ++filesToBeReplaced;
-            }
-            catch (ex) {
-            }
+            } catch (ex) { }
         }
         if (filesToBeReplaced > 0 && !skipReplaceConfirmation) {
             const single = filesToBeReplaced === 1;
@@ -204,17 +360,16 @@ const publicAPI: any = {
                     try {
                         dirPath = path.join(dirPath, part);
                         fs.mkdirSync(dirPath);
-                    }
-                    catch (ex) {
+                    } catch (ex) {
                     }
                 }
             }
+
             try {
                 const outputPath = path.join(directoryPath, file.name);
                 const opts = { encoding: 'binary' };
                 fs.writeFileSync(outputPath, Buffer.from(file.buffer), opts);
-            }
-            catch (ex) {
+            } catch (ex) {
                 E.remote.dialog.showMessageBox({
                     type: 'error',
                     title: 'Export Failed',
@@ -237,6 +392,8 @@ const init = (fileBrowser: boolean) => {
         // console.log('window.__figmaDesktop.fileBrowser: ', window.__figmaDesktop.fileBrowser);
         // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });
+
+    initWebBindings();
 
     E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION}, ${fileBrowser})`);
 }

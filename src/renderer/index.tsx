@@ -4,7 +4,7 @@ const { Provider } = require('mobx-preact');
 import stores from "./stores";
 
 import App from "./components";
-import { isDev } from "./util";
+import { isDev } from 'Utils'
 
 // onError(err => {
 // 	console.log('Mobx error: ', err);

@@ -1,5 +1,6 @@
 /// <reference path="../../../../@types/common/index.d.ts" />
 /// <reference path="../../../../@types/renderer/stores/index.d.ts" />
+
 import { h } from 'preact';
 
 interface Props {

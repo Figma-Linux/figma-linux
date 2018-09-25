@@ -33,12 +33,17 @@ class TopPanel extends Component<TopPanelProps, {}> {
         E.ipcRenderer.send('toHome');
     }
 
+    private newTab = () => {
+        E.ipcRenderer.send('newtab');
+    }
+
     render() {
         return (
             <Panel
                 current={this.props.tabs!.current}
                 onMainTab={this.onMainTab}
                 onHomeClick={this.onHomeClick}
+                newTab={this.newTab}
                 getTab={this.props.tabs!.getTab}
             />
         );

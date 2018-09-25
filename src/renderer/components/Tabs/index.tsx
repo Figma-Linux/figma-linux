@@ -48,11 +48,8 @@ class Tabs extends Component<TabsProps, {}> {
         );
     }
 
-    private newTab = () => {
-        E.ipcRenderer.send('newtab');
-    }
-
     private clickTab = (event: React.MouseEvent<HTMLDivElement> & Event, tab: Tab) => {
+        console.log('clickTab, event: ', event);
         switch(event.button) {
             // Handle left click, set focuse on the target tab 
             case 0: {
@@ -130,7 +127,6 @@ class Tabs extends Component<TabsProps, {}> {
             <TabList
                 tabs={toJS(this.props.tabs) as ITabsStore}
                 close={this.close}
-                newTab={this.newTab}
                 clickTab={this.clickTab}
             />
         )

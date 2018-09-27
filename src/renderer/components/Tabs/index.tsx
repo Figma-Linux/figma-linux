@@ -42,18 +42,40 @@ class Tabs extends Component<TabsProps, {}> {
 
         this.props.tabs!.setFocus(
             index != 0 ? 
-                tabs[index > 0 ? index-1 : index].id
-                :
-                1
+                tabs[index > 0 ? index-1 : index].id : 1
         );
     }
 
     private clickTab = (event: React.MouseEvent<HTMLDivElement> & Event, tab: Tab) => {
-        console.log('clickTab, event: ', event);
         switch(event.button) {
             // Handle left click, set focuse on the target tab 
             case 0: {
+                const tabEl = event.target as HTMLDivElement;
+
                 this.focus(event, tab.id);
+
+                // Move tab
+                if (/tab/.test(tabEl.className)) {
+                    const BoxLeft = tabEl.getBoundingClientRect().left;
+                    const BoxXShift = event.pageX - BoxLeft;
+
+                    const onMouseMove = e => {
+                        tabEl.style.position = 'absolute';
+                        tabEl.style.zIndex = '1000';
+                        tabEl.style.height = '28px';
+                        tabEl.style.left = `${e.pageX - (BoxXShift + BoxLeft)}px`;
+                    };
+                    const onMouseUp = e => {
+                        tabEl.style.position = 'relative';
+                        tabEl.style.left = `0px`;
+
+                        document.removeEventListener('mousemove', onMouseMove);
+                        document.removeEventListener('mouseup', onMouseUp);
+                    };
+
+                    document.addEventListener('mousemove', onMouseMove)
+                    document.addEventListener('mouseup', onMouseUp);
+                }
             } break;
             // Handle middle click, close tab
             case 1: {

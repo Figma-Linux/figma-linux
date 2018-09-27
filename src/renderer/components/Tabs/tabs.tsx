@@ -16,7 +16,7 @@ function Tabs(props: Props) {
             {props.tabs.tabs.map(t => (
                 <div
                     className={`tab ${props.tabs.current === t.id ? 'active' : ''}`}
-                    onMouseDown={(e) => props.clickTab(e, t)}
+                    onMouseDown={e => props.clickTab(e, t)}
                 >
                     <span>{t.title}</span>
                     <div className="tabClose" onClick={(e) => props.close(e, t.id)}>

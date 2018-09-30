@@ -7,6 +7,7 @@
 	display: inline-flex;
 	align-items: center;
 	padding: 0px 10px;
+	transition: all .1s ease;
 	&:hover {
 		background-color: #050505;
 	}

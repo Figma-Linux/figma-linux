@@ -1,5 +1,4 @@
-import { h } from 'preact';
-
+import * as React from "react";
 import Tabs from "Components/Tabs";
 
 interface TopPanelProps {
@@ -11,7 +10,7 @@ interface TopPanelProps {
     newTab(): void;
 }
 
-function TopPanel(props: TopPanelProps) {
+const TopPanel: React.SFC<TopPanelProps> = (props) => {
     const currentTab: Tab | undefined = props.getTab(props.current);
 
     return (
@@ -19,7 +18,7 @@ function TopPanel(props: TopPanelProps) {
             <div className="panelButtons gridArea-a">
                 <div className={`button main ${props.current === 1 ? 'active' : ''}`} onClick={props.onMainTab}>
                     <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M7 1H1v6h6V1zM6 2H2v4h4V2zm9-1H9v6h6V1zm-1 1h-4v4h4V2zm1 7H9v6h6V9zm-1 1h-4v4h4v-4zM7 9H1v6h6V9zm-1 1H2v4h4v-4z" fill-rule="evenodd" fill="#fff"></path>
+                        <path d="M7 1H1v6h6V1zM6 2H2v4h4V2zm9-1H9v6h6V1zm-1 1h-4v4h4V2zm1 7H9v6h6V9zm-1 1h-4v4h4v-4zM7 9H1v6h6V9zm-1 1H2v4h4v-4z" fillRule="evenodd" fill="#fff"></path>
                     </svg>
                 </div>
                 {(!currentTab) || (!!currentTab && currentTab.showBackBtn) ? 

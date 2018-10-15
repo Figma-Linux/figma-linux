@@ -1,10 +1,10 @@
-import { h } from 'preact';
+import * as React from 'react';
 
 interface Props {
     id: number;
 }
 
-function FakeTab(props: Props) {
+const FakeTab: React.SFC<Props> = (props) => {
     return <div className="fakeTab"></div>
 
 }

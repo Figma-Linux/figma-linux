@@ -2,9 +2,8 @@
 /// <reference path="../../../../@types/renderer/stores/index.d.ts" />
 
 import * as E from "electron";
-import { Component } from "react";
-import { h } from 'preact';
-const { observer, connect } = require('mobx-preact');
+import * as React from "react";
+import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
 import * as Const from "Const";
@@ -15,9 +14,9 @@ interface TabsProps {
     tabs?: ITabsStore
 }
 
-@connect(['tabs'])
+@inject('tabs')
 @observer
-class Tabs extends Component<TabsProps, {}> {
+class Tabs extends React.Component<TabsProps, {}> {
     props: TabsProps;
 
     constructor(props: TabsProps) {
@@ -28,8 +27,7 @@ class Tabs extends Component<TabsProps, {}> {
 
     private close = (e: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
         e.stopPropagation();
-        e.stopImmediatePropagation();
-        
+        e.nativeEvent.stopImmediatePropagation();
 
         let tabs = toJS(this.props.tabs!.tabs);
         const currentTabId: number = toJS(this.props.tabs!.current);
@@ -93,7 +91,7 @@ class Tabs extends Component<TabsProps, {}> {
                         tabEl.style.left = `${left}px`;
                         shift = 0;
                     };
-                    const onMouseUp = e => {
+                    const onMouseUp = (e: MouseEvent) => {
                         tabEl.style.position = 'relative';
                         tabEl.style.left = `0px`;
                         tabEl.style.zIndex = '0';
@@ -122,7 +120,7 @@ class Tabs extends Component<TabsProps, {}> {
 
     private focus = (event: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
         event.stopPropagation();
-        event.stopImmediatePropagation();
+        event.nativeEvent.stopImmediatePropagation();
 
         E.ipcRenderer.send('focustab', id);
         this.props.tabs!.setFocus(id);

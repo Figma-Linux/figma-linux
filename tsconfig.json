@@ -2,7 +2,6 @@
     "extends": "./node_modules/electron-webpack/tsconfig-base.json",
     "compilerOptions": {
         "jsx": "react",
-        "jsxFactory": "h",
         "outDir": "./dest",
         "baseUrl": "./",
         "noImplicitAny": true,
@@ -23,7 +22,8 @@
         "noUnusedLocals": false,
         "strictNullChecks": false,
         "typeRoots": [
-            "node_modules/@types"
+            "node_modules/@types",
+            "@types/**/*.d.ts"
         ],
         "paths": {
             "Components": ["src/renderer/components"],
@@ -34,6 +34,7 @@
         },
     },
     "include": [
+        "@types/**/*.d.ts",
         "src/main/index.ts",
         "src/rerender/index.tsx",
         "src/middleware/loadMainContetnt.ts",

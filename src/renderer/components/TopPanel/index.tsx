@@ -1,7 +1,6 @@
 import * as E from "electron";
-import { Component } from "react";
-import { h } from 'preact';
-const { observer, connect } = require('mobx-preact');
+import * as React from "react";
+import { observer, inject } from "mobx-react";
 
 import Panel from "./toppanel";
 import './style.scss'
@@ -10,9 +9,9 @@ interface TopPanelProps {
     tabs?: ITabsStore
 }
 
-@connect(['tabs'])
+@inject('tabs')
 @observer
-class TopPanel extends Component<TopPanelProps, {}> {
+class TopPanel extends React.Component<TopPanelProps, {}> {
     props: TopPanelProps;
 
     constructor(props: TopPanelProps) {

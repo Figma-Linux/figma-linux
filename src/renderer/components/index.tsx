@@ -1,12 +1,11 @@
-import { Component } from "react";
-import { h } from 'preact';
+import * as React from "react";
 
 import TopPanel from "./TopPanel";
 import './style.scss'
 
 interface AppProps { }
 
-class App extends Component<AppProps, {}> {
+class App extends React.Component<AppProps, {}> {
     props: AppProps;
 
     constructor(props: AppProps) {

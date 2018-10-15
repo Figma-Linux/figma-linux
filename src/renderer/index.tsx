@@ -1,14 +1,15 @@
+import * as React from 'react';
 import { render } from 'react-dom';
-import { h } from 'preact';
-const { Provider } = require('mobx-preact');
+import { Provider, onError } from "mobx-react";
 import stores from "./stores";
 
 import App from "./components";
 import { isDev } from 'Utils'
 
-// onError(err => {
-// 	console.log('Mobx error: ', err);
-// });
+onError((err: any) => {
+	console.log('Mobx error: ', err);
+});
+
 let root: string = isDev ? 'app' : 'react-page';
 
 render(

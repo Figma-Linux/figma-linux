@@ -27,11 +27,11 @@
     "electron-devtools-installer": "^2.2.4",
     "font-manager": "^0.3.0",
     "mobx": "^5.0.3",
-    "mobx-preact": "^3.0.0",
-    "preact": "^8.2.9",
-    "preact-compat": "^3.18.0",
+    "mobx-react": "^5.2.8",
     "raven": "^2.4.1",
     "raven-js": "^3.22.3",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
     "redrun": "^6.0.4",
     "source-map-support": "^0.5.6",
     "styled-components": "^3.1.6"
@@ -39,7 +39,7 @@
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.0.3",
     "@types/node": "^10.5.1",
-    "@types/react": "^16.4.6",
+    "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.6",
     "@types/react-redux": "^5.0.15",
     "@types/redux": "^3.6.0",

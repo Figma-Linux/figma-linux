@@ -58,17 +58,23 @@ class Tabs extends Component<TabsProps, {}> {
                 if (/tab/.test(tabEl.className)) {
                     const TabContainer = tabEl.parentNode as HTMLDivElement;
                     const TabContainerRect = TabContainer.getBoundingClientRect();
-                    const TabLeft = tabEl.getBoundingClientRect().left;
-                    const BoxXShift = event.pageX - TabLeft;
+                    const TabBox = tabEl.getBoundingClientRect();
+                    const BoxXShift = event.pageX - TabBox.left;
                     let shift = 0;
 
-                    const onMouseMove = e => {
+                    const onMouseMove = (e: MouseEvent) => {
+                        const TabBoxUpdated = tabEl.getBoundingClientRect();
+                        const left = Math.abs(e.pageX - (BoxXShift + TabBox.width));
+
                         tabEl.style.position = 'absolute';
                         tabEl.style.zIndex = '1000';
                         tabEl.style.height = '28px';
 
-                        if (tabEl.getBoundingClientRect().left < TabContainerRect.left) {
-                            let left = Math.abs(e.pageX - (BoxXShift + TabLeft));
+                        if ((e.pageX + (TabBox.width - BoxXShift)) > TabContainerRect.right) {
+                            return;
+                        }
+
+                        if (TabBoxUpdated.left < TabContainerRect.left) {
                             shift += 3;
 
                             if (Math.floor((left / shift) < 0 ? 0 : (left / shift)) !== 0) {
@@ -76,14 +82,17 @@ class Tabs extends Component<TabsProps, {}> {
                             } else {
                                 tabEl.style.left = `0px`;
                             }
-                        } else {
-                            tabEl.style.left = `${e.pageX - (BoxXShift + TabLeft)}px`;
-                            shift = 0;
+
+                            return;
                         }
+
+                        tabEl.style.left = `${left}px`;
+                        shift = 0;
                     };
                     const onMouseUp = e => {
                         tabEl.style.position = 'relative';
                         tabEl.style.left = `0px`;
+                        tabEl.style.zIndex = '0';
 
                         document.removeEventListener('mousemove', onMouseMove);
                         document.removeEventListener('mouseup', onMouseUp);
@@ -92,6 +101,7 @@ class Tabs extends Component<TabsProps, {}> {
                     document.addEventListener('mousemove', onMouseMove)
                     document.addEventListener('mouseup', onMouseUp);
                 }
+
             } break;
             // Handle middle click, close tab
             case 1: {

@@ -56,15 +56,19 @@ class Tabs extends Component<TabsProps, {}> {
 
                 // Move tab
                 if (/tab/.test(tabEl.className)) {
+                    const currentTab: Tab = this.props.tabs.tabs.find(t => t.id === tab.id )
                     const TabContainer = tabEl.parentNode as HTMLDivElement;
                     const TabContainerRect = TabContainer.getBoundingClientRect();
                     const TabBox = tabEl.getBoundingClientRect();
                     const BoxXShift = event.pageX - TabBox.left;
                     let shift = 0;
 
+                    this.props.tabs.updateTab({ ...currentTab, moves: true });
+
                     const onMouseMove = (e: MouseEvent) => {
                         const TabBoxUpdated = tabEl.getBoundingClientRect();
                         const left = Math.abs(e.pageX - (BoxXShift + TabBox.width));
+
 
                         tabEl.style.position = 'absolute';
                         tabEl.style.zIndex = '1000';
@@ -93,6 +97,8 @@ class Tabs extends Component<TabsProps, {}> {
                         tabEl.style.position = 'relative';
                         tabEl.style.left = `0px`;
                         tabEl.style.zIndex = '0';
+
+                        this.props.tabs.updateTab({ ...currentTab, moves: false });
 
                         document.removeEventListener('mousemove', onMouseMove);
                         document.removeEventListener('mouseup', onMouseUp);

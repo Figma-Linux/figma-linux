@@ -19,6 +19,7 @@ class Tabs implements ITabsStore {
 			id: options.id,
 			title: 'Figma',
 			url: options.url,
+			moves: false,
 			showBackBtn: options.showBackBtn
 		});
 	}
@@ -29,6 +30,10 @@ class Tabs implements ITabsStore {
 
 	@action setFocus = (id: number) => {
 		this.current = id;
+	}
+
+	@action updateTab = (tab: Tab) => {
+		this.tabs = this.tabs.map(t => t.id === tab.id ? { id: t.id, ...tab } : t);
 	}
 
 	getTab = (id: number): Tab | undefined => {

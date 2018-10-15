@@ -1,7 +1,5 @@
-/// <reference path="../../../../@types/common/index.d.ts" />
-/// <reference path="../../../../@types/renderer/stores/index.d.ts" />
-
 import { h } from 'preact';
+import FakeTab from './fakeTab';
 
 interface Props {
     tabs: ITabsStore;
@@ -13,7 +11,7 @@ interface Props {
 function Tabs(props: Props) {
     return (
         <div className="tabBar gritArea-b">
-            {props.tabs.tabs.map(t => (
+            {props.tabs.tabs.map((t, i) => (
                 <div
                     className={`tab ${props.tabs.current === t.id ? 'active' : ''}`}
                     onMouseDown={e => props.clickTab(e, t)}

@@ -59,7 +59,7 @@ class Tabs extends React.Component<TabsProps, {}> {
                     const TabContainerRect = TabContainer.getBoundingClientRect();
                     const TabBox = tabEl.getBoundingClientRect();
                     const BoxXShift = event.pageX - TabBox.left;
-                    let shift = 0;
+                    let shift = 1;
 
                     this.props.tabs.updateTab({ ...currentTab, moves: true });
 
@@ -67,16 +67,15 @@ class Tabs extends React.Component<TabsProps, {}> {
                         const TabBoxUpdated = tabEl.getBoundingClientRect();
                         const left = Math.abs(e.pageX - (BoxXShift + TabBox.width));
 
-
                         tabEl.style.position = 'absolute';
                         tabEl.style.zIndex = '1000';
                         tabEl.style.height = '28px';
 
-                        if ((e.pageX + (TabBox.width - BoxXShift)) > TabContainerRect.right) {
+                        if ((e.pageX + (TabBox.left - BoxXShift)) > TabContainerRect.right) {
                             return;
                         }
 
-                        if (TabBoxUpdated.left < TabContainerRect.left) {
+                        if ((e.pageX - BoxXShift) < TabContainerRect.left) {
                             shift += 3;
 
                             if (Math.floor((left / shift) < 0 ? 0 : (left / shift)) !== 0) {

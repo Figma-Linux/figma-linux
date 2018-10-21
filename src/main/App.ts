@@ -59,7 +59,7 @@ class App implements IApp {
             height: 900,
             frame: withoutFrame,
             webPreferences: {
-                zoomFactor: 0.9,
+                zoomFactor: 1,
                 nodeIntegration: true,
                 nodeIntegrationInWorker: false,
                 webviewTag: false,

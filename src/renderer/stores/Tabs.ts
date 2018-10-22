@@ -20,7 +20,8 @@ class Tabs implements ITabsStore {
 			title: 'Figma',
 			url: options.url,
 			moves: false,
-			showBackBtn: options.showBackBtn
+			showBackBtn: options.showBackBtn,
+			order: this.tabs.length === 0 ? 1 : this.tabs.length + 1
 		});
 	}
 
@@ -33,7 +34,21 @@ class Tabs implements ITabsStore {
 	}
 
 	@action updateTab = (tab: Tab) => {
-		this.tabs = this.tabs.map(t => t.id === tab.id ? { id: t.id, ...tab } : t);
+		console.log('updateTab, tab: ', tab.order);
+		this.tabs = this.tabs
+			.map(t => t.id === tab.id ? { ...t, ...tab } : t)
+			.sort((a, b) => a.order > b.order ? 1 : 0);
+
+		console.log('tabs: ', toJS(this.tabs));
+	}
+
+	@action changeTagOrder = (tab: Tab) => {
+		let tabs: Array<Tab> = toJS(this.tabs);
+
+		tabs = tabs.map(t => t.id === tab.id ? { ...tab, order: tab.order } : t);
+		tabs.sort((a, b) => a.order > b.order ? 1 : 0);
+
+		this.tabs = tabs;
 	}
 
 	getTab = (id: number): Tab | undefined => {

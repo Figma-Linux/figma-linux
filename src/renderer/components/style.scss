@@ -1,6 +1,5 @@
 $list: a b c d e f g h i j k l m n o p q r s t;
 
-
 html, body {
 	margin: 0;
 	padding: 0;
@@ -15,5 +14,11 @@ html, body {
 @each $i in $list {
 	.gridArea-#{$i} {
 		grid-area: #{$i}
+	}
+}
+
+@for $i from 1 through 50 {
+	.order#{i} {
+		order: #{i};
 	}
 }

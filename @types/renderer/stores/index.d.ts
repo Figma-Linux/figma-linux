@@ -6,6 +6,7 @@ interface ITabsStore {
 	setFocus(id: number): void;
 	deleteTab(id: number): void;
 	updateTab(tab: Tab): void
+	changeTagOrder(tab: Tab): void
 
 	getTab(id: number): Tab | undefined;
 }

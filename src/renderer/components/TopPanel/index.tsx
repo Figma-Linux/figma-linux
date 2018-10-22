@@ -21,7 +21,7 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     }
 
     private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event) => {
-        e.stopImmediatePropagation();
+        e.nativeEvent.stopImmediatePropagation();
         e.stopPropagation();
 
         E.ipcRenderer.send('maintab');

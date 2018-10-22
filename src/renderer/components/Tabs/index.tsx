@@ -59,9 +59,11 @@ class Tabs extends React.Component<TabsProps, {}> {
                     const TabContainerRect = TabContainer.getBoundingClientRect();
                     const TabBox = tabEl.getBoundingClientRect();
                     const BoxXShift = event.pageX - TabBox.left;
+                    let fakeTab: HTMLDivElement;
+                    let fakeTabBox: ClientRect | DOMRect;
+                    let fakeTabClassName: string;
                     let shift = 1;
-
-                    this.props.tabs.updateTab({ ...currentTab, moves: true });
+                    let isMove = false;
 
                     const onMouseMove = (e: MouseEvent) => {
                         const TabBoxUpdated = tabEl.getBoundingClientRect();
@@ -71,10 +73,20 @@ class Tabs extends React.Component<TabsProps, {}> {
                         tabEl.style.zIndex = '1000';
                         tabEl.style.height = '28px';
 
+                        if (!isMove) {
+                            this.props.tabs.updateTab({ ...currentTab, moves: true });
+                            fakeTab = document.getElementsByClassName('fakeTab')[0] as HTMLDivElement;
+                            fakeTabBox = fakeTab.getBoundingClientRect();
+                            fakeTabClassName = fakeTab.className;
+                            isMove = true;
+                        }
+
+                        // left side restriction
                         if ((e.pageX + (TabBox.left - BoxXShift)) > TabContainerRect.right) {
                             return;
                         }
 
+                        // right side restriction
                         if ((e.pageX - BoxXShift) < TabContainerRect.left) {
                             shift += 3;
 
@@ -87,6 +99,20 @@ class Tabs extends React.Component<TabsProps, {}> {
                             return;
                         }
 
+                        if (TabBoxUpdated.left > fakeTabBox.right - 20) {
+                            console.log('Move tab to right ', TabBoxUpdated.left, fakeTabBox.right - 20);
+                            fakeTab.className = fakeTabClassName.replace(/order(\d)/, match => {
+                                let order = parseInt(match.replace(/\D/g, ''));
+                                return 'order' + (order + 2);
+                            });
+                            // this.props.tabs.updateTab({ ...currentTab, order: currentTab.order + 2 });
+                        }
+                        
+                        if (TabBoxUpdated.right < fakeTabBox.left + 20) {
+                            console.log('Move tab to left ', TabBoxUpdated.right, fakeTabBox.left + 20);
+                            // this.props.tabs.updateTab({ ...currentTab, order: currentTab.order - 2 });
+                        }
+
                         tabEl.style.left = `${left}px`;
                         shift = 0;
                     };
@@ -95,7 +121,7 @@ class Tabs extends React.Component<TabsProps, {}> {
                         tabEl.style.left = `0px`;
                         tabEl.style.zIndex = '0';
 
-                        this.props.tabs.updateTab({ ...currentTab, moves: false });
+                        this.props.tabs.updateTab({ id: currentTab.id, moves: false });
 
                         document.removeEventListener('mousemove', onMouseMove);
                         document.removeEventListener('mouseup', onMouseUp);

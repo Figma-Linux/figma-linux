@@ -1,6 +1,6 @@
 const HOMEPAGE = 'https://www.figma.com';
 
-const TOPPANELHEIGHT = 25;
+const TOPPANELHEIGHT = 28;
 
 const PROTOCOL = 'figma';
 

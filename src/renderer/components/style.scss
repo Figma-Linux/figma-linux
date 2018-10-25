@@ -18,7 +18,7 @@ html, body {
 }
 
 @for $i from 1 through 50 {
-	.order#{i} {
-		order: #{i};
+	.order#{$i} {
+		order: #{$i};
 	}
 }

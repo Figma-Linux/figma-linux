@@ -6,7 +6,7 @@ import * as fs from "fs";
 
 import { sendMsgToMain } from "Utils";
 
-const API_VERSION = 9;
+const API_VERSION = 10;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
@@ -60,6 +60,8 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
             }
         }
     }
+
+    window.__figmaContent = false;
 
     window.__figmaDesktop = {
         version: version,

@@ -40,17 +40,13 @@ const dev = {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss'],
         modules: [
             'node_modules', 
-            'preact'
+            'react'
         ],
         alias: {
             Components: path.resolve(rootFolder, 'src/renderer/components'),
             Store: path.resolve(rootFolder, 'src/renderer/stores'),
             Const: path.resolve(rootFolder, 'src/constants'),
-            Utils: path.resolve(rootFolder, 'src/utils'),
-            'react': 'preact-compat',
-            'react-dom': 'preact-compat',
-            'create-react-class': 'preact-compat/lib/create-react-class',
-            'react-dom-factories': 'preact-compat/lib/react-dom-factories'
+            Utils: path.resolve(rootFolder, 'src/utils')
         }
     },
 

@@ -9,6 +9,8 @@ interface Window extends EventTarget, WindowTimers, WindowSessionStorage, Window
         promiseMessage(name: string, args?: any, transferList?: Array<string>): Promise<void>
         setMessageHandler(handler: Function): void;
     };
+
+    __figmaContent: any
 }
 
 declare var window: Window;

@@ -8,7 +8,7 @@
 	align-items: center;
 	padding: 0px 10px;
 	&:hover {
-		background-color: #050505;
+		background-color: #2c2c2c;
 	}
 	& > span {
 		pointer-events: none;
@@ -22,7 +22,7 @@
 	}
 }
 .active {
-	background-color: #050505;
+	background-color: #2c2c2c;
 }
 
 .fakeTab {

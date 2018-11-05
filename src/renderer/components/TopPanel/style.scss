@@ -1,8 +1,10 @@
+@import '../colors.scss';
+
 .panel {
 	display: grid;
 	grid-template: "a b c";
 	grid-template-columns: auto 1fr auto;
-	background-color: #050505;
+	background-color: $black_1;
 }
 
 .panelButtons {
@@ -16,17 +18,8 @@
 	align-items: center;
 	padding: 6px 8px 6px 6px;
 	&:hover {
-		background-color: #050505;
+		background-color: $gray_1;
 		cursor: pointer;
 	}
 }
 
-.panelSettings {
-	display: flex;
-	align-items: center;
-	padding: 0px 6px 6px 4px;
-	&:hover {
-		background-color: #050505;
-		cursor: pointer;
-	}
-}

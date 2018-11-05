@@ -17,8 +17,7 @@ class Tabs implements ITabs {
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                experimentalCanvasFeatures: true,
-                zoomFactor: 0.9,
+                zoomFactor: 1,
                 preload: path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '')
             }
         });
@@ -53,7 +52,7 @@ class Tabs implements ITabs {
             }
         });
     }
-    
+
     public static close = (id: number) => {
         Tabs.tabs = Tabs.tabs.filter(t => {
             if (t.id != id) {
@@ -67,7 +66,10 @@ class Tabs implements ITabs {
 
     public static reloadAll = () => Tabs.tabs.forEach(t => !t.isDestroyed() ? t.webContents.reload() : '');
 
-    public static focus = (id: number): E.BrowserView => Tabs.tabs.find(t => t.id === id) as E.BrowserView;
+    public static focus = (id: number): E.BrowserView => {
+
+        return Tabs.tabs.find(t => t.id === id) as E.BrowserView;
+    }
 
     public static getAll = (): Array<E.BrowserView> => Tabs.tabs;
 

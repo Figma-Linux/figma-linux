@@ -1,25 +1,12 @@
-const NEWTAB = 'newtab';
-const TABADDED = 'tabadded';
-const FOCUSTAB = 'focustab';
-const CLOSETAB = 'closetab';
-const CLOSEALLTAB = 'closealltab';
-const MAINTAB = 'maintab';
+export const NEWTAB = 'newtab';
+export const TABADDED = 'tabadded';
+export const FOCUSTAB = 'focustab';
+export const CLOSETAB = 'closetab';
+export const CLOSEALLTAB = 'closealltab';
+export const MAINTAB = 'maintab';
 
-const SETTITLE = 'setTitle';
-const UPDATEFILEKEY = 'updateFileKey';
+export const SETTITLE = 'setTitle';
+export const UPDATEFILEKEY = 'updateFileKey';
+export const UPDATEACTIONSTATE = 'updateActionState';
 
-const TOHOME = 'toHome';
-
-export {
-	NEWTAB,
-	TABADDED,
-	FOCUSTAB,
-	CLOSETAB,
-	MAINTAB,
-	CLOSEALLTAB,
-
-	SETTITLE,
-	UPDATEFILEKEY,
-
-	TOHOME
-}
+export const TOHOME = 'toHome';

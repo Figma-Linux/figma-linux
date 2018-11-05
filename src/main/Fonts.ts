@@ -19,6 +19,7 @@ class Fonts {
 		let fonts: IFonts = {};
 
 		try {
+			// FIXME: To make it as async
 			fonts = binding.getFonts(dirs);
 
 		} catch (error) {

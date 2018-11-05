@@ -14,13 +14,14 @@ const dev = {
             }
         ]
     },
-    
+
     resolve: {
         modules: ['node_modules', 'react'],
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', 'node'],
 
         alias: {
             Components: path.resolve(rootFolder, 'src/renderer/components'),
+            Middleware: path.resolve(rootFolder, 'src/middleware'),
             Store: path.resolve(rootFolder, 'src/renderer/stores'),
             Const: path.resolve(rootFolder, 'src/constants'),
             Utils: path.resolve(rootFolder, 'src/utils')

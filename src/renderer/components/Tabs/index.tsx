@@ -31,7 +31,7 @@ class Tabs extends React.Component<TabsProps, {}> {
 
         let tabs = toJS(this.props.tabs!.tabs);
         const currentTabId: number = toJS(this.props.tabs!.current);
-        let index: number = tabs.findIndex(t => t.id == id);
+        let index: number = tabs.findIndex(t => t.id === id);
 
         E.ipcRenderer.send('closetab', id);
         this.props.tabs!.deleteTab(id);
@@ -39,14 +39,13 @@ class Tabs extends React.Component<TabsProps, {}> {
         if (id !== currentTabId) return;
 
         this.props.tabs!.setFocus(
-            index != 0 ? 
-                tabs[index > 0 ? index-1 : index].id : 1
+            index !== 0 ? tabs[index > 0 ? index-1 : index].id : 1
         );
     }
 
     private clickTab = (event: React.MouseEvent<HTMLDivElement> & Event, tab: Tab) => {
         switch(event.button) {
-            // Handle left click, set focuse on the target tab 
+            // Handle left click, set focuse on the target tab
             case 0: {
                 const tabEl = event.target as HTMLDivElement;
 
@@ -107,7 +106,7 @@ class Tabs extends React.Component<TabsProps, {}> {
                 //             // });
                 //             this.props.tabs.updateTab({ ...currentTab, order: currentTab.order + 2 });
                 //         }
-                        
+
                 //         if (TabBoxUpdated.right < fakeTabBox.left + 30) {
                 //             console.log('Move tab to left ', TabBoxUpdated.right, fakeTabBox.left + 30);
                 //             // fakeTab.className = fakeTabClassName.replace(/order(\d)/, match => {

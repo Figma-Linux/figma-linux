@@ -27,6 +27,7 @@
         ],
         "paths": {
             "Components": ["src/renderer/components"],
+            "Middleware": ["src/middleware"],
             "Store": ["src/renderer/stores"],
             "Const": ["src/constants"],
             "Utils": ["src/utils"],
@@ -38,7 +39,8 @@
         "src/main/index.ts",
         "src/rerender/index.tsx",
         "src/middleware/loadMainContetnt.ts",
-        "src/middleware/loadContetnt.ts"
+        "src/middleware/loadContetnt.ts",
+        "src/middleware/*.ts"
     ],
     "exclude": [
         "node_modules",

@@ -1,11 +1,5 @@
-const HOMEPAGE = 'https://www.figma.com';
+export const HOMEPAGE = 'https://www.figma.com';
 
-const TOPPANELHEIGHT = 28;
+export const TOPPANELHEIGHT = 28;
 
-const PROTOCOL = 'figma';
-
-export {
-	HOMEPAGE,
-	TOPPANELHEIGHT,
-	PROTOCOL
-}
+export const PROTOCOL = 'figma';

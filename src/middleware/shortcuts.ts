@@ -38,9 +38,14 @@ export default () => {
             } break;
             case 'id': {
                 shortcutMan.bind(shortcut.accelerator.toLocaleLowerCase(), () => {
-                    console.log('!isMenuHidden && shortcut.value: ', !isMenuHidden, shortcut.value);
-                    if (!isMenuHidden && shortcut.value !== 'toggle-menu') return;
-                    console.log('shortcut.value: ', shortcut.value);
+                    if (!isMenuHidden
+                        && shortcut.value !== 'toggle-menu'
+                        && shortcut.value !== 'scale-normal'
+                        && shortcut.value !== 'scale-inc0.1'
+                        && shortcut.value !== 'scale-dic0.1'
+                        && shortcut.value !== 'scale-inc0.05'
+                        && shortcut.value !== 'scale-dic0.05'
+                    ) return;
 
                     E.remote.app.emit('handleCommand', shortcut.value);
                 });

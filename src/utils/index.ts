@@ -1,12 +1,5 @@
-export {
-	winUrlDev,
-	winUrlProd
-} from './_url';
+export * from './_settings';
+export * from './_renderer';
+export * from './_url';
+export * from './_dev';
 
-export {
-	default as isDev
-} from './_dev';
-
-export {
-	sendMsgToMain
-} from './_renderer';

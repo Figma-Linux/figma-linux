@@ -39,11 +39,12 @@ const dev = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss'],
         modules: [
-            'node_modules', 
+            'node_modules',
             'react'
         ],
         alias: {
             Components: path.resolve(rootFolder, 'src/renderer/components'),
+            Middleware: path.resolve(rootFolder, 'src/middleware'),
             Store: path.resolve(rootFolder, 'src/renderer/stores'),
             Const: path.resolve(rootFolder, 'src/constants'),
             Utils: path.resolve(rootFolder, 'src/utils')

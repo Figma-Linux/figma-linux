@@ -21,7 +21,7 @@ const TopPanel: React.SFC<TopPanelProps> = (props) => {
                         <path d="M7 1H1v6h6V1zM6 2H2v4h4V2zm9-1H9v6h6V1zm-1 1h-4v4h4V2zm1 7H9v6h6V9zm-1 1h-4v4h4v-4zM7 9H1v6h6V9zm-1 1H2v4h4v-4z" fillRule="evenodd" fill="#fff"></path>
                     </svg>
                 </div>
-                {(!currentTab) || (!!currentTab && currentTab.showBackBtn) ? 
+                {(!currentTab) || (!!currentTab && currentTab.showBackBtn) ?
                     <div className="button home" onClick={props.onHomeClick}>
                         <svg x="0px" y="0px" viewBox="0 0 489 489" width="16px" height="16px">
                             <g>

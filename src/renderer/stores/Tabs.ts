@@ -26,7 +26,7 @@ class Tabs implements ITabsStore {
 	}
 
 	@action deleteTab = (id: number) => {
-		this.tabs = this.tabs.filter(t => t.id != id);
+		this.tabs = this.tabs.filter(t => t.id !== id);
 	}
 
 	@action setFocus = (id: number) => {
@@ -53,7 +53,7 @@ class Tabs implements ITabsStore {
 
 	getTab = (id: number): Tab | undefined => {
 		return this.tabs.length !== 0 ? this.tabs.find(tab => tab.id === id) : undefined;
-	}; 
+	};
 
 	private events = () => {
 		E.ipcRenderer.on(Const.TABADDED, (sender: any, data: Tab) => {
@@ -72,6 +72,16 @@ class Tabs implements ITabsStore {
 
 		E.ipcRenderer.on(Const.UPDATEFILEKEY, (sender: any, data: { id: number, fileKey: string }) => {
 			this.tabs = this.tabs.map(t => t.id === data.id ? { ...t, fileKey: data.fileKey } : t);
+		});
+
+		E.ipcRenderer.on(Const.CLOSETAB, (sender: any, data: { id: number }) => {
+			let index: number = this.tabs.findIndex(t => t.id === data.id);
+			this.deleteTab(data.id);
+
+			this.setFocus(
+				index != 0 ?
+					this.tabs[index > 0 ? index-1 : index].id : 1
+			);
 		});
 	}
 }

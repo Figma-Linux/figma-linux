@@ -2,14 +2,14 @@ import * as E from "electron";
 
 import * as Const from "Const";
 import Args from "./Args";
-import WindowManager from "./window/WindowManager";
+import WindowManager, { IWindowManager } from "./window/WindowManager";
 
 interface IApp {
-    windowManager: WindowManager;
+    windowManager: IWindowManager;
 }
 
 class App implements IApp {
-    windowManager: WindowManager;
+    windowManager: IWindowManager;
 
     constructor() {
         const isSingleInstance = E.app.requestSingleInstanceLock();
@@ -52,27 +52,9 @@ class App implements IApp {
     }
 
     private ready = () => {
-        const { withoutFrame, figmaUrl } = Args();
+        const { figmaUrl } = Args();
 
-        const options: E.BrowserWindowConstructorOptions = {
-            width: 1200,
-            height: 900,
-            frame: withoutFrame,
-            webPreferences: {
-                zoomFactor: 1,
-                nodeIntegration: true,
-                nodeIntegrationInWorker: false,
-                webviewTag: false,
-                webSecurity: false,
-                webgl: true,
-                experimentalFeatures: true,
-                experimentalCanvasFeatures: true
-            }
-        };
-
-        const home = Const.HOMEPAGE;
-
-        this.windowManager = new WindowManager(options, home);
+        this.windowManager = WindowManager.instance;
 
         setTimeout(() => {
             figmaUrl !== '' && this.windowManager.openUrl(figmaUrl);

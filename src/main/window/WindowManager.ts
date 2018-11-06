@@ -31,10 +31,11 @@ class WindowManager implements IWindowManager {
     scale: number;
     closedTabsHistory: Array<string> = [];
     private static _instance: WindowManager;
+    private panelHeight: number = Const.TOPPANELHEIGHT;
 
     private constructor(options: E.BrowserWindowConstructorOptions, home: string) {
         this.home = home;
-        this.scale = 0.9;
+        this.scale = 1;
 
         this.mainWindow = new E.BrowserWindow(options);
         this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
@@ -42,11 +43,10 @@ class WindowManager implements IWindowManager {
         initMainMenu();
         this.addTab('loadMainContetnt.js');
 
-        this.mainWindow.on('resize', this.updateBuonds);
-        this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBuonds(e), 100));
-        this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBuonds(e), 100));
-        this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBuonds(e), 100));
-
+        this.mainWindow.on('resize', this.updateBounds);
+        this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
+        this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
+        this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
 
         isDev && this.installReactDevTools();
         isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -154,6 +154,7 @@ class WindowManager implements IWindowManager {
         });
 
         E.app.on('handleCommand', (id: string) => {
+            console.log('handleCommand id: ', id);
             switch(id) {
                 case 'scale-normal': {
                     this.scale = 1;
@@ -319,22 +320,35 @@ class WindowManager implements IWindowManager {
         Tabs.close(id);
     }
 
-    private getBounds = () => ({
-        x: 0,
-        y: Const.TOPPANELHEIGHT,
-        width: this.mainWindow.getContentBounds().width,
-        height: this.mainWindow.getContentBounds().height - Const.TOPPANELHEIGHT
-    })
-
     private updateScale = (scale: number) => {
         const views = Tabs.getAll();
+
+        this.mainWindow.webContents.setZoomFactor(scale);
+        this.panelHeight = Math.floor(Const.TOPPANELHEIGHT * scale);
+
+        this.updateBounds();
 
         for (let view of views) {
             view.webContents.setZoomFactor(scale);
         }
     }
 
-    private updateBuonds = (event?: Event) => E.BrowserView.getAllViews().forEach((bw: E.BrowserView) => bw.setBounds(this.getBounds()))
+    private getBounds = () => {
+        return {
+            x: 0,
+            y: this.panelHeight,
+            width: this.mainWindow.getContentBounds().width,
+            height: this.mainWindow.getContentBounds().height - this.panelHeight
+        };
+    }
+
+    private updateBounds = (event?: Event) => {
+        const views = Tabs.getAll();
+
+        views.forEach((bw: E.BrowserView) => {
+            bw.setBounds(this.getBounds());
+        })
+    }
 
     private installReactDevTools = () => {
 		installExtension(REACT_DEVELOPER_TOOLS)

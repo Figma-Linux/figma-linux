@@ -9,7 +9,7 @@ interface ITabs { }
 class Tabs implements ITabs {
     private static tabs: Array<E.BrowserView> = [];
 
-    public static newTab = (url: string, options: E.Rectangle, preloadScript?: string) => {
+    public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string) => {
         const tab = new E.BrowserView({
             webPreferences: {
                 nodeIntegration: false,
@@ -26,7 +26,7 @@ class Tabs implements ITabs {
             width: true,
             height: true
         });
-        tab.setBounds(options);
+        tab.setBounds(rect);
         tab.webContents.loadURL(url);
         tab.webContents.on('dom-ready', () => {
             let fonts = Fonts.getFonts([

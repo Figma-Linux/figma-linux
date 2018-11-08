@@ -10,17 +10,16 @@ const commandToMainProcess = (item: E.MenuItem & { id: string }, window: E.Brows
 };
 
 export const toggleMenu = () => {
-	const menu = E.Menu.getApplicationMenu();
-    isHidden = !isHidden;
-
-    E.app.emit('hiddeMenu', isHidden);
+    const menu = E.Menu.getApplicationMenu();
 
 	if (menu) {
-		E.Menu.setApplicationMenu(null);
+        E.Menu.setApplicationMenu(null);
 	} else {
-		setMenuFromTemplate();
+        setMenuFromTemplate();
     }
 
+    isHidden = !isHidden;
+    E.app.emit('hiddeMenu', isHidden);
 }
 
 const item = (label: string, accelerator: string, params: any) => ({
@@ -50,6 +49,8 @@ const FILE_MENU = {
 		SEPARATOR,
 		item('Save As .fig...', 'Ctrl+Shift+S', { action: 'save-as', click: handleItemAction }),
         item('Export...', 'Ctrl+Shift+E', { action: 'export-selected-exportables', click: handleItemAction }),
+		SEPARATOR,
+        { role: 'quit' },
 	]
 } as E.MenuItemConstructorOptions;
 const EDIT_MENU = {
@@ -323,14 +324,10 @@ const setMenuFromTemplate = (template?: Array<E.MenuItemConstructorOptions>): E.
 
 const init = (template?: Array<E.MenuItemConstructorOptions>) => {
 	const mainMenu: E.Menu = setMenuFromTemplate(template);
-
-    E.Menu.setApplicationMenu(mainMenu);
-
     const menuItemMap = buildActionToMenuItemMap(mainMenu);
 
     E.app.on('updateActionState', (actionState: any) => {
         if (!actionState) return;
-        // console.log('updateActionState, actionState: ', actionState);
 
         for (let action of Object.keys(menuItemMap)) {
             const menuItem: E.MenuItem = menuItemMap[action];

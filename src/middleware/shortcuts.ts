@@ -26,26 +26,19 @@ export default () => {
                     if (!isMenuHidden) return;
                     if  (shortcut.value === 'save-as') return;
 
-                    actionState[shortcut.value] && handleItemAction({ action: shortcut.value }, currentWindow);
+                    actionState[shortcut.value] && handleItemAction({ action: shortcut.value, accelerator: shortcut.accelerator }, currentWindow);
                 });
             } break;
             case 'command': {
                 shortcutMan.bind(shortcut.accelerator.toLocaleLowerCase(), () => {
                     if (!isMenuHidden) return;
 
-                    handleCommandItemClick({ command: shortcut.value }, currentWindow);
+                    handleCommandItemClick({ command: shortcut.value, accelerator: shortcut.accelerator }, currentWindow);
                 });
             } break;
             case 'id': {
                 shortcutMan.bind(shortcut.accelerator.toLocaleLowerCase(), () => {
-                    if (!isMenuHidden
-                        && shortcut.value !== 'toggle-menu'
-                        && shortcut.value !== 'scale-normal'
-                        && shortcut.value !== 'scale-inc0.1'
-                        && shortcut.value !== 'scale-dic0.1'
-                        && shortcut.value !== 'scale-inc0.05'
-                        && shortcut.value !== 'scale-dic0.05'
-                    ) return;
+                    if (!isMenuHidden && shortcut.value !== 'toggle-menu') return;
 
                     E.remote.app.emit('handleCommand', shortcut.value);
                 });

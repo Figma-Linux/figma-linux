@@ -1,6 +1,9 @@
 import * as E from "electron";
 
 export const handleItemAction = (item: any, window: E.BrowserWindow) => {
+	// FIXME: ugly hack
+	if (!/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
+
 	const currentView = window.getBrowserView();
 
 	currentView.webContents.send('handleAction', item.action, 'os-menu');

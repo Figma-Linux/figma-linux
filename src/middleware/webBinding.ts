@@ -71,6 +71,7 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
             console.log('postMessage, name, args, transferList: ', name, args, transferList);
             window.__figmaDesktop.fileBrowser = false;
 
+            // FIXME: ugly hack
             if (!/recent/.test(window.location.href) && name === 'updateActionState') {
                 let state = {
                     'save-as': true,

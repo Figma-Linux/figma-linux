@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "electron-webpack dev",
     "start": "electron dist/main/main.js",
-    "build": "electron-webpack app && rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
+    "build": "rm -rf ./dist; electron-webpack app && rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
     "rebuild": "electron-rebuild",
     "pack": "rm -rf build/installers && npm run build && npm run builder"
@@ -25,8 +25,8 @@
   },
   "dependencies": {
     "electron-devtools-installer": "^2.2.4",
-    "mobx": "^5.0.3",
-    "mobx-react": "^5.2.8",
+    "mobx": "^5.6.0",
+    "mobx-react": "^5.4.2",
     "raven": "^2.4.1",
     "raven-js": "^3.22.3",
     "react": "^16.5.2",

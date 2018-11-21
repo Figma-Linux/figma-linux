@@ -29,11 +29,16 @@ class Tabs implements ITabs {
         tab.setBounds(rect);
         tab.webContents.loadURL(url);
         tab.webContents.on('dom-ready', () => {
-            let fonts = Fonts.getFonts([
+            const dirs: Array<string> = [
                 '/usr/share/fonts',
                 `${process.env.HOME}/.local/share/fonts`
-            ]);
-            tab.webContents.send('updateFonts', fonts);
+            ];
+
+            Fonts.getFonts(dirs)
+                .catch(err => console.error(`Failed to load local fonts, error: ${err}`))
+                .then(fonts => {
+                    tab.webContents.send('updateFonts', fonts);
+                });
         });
         isDev && tab.webContents.toggleDevTools();
 

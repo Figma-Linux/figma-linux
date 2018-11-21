@@ -15,19 +15,13 @@ interface IFonts {
 }
 
 class Fonts {
-	public static getFonts = (dirs: Array<string>): IFonts => {
-		let fonts: IFonts = {};
+	public static getFonts = (dirs: Array<string>): Promise<IFonts> => new Promise((resolve, reject) => {
+		binding.getFonts(dirs, (err: Error, fonts: IFonts) => {
+			if (err) reject(err);
 
-		try {
-			// FIXME: To make it as async
-			fonts = binding.getFonts(dirs);
-
-		} catch (error) {
-			console.log('load fonts error: ', error);
-		}
-
-		return fonts;
-	}
+			resolve(fonts);
+		});
+	});
 }
 
 export default Fonts;

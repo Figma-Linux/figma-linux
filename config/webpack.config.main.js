@@ -1,11 +1,10 @@
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const path = require('path');
 
 const rootFolder = process.cwd();
 
-const dev = {
+const main = {
     module: {
         rules: [
             {
@@ -32,19 +31,17 @@ const dev = {
     devtool: 'source-map',
 
     plugins: [
-        new CleanWebpackPlugin(['dist']),
-
         new CopyWebpackPlugin([
             {
                 from: path.join(rootFolder, 'src/package.json'),
                 to: path.join(rootFolder, 'dist/')
             },
             {
-                from: path.join(rootFolder, 'resources/*'),
-                to: path.join(rootFolder, 'dist/')
+                from: path.join(rootFolder, 'resources'),
+                to: path.join(rootFolder, 'dist/resources/')
             }
         ])
     ]
 };
 
-module.exports = dev;
+module.exports = main;

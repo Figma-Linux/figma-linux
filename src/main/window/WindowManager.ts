@@ -209,6 +209,9 @@ class WindowManager implements IWindowManager {
 
                     currentView.webContents.on('did-finish-load', onDidFinishLoad);
                 } break;
+                case 'openSettings': {
+                    this.addTab('', `file://${process.cwd()}/dist/settings.html`);
+                } break;
             }
         })
     }

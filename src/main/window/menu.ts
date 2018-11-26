@@ -49,7 +49,8 @@ const FILE_MENU = {
 		SEPARATOR,
 		item('Save As .fig...', 'Ctrl+Shift+S', { action: 'save-as', click: handleItemAction }),
         item('Export...', 'Ctrl+Shift+E', { action: 'export-selected-exportables', click: handleItemAction }),
-		SEPARATOR,
+        SEPARATOR,
+        item('Settings', '', { id: 'openSettings', click: commandToMainProcess }),
         { role: 'quit' },
 	]
 } as E.MenuItemConstructorOptions;
@@ -269,7 +270,8 @@ const HELP_MENU = {
                 label: 'Toggle Developer Tools',
                 accelerator: 'Ctrl+Alt+I',
                 click() {
-                    const webContents = E.webContents.getFocusedWebContents();
+                    const windowManager = WindowManager.instance;
+                    const webContents = windowManager.mainWindow.getBrowserView().webContents;
 
                     if (webContents) {
                         toggleDetachedDevTools(webContents)

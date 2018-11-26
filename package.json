@@ -8,9 +8,9 @@
   "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
   "license": "MIT",
   "scripts": {
-    "dev": "electron-webpack dev",
+    "dev": "webpack --config ./config/webpack.config.js --mode development && electron-webpack dev",
     "start": "electron dist/main/main.js",
-    "build": "rm -rf ./dist; electron-webpack app && rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
+    "build": "rm -rf ./dist; electron-webpack app && webpack --config ./config/webpack.config.js --mode production; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
     "rebuild": "electron-rebuild",
     "pack": "rm -rf build/installers && npm run build && npm run builder"
@@ -51,8 +51,9 @@
     "electron": "^3.0.7",
     "electron-builder": "^20.28.4",
     "electron-rebuild": "^1.8.2",
-    "electron-webpack": "^2.1.2",
+    "electron-webpack": "^2.6.0",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
+    "mini-css-extract-plugin": "^0.4.5",
     "native-ext-loader": "^2.1.0",
     "node-loader": "^0.6.0",
     "node-sass": "^4.9.4",

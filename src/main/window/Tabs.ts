@@ -10,17 +10,22 @@ class Tabs implements ITabs {
     private static tabs: Array<E.BrowserView> = [];
 
     public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string) => {
-        const tab = new E.BrowserView({
+        const options: E.BrowserViewConstructorOptions = {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                zoomFactor: 1,
-                preload: path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '')
+                zoomFactor: 1
             }
-        });
+        };
+
+        if (preloadScript !== '') {
+            options.webPreferences.preload = path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '');
+        }
+
+        const tab = new E.BrowserView(options);
 
         tab.setAutoResize({
             width: true,

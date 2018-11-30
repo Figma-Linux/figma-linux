@@ -20,6 +20,11 @@
         "allowUnusedLabels": true,
         "noUnusedLocals": false,
         "strictNullChecks": false,
+        "lib": [
+            "dom",
+            "es7",
+            "esnext"
+        ],
         "typeRoots": [
             "node_modules/@types",
             "@types/**/*.d.ts"

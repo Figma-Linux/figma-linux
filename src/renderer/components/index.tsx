@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import Body from "./Body";
 import TopPanel from "./TopPanel";
 import './style.scss'
 
@@ -15,9 +16,11 @@ class App extends React.Component<AppProps, {}> {
     }
 
     render() {
-        return (
-            <TopPanel/>
-        );
+        console.log('render app');
+        return [
+            <TopPanel/>,
+            <Body/>
+        ];
     }
 }
 

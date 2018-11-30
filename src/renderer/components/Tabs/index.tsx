@@ -7,6 +7,7 @@ import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
 import * as Const from "Const";
+import { isComponentUrl } from "Utils";
 import TabList from "./tabs";
 import './style.scss'
 
@@ -30,17 +31,27 @@ class Tabs extends React.Component<TabsProps, {}> {
         e.nativeEvent && e.nativeEvent.stopImmediatePropagation();
 
         let tabs = toJS(this.props.tabs!.tabs);
+        const tab = this.props.tabs.getTab(id);
         const currentTabId: number = toJS(this.props.tabs!.current);
         let index: number = tabs.findIndex(t => t.id === id);
 
-        E.ipcRenderer.send('closetab', id);
+        if (isComponentUrl(tab.url)) {
+            E.ipcRenderer.send(Const.MAINTAB);
+        } else {
+            E.ipcRenderer.send(Const.CLOSETAB, id);
+        }
+
         this.props.tabs!.deleteTab(id);
 
         if (id !== currentTabId) return;
 
-        this.props.tabs!.setFocus(
-            index !== 0 ? tabs[index > 0 ? index-1 : index].id : 1
-        );
+        if (isComponentUrl(tab.url)) {
+            this.props.tabs!.setFocus(1);
+        } else {
+            this.props.tabs!.setFocus(
+                index !== 0 ? tabs[index > 0 ? index-1 : index].id : 1
+            );
+        }
     }
 
     private clickTab = (event: React.MouseEvent<HTMLDivElement> & Event, tab: Tab) => {
@@ -149,8 +160,14 @@ class Tabs extends React.Component<TabsProps, {}> {
     private focus = (event: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
+        const tab = this.props.tabs.getTab(id);
 
-        E.ipcRenderer.send('focustab', id);
+        if (isComponentUrl(tab.url)) {
+            E.ipcRenderer.send(Const.CLEARVIEW);
+        } else {
+            E.ipcRenderer.send(Const.FOCUSTAB, id);
+        }
+
         this.props.tabs!.setFocus(id);
     }
 

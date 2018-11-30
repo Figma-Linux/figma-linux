@@ -10,7 +10,9 @@ import {
     isDev,
     winUrlDev,
     winUrlProd,
-    isFileBrowser
+    isFileBrowser,
+    isComponentUrl,
+    getComponentTitle
 } from "Utils";
 
 interface IWindowManager {
@@ -122,6 +124,10 @@ class WindowManager implements IWindowManager {
             }
         });
 
+        E.ipcMain.on(Const.CLEARVIEW, (event: Event) => {
+            this.mainWindow.setBrowserView(null);
+        });
+
         E.ipcMain.on(Const.MAINTAB, (event: Event) => {
             const view = Tabs.focus(1);
             this.mainWindow.setBrowserView(view);
@@ -210,13 +216,24 @@ class WindowManager implements IWindowManager {
                     currentView.webContents.on('did-finish-load', onDidFinishLoad);
                 } break;
                 case 'openSettings': {
-                    this.addTab('', `file://${process.cwd()}/dist/settings.html`);
+                    this.addTab('', `component://Settings`);
                 } break;
             }
         })
     }
 
     public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`): E.BrowserView => {
+        if (isComponentUrl(url)) {
+            this.mainWindow.setBrowserView(null);
+            this.mainWindow.webContents.send(Const.TABADDED, {
+                title: getComponentTitle(url),
+                showBackBtn: false,
+                url
+            });
+
+            return null;
+        }
+
         const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
 
         this.mainWindow.setBrowserView(tab);
@@ -229,7 +246,7 @@ class WindowManager implements IWindowManager {
             ActionState.updateActionState(Const.ACTIONTABSTATE);
         }
 
-        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url: `${this.home}/login`, showBackBtn: true});
+        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true});
 
         return tab;
     }

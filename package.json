@@ -8,9 +8,9 @@
   "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --config ./config/webpack.config.js --mode development && electron-webpack dev",
+    "dev": "electron-webpack dev",
     "start": "electron dist/main/main.js",
-    "build": "rm -rf ./dist; electron-webpack app && webpack --config ./config/webpack.config.js --mode production; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
+    "build": "rm -rf ./dist; electron-webpack app; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
     "rebuild": "electron-rebuild",
     "pack": "rm -rf build/installers && npm run build && npm run builder"

@@ -5,6 +5,7 @@ import * as E from "electron";
 import { observable, action, toJS } from "mobx";
 
 import * as Const from "Const";
+import { isComponentUrl } from "Utils";
 
 class Tabs implements ITabsStore {
 	@observable tabs: Array<Tab> = [];
@@ -14,13 +15,13 @@ class Tabs implements ITabsStore {
 		this.events();
 	}
 
-	@action addTab = (options: {id: number, url: string, showBackBtn: boolean}) => {
+	@action addTab = (data: {id: number, url: string, showBackBtn: boolean, title?: string}) => {
 		this.tabs.push({
-			id: options.id,
-			title: 'Figma',
-			url: options.url,
+			id: data.id,
+			title: data.title ? data.title : 'Figma',
+			url: data.url,
 			moves: false,
-			showBackBtn: options.showBackBtn,
+			showBackBtn: data.showBackBtn,
 			order: this.tabs.length === 0 ? 1 : this.tabs.length + 1
 		});
 	}
@@ -55,9 +56,34 @@ class Tabs implements ITabsStore {
 		return this.tabs.length !== 0 ? this.tabs.find(tab => tab.id === id) : undefined;
 	};
 
+	private generateUniqueId = (collection: Array<number>): number => {
+		const getRand = () => Math.round(Math.random() * (5000 - 1000) + 1000);
+		let id = getRand();
+
+		if (collection.includes(id)) {
+			id = this.generateUniqueId(collection);
+		}
+
+		return id;
+	}
+
 	private events = () => {
 		E.ipcRenderer.on(Const.TABADDED, (sender: any, data: Tab) => {
-			this.addTab({id: data.id, url: data.url, showBackBtn: data.showBackBtn});
+			if (isComponentUrl(data.url)) {
+				const collection: Array<number> = this.tabs.map(el => el.id);
+
+				data.id = this.generateUniqueId(collection);
+
+				this.addTab({
+					id: data.id,
+					url: data.url,
+					title: data.title,
+					showBackBtn: data.showBackBtn
+				});
+			} else {
+				this.addTab({id: data.id, url: data.url, showBackBtn: data.showBackBtn});
+			}
+
 			this.setFocus(data.id);
 		});
 

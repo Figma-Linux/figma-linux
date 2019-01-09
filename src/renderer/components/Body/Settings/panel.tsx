@@ -25,15 +25,15 @@ const SettingsPanel: React.SFC<SettingsPanelProps> = props => {
             <div onClick={() => goTo('general')}>
                 <div className={`item ${props.currentRoute.name === 'general' ? 'active' : ''}`}>
                     <div className="icon">
-                    <svg width="25" height="25" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M14.5 7.5C14.5 11.366 11.366 14.5 7.5 14.5C3.63401 14.5 0.5 11.366 0.5 7.5C0.5 3.63401 3.63401 0.5 7.5 0.5C11.366 0.5 14.5 3.63401 14.5 7.5Z" fill="white" fillOpacity="0" stroke="#333333"/>
-                        <path d="M8.08981 9.9773H6.81888L6.71994 1.66669H8.19635L8.08981 9.9773ZM6.66667 12.5063C6.66667 12.2677 6.73516 12.0689 6.87215 11.9098C7.01421 11.7455 7.22223 11.6633 7.4962 11.6633C7.77017 11.6633 7.97819 11.7455 8.12025 11.9098C8.26231 12.0689 8.33334 12.2677 8.33334 12.5063C8.33334 12.7449 8.26231 12.9437 8.12025 13.1027C7.97819 13.2565 7.77017 13.3334 7.4962 13.3334C7.22223 13.3334 7.01421 13.2565 6.87215 13.1027C6.73516 12.9437 6.66667 12.7449 6.66667 12.5063Z" fill="#333333"/>
-                    </svg>
+                        <svg width="25" height="25" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14.5 7.5C14.5 11.366 11.366 14.5 7.5 14.5C3.63401 14.5 0.5 11.366 0.5 7.5C0.5 3.63401 3.63401 0.5 7.5 0.5C11.366 0.5 14.5 3.63401 14.5 7.5Z" fill="white" fillOpacity="0" stroke="#333333" />
+                            <path d="M8.08981 9.9773H6.81888L6.71994 1.66669H8.19635L8.08981 9.9773ZM6.66667 12.5063C6.66667 12.2677 6.73516 12.0689 6.87215 11.9098C7.01421 11.7455 7.22223 11.6633 7.4962 11.6633C7.77017 11.6633 7.97819 11.7455 8.12025 11.9098C8.26231 12.0689 8.33334 12.2677 8.33334 12.5063C8.33334 12.7449 8.26231 12.9437 8.12025 13.1027C7.97819 13.2565 7.77017 13.3334 7.4962 13.3334C7.22223 13.3334 7.01421 13.2565 6.87215 13.1027C6.73516 12.9437 6.66667 12.7449 6.66667 12.5063Z" fill="#333333" />
+                        </svg>
                     </div>
                     <p className="label">General</p>
                 </div>
             </div>
-            <div onClick={() => goTo('shortcuts')}>
+            {/* <div onClick={() => goTo('shortcuts')}>
                 <div className={`item ${props.currentRoute.name === 'shortcuts' ? 'active' : ''}`}>
                     <div className="icon">
                         <svg width="25" height="25" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,7 +47,7 @@ const SettingsPanel: React.SFC<SettingsPanelProps> = props => {
                     </div>
                     <p className="label">Shortcuts</p>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

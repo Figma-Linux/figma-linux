@@ -1,4 +1,5 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as url from "url";
 
@@ -64,7 +65,7 @@ class WindowManager implements IWindowManager {
         const options: E.BrowserWindowConstructorOptions = {
             width: 1200,
             height: 900,
-            frame: true,
+            frame: Boolean(Settings.get('app.windowFrame')),
             webPreferences: {
                 zoomFactor: 1,
                 nodeIntegration: true,

@@ -1,3 +1,4 @@
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
 
@@ -17,7 +18,7 @@ class Tabs implements ITabs {
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                zoomFactor: 1
+                zoomFactor: (Settings.get('ui.scaleFigmaUI') as number / 100)
             }
         };
 
@@ -34,10 +35,7 @@ class Tabs implements ITabs {
         tab.setBounds(rect);
         tab.webContents.loadURL(url);
         tab.webContents.on('dom-ready', () => {
-            const dirs: Array<string> = [
-                '/usr/share/fonts',
-                `${process.env.HOME}/.local/share/fonts`
-            ];
+            const dirs = Settings.get('app.fontDirs') as string[];
 
             Fonts.getFonts(dirs)
                 .catch(err => console.error(`Failed to load local fonts, error: ${err}`))

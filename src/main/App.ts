@@ -1,3 +1,4 @@
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 
 import * as Const from "Const";
@@ -40,6 +41,10 @@ class App implements IApp {
         }
 
         this.appEvent();
+
+        if (Object.keys(Settings.getAll()).length === 0) {
+            Settings.setAll(Const.DEFAULT_SETTINGS);
+        }
     }
 
 
@@ -72,7 +77,7 @@ class App implements IApp {
 
 
     private onWindowAllClosed = () => {
-        if(process.platform !== 'darwin') {
+        if (process.platform !== 'darwin') {
             E.app.quit();
         }
     }

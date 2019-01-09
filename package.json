@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "electron-devtools-installer": "^2.2.4",
+    "electron-settings": "^3.2.0",
     "mobx": "^5.6.0",
     "mobx-react": "^5.4.2",
     "mobx-state-router": "^4.0.3",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@types/electron-devtools-installer": "^2.0.3",
+    "@types/electron-settings": "^3.1.1",
     "@types/node": "^10.5.1",
     "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.6",

@@ -2,6 +2,7 @@ import * as React from "react";
 
 import "./index.scss";
 import { Input, Area, CheckBox } from 'Elements';
+import { InputTypes } from "Elements/input";
 
 interface GeneralBodyProps { }
 
@@ -24,31 +25,39 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 	return (
 		<div className="general">
 			<h2>General Settings</h2>
-			<div>
+			<div className="grid_1x2 grid_cgap5per">
 				<div>
 					<div className="section grid_1x2">
 						<div>
 							<p>Scale UI</p>
-							<Input onChane={(e) => console.log('Input onChange, e: ', e)} />
+							<Input type={InputTypes.NUMBER} onChane={(e, delta) => console.log('Input onChange, e: ', e, delta)} />
 						</div>
 						<div>
 							<p>Scale Tab Panel</p>
-							<Input onChane={(e) => console.log('Input onChange, e: ', e)} />
+							<Input type={InputTypes.NUMBER} onChane={(e, delta) => console.log('Input onChange, e: ', e, delta)} />
 						</div>
 					</div>
 					<div className="section">
 						<p>Main menu</p>
-						<CheckBox/>
+						<CheckBox />
 					</div>
 					<div className="section">
 						<p>Window frame</p>
-						<CheckBox/>
+						<CheckBox />
 					</div>
 				</div>
 				<div>
 					<div className="section">
 						<p>Default export directory</p>
-						<div></div>
+						<div className="selectFolder">
+							<Input type={InputTypes.SIMPLE} onChane={(e, delta) => console.log('Input onChange, e: ', e, delta)} />
+							<div className="button" onClick={(e) => console.log('Open file browser')}>
+								<svg width="23" height="20" viewBox="0 0 23 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<rect width="14.375" height="16.1905" rx="2" fill="#828282" />
+									<rect y="2.85712" width="23" height="17.1429" rx="2" fill="#333333" />
+								</svg>
+							</div>
+						</div>
 					</div>
 					<div className="section grid_2x1">
 						<p className="gridArea-a">Font directories</p>

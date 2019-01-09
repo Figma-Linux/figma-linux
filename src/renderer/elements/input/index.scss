@@ -1,6 +1,26 @@
 @import '../../colors.scss';
 
-.input {
+.input.simple {
+	width: 100%;
+
+	&>.body {
+		border: 0;
+
+		&>input {
+			background-color: transparent;
+			border: 0px;
+			outline: 0;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			font: {
+				size: 18px;
+			}
+		}
+	}
+}
+
+.input.number {
 	display: grid;
 	grid-template-columns: 30px 1fr 30px;
 

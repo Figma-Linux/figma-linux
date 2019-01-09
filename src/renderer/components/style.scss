@@ -34,3 +34,7 @@ html, body, #app {
 	grid-template: "a b" "c c";
 	grid-template-columns: 1fr 20px;
 }
+
+.grid_cgap5per {
+	grid-column-gap: 5%;
+}

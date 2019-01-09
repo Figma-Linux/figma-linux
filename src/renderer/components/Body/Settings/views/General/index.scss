@@ -1,0 +1,17 @@
+@import '../../../../../colors.scss';
+
+.general {
+	padding-bottom: 20px;
+	.section {
+		padding-bottom: 20px;
+    	border-bottom: 1px solid $gray_2;
+	}
+
+	.add {
+		align-self: center;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+}

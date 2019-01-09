@@ -16,7 +16,7 @@ shortcuts();
 let root: string = isDev ? 'app' : 'react-page';
 
 render(
-	<Provider { ...stores } >
+	<Provider {...stores} >
 		<App />
 	</Provider>,
 	document.getElementById(root)

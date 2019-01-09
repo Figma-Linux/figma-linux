@@ -1,14 +1,24 @@
 // import * as E from "electron";
 import * as React from "react";
 import { observer, inject } from "mobx-react";
+import { RouterView, ViewMap } from 'mobx-state-router';
 
 import './style.scss'
+import PanelBody from "./panel";
+import General from "./views/General";
+import Shortcuts from "./views/Shortcuts";
+import { Routes } from '../../../stores/Routes';
 
 interface SettingsProps {
-    tabs?: ITabsStore
+    route?: Routes;
 }
 
-@inject('tabs')
+const routeMap: ViewMap = {
+	general: <General/>,
+	shortcuts: <Shortcuts/>
+}
+
+@inject('route')
 @observer
 class Settings extends React.Component<SettingsProps, {}> {
     props: SettingsProps;
@@ -20,7 +30,18 @@ class Settings extends React.Component<SettingsProps, {}> {
     }
     render() {
         return (
-            <h1>Settings page</h1>
+            <div id="settings">
+                <PanelBody
+                    route={this.props.route}
+                    currentRoute={this.props.route.route.getCurrentRoute()}
+                />
+                <div className="body">
+                    <RouterView
+                        routerStore={this.props.route.route}
+                        viewMap={routeMap}
+                    />
+                </div>
+            </div>
         );
     }
 }

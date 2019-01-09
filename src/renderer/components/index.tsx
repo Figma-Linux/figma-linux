@@ -16,10 +16,9 @@ class App extends React.Component<AppProps, {}> {
     }
 
     render() {
-        console.log('render app');
         return [
-            <TopPanel/>,
-            <Body/>
+            <TopPanel key='1' />,
+            <Body key='2' />
         ];
     }
 }

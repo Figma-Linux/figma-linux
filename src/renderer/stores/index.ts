@@ -1,14 +1,15 @@
 import tabs from "./Tabs";
+import route, { Routes } from "./Routes";
 
-interface IStores {
+
+export interface IStores {
 	tabs: ITabsStore;
+	route: Routes
 }
 
 const stores: IStores = {
-	tabs
+	tabs,
+	route
 };
 
 export default stores;
-export {
-	IStores
-}

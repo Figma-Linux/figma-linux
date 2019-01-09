@@ -1,4 +1,3 @@
-// import * as E from "electron";
 import * as React from "react";
 import { observer, inject } from "mobx-react";
 
@@ -13,14 +12,14 @@ interface BodyProps {
 @observer
 class Body extends React.Component<BodyProps, {}> {
     props: BodyProps;
-    private components;
+    private components: any;
 
     constructor(props: BodyProps) {
         super(props);
 
         this.props = props;
         this.components = {
-            Settings: <Settings/>
+            Settings: <Settings />
         };
     }
 

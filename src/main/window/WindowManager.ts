@@ -144,11 +144,19 @@ class WindowManager implements IWindowManager {
         });
 
         E.ipcMain.on(Const.SETTITLE, (event: Event, title: string) => {
-            this.mainWindow.webContents.send(Const.SETTITLE, { id: this.mainWindow.getBrowserView()!.id, title })
+            const view = this.mainWindow.getBrowserView();
+
+            if (!view) return;
+
+            this.mainWindow.webContents.send(Const.SETTITLE, { id: view.id, title })
         });
 
         E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
-            this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: this.mainWindow.getBrowserView()!.id, fileKey: key })
+            const view = this.mainWindow.getBrowserView();
+
+            if (!view) return;
+
+            this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: view.id, fileKey: key })
         });
 
         E.ipcMain.on(Const.UPDATEACTIONSTATE, (event: Event, state: Object) => {

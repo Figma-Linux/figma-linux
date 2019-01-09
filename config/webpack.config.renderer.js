@@ -18,6 +18,7 @@ const render = {
         ],
         alias: {
             Components: path.resolve(rootFolder, 'src/renderer/components'),
+            Elements: path.resolve(rootFolder, 'src/renderer/elements'),
             Middleware: path.resolve(rootFolder, 'src/middleware'),
             Store: path.resolve(rootFolder, 'src/renderer/stores'),
             Const: path.resolve(rootFolder, 'src/constants'),

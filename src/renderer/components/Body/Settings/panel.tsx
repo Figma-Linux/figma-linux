@@ -2,7 +2,7 @@ import * as React from "react";
 import { Route } from 'mobx-state-router';
 
 import "./style.scss";
-import { Routes } from '../../../stores/Routes';
+import { Routes } from 'Store/Routes';
 
 interface SettingsPanelProps {
     route?: Routes;

@@ -7,7 +7,7 @@ import './style.scss'
 import PanelBody from "./panel";
 import General from "./views/General";
 import Shortcuts from "./views/Shortcuts";
-import { Routes } from '../../../stores/Routes';
+import { Routes } from 'Store/Routes';
 
 interface SettingsProps {
     route?: Routes;

@@ -31,9 +31,12 @@
         ],
         "paths": {
             "Components": ["src/renderer/components"],
+            "Components/*": ["src/renderer/components/*"],
+            "Elements/*": ["src/renderer/elements/*"],
             "Elements": ["src/renderer/elements"],
             "Middleware": ["src/middleware"],
             "Store": ["src/renderer/stores"],
+            "Store/*": ["src/renderer/stores/*"],
             "Const": ["src/constants"],
             "Utils": ["src/utils"],
             "*": ["node_modules/@types/*"]
@@ -42,7 +45,7 @@
     "include": [
         "@types/**/*.d.ts",
         "src/main/index.ts",
-        "src/rerender/index.tsx",
+        "src/renderer/index.tsx",
         "src/middleware/loadMainContetnt.ts",
         "src/middleware/loadContetnt.ts",
         "src/middleware/*.ts"

@@ -18,7 +18,7 @@ class Tabs implements ITabs {
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                zoomFactor: (Settings.get('ui.scaleFigmaUI') as number / 100)
+                zoomFactor: Settings.get('ui.scaleFigmaUI') as number
             }
         };
 

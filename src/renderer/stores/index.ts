@@ -1,14 +1,20 @@
-import tabs from "./Tabs";
+/// <reference path="../../../@types/common/index.d.ts" />
+/// <reference path="../../../@types/renderer/stores/index.d.ts" />
+
+import { tabs } from "./Tabs";
 import route, { Routes } from "./Routes";
+import { Settings, settings } from './Settings';
 
 
 export interface IStores {
 	tabs: ITabsStore;
+	settings: Settings;
 	route: Routes
 }
 
 const stores: IStores = {
 	tabs,
+	settings,
 	route
 };
 

@@ -8,8 +8,10 @@ export enum InputTypes {
 }
 
 export interface InputProps {
-	onChane(event: React.MouseEvent<HTMLElement> | React.ChangeEvent<HTMLElement>, delta: number): void;
+	onChange(event: React.MouseEvent<any> | React.ChangeEvent<any>, delta: number): void;
 	type?: InputTypes;
+	value?: string | number;
+	readonlyInput?: boolean;
 	sufix?: string;
 }
 
@@ -22,16 +24,16 @@ export class Input extends React.Component<InputProps, {}> {
 		return <div className={`input ${this.props.type ? this.props.type : InputTypes.SIMPLE}`}>
 			{this.props.type === InputTypes.NUMBER ? (
 				<React.Fragment>
-					<div className="button minus" onClick={(e) => this.props.onChane(e, -5)}>-</div>
+					<div className="button minus" onClick={(e) => this.props.onChange(e, +this.props.value - 5)}>-</div>
 					<div className="body">
-						<input type="text" onChange={(e) => this.props.onChane(e, 0)} />
+						<input readOnly={this.props.readonlyInput ? true : false} type="text" value={this.props.value ? this.props.value : ''} onChange={(e) => this.props.onChange(e, +e.target.value)} />
 						<span className="sufix">{this.props.sufix || '%'}</span>
 					</div>
-					<div className="button plus" onClick={(e) => this.props.onChane(e, 5)}>+</div>
+					<div className="button plus" onClick={(e) => this.props.onChange(e, +this.props.value + 5)}>+</div>
 				</React.Fragment>
 			) : (
 					<div className="body">
-						<input type="text" onChange={(e) => this.props.onChane(e, 0)} />
+						<input readOnly={this.props.readonlyInput ? true : false} type="text" value={this.props.value ? this.props.value : ''} onChange={(e) => this.props.onChange(e, +e.target.value)} />
 					</div>
 				)
 			}

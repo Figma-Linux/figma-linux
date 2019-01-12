@@ -128,3 +128,17 @@ interface SctionState {
 	'distribute-vertical-center': boolean;
 	'distribute-bottom': boolean;
 }
+
+interface ISettings {
+    app: {
+        showMainMenu: boolean;
+        windowFrame: boolean;
+        exportDir: string;
+        fontDirs: string[];
+    };
+    ui: {
+        scalePanel: number;
+        scaleFigmaUI: number;
+	};
+	[path: string]: any;
+}

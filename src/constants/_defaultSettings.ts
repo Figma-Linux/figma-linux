@@ -9,7 +9,7 @@ export const DEFAULT_SETTINGS = {
 		]
 	},
 	ui: {
-		scalePanel: 100,
-		scaleFigmaUI: 100
+		scalePanel: 1,
+		scaleFigmaUI: 1
 	}
 }

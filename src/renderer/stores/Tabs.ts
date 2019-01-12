@@ -1,13 +1,10 @@
-/// <reference path="../../../@types/common/index.d.ts" />
-/// <reference path="../../../@types/renderer/stores/index.d.ts" />
-
 import * as E from 'electron';
 import { observable, action, toJS } from 'mobx';
 
 import * as Const from 'Const';
 import { isComponentUrl } from 'Utils';
 
-class Tabs implements ITabsStore {
+export class Tabs implements ITabsStore {
 	@observable tabs: Array<Tab> = [];
 	@observable current: number = 1;
 
@@ -40,12 +37,9 @@ class Tabs implements ITabsStore {
 	};
 
 	@action updateTab = (tab: Tab) => {
-		console.log('updateTab, tab: ', tab.order);
 		this.tabs = this.tabs
 			.map(t => (t.id === tab.id ? { ...t, ...tab } : t))
 			.sort((a, b) => (a.order > b.order ? 1 : 0));
-
-		console.log('tabs: ', toJS(this.tabs));
 	};
 
 	@action changeTagOrder = (tab: Tab) => {
@@ -132,7 +126,4 @@ class Tabs implements ITabsStore {
 	};
 }
 
-const tabs: Tabs = new Tabs();
-
-export default tabs;
-export { tabs };
+export const tabs: Tabs = new Tabs();

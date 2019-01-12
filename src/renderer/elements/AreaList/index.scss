@@ -41,6 +41,9 @@
 		}
 
 		&>.remove {
+			display: inline-flex;
+			margin-left: 5px;
+
 			&:hover {
 				cursor: pointer;
 			}

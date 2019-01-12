@@ -32,6 +32,7 @@
 		}
 		padding: 10px 10px;
 		transition: all .1s ease;
+		user-select: none;
 
 		&:hover {
 			cursor: pointer;
@@ -42,7 +43,7 @@
 
 	&>.body {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 52% 1fr;
 		grid-column-gap: 2px;
 		align-items: center;
 		border: 1px solid $black_2;

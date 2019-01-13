@@ -1,5 +1,6 @@
 export const DEFAULT_SETTINGS = {
 	app: {
+		panelHeight: 28,
 		showMainMenu: true,
 		windowFrame: true,
 		exportDir: `${process.env.HOME}/Pictures/Figma`,

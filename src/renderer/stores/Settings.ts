@@ -22,6 +22,8 @@ export class Settings {
 		} else {
 			this.settings.ui.scaleFigmaUI = 1;
 		}
+
+		E.remote.app.emit('updateFigmaUiScale', d);
 	}
 	@action
 	public updatePanelScale = (delta: number) => {
@@ -32,6 +34,8 @@ export class Settings {
 		} else {
 			this.settings.ui.scalePanel = 1;
 		}
+
+		E.remote.app.emit('updatePanelScale', d);
 	}
 
 	@action
@@ -85,6 +89,7 @@ export class Settings {
 export const settings = new Settings();
 
 autorun(() => {
-	S.setAll(settings.settings);
+	console.log('settings.settings: ', toJS(settings.settings));
+	S.setAll(toJS(settings.settings));
 });
 

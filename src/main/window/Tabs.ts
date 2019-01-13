@@ -2,6 +2,7 @@ import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
 
+import { DEFAULT_SETTINGS } from 'Const';
 import { isDev } from "Utils";
 import Fonts from "../Fonts";
 
@@ -35,7 +36,11 @@ class Tabs implements ITabs {
         tab.setBounds(rect);
         tab.webContents.loadURL(url);
         tab.webContents.on('dom-ready', () => {
-            const dirs = Settings.get('app.fontDirs') as string[];
+            let dirs = Settings.get('app.fontDirs') as string[];
+
+            if (!dirs) {
+                dirs = DEFAULT_SETTINGS.app.fontDirs;
+            }
 
             Fonts.getFonts(dirs)
                 .catch(err => console.error(`Failed to load local fonts, error: ${err}`))

@@ -18,5 +18,15 @@ declare namespace Electron {
 		once(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
 		addListener(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
 		removeListener(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
+
+		on(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+		once(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+		addListener(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+		removeListener(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+
+		on(event: 'updatePanelScale', listener: (scale: number) => void): this;
+		once(event: 'updatePanelScale', listener: (scale: number) => void): this;
+		addListener(event: 'updatePanelScale', listener: (scale: number) => void): this;
+		removeListener(event: 'updatePanelScale', listener: (scale: number) => void): this;
 	}
 }

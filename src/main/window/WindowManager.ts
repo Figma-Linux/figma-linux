@@ -36,7 +36,7 @@ class WindowManager implements IWindowManager {
     panelScale: number;
     closedTabsHistory: Array<string> = [];
     private static _instance: WindowManager;
-    private panelHeight: number = Const.TOPPANELHEIGHT;
+    private panelHeight = Settings.get('app.panelHeight') as number;
 
     private constructor(options: E.BrowserWindowConstructorOptions, home: string) {
         this.home = home;
@@ -53,17 +53,6 @@ class WindowManager implements IWindowManager {
         this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-
-        Settings.watch('ui.scalePanel', (newValue: number, oldValue: number) => {
-            if (!newValue || !oldValue) return;
-
-            this.updatePanelScale(newValue);
-        });
-        Settings.watch('ui.scaleFigmaUI', (newValue: number, oldValue: number) => {
-            if (!newValue || !oldValue) return;
-
-            this.updateFigmaUiScale(newValue);
-        });
 
         isDev && this.installReactDevTools();
         isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -182,6 +171,12 @@ class WindowManager implements IWindowManager {
             this.openFileBrowser();
         });
 
+        E.app.on('updateFigmaUiScale', scale => {
+            this.updateFigmaUiScale(scale);
+        });
+        E.app.on('updatePanelScale', scale => {
+            this.updatePanelScale(scale);
+        });
         E.app.on('handleCommand', (id: string) => {
             console.log('handleCommand id: ', id);
             switch (id) {
@@ -360,6 +355,7 @@ class WindowManager implements IWindowManager {
 
     private updateAllScale = (scale?: number) => {
         const views = Tabs.getAll();
+        let panelHeight = 0;
 
         if (scale) {
             this.panelScale += scale;
@@ -370,7 +366,10 @@ class WindowManager implements IWindowManager {
         }
 
         this.mainWindow.webContents.setZoomFactor(this.panelScale);
-        this.panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
+        panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
+        this.panelHeight = panelHeight;
+
+        Settings.set('app.panelHeight', panelHeight);
 
         this.mainWindow.webContents.send(Const.UPDATEPANELSCALE, this.panelScale);
         this.mainWindow.webContents.send(Const.UPDATEUISCALE, this.figmaUiScale);
@@ -393,9 +392,14 @@ class WindowManager implements IWindowManager {
     }
 
     private updatePanelScale = (panelScale: number) => {
+        let panelHeight = 0;
+
         this.panelScale = +panelScale.toFixed(2);
         this.mainWindow.webContents.setZoomFactor(+panelScale.toFixed(2));
-        this.panelHeight = Math.floor(Const.TOPPANELHEIGHT * (+panelScale.toFixed(2)));
+        panelHeight = Math.floor(Const.TOPPANELHEIGHT * panelScale);
+        this.panelHeight = panelHeight;
+
+        Settings.set('app.panelHeight', panelHeight);
 
         this.updateBounds();
     }

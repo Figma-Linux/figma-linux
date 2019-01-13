@@ -131,6 +131,7 @@ interface SctionState {
 
 interface ISettings {
     app: {
+		panelHeight: number;
         showMainMenu: boolean;
         windowFrame: boolean;
         exportDir: string;

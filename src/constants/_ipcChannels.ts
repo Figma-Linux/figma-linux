@@ -8,6 +8,7 @@ export const CLEARVIEW = 'clearView';
 export const UPDATEUISCALE = 'updateuiscale';
 export const UPDATEPANELSCALE = 'updatepanelscale';
 export const UPDATEPANELHEIGHT = 'updatepanelheight';
+export const UPDATEMAINMENUVIS = 'updatemainmenuvis';
 
 export const SETTITLE = 'setTitle';
 export const UPDATEFILEKEY = 'updateFileKey';

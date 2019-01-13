@@ -87,8 +87,6 @@ const EDIT_MENU = {
 const VIEW_MENU = {
     label: 'View',
     submenu: [
-        item('Toggle menu', 'Alt+M', { id: 'toggle-menu', click: commandToMainProcess }),
-        SEPARATOR,
         item('Show Pixel Grid', 'Ctrl+\'', { action: 'toggle-grid', click: handleItemAction }),
         item('Show Layout Grids', 'Ctrl+Shift+4', { action: 'toggle-shown-layout-grids', click: handleItemAction }),
         item('Show Mask Outlines', null, { action: 'toggle-show-masks', click: handleItemAction }),
@@ -317,7 +315,7 @@ const setMenuFromTemplate = (template?: Array<E.MenuItemConstructorOptions>): E.
 		mainMenu = E.Menu.buildFromTemplate(template as E.MenuItemConstructorOptions[]);
 	} else {
 		mainMenu = E.Menu.buildFromTemplate(getMenuTemlate() as E.MenuItemConstructorOptions[]);
-	}
+    }
 
     E.Menu.setApplicationMenu(mainMenu);
 

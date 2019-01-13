@@ -41,6 +41,8 @@ export class Settings {
 	@action
 	public updateShowMainMenu = (show: boolean) => {
 		this.settings.app.showMainMenu = show;
+
+		E.remote.app.emit('setHideMainMenu', show);
 	}
 	@action
 	public updateWindowFrame = (show: boolean) => {
@@ -85,6 +87,9 @@ export class Settings {
 		});
 		E.ipcRenderer.on(Const.UPDATEPANELHEIGHT, (sender: Event, height: number) => {
 			this.settings.app.panelHeight = height;
+		});
+		E.ipcRenderer.on(Const.UPDATEMAINMENUVIS, (sender: Event, show: boolean) => {
+			this.settings.app.showMainMenu = show;
 		});
 	}
 }

@@ -53,6 +53,24 @@ class WindowManager implements IWindowManager {
         this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
+        this.mainWindow.on('blur', () => {
+            this.mainWindow.setAutoHideMenuBar(false);
+            this.mainWindow.setMenuBarVisibility(Settings.get('app.showMainMenu') as boolean);
+        });
+        this.mainWindow.on('focus', () => this.mainWindow.setAutoHideMenuBar(true));
+
+        // need for save state of the menu when start app
+        setTimeout(() => {
+            this.mainWindow.setAutoHideMenuBar(true);
+
+            this.mainWindow.setMenuBarVisibility(Settings.get('app.showMainMenu') as boolean);
+        }, 500);
+
+        // Sync the menu status with the app.showMainMenu setting
+        setInterval(() => {
+            Settings.set('app.showMainMenu', this.mainWindow.isMenuBarVisible());
+            this.mainWindow.webContents.send(Const.UPDATEMAINMENUVIS, this.mainWindow.isMenuBarVisible());
+        }, 100);
 
         isDev && this.installReactDevTools();
         isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -176,6 +194,9 @@ class WindowManager implements IWindowManager {
         });
         E.app.on('updatePanelScale', scale => {
             this.updatePanelScale(scale);
+        });
+        E.app.on('setHideMainMenu', hide => {
+            this.mainWindow.setMenuBarVisibility(hide);
         });
         E.app.on('handleCommand', (id: string) => {
             switch (id) {

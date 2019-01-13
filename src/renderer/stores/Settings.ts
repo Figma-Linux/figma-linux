@@ -83,13 +83,15 @@ export class Settings {
 		E.ipcRenderer.on(Const.UPDATEPANELSCALE, (sender: Event, scale: number) => {
 			this.settings.ui.scalePanel = scale;
 		});
+		E.ipcRenderer.on(Const.UPDATEPANELHEIGHT, (sender: Event, height: number) => {
+			this.settings.app.panelHeight = height;
+		});
 	}
 }
 
 export const settings = new Settings();
 
 autorun(() => {
-	console.log('settings.settings: ', toJS(settings.settings));
 	S.setAll(toJS(settings.settings));
 });
 

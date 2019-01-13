@@ -178,7 +178,6 @@ class WindowManager implements IWindowManager {
             this.updatePanelScale(scale);
         });
         E.app.on('handleCommand', (id: string) => {
-            console.log('handleCommand id: ', id);
             switch (id) {
                 case 'scale-normal': {
                     this.updateAllScale();
@@ -365,9 +364,9 @@ class WindowManager implements IWindowManager {
             this.figmaUiScale = 1;
         }
 
-        this.mainWindow.webContents.setZoomFactor(this.panelScale);
         panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
         this.panelHeight = panelHeight;
+        this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight)
 
         Settings.set('app.panelHeight', panelHeight);
 
@@ -395,9 +394,9 @@ class WindowManager implements IWindowManager {
         let panelHeight = 0;
 
         this.panelScale = +panelScale.toFixed(2);
-        this.mainWindow.webContents.setZoomFactor(+panelScale.toFixed(2));
         panelHeight = Math.floor(Const.TOPPANELHEIGHT * panelScale);
         this.panelHeight = panelHeight;
+        this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight)
 
         Settings.set('app.panelHeight', panelHeight);
 

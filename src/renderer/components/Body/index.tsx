@@ -1,14 +1,17 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react";
 
-import Settings from "./Settings";
+import SettingsComponent from "./Settings";
 import { isComponentUrl, getComponentTitle } from "Utils";
+import { Settings } from 'Store/Settings';
 
 interface BodyProps {
-    tabs?: ITabsStore
+    tabs?: ITabsStore;
+    settings?: Settings;
 }
 
 @inject('tabs')
+@inject('settings')
 @observer
 class Body extends React.Component<BodyProps, {}> {
     props: BodyProps;
@@ -19,7 +22,7 @@ class Body extends React.Component<BodyProps, {}> {
 
         this.props = props;
         this.components = {
-            Settings: <Settings />
+            Settings: <SettingsComponent />
         };
     }
 
@@ -39,7 +42,12 @@ class Body extends React.Component<BodyProps, {}> {
 
     render() {
         return (
-            <div id="body">
+            <div
+                id="body"
+                style={{
+                    height: `calc(100% - ${this.props.settings.settings.app.panelHeight + 1}px)`
+                }}
+            >
                 {this.loadComponent()}
             </div>
         );

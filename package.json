@@ -54,7 +54,7 @@
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.11",
     "electron": "^3.1.0",
-    "electron-builder": "^20.28.4",
+    "electron-builder": "^20.38.4",
     "electron-rebuild": "^1.8.2",
     "electron-webpack": "^2.6.1",
     "fork-ts-checker-webpack-plugin": "^0.4.2",

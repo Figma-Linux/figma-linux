@@ -67,10 +67,12 @@ class WindowManager implements IWindowManager {
         }, 500);
 
         // Sync the menu status with the app.showMainMenu setting
-        setInterval(() => {
+        const timer = setInterval(() => {
             Settings.set('app.showMainMenu', this.mainWindow.isMenuBarVisible());
             this.mainWindow.webContents.send(Const.UPDATEMAINMENUVIS, this.mainWindow.isMenuBarVisible());
         }, 100);
+
+        this.mainWindow.on('close', () => clearInterval(timer));
 
         isDev && this.installReactDevTools();
         isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -367,6 +369,11 @@ class WindowManager implements IWindowManager {
         const index: number = views.findIndex(t => t.id == id);
         const view = Tabs.focus(views[index > 0 ? index - 1 : index].id);
         this.mainWindow.setBrowserView(view);
+
+        if (!currentView) {
+            Tabs.close(id);
+            return;
+        };
 
         this.closedTabsHistory.push(currentView.webContents.getURL());
 

@@ -12,8 +12,10 @@
 	&:hover {
 		background-color: $gray_1;
 	}
+
 	& > span {
-		pointer-events: none;
+		position: relative;
+		// pointer-events: none;
 		user-select: none;
 		cursor: default;
 		white-space: nowrap;
@@ -21,6 +23,21 @@
 			size: 10px;
 		}
 		color: $white_1;
+
+		&:hover {
+			&::after {
+				cursor: pointer;
+			}
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: -8px;
+			left: -10px;
+			height: 28px;
+			width: 115%;
+		}
 	}
 }
 .active {

@@ -26,9 +26,8 @@ class Tabs extends React.Component<TabsProps, {}> {
         this.props = props;
     }
 
-    private close = (e: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
+    private close = (e: React.MouseEvent<any> & Event, id: number) => {
         e.stopPropagation();
-        e.nativeEvent && e.nativeEvent.stopImmediatePropagation();
 
         let tabs = toJS(this.props.tabs!.tabs);
         const tab = this.props.tabs.getTab(id);
@@ -41,7 +40,7 @@ class Tabs extends React.Component<TabsProps, {}> {
             E.ipcRenderer.send(Const.CLOSETAB, id);
         }
 
-        this.props.tabs!.deleteTab(id);
+        this.props.tabs.deleteTab(id);
 
         if (id !== currentTabId) return;
 
@@ -54,22 +53,24 @@ class Tabs extends React.Component<TabsProps, {}> {
         }
     }
 
-    private clickTab = (event: React.MouseEvent<HTMLDivElement> & Event, tab: Tab) => {
-        switch(event.button) {
+    private clickTab = (e: React.MouseEvent<any> & Event, tab: Tab) => {
+        e.stopPropagation();
+
+        switch(e.button) {
             // Handle left click, set focuse on the target tab
             case 0: {
-                const tabEl = event.target as HTMLDivElement;
+                const tabEl = e.target as any;
 
-                this.focus(event, tab.id);
+                this.focus(e, tab.id);
 
                 // Move tab
                 // if (/tab/.test(tabEl.className)) {
                 //     const currentTab: Tab = this.props.tabs.tabs.find(t => t.id === tab.id )
-                //     const TabContainer = tabEl.parentNode as HTMLDivElement;
+                //     const TabContainer = tabEl.parentNode as any;
                 //     const TabContainerRect = TabContainer.getBoundingClientRect();
                 //     const TabBox = tabEl.getBoundingClientRect();
                 //     const BoxXShift = event.pageX - TabBox.left;
-                //     let fakeTab: HTMLDivElement;
+                //     let fakeTab: any;
                 //     let fakeTabBox: ClientRect | DOMRect;
                 //     let fakeTabClassName: string;
                 //     let shift = 1;
@@ -85,7 +86,7 @@ class Tabs extends React.Component<TabsProps, {}> {
 
                 //         if (!isMove) {
                 //             this.props.tabs.updateTab({ ...currentTab, moves: true });
-                //             fakeTab = document.getElementsByClassName('fakeTab')[0] as HTMLDivElement;
+                //             fakeTab = document.getElementsByClassName('fakeTab')[0] as any;
                 //             fakeTabBox = fakeTab.getBoundingClientRect();
                 //             fakeTabClassName = fakeTab.className;
                 //             isMove = true;
@@ -148,16 +149,16 @@ class Tabs extends React.Component<TabsProps, {}> {
             } break;
             // Handle middle click, close tab
             case 1: {
-                this.close(event, tab.id);
+                this.close(e, tab.id);
             } break;
             // Handle right click, invoke the popup menu
             case 2: {
-                this.popup(event, tab.id);
+                this.popup(e, tab.id);
             } break;
         }
     }
 
-    private focus = (event: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
+    private focus = (event: React.MouseEvent<any> & Event, id: number) => {
         event.stopPropagation();
         event.nativeEvent.stopImmediatePropagation();
         const tab = this.props.tabs.getTab(id);
@@ -171,7 +172,7 @@ class Tabs extends React.Component<TabsProps, {}> {
         this.props.tabs!.setFocus(id);
     }
 
-    private popup = (event: React.MouseEvent<HTMLDivElement> & Event, id: number) => {
+    private popup = (event: React.MouseEvent<any> & Event, id: number) => {
         const context: E.MenuItemConstructorOptions[] = [
             {
                 id: 'copyAppUrl',

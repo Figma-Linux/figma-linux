@@ -1,5 +1,6 @@
 /// <reference path="../../@types/renderer/index.d.ts" />
 
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
@@ -346,7 +347,7 @@ const publicAPI: any = {
         if (files.length === 1 && !files[0].name.includes(path.sep)) {
             const originalFileName = files[0].name;
             const savePath = E.remote.dialog.showSaveDialog({
-                defaultPath: path.basename(originalFileName),
+                defaultPath: `${Settings.get('app.exportDir')}/${originalFileName}`,
                 showsTagField: false,
             });
 

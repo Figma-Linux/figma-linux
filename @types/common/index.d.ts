@@ -39,7 +39,6 @@ interface SctionState {
 	'select-same-text': boolean;
 	'select-same-font': boolean;
 	'select-same-instance': boolean;
-	'toggle-menu': boolean;
 	'toggle-grid': boolean;
 	'toggle-shown-layout-grids': boolean;
 	'toggle-show-masks': boolean;
@@ -130,16 +129,16 @@ interface SctionState {
 }
 
 interface ISettings {
-    app: {
+	app: {
 		panelHeight: number;
-        showMainMenu: boolean;
-        windowFrame: boolean;
-        exportDir: string;
-        fontDirs: string[];
-    };
-    ui: {
-        scalePanel: number;
-        scaleFigmaUI: number;
+		showMainMenu: boolean;
+		windowFrame: boolean;
+		exportDir: string;
+		fontDirs: string[];
+	};
+	ui: {
+		scalePanel: number;
+		scaleFigmaUI: number;
 	};
 	[path: string]: any;
 }

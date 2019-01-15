@@ -68,7 +68,6 @@ export const INITACTIONINITSTATE = {
 	'select-same-text': false,
 	'select-same-font': false,
 	'select-same-instance': false,
-	'toggle-menu': true,
 	'toggle-grid': false,
 	'toggle-shown-layout-grids': false,
 	'toggle-show-masks': false,

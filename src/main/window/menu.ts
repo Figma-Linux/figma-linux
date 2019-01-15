@@ -9,19 +9,6 @@ const commandToMainProcess = (item: E.MenuItem & { id: string }, window: E.Brows
     E.app.emit('handleCommand', item.id);
 };
 
-export const toggleMenu = () => {
-    const menu = E.Menu.getApplicationMenu();
-
-	if (menu) {
-        E.Menu.setApplicationMenu(null);
-	} else {
-        setMenuFromTemplate();
-    }
-
-    isHidden = !isHidden;
-    E.app.emit('hiddeMenu', isHidden);
-}
-
 const item = (label: string, accelerator: string, params: any) => ({
     label,
     accelerator,
@@ -30,29 +17,29 @@ const item = (label: string, accelerator: string, params: any) => ({
 
 const SEPARATOR = { type: 'separator' };
 const FILE_MENU = {
-	label: 'File',
-	submenu: [
+    label: 'File',
+    submenu: [
         item('New File', 'Ctrl+N', { id: 'newFile', click: commandToMainProcess }),
         item('Open File Browser', 'Ctrl+O', { id: 'openFileBrowser', click: commandToMainProcess }),
         item('Reopen Closed Tab', 'Ctrl+Shift+T', { id: 'reopenClosedTab', click: commandToMainProcess }),
-		SEPARATOR,
-		{
-			label: 'Close Window',
-			accelerator: 'Ctrl+Shift+W',
-			click(item: E.MenuItem, window: E.BrowserWindow) {
-				if (window) {
-					window.close();
-				}
-			},
+        SEPARATOR,
+        {
+            label: 'Close Window',
+            accelerator: 'Ctrl+Shift+W',
+            click(item: E.MenuItem, window: E.BrowserWindow) {
+                if (window) {
+                    window.close();
+                }
+            },
         },
         item('Close Tab', 'Ctrl+W', { id: 'closeTab', click: commandToMainProcess }),
-		SEPARATOR,
-		item('Save As .fig...', 'Ctrl+Shift+S', { action: 'save-as', click: handleItemAction }),
+        SEPARATOR,
+        item('Save As .fig...', 'Ctrl+Shift+S', { action: 'save-as', click: handleItemAction }),
         item('Export...', 'Ctrl+Shift+E', { action: 'export-selected-exportables', click: handleItemAction }),
         SEPARATOR,
         item('Settings', '', { id: 'openSettings', click: commandToMainProcess }),
         { role: 'quit' },
-	]
+    ]
 } as E.MenuItemConstructorOptions;
 const EDIT_MENU = {
     label: 'Edit',
@@ -223,69 +210,69 @@ const ARRANGE_MENU = {
 } as E.MenuItemConstructorOptions;
 const HELP_MENU = {
     role: 'help',
-        submenu: [
-            {
-                label: 'Help Page',
-                click() {
-                    E.shell.openExternal('https://help.figma.com');
-                },
+    submenu: [
+        {
+            label: 'Help Page',
+            click() {
+                E.shell.openExternal('https://help.figma.com');
             },
-            {
-                label: 'Community Forum',
-                click() {
-                    E.shell.openExternal('https://spectrum.chat/figma');
+        },
+        {
+            label: 'Community Forum',
+            click() {
+                E.shell.openExternal('https://spectrum.chat/figma');
+            }
+        },
+        {
+            label: 'Video Tutorials',
+            click() {
+                E.shell.openExternal('https://www.youtube.com/playlist?list=PLXDU_eVOJTx4HJKh8tQkQRtIe5YlP5smB');
+            }
+        },
+        {
+            label: 'Release Notes',
+            click() {
+                E.shell.openExternal('http://releases.figma.com');
+            },
+        },
+        {
+            label: 'Legal Summary',
+            click() {
+                E.shell.openExternal('https://www.figma.com/summary-of-policy');
+            },
+        },
+        SEPARATOR,
+        {
+            label: 'Sign Out',
+            click() {
+                const windowManager = WindowManager.instance;
+
+                windowManager.logoutAndRestart();
+            },
+        },
+        SEPARATOR,
+        {
+            label: 'Toggle Developer Tools',
+            accelerator: 'Ctrl+Alt+I',
+            click() {
+                const windowManager = WindowManager.instance;
+                const webContents = windowManager.mainWindow.getBrowserView().webContents;
+
+                if (webContents) {
+                    toggleDetachedDevTools(webContents)
                 }
             },
-            {
-                label: 'Video Tutorials',
-                click() {
-                    E.shell.openExternal('https://www.youtube.com/playlist?list=PLXDU_eVOJTx4HJKh8tQkQRtIe5YlP5smB');
-                }
-            },
-            {
-                label: 'Release Notes',
-                click() {
-                    E.shell.openExternal('http://releases.figma.com');
-                },
-            },
-            {
-                label: 'Legal Summary',
-                click() {
-                    E.shell.openExternal('https://www.figma.com/summary-of-policy');
-                },
-            },
-            SEPARATOR,
-            {
-                label: 'Sign Out',
-                click() {
-                    const windowManager = WindowManager.instance;
-
-                    windowManager.logoutAndRestart();
-                },
-            },
-            SEPARATOR,
-            {
-                label: 'Toggle Developer Tools',
-                accelerator: 'Ctrl+Alt+I',
-                click() {
-                    const windowManager = WindowManager.instance;
-                    const webContents = windowManager.mainWindow.getBrowserView().webContents;
-
-                    if (webContents) {
-                        toggleDetachedDevTools(webContents)
-                    }
-                },
-            },
-            {
-                label: 'Toggle Window Developer Tools',
-                accelerator: 'Shift+Ctrl+Alt+I',
-                click(item, win) {
-                    if (win) {
-                        toggleDetachedDevTools(win.webContents);
-                    }
+        },
+        {
+            label: 'Toggle Window Developer Tools',
+            accelerator: 'Shift+Ctrl+Alt+I',
+            click(item, win) {
+                if (win) {
+                    toggleDetachedDevTools(win.webContents);
                 }
             }
-        ]
+        }
+    ]
 } as E.MenuItemConstructorOptions;
 
 
@@ -311,10 +298,10 @@ const buildActionToMenuItemMap = (menu: E.Menu) => {
 const setMenuFromTemplate = (template?: Array<E.MenuItemConstructorOptions>): E.Menu => {
     let mainMenu: E.Menu;
 
-	if (template) {
-		mainMenu = E.Menu.buildFromTemplate(template as E.MenuItemConstructorOptions[]);
-	} else {
-		mainMenu = E.Menu.buildFromTemplate(getMenuTemlate() as E.MenuItemConstructorOptions[]);
+    if (template) {
+        mainMenu = E.Menu.buildFromTemplate(template as E.MenuItemConstructorOptions[]);
+    } else {
+        mainMenu = E.Menu.buildFromTemplate(getMenuTemlate() as E.MenuItemConstructorOptions[]);
     }
 
     E.Menu.setApplicationMenu(mainMenu);
@@ -323,7 +310,7 @@ const setMenuFromTemplate = (template?: Array<E.MenuItemConstructorOptions>): E.
 }
 
 const init = (template?: Array<E.MenuItemConstructorOptions>) => {
-	const mainMenu: E.Menu = setMenuFromTemplate(template);
+    const mainMenu: E.Menu = setMenuFromTemplate(template);
     const menuItemMap = buildActionToMenuItemMap(mainMenu);
 
     E.app.on('updateActionState', (actionState: any) => {

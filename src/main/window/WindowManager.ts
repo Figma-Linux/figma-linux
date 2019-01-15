@@ -180,6 +180,10 @@ class WindowManager implements IWindowManager {
         });
         E.app.on('setHideMainMenu', hide => {
             this.mainWindow.setAutoHideMenuBar(hide);
+
+            if (!hide) {
+                this.mainWindow.setMenuBarVisibility(true);
+            }
         });
         E.app.on('handleCommand', (id: string) => {
             switch (id) {

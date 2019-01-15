@@ -1,6 +1,6 @@
 $list: a b c d e f g h i j k l m n o p q r s t;
 
-html, body, #app {
+html, body, #app, #react-page {
 	margin: 0;
 	padding: 0;
 	outline: none;
@@ -22,6 +22,10 @@ html, body, #app {
 	.order#{$i} {
 		order: #{$i};
 	}
+}
+
+.hidden {
+	display: none;
 }
 
 .grid_1x2 {

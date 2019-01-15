@@ -4,7 +4,7 @@ import * as E from "electron";
 import * as url from "url";
 
 import Tabs from "./Tabs";
-import initMainMenu, { toggleMenu } from "./menu";
+import initMainMenu from "./menu";
 import ActionState from "../ActionState";
 import * as Const from "Const";
 import {
@@ -53,26 +53,6 @@ class WindowManager implements IWindowManager {
         this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-        this.mainWindow.on('blur', () => {
-            this.mainWindow.setAutoHideMenuBar(false);
-            this.mainWindow.setMenuBarVisibility(Settings.get('app.showMainMenu') as boolean);
-        });
-        this.mainWindow.on('focus', () => this.mainWindow.setAutoHideMenuBar(true));
-
-        // need for save state of the menu when start app
-        setTimeout(() => {
-            this.mainWindow.setAutoHideMenuBar(true);
-
-            this.mainWindow.setMenuBarVisibility(Settings.get('app.showMainMenu') as boolean);
-        }, 500);
-
-        // Sync the menu status with the app.showMainMenu setting
-        const timer = setInterval(() => {
-            Settings.set('app.showMainMenu', this.mainWindow.isMenuBarVisible());
-            this.mainWindow.webContents.send(Const.UPDATEMAINMENUVIS, this.mainWindow.isMenuBarVisible());
-        }, 100);
-
-        this.mainWindow.on('close', () => clearInterval(timer));
 
         isDev && this.installReactDevTools();
         isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -88,7 +68,8 @@ class WindowManager implements IWindowManager {
         const options: E.BrowserWindowConstructorOptions = {
             width: 1200,
             height: 900,
-            frame: Boolean(Settings.get('app.windowFrame')),
+            frame: true,
+            autoHideMenuBar: Settings.get('app.showMainMenu') as boolean,
             webPreferences: {
                 zoomFactor: 1,
                 nodeIntegration: true,
@@ -198,7 +179,7 @@ class WindowManager implements IWindowManager {
             this.updatePanelScale(scale);
         });
         E.app.on('setHideMainMenu', hide => {
-            this.mainWindow.setMenuBarVisibility(hide);
+            this.mainWindow.setAutoHideMenuBar(hide);
         });
         E.app.on('handleCommand', (id: string) => {
             switch (id) {
@@ -235,11 +216,6 @@ class WindowManager implements IWindowManager {
 
                     this.mainWindow.webContents.send(Const.CLOSETAB, { id: currentView.id });
                     this.closeTab(currentView.id);
-                } break;
-                case 'toggle-menu': {
-                    toggleMenu();
-
-                    ActionState.updateActionState();
                 } break;
                 case 'newFile': {
                     const currentView = this.addTab();

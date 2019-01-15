@@ -1,8 +1,8 @@
 export const DEFAULT_SETTINGS = {
 	app: {
 		panelHeight: 28,
-		showMainMenu: true,
-		windowFrame: true,
+		showMainMenu: false,
+		windowFrame: false,
 		exportDir: `${process.env.HOME}/Pictures/Figma`,
 		fontDirs: [
 			'/usr/share/fonts',

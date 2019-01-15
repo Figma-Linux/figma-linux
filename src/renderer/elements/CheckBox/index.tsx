@@ -6,6 +6,8 @@ export interface CheckBoxProps {
 	onChange(checked: boolean): void;
 	text?: string; // text for label
 	value?: boolean;
+	disabled?: boolean;
+	title?: string;
 	s?: string; // custom style classes
 }
 
@@ -15,10 +17,16 @@ export class CheckBox extends React.Component<CheckBoxProps, {}> {
 	}
 
 	render() {
-		return <div className={`checkbox ${this.props.s ? this.props.s : ''}`}>
+		return <div className={`checkbox ${this.props.s ? this.props.s : ''} ${this.props.disabled ? 'disabled' : ''}`}>
 			<label>
-				<input type="checkbox" name="" checked={this.props.value ? true : false} onChange={(e) => this.props.onChange(!this.props.value)}/>
-				<span>{this.props.text ? this.props.text : ''}</span>
+				<input
+					type="checkbox"
+					name=""
+					disabled={this.props.disabled ? true : false}
+					checked={this.props.value ? true : false}
+					onChange={(e) => this.props.onChange(!this.props.value)}
+				/>
+				<span title={`${this.props.title ? this.props.title : ''}`}>{this.props.text ? this.props.text : ''}</span>
 			</label>
 		</div>
 	}

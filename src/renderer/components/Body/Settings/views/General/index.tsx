@@ -37,15 +37,17 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 						</div>
 					</div>
 					<div className="section">
-						<p>Main menu</p>
+						<p>Auto hide the Main menu (toggle by Alt key)</p>
 						<CheckBox
 							value={props.settings.settings.app.showMainMenu}
 							onChange={props.settings.updateShowMainMenu}
 						/>
 					</div>
-					<div className="section">
+					<div className="section hidden">
 						<p>Window frame</p>
 						<CheckBox
+							disabled
+							title="Doesn't work now. Need rewrite this feature."
 							value={props.settings.settings.app.windowFrame}
 							onChange={props.settings.updateWindowFrame}
 						/>

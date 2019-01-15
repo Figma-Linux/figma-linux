@@ -72,3 +72,48 @@
 		}
 	}
 }
+
+.checkbox.disabled {
+	position: relative;
+
+	&>label {
+		position: relative;
+
+		&:hover {
+			cursor: default;
+		}
+
+		&>span:hover::before {
+			box-shadow: 0 0 0px 0px transparent;
+		}
+
+		&>span::before {
+			content: '';
+			position: absolute;
+			top: -2px;
+			left: 0px;
+			width: 45px;
+			height: 20px;
+			background-color: $llgray_1;
+			border: 1px solid $gray_2;
+			border-radius: 20px;
+			transition: all .1s ease;
+		}
+		&>span::after {
+			content: '';
+			position: absolute;
+			top: 0px;
+			left: 3px;
+			width: 16px;
+			height: 16px;
+			background-color: $llgray_1;
+			border: 1px solid $gray_2;
+			border-radius: 20px;
+			transition: all .2s ease;
+		}
+
+		&>input[type="checkbox"] {
+			display: none;
+		}
+	}
+}

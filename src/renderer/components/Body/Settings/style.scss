@@ -2,7 +2,7 @@
 
 #settings {
 	display: grid;
-	grid-template-columns: minmax(140px, 220px) auto;
+	grid-template-columns: minmax(140px, 287px) auto;
 	grid-template-rows: 1;
 	height: 100%;
 
@@ -28,15 +28,16 @@
 			}
 
 			&>.icon {
-				width: 45px;
+				width: 38px;
 			}
 
 			&>.label {
 				font: {
-					size: 16px;
+					size: 18px;
 					weight: 500;
 				}
 
+				margin: 12px 0px;
 				color: $black_2;
 			}
 		}

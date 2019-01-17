@@ -1,32 +1,31 @@
-.panel {
-	display: grid;
-	grid-template: "a b c";
-	grid-template-columns: auto 1fr auto;
-	background-color: #050505;
-}
+@import '../../colors.scss';
 
-.panelButtons {
-	display: inline-flex;
-	flex-direction: row;
-	align-content: center;
-}
+#app, #react-page {
+	&>.panel {
+		display: grid;
+		grid-template: "a b c";
+		grid-template-columns: auto 1fr auto;
+		background-color: $black_1;
 
-.button {
-	display: flex;
-	align-items: center;
-	padding: 6px 8px 6px 6px;
-	&:hover {
-		background-color: #050505;
-		cursor: pointer;
+		&>.panelButtons {
+			display: inline-flex;
+			flex-direction: row;
+			align-content: center;
+
+			&>.button {
+				display: flex;
+				align-items: center;
+				padding: 6px 8px 6px 6px;
+				&:hover {
+					background-color: $gray_1;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+
+	&>#body {
+		overflow-y: auto;
 	}
 }
 
-.panelSettings {
-	display: flex;
-	align-items: center;
-	padding: 0px 6px 6px 4px;
-	&:hover {
-		background-color: #050505;
-		cursor: pointer;
-	}
-}

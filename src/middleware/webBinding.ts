@@ -1,12 +1,14 @@
 /// <reference path="../../@types/renderer/index.d.ts" />
 
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
 import { sendMsgToMain } from "Utils";
+import shortcuts from "./shortcuts";
 
-const API_VERSION = 10;
+const API_VERSION = Infinity;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
@@ -17,9 +19,9 @@ const fontMapPromise = new Promise(resolve => {
 
 const onWebMessage = (event: MessageEvent) => {
     const msg = event.data;
-    
+
     if (!msg) return;
-    
+
     let resultPromise = undefined;
 
     try {
@@ -69,8 +71,41 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
         postMessage: function (name, args, transferList) {
             console.log('postMessage, name, args, transferList: ', name, args, transferList);
             window.__figmaDesktop.fileBrowser = false;
-            
+
+            // FIXME: ugly hack
+            if (!/recent/.test(window.location.href) && name === 'updateActionState') {
+                let state = {
+                    'save-as': true,
+                    'export-selected-exportables': true,
+                    'toggle-grid': true,
+                    'toggle-shown-layout-grids': true,
+                    'toggle-show-masks': true,
+                    'toggle-show-artboard-outlines': true,
+                    'toggle-rulers': true,
+                    'toggle-sidebar': true,
+                    'toggle-ui': true,
+                    'toggle-outlines': true,
+                    'toggle-layers': true,
+                    'toggle-publish': true,
+                    'toggle-library': true,
+                    'toggle-pixel-preview': true,
+                    'toggle-checkerboard': true,
+                    'zoom-in': true,
+                    'zoom-out': true,
+                    'zoom-reset': true,
+                    'zoom-to-fit': true,
+                    'zoom-to-selection': true,
+                    'next-artboard': true,
+                    'previous-artboard': true
+                };
+
+                channel.port1.postMessage({ name, args: { state: { ...args.state, ...state } } }, transferList);
+
+                return;
+            }
+
             channel.port1.postMessage({ name, args }, transferList);
+
         },
         promiseMessage: function (name, args, transferList) {
             console.log('promiseMessage, name, args, transferList: ', name, args, transferList);
@@ -114,6 +149,35 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
 }
 
 const initWebBindings = () => {
+    E.ipcRenderer.on('newFile', () => {
+        webPort.postMessage({ name: 'newFile', args: {} });
+    });
+    E.ipcRenderer.on('handleAction', (event: Event, action: string, source: string) => {
+        webPort.postMessage({ name: 'handleAction', args: { action, source } });
+    });
+    E.ipcRenderer.on('handlePageCommand', (event: Event, command: string) => {
+        const fullscreenFocusTargetFocused = document.activeElement &&
+            document.activeElement.classList.contains('focus-target');
+        if (fullscreenFocusTargetFocused) {
+            let action = null;
+            switch (command) {
+                case 'redo':
+                case 'undo':
+                    action = command;
+                    break;
+                case 'selectAll':
+                    action = 'select-all';
+                    break;
+            }
+
+            if (action) {
+                webPort.postMessage({ name: 'handleAction', args: { action, source: 'os-menu' } });
+            }
+        }
+        else {
+            document.execCommand(command);
+        }
+    });
     E.ipcRenderer.on('updateFonts', (event: Event, fonts: any) => {
         fontMap = fonts;
         if (resolveFontMapPromise) {
@@ -238,39 +302,39 @@ const publicAPI: any = {
     },
 
     newFile(args: any) {
-    console.log('newFile, args: ', args);
+        console.log('newFile, args: ', args);
         sendMsgToMain('newFile', args.info);
     },
     openFile(args: any) {
-    console.log('openFile, args: ', args);
+        console.log('openFile, args: ', args);
         sendMsgToMain('openTab', '/file/' + args.fileKey, args.title, undefined, args.target);
     },
     close(args: any) {
-    console.log('close, args: ', args);
+        console.log('close, args: ', args);
         sendMsgToMain('closeTab', args.suppressReopening);
     },
     setFileKey(args: any) {
-    console.log('setFileKey, args: ', args);
+        console.log('setFileKey, args: ', args);
         sendMsgToMain('updateFileKey', args.fileKey);
     },
     setLoading(args: any) {
-    console.log('setLoading, args: ', args);
+        console.log('setLoading, args: ', args);
         sendMsgToMain('updateLoadingStatus', args.loading);
     },
     setSaved(args: any) {
-    console.log('setSaved, args: ', args);
+        console.log('setSaved, args: ', args);
         sendMsgToMain('updateSaveStatus', args.saved);
     },
     updateActionState(args: any) {
-    console.log('updateActionState, args: ', args);
+        console.log('updateActionState, args: ', args);
         sendMsgToMain('updateActionState', args.state);
     },
     showFileBrowser() {
-    console.log('showFileBrowser');
+        console.log('showFileBrowser');
         sendMsgToMain('showFileBrowser');
     },
     setIsPreloaded() {
-    console.log('setIsPreloaded');
+        console.log('setIsPreloaded');
         sendMsgToMain('setIsPreloaded');
     },
 
@@ -283,7 +347,7 @@ const publicAPI: any = {
         if (files.length === 1 && !files[0].name.includes(path.sep)) {
             const originalFileName = files[0].name;
             const savePath = E.remote.dialog.showSaveDialog({
-                defaultPath: path.basename(originalFileName),
+                defaultPath: `${Settings.get('app.exportDir')}/${originalFileName}`,
                 showsTagField: false,
             });
 
@@ -310,7 +374,7 @@ const publicAPI: any = {
         }
 
         if (!directoryPath) return;
-    
+
         directoryPath = path.resolve(directoryPath);
         let filesToBeReplaced = 0;
         for (let file of files) {
@@ -395,9 +459,12 @@ const init = (fileBrowser: boolean) => {
         // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });
 
-    initWebBindings();
+    shortcuts();
 
     E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION}, ${fileBrowser})`);
+
+
+    initWebBindings();
 }
 
 

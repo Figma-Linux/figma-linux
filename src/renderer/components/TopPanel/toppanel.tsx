@@ -3,6 +3,7 @@ import Tabs from "Components/Tabs";
 
 interface TopPanelProps {
     current: number;
+    scalePanel: number;
 
     onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
     onHomeClick(e: React.MouseEvent<HTMLDivElement>): void;
@@ -14,14 +15,14 @@ const TopPanel: React.SFC<TopPanelProps> = (props) => {
     const currentTab: Tab | undefined = props.getTab(props.current);
 
     return (
-        <div className="panel">
+        <div className="panel" style={{zoom: props.scalePanel ? props.scalePanel : 1}}>
             <div className="panelButtons gridArea-a">
                 <div className={`button main ${props.current === 1 ? 'active' : ''}`} onClick={props.onMainTab}>
                     <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
                         <path d="M7 1H1v6h6V1zM6 2H2v4h4V2zm9-1H9v6h6V1zm-1 1h-4v4h4V2zm1 7H9v6h6V9zm-1 1h-4v4h4v-4zM7 9H1v6h6V9zm-1 1H2v4h4v-4z" fillRule="evenodd" fill="#fff"></path>
                     </svg>
                 </div>
-                {(!currentTab) || (!!currentTab && currentTab.showBackBtn) ? 
+                {(!currentTab) || (!!currentTab && currentTab.showBackBtn) ?
                     <div className="button home" onClick={props.onHomeClick}>
                         <svg x="0px" y="0px" viewBox="0 0 489 489" width="16px" height="16px">
                             <g>
@@ -31,7 +32,7 @@ const TopPanel: React.SFC<TopPanelProps> = (props) => {
                         </svg>
                     </div> : null
                 }
-                <div className="newTab" onClick={props.newTab}>
+                <div className="button newTab" onClick={props.newTab}>
                     <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.5 6.5v1h4v4h1v-4h4v-1h-4v-4h-1v4h-4z" fill="#fff"></path>
                     </svg>

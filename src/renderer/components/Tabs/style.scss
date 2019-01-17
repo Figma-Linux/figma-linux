@@ -1,3 +1,5 @@
+@import '../../colors.scss';
+
 .tabBar {
 	position: relative;
 	display: flex;
@@ -8,21 +10,38 @@
 	align-items: center;
 	padding: 0px 10px;
 	&:hover {
-		background-color: #2c2c2c;
+		background-color: $gray_1;
 	}
+
 	& > span {
-		pointer-events: none;
+		position: relative;
+		// pointer-events: none;
 		user-select: none;
 		cursor: default;
 		white-space: nowrap;
 		font: {
 			size: 10px;
 		}
-		color: #fff;
+		color: $white_1;
+
+		&:hover {
+			&::after {
+				cursor: pointer;
+			}
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			top: -8px;
+			left: -10px;
+			height: 28px;
+			width: 115%;
+		}
 	}
 }
 .active {
-	background-color: #2c2c2c;
+	background-color: $gray_1;
 }
 
 .fakeTab {
@@ -54,7 +73,7 @@
 	align-items: center;
 	padding: 2px 6px;
 	&:hover {
-		background-color: #050505;
+		background-color: $black_1;
 		cursor: pointer;
 	}
 }

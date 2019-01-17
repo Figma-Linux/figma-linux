@@ -1,17 +1,4 @@
-export {
-	NEWTAB,
-	CLOSETAB,
-	CLOSEALLTAB,
-	TABADDED,
-	FOCUSTAB,
-	MAINTAB,
-	SETTITLE,
-	TOHOME,
-	UPDATEFILEKEY
-} from './_ipcChannels';
-
-export {
-	HOMEPAGE,
-	TOPPANELHEIGHT,
-	PROTOCOL
-} from './_other';
+export * from './_defaultSettings';
+export * from './_ipcChannels';
+export * from './_other';
+export * from './_app';

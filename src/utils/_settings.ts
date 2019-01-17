@@ -23,7 +23,6 @@ const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: '', value: 'select-same-text', type: 'action' },
 	{ accelerator: '', value: 'select-same-font', type: 'action' },
 	{ accelerator: '', value: 'select-same-instance', type: 'action' },
-	{ accelerator: 'Alt+M', value: 'toggle-menu', type: 'id' },
 	{ accelerator: 'Ctrl+\'', value: 'toggle-grid', type: 'action' },
 	{ accelerator: 'Ctrl+Shift+4', value: 'toggle-shown-layout-grids', type: 'action' },
 	{ accelerator: '', value: 'toggle-show-masks', type: 'action' },

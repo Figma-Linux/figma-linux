@@ -14,9 +14,19 @@ declare namespace Electron {
 		addListener(event: 'handleCommand', listener: (command: string) => void): this;
 		removeListener(event: 'handleCommand', listener: (command: string) => void): this;
 
-		on(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
-		once(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
-		addListener(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
-		removeListener(event: 'hiddeMenu', listener: (isHidden: boolean) => void): this;
+		on(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+		once(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+		addListener(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+		removeListener(event: 'updateFigmaUiScale', listener: (scale: number) => void): this;
+
+		on(event: 'updatePanelScale', listener: (scale: number) => void): this;
+		once(event: 'updatePanelScale', listener: (scale: number) => void): this;
+		addListener(event: 'updatePanelScale', listener: (scale: number) => void): this;
+		removeListener(event: 'updatePanelScale', listener: (scale: number) => void): this;
+
+		on(event: 'setHideMainMenu', listener: (hide: boolean) => void): this;
+		once(event: 'setHideMainMenu', listener: (hide: boolean) => void): this;
+		addListener(event: 'setHideMainMenu', listener: (hide: boolean) => void): this;
+		removeListener(event: 'setHideMainMenu', listener: (hide: boolean) => void): this;
 	}
 }

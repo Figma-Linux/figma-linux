@@ -3,13 +3,16 @@ import * as React from "react";
 import { observer, inject } from "mobx-react";
 
 import Panel from "./toppanel";
+import { Settings } from 'Store/Settings';
 import './style.scss'
 
 interface TopPanelProps {
-    tabs?: ITabsStore
+    tabs?: ITabsStore;
+    settings?: Settings;
 }
 
 @inject('tabs')
+@inject('settings')
 @observer
 class TopPanel extends React.Component<TopPanelProps, {}> {
     props: TopPanelProps;
@@ -39,6 +42,7 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     render() {
         return (
             <Panel
+                scalePanel={this.props.settings.settings.ui.scalePanel}
                 current={this.props.tabs!.current}
                 onMainTab={this.onMainTab}
                 onHomeClick={this.onHomeClick}

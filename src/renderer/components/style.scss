@@ -1,10 +1,11 @@
 $list: a b c d e f g h i j k l m n o p q r s t;
 
-html, body {
+html, body, #app, #react-page {
 	margin: 0;
 	padding: 0;
 	outline: none;
 	border: 0;
+	height: 100%;
 
 	font: {
 		family: 'Roboto', sans-serif;
@@ -21,4 +22,23 @@ html, body {
 	.order#{$i} {
 		order: #{$i};
 	}
+}
+
+.hidden {
+	display: none;
+}
+
+.grid_1x2 {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.grid_2x1 {
+	display: grid;
+	grid-template: "a b" "c c";
+	grid-template-columns: 1fr 20px;
+}
+
+.grid_cgap5per {
+	grid-column-gap: 5%;
 }

@@ -1,0 +1,55 @@
+@import '../../../colors.scss';
+
+#settings {
+	display: grid;
+	grid-template-columns: minmax(140px, 287px) auto;
+	grid-template-rows: 1;
+	height: 100%;
+
+	&>.panel {
+		border-right: 2px solid $lgray_1;
+
+		.item {
+			display: flex;
+			padding: 0 20px;
+			align-items: center;
+			justify-content: left;
+			transition: background-color .1s ease;
+
+			&:hover {
+				background-color: $blue_1;
+				cursor: pointer;
+			}
+			&.active {
+				background-color: $blue_1;
+				& .label {
+					color:$white_1;
+				}
+			}
+
+			&>.icon {
+				width: 38px;
+			}
+
+			&>.label {
+				font: {
+					size: 18px;
+					weight: 500;
+				}
+
+				margin: 12px 0px;
+				color: $black_2;
+			}
+		}
+	}
+
+	&>.body {
+		padding: 10px 30px 10px 20px;
+		background-color: $llgray_1;
+
+		& h1, h2 {
+			text-align: center;
+			color: $black_2
+		}
+	}
+}

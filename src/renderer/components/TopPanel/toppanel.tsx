@@ -3,6 +3,7 @@ import Tabs from "Components/Tabs";
 
 interface TopPanelProps {
     current: number;
+    scalePanel: number;
 
     onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
     onHomeClick(e: React.MouseEvent<HTMLDivElement>): void;
@@ -14,7 +15,7 @@ const TopPanel: React.SFC<TopPanelProps> = (props) => {
     const currentTab: Tab | undefined = props.getTab(props.current);
 
     return (
-        <div className="panel">
+        <div className="panel" style={{zoom: props.scalePanel ? props.scalePanel : 1}}>
             <div className="panelButtons gridArea-a">
                 <div className={`button main ${props.current === 1 ? 'active' : ''}`} onClick={props.onMainTab}>
                     <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">

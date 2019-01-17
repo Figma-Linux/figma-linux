@@ -1,22 +1,26 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as url from "url";
 
 import Tabs from "./Tabs";
-import initMainMenu, { toggleMenu } from "./menu";
+import initMainMenu from "./menu";
 import ActionState from "../ActionState";
 import * as Const from "Const";
 import {
     isDev,
     winUrlDev,
     winUrlProd,
-    isFileBrowser
+    isFileBrowser,
+    isComponentUrl,
+    getComponentTitle
 } from "Utils";
 
 interface IWindowManager {
     home: string;
     mainWindow: E.BrowserWindow;
-    scale: number;
+    figmaUiScale: number;
+    panelScale: number;
 
     getZoom(): Promise<number>;
     setZoom(zoom: number): void;
@@ -28,14 +32,16 @@ interface IWindowManager {
 class WindowManager implements IWindowManager {
     home: string;
     mainWindow: E.BrowserWindow;
-    scale: number;
+    figmaUiScale: number;
+    panelScale: number;
     closedTabsHistory: Array<string> = [];
     private static _instance: WindowManager;
-    private panelHeight: number = Const.TOPPANELHEIGHT;
+    private panelHeight = Settings.get('app.panelHeight') as number;
 
     private constructor(options: E.BrowserWindowConstructorOptions, home: string) {
         this.home = home;
-        this.scale = 1;
+        this.figmaUiScale = Settings.get('ui.scaleFigmaUI') as number;
+        this.panelScale = Settings.get('ui.scalePanel') as number;
 
         this.mainWindow = new E.BrowserWindow(options);
         this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
@@ -63,6 +69,7 @@ class WindowManager implements IWindowManager {
             width: 1200,
             height: 900,
             frame: true,
+            autoHideMenuBar: Settings.get('app.showMainMenu') as boolean,
             webPreferences: {
                 zoomFactor: 1,
                 nodeIntegration: true,
@@ -81,7 +88,7 @@ class WindowManager implements IWindowManager {
         return WindowManager._instance;
     }
 
-    reloadAllWindows = () => {}
+    reloadAllWindows = () => { }
 
     getZoom = (): Promise<number> => new Promise((resolve) => {
         this.mainWindow.webContents.getZoomFactor(z => resolve(z));
@@ -122,6 +129,10 @@ class WindowManager implements IWindowManager {
             }
         });
 
+        E.ipcMain.on(Const.CLEARVIEW, (event: Event) => {
+            this.mainWindow.setBrowserView(null);
+        });
+
         E.ipcMain.on(Const.MAINTAB, (event: Event) => {
             const view = Tabs.focus(1);
             this.mainWindow.setBrowserView(view);
@@ -138,11 +149,19 @@ class WindowManager implements IWindowManager {
         });
 
         E.ipcMain.on(Const.SETTITLE, (event: Event, title: string) => {
-            this.mainWindow.webContents.send(Const.SETTITLE, { id: this.mainWindow.getBrowserView()!.id, title })
+            const view = this.mainWindow.getBrowserView();
+
+            if (!view) return;
+
+            this.mainWindow.webContents.send(Const.SETTITLE, { id: view.id, title })
         });
 
         E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
-            this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: this.mainWindow.getBrowserView()!.id, fileKey: key })
+            const view = this.mainWindow.getBrowserView();
+
+            if (!view) return;
+
+            this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: view.id, fileKey: key })
         });
 
         E.ipcMain.on(Const.UPDATEACTIONSTATE, (event: Event, state: Object) => {
@@ -153,28 +172,35 @@ class WindowManager implements IWindowManager {
             this.openFileBrowser();
         });
 
+        E.app.on('updateFigmaUiScale', scale => {
+            this.updateFigmaUiScale(scale);
+        });
+        E.app.on('updatePanelScale', scale => {
+            this.updatePanelScale(scale);
+        });
+        E.app.on('setHideMainMenu', hide => {
+            this.mainWindow.setAutoHideMenuBar(hide);
+
+            if (!hide) {
+                this.mainWindow.setMenuBarVisibility(true);
+            }
+        });
         E.app.on('handleCommand', (id: string) => {
-            console.log('handleCommand id: ', id);
-            switch(id) {
+            switch (id) {
                 case 'scale-normal': {
-                    this.scale = 1;
-                    this.updateScale(this.scale);
+                    this.updateAllScale();
                 } break;
                 case 'scale-inc0.1': {
-                    this.scale += 0.1;
-                    this.updateScale(this.scale);
+                    this.updateAllScale(0.1);
                 } break;
                 case 'scale-dic0.1': {
-                    this.scale -= 0.1;
-                    this.updateScale(this.scale);
+                    this.updateAllScale(-0.1);
                 } break;
                 case 'scale-inc0.05': {
-                    this.scale += 0.05;
-                    this.updateScale(this.scale);
+                    this.updateAllScale(0.05);
                 } break;
                 case 'scale-dic0.05': {
-                    this.scale -= 0.05;
-                    this.updateScale(this.scale);
+                    this.updateAllScale(-0.05);
                 } break;
                 case 'openFileBrowser': {
                     this.openFileBrowser();
@@ -195,11 +221,6 @@ class WindowManager implements IWindowManager {
                     this.mainWindow.webContents.send(Const.CLOSETAB, { id: currentView.id });
                     this.closeTab(currentView.id);
                 } break;
-                case 'toggle-menu': {
-                    toggleMenu();
-
-                    ActionState.updateActionState();
-                } break;
                 case 'newFile': {
                     const currentView = this.addTab();
                     const onDidFinishLoad = () => {
@@ -209,11 +230,25 @@ class WindowManager implements IWindowManager {
 
                     currentView.webContents.on('did-finish-load', onDidFinishLoad);
                 } break;
+                case 'openSettings': {
+                    this.addTab('', `component://Settings`);
+                } break;
             }
         })
     }
 
     public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`): E.BrowserView => {
+        if (isComponentUrl(url)) {
+            this.mainWindow.setBrowserView(null);
+            this.mainWindow.webContents.send(Const.TABADDED, {
+                title: getComponentTitle(url),
+                showBackBtn: false,
+                url
+            });
+
+            return null;
+        }
+
         const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
 
         this.mainWindow.setBrowserView(tab);
@@ -226,14 +261,14 @@ class WindowManager implements IWindowManager {
             ActionState.updateActionState(Const.ACTIONTABSTATE);
         }
 
-        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url: `${this.home}/login`, showBackBtn: true});
+        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true });
 
         return tab;
     }
 
     public logoutAndRestart = (event?: E.Event) => {
         E.net.request(`${this.home}/logout`).on('response', response => {
-            response.on('data', data => {});
+            response.on('data', data => { });
             response.on('error', (err: Error) => {
                 console.log('Request error: ', err);
             });
@@ -272,7 +307,7 @@ class WindowManager implements IWindowManager {
         view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
         this.mainWindow.setBrowserView(view);
-        this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false});
+        this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false });
     }
 
     private onMainWindowWillNavigate = (event: E.Event, newUrl: string) => {
@@ -312,25 +347,68 @@ class WindowManager implements IWindowManager {
         const views = Tabs.getAll();
         const currentView = this.mainWindow.getBrowserView();
         const index: number = views.findIndex(t => t.id == id);
-        const view = Tabs.focus(views[index > 0 ? index-1 : index].id);
+        const view = Tabs.focus(views[index > 0 ? index - 1 : index].id);
         this.mainWindow.setBrowserView(view);
+
+        if (!currentView) {
+            Tabs.close(id);
+            return;
+        };
 
         this.closedTabsHistory.push(currentView.webContents.getURL());
 
         Tabs.close(id);
     }
 
-    private updateScale = (scale: number) => {
+    private updateAllScale = (scale?: number) => {
         const views = Tabs.getAll();
+        let panelHeight = 0;
 
-        this.mainWindow.webContents.setZoomFactor(scale);
-        this.panelHeight = Math.floor(Const.TOPPANELHEIGHT * scale);
+        if (scale) {
+            this.panelScale += scale;
+            this.figmaUiScale += scale;
+        } else {
+            this.panelScale = 1;
+            this.figmaUiScale = 1;
+        }
+
+        panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
+        this.panelHeight = panelHeight;
+        this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight)
+
+        Settings.set('app.panelHeight', panelHeight);
+
+        this.mainWindow.webContents.send(Const.UPDATEPANELSCALE, this.panelScale);
+        this.mainWindow.webContents.send(Const.UPDATEUISCALE, this.figmaUiScale);
 
         this.updateBounds();
 
         for (let view of views) {
-            view.webContents.setZoomFactor(scale);
+            view.webContents.setZoomFactor(this.figmaUiScale);
         }
+    }
+
+    private updateFigmaUiScale = (figmaScale: number) => {
+        const views = Tabs.getAll();
+
+        this.figmaUiScale = +figmaScale.toFixed(2);
+
+        for (let view of views) {
+            view.webContents.setZoomFactor(+figmaScale.toFixed(2));
+        }
+    }
+
+    private updatePanelScale = (panelScale: number) => {
+        let panelHeight = 0;
+
+        this.panelScale = +panelScale.toFixed(2);
+        panelHeight = Math.floor(Const.TOPPANELHEIGHT * panelScale);
+        this.panelHeight = panelHeight;
+        this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight)
+
+        Settings.set('app.panelHeight', panelHeight);
+
+        this.updateBounds();
     }
 
     private getBounds = () => {
@@ -351,9 +429,9 @@ class WindowManager implements IWindowManager {
     }
 
     private installReactDevTools = () => {
-		installExtension(REACT_DEVELOPER_TOOLS)
-			.then((name: string) => console.log(`Added Extension:  ${name}`))
-			.catch((err: Error) => console.log('An error occurred: ', err));
+        installExtension(REACT_DEVELOPER_TOOLS)
+            .then((name: string) => console.log(`Added Extension:  ${name}`))
+            .catch((err: Error) => console.log('An error occurred: ', err));
     }
 }
 

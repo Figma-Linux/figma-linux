@@ -2,7 +2,7 @@
     "extends": "./node_modules/electron-webpack/tsconfig-base.json",
     "compilerOptions": {
         "jsx": "react",
-        "outDir": "./dest",
+        "outDir": "./dist",
         "baseUrl": "./",
         "noImplicitAny": true,
         "allowJs": false,
@@ -17,18 +17,26 @@
         "allowSyntheticDefaultImports": true,
         "strictPropertyInitialization": false,
         "noImplicitThis": false,
-        "declaration": true,
         "allowUnusedLabels": true,
         "noUnusedLocals": false,
         "strictNullChecks": false,
+        "lib": [
+            "dom",
+            "es7",
+            "esnext"
+        ],
         "typeRoots": [
             "node_modules/@types",
             "@types/**/*.d.ts"
         ],
         "paths": {
             "Components": ["src/renderer/components"],
+            "Components/*": ["src/renderer/components/*"],
+            "Elements/*": ["src/renderer/elements/*"],
+            "Elements": ["src/renderer/elements"],
             "Middleware": ["src/middleware"],
             "Store": ["src/renderer/stores"],
+            "Store/*": ["src/renderer/stores/*"],
             "Const": ["src/constants"],
             "Utils": ["src/utils"],
             "*": ["node_modules/@types/*"]
@@ -37,7 +45,7 @@
     "include": [
         "@types/**/*.d.ts",
         "src/main/index.ts",
-        "src/rerender/index.tsx",
+        "src/renderer/index.tsx",
         "src/middleware/loadMainContetnt.ts",
         "src/middleware/loadContetnt.ts",
         "src/middleware/*.ts"

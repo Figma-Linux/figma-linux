@@ -13,18 +13,15 @@ export default () => {
     E.remote.app.on('updateActionState', (state: any) => {
         actionState = state;
     });
-    E.remote.app.on('hiddeMenu', isHidden => {
-        isMenuHidden = isHidden;
-    });
 
     for (let shortcut of shortcutsMap) {
         if (shortcut.accelerator === '') continue;
 
-        switch(shortcut.type) {
+        switch (shortcut.type) {
             case 'action': {
                 shortcutMan.bind(shortcut.accelerator.toLocaleLowerCase(), () => {
                     if (!isMenuHidden) return;
-                    if  (shortcut.value === 'save-as') return;
+                    if (shortcut.value === 'save-as') return;
 
                     actionState[shortcut.value] && handleItemAction({ action: shortcut.value, accelerator: shortcut.accelerator }, currentWindow);
                 });
@@ -38,7 +35,7 @@ export default () => {
             } break;
             case 'id': {
                 shortcutMan.bind(shortcut.accelerator.toLocaleLowerCase(), () => {
-                    if (!isMenuHidden && shortcut.value !== 'toggle-menu') return;
+                    if (!isMenuHidden) return;
 
                     E.remote.app.emit('handleCommand', shortcut.value);
                 });

@@ -1,6 +1,8 @@
+import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
 
+import { DEFAULT_SETTINGS } from 'Const';
 import { isDev } from "Utils";
 import Fonts from "../Fonts";
 
@@ -10,17 +12,22 @@ class Tabs implements ITabs {
     private static tabs: Array<E.BrowserView> = [];
 
     public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string) => {
-        const tab = new E.BrowserView({
+        const options: E.BrowserViewConstructorOptions = {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
                 webSecurity: false,
                 webgl: true,
                 experimentalFeatures: true,
-                zoomFactor: 1,
-                preload: path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '')
+                zoomFactor: Settings.get('ui.scaleFigmaUI') as number
             }
-        });
+        };
+
+        if (preloadScript !== '') {
+            options.webPreferences.preload = path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '');
+        }
+
+        const tab = new E.BrowserView(options);
 
         tab.setAutoResize({
             width: true,
@@ -29,10 +36,11 @@ class Tabs implements ITabs {
         tab.setBounds(rect);
         tab.webContents.loadURL(url);
         tab.webContents.on('dom-ready', () => {
-            const dirs: Array<string> = [
-                '/usr/share/fonts',
-                `${process.env.HOME}/.local/share/fonts`
-            ];
+            let dirs = Settings.get('app.fontDirs') as string[];
+
+            if (!dirs) {
+                dirs = DEFAULT_SETTINGS.app.fontDirs;
+            }
 
             Fonts.getFonts(dirs)
                 .catch(err => console.error(`Failed to load local fonts, error: ${err}`))

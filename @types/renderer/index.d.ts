@@ -10,7 +10,7 @@ interface Window extends EventTarget, WindowTimers, WindowSessionStorage, Window
         setMessageHandler(handler: Function): void;
     };
 
-    __figmaContent: any
+    __figmaContent: any;
 }
 
 declare var window: Window;

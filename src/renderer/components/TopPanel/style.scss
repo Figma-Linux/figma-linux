@@ -1,25 +1,31 @@
-@import '../colors.scss';
+@import '../../colors.scss';
 
-.panel {
-	display: grid;
-	grid-template: "a b c";
-	grid-template-columns: auto 1fr auto;
-	background-color: $black_1;
-}
+#app, #react-page {
+	&>.panel {
+		display: grid;
+		grid-template: "a b c";
+		grid-template-columns: auto 1fr auto;
+		background-color: $black_1;
 
-.panelButtons {
-	display: inline-flex;
-	flex-direction: row;
-	align-content: center;
-}
+		&>.panelButtons {
+			display: inline-flex;
+			flex-direction: row;
+			align-content: center;
 
-.button {
-	display: flex;
-	align-items: center;
-	padding: 6px 8px 6px 6px;
-	&:hover {
-		background-color: $gray_1;
-		cursor: pointer;
+			&>.button {
+				display: flex;
+				align-items: center;
+				padding: 6px 8px 6px 6px;
+				&:hover {
+					background-color: $gray_1;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+
+	&>#body {
+		overflow-y: auto;
 	}
 }
 

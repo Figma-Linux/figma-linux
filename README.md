@@ -32,10 +32,20 @@ This app based on the [Electron](http://electron.atom.io)
 # Dependences
 On Debian-based distros You need install the libgconf2-4 library
 
-<br>
+
+# Repositories
+For now, there are have repository for deb package on Launchpad. <br>
+To add repository, execute command below:
+```bash
+sudo add-apt-repository ppa:chrdevs/figma
+```
+If You have **NO_PUBKEY** error while on **apt update**, then You must add the key manualy:
+```bash
+sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
+```
 
 # install
-[Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for you linux distribution. <br>
+[Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
 For debian-based linux distributions:
 ```
 sudo dpkg -i figma-linux_0.2.1_amd64.deb
@@ -64,7 +74,7 @@ sudo smart install figma-linux-0.2.1.x86_64.rpm
 figma-linux
 ```
 
-Or you can just download and run the AppImage.
+Or You can just download and run the AppImage.
 
 ```
 ./figma-linux-0.2.1-x86_64.AppImage

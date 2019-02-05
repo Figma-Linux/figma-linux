@@ -60,18 +60,7 @@
                 ]
             },
             {
-                "target": "freebsd",
-                "arch": [
-                    "x64",
-                    "ia32"
-                ]
-            },
-            {
-                "target": "pacman",
-                "arch": [
-                    "x64",
-                    "ia32"
-                ]
+                "target": "snap"
             },
             {
                 "target": "zip",
@@ -86,6 +75,9 @@
                     "x64",
                     "ia32"
                 ]
+            },
+            {
+                "target": "pacman"
             }
         ]
     }

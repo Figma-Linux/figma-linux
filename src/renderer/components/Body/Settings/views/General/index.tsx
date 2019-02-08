@@ -43,6 +43,13 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 							onChange={props.settings.updateShowMainMenu}
 						/>
 					</div>
+					<div className="section">
+						<p>Disable menu (The app will be reload)</p>
+						<CheckBox
+							value={props.settings.settings.app.disabledMainMenu}
+							onChange={props.settings.updateDisableMainMenu}
+						/>
+					</div>
 					<div className="section hidden">
 						<p>Window frame</p>
 						<CheckBox

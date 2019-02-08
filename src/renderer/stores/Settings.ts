@@ -45,6 +45,12 @@ export class Settings {
 		E.remote.app.emit('setHideMainMenu', show);
 	}
 	@action
+	public updateDisableMainMenu = (disabled: boolean) => {
+		this.settings.app.disabledMainMenu = disabled;
+
+		E.remote.app.emit('setDisableMainMenu', disabled);
+	}
+	@action
 	public updateWindowFrame = (show: boolean) => {
 		this.settings.app.windowFrame = show;
 	}

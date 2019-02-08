@@ -2,6 +2,7 @@ export const DEFAULT_SETTINGS = {
 	app: {
 		panelHeight: 28,
 		showMainMenu: false,
+		disabledMainMenu: false,
 		windowFrame: false,
 		exportDir: `${process.env.HOME}/Pictures/Figma`,
 		fontDirs: [

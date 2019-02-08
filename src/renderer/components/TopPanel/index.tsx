@@ -31,6 +31,13 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
         this.props.tabs!.setFocus(1);
     }
 
+    private onOpenSettings = (e: React.MouseEvent<HTMLDivElement> & Event) => {
+        e.nativeEvent.stopImmediatePropagation();
+        e.stopPropagation();
+
+        E.remote.app.emit('handleCommand', 'openSettings');
+    }
+
     private onHomeClick = (event: React.MouseEvent<HTMLDivElement> & Event) => {
         E.ipcRenderer.send('toHome');
     }
@@ -45,6 +52,7 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
                 scalePanel={this.props.settings.settings.ui.scalePanel}
                 current={this.props.tabs!.current}
                 onMainTab={this.onMainTab}
+                openSettings={this.onOpenSettings}
                 onHomeClick={this.onHomeClick}
                 newTab={this.newTab}
                 getTab={this.props.tabs!.getTab}

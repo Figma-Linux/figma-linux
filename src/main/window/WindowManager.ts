@@ -1,6 +1,7 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
 import * as Settings from 'electron-settings';
 import * as E from "electron";
+import { exec } from "child_process";
 import * as url from "url";
 
 import Tabs from "./Tabs";
@@ -46,7 +47,10 @@ class WindowManager implements IWindowManager {
         this.mainWindow = new E.BrowserWindow(options);
         this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
-        initMainMenu();
+        if (!Settings.get('app.disabledMainMenu')) {
+            initMainMenu();
+        }
+
         this.addTab('loadMainContetnt.js');
 
         this.mainWindow.on('resize', this.updateBounds);
@@ -184,6 +188,13 @@ class WindowManager implements IWindowManager {
             if (!hide) {
                 this.mainWindow.setMenuBarVisibility(true);
             }
+        });
+        E.app.on('setDisableMainMenu', hide => {
+            setTimeout(() => {
+                exec(process.argv.join(' '));
+                E.app.quit();
+            }, 1000);
+
         });
         E.app.on('handleCommand', (id: string) => {
             switch (id) {

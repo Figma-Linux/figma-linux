@@ -132,6 +132,7 @@ interface ISettings {
 	app: {
 		panelHeight: number;
 		showMainMenu: boolean;
+		disabledMainMenu: boolean;
 		windowFrame: boolean;
 		exportDir: string;
 		fontDirs: string[];

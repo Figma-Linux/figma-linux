@@ -178,6 +178,7 @@ const initWebBindings = () => {
             document.execCommand(command);
         }
     });
+
     E.ipcRenderer.on('updateFonts', (event: Event, fonts: any) => {
         fontMap = fonts;
         if (resolveFontMapPromise) {
@@ -189,6 +190,7 @@ const initWebBindings = () => {
 
 const publicAPI: any = {
     setTitle(args: any) {
+        sendMsgToMain('setTabUrl', window.location.href);
         sendMsgToMain('setTitle', args.title);
     },
 

@@ -36,6 +36,7 @@ class WindowManager implements IWindowManager {
     figmaUiScale: number;
     panelScale: number;
     closedTabsHistory: Array<string> = [];
+    private tabs: Tab[];
     private static _instance: WindowManager;
     private panelHeight = Settings.get('app.panelHeight') as number;
 
@@ -62,6 +63,12 @@ class WindowManager implements IWindowManager {
         isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
 
         this.addIpc();
+
+        E.app.on('will-quit', this.onWillQuit);
+
+        if (Settings.get('app.saveLastOpenedTabs')) {
+            setTimeout(() => this.resoreTabs(), 1000);
+        }
     }
 
     static get instance(): WindowManager {
@@ -114,6 +121,38 @@ class WindowManager implements IWindowManager {
         }
     }
 
+    private resoreTabs = () => {
+        let tabs = Settings.get('app.lastOpenedTabs') as SavedTab[];
+
+        if (Array.isArray(tabs)) {
+            tabs.forEach((tab, i) => {
+                (t => {
+                    setTimeout(() => {
+                        if (isFileBrowser(t.url)) {
+                            this.addTab('loadMainContetnt.js', t.url, t.title);
+                        } else {
+                            this.addTab('loadContetnt.js', t.url, t.title);
+                        }
+                    }, 1500 * i);
+                })(tab);
+            });
+        }
+    }
+
+    private onWillQuit = () => {
+        const lastOpenedTabs: SavedTab[] = []
+
+        this.tabs.forEach(tab => {
+            if (tab.id > 1) {
+                lastOpenedTabs.push({
+                    title: tab.title,
+                    url: tab.url
+                });
+            }
+        });
+
+        Settings.set('app.lastOpenedTabs', lastOpenedTabs as any);
+    }
 
     private addIpc = () => {
         E.ipcMain.on(Const.NEWTAB, async () => this.addTab());
@@ -159,6 +198,13 @@ class WindowManager implements IWindowManager {
 
             this.mainWindow.webContents.send(Const.SETTITLE, { id: view.id, title })
         });
+        E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
+            const view = this.mainWindow.getBrowserView();
+
+            if (!view) return;
+
+            this.mainWindow.webContents.send(Const.SETTABURL, { id: view.id, url })
+        });
 
         E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
             const view = this.mainWindow.getBrowserView();
@@ -175,6 +221,11 @@ class WindowManager implements IWindowManager {
         E.ipcMain.on(Const.TOHOME, (event: Event, title: string) => {
             this.openFileBrowser();
         });
+
+        E.ipcMain.on(Const.RECIVETABS, (event: Event, tabs: Tab[]) => {
+            this.tabs = tabs;
+        });
+
 
         E.app.on('updateFigmaUiScale', scale => {
             this.updateFigmaUiScale(scale);
@@ -248,11 +299,11 @@ class WindowManager implements IWindowManager {
         })
     }
 
-    public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`): E.BrowserView => {
+    public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
         if (isComponentUrl(url)) {
             this.mainWindow.setBrowserView(null);
             this.mainWindow.webContents.send(Const.TABADDED, {
-                title: getComponentTitle(url),
+                title: title ? title : getComponentTitle(url),
                 showBackBtn: false,
                 url
             });
@@ -272,7 +323,7 @@ class WindowManager implements IWindowManager {
             ActionState.updateActionState(Const.ACTIONTABSTATE);
         }
 
-        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true });
+        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true, title });
 
         return tab;
     }

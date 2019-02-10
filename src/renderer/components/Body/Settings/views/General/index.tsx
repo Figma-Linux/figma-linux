@@ -18,7 +18,7 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 				<div>
 					<div className="section grid_1x2">
 						<div>
-							<p>Scale UI</p>
+							<p>Scale Figma UI</p>
 							<Input
 								readonlyInput
 								value={Math.round(props.settings.settings.ui.scaleFigmaUI * 100)}
@@ -48,6 +48,13 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 						<CheckBox
 							value={props.settings.settings.app.disabledMainMenu}
 							onChange={props.settings.updateDisableMainMenu}
+						/>
+					</div>
+					<div className="section">
+						<p>Do save the last opened tabs?</p>
+						<CheckBox
+							value={props.settings.settings.app.saveLastOpenedTabs}
+							onChange={props.settings.saveLastOpenedTabs}
 						/>
 					</div>
 					<div className="section hidden">

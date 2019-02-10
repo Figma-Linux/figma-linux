@@ -51,6 +51,10 @@ export class Settings {
 		E.remote.app.emit('setDisableMainMenu', disabled);
 	}
 	@action
+	public saveLastOpenedTabs = (save: boolean) => {
+		this.settings.app.saveLastOpenedTabs = save;
+	}
+	@action
 	public updateWindowFrame = (show: boolean) => {
 		this.settings.app.windowFrame = show;
 	}

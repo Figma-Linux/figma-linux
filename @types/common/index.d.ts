@@ -8,6 +8,11 @@ interface Tab {
 	order?: number;
 }
 
+interface SavedTab {
+	title?: string;
+	url?: string;
+}
+
 interface ShortcutsMap {
 	accelerator: string;
 	value: string;
@@ -133,9 +138,11 @@ interface ISettings {
 		panelHeight: number;
 		showMainMenu: boolean;
 		disabledMainMenu: boolean;
+		saveLastOpenedTabs: boolean;
 		windowFrame: boolean;
 		exportDir: string;
 		fontDirs: string[];
+		lastOpenedTabs: SavedTab[];
 	};
 	ui: {
 		scalePanel: number;

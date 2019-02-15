@@ -5,10 +5,22 @@ import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
-import { sendMsgToMain } from "Utils";
+import { sendMsgToMain, shortcutsMap } from "Utils";
+import shortcutBinding from "./shortcutBinding";
+import { ShortcutMan } from "./ShortcutMan";
 import shortcuts from "./shortcuts";
 
-const API_VERSION = Infinity;
+import api from "./webApi";
+
+interface IIntiApiOptions {
+    version: number;
+    fileBrowser: boolean;
+    shortcutBinding?: any;
+    shortcutsMap?: ShortcutsMap[];
+    shortcutMan?: any;
+}
+
+const API_VERSION = 12;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
@@ -44,12 +56,20 @@ const onWebMessage = (event: MessageEvent) => {
     }
 }
 
-const initWebApi = (version: number, fileBrowser: boolean) => {
+// TODO: Вынести кусок кода в отдельные скрипты,
+// чтобы потом из собрать вебпаком в 1 js файл
+// и передать его функции executeJavaScript
+const initWebApi = (props: IIntiApiOptions) => {
     const channel = new MessageChannel();
     const pendingPromises = new Map();
     let messageHandler: Function;
     let nextPromiseID = 0;
-    let messageQueue: Array<any> = [];
+    let messageQueue: any[] = [];
+
+    // console.log('args: ', args, args.shortcutMan);
+    // const shortcutBinding = new Function(`return ${args.shortcutBinding}`);
+    // console.log('args.shortcutBinding: ', `return ${args.shortcutBinding}`);
+    // console.log('shortcutBinding(args.shortcutsMap): ', shortcutBinding()(args.shortcutsMap, args.shortcutMan));
 
     const tryFlushMessages = () => {
         if (messageHandler) {
@@ -65,9 +85,11 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
 
     window.__figmaContent = false;
 
+    console.log('args.fileBrowser: ', typeof props.fileBrowser, props.fileBrowser);
+
     window.__figmaDesktop = {
-        version: version,
-        fileBrowser: fileBrowser,
+        version: props.version,
+        fileBrowser: props.fileBrowser,
         postMessage: function (name, args, transferList) {
             console.log('postMessage, name, args, transferList: ', name, args, transferList);
             window.__figmaDesktop.fileBrowser = false;
@@ -192,6 +214,10 @@ const publicAPI: any = {
     setTitle(args: any) {
         sendMsgToMain('setTabUrl', window.location.href);
         sendMsgToMain('setTitle', args.title);
+    },
+
+    setUser(args: any) {
+        console.log('setUser, args: ', args);
     },
 
     getFonts() {
@@ -461,12 +487,20 @@ const init = (fileBrowser: boolean) => {
         // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });
 
-    shortcuts();
+    const initWebOptions: IIntiApiOptions = {
+        version: API_VERSION,
+        fileBrowser: fileBrowser,
+        shortcutBinding: shortcutBinding.toString(),
+        shortcutsMap,
+        shortcutMan: ShortcutMan.toString()
+    }
 
-    E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION}, ${fileBrowser})`);
-
+    console.log('api: ', api.toString());
+    E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
 
     initWebBindings();
+
+    shortcuts();
 }
 
 

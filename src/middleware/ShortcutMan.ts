@@ -36,7 +36,7 @@ interface Sequence {
 /**
  * Singleton for register shortcuts in window
  */
-class ShortcutMan {
+export class ShortcutMan {
 	private static _instance: ShortcutMan;
 	private sequenceMap: Array<Sequence> = [];
 	private shiftMap: any = {

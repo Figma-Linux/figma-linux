@@ -48,24 +48,24 @@ sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
 [Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
 For debian-based linux distributions:
 ```
-sudo dpkg -i figma-linux_0.2.1_amd64.deb
+sudo dpkg -i figma-linux_0.4.0_amd64.deb
 ```
 
 For RedHat-based linux distributions:
 ```
-sudo yum install figma-linux-0.2.1.x86_64.rpm
+sudo yum install figma-linux-0.4.0.x86_64.rpm
 ```
 or
 ```
-sudo rpm -Uvh figma-linux-0.2.1.x86_64.rpm
+sudo rpm -Uvh figma-linux-0.4.0.x86_64.rpm
 ```
 or
 ```
-sudo zypper install figma-linux-0.2.1.x86_64.rpm
+sudo zypper install figma-linux-0.4.0.x86_64.rpm
 ```
 or
 ```
-sudo smart install figma-linux-0.2.1.x86_64.rpm
+sudo smart install figma-linux-0.4.0.x86_64.rpm
 ```
 
 # Run
@@ -77,5 +77,5 @@ figma-linux
 Or You can just download and run the AppImage.
 
 ```
-./figma-linux-0.2.1-x86_64.AppImage
+./figma-linux-0.4.0-x86_64.AppImage
 ```

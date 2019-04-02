@@ -50,6 +50,8 @@ class WindowManager implements IWindowManager {
 
         if (!Settings.get('app.disabledMainMenu')) {
             initMainMenu();
+        } else {
+            this.mainWindow.setMenuBarVisibility(false);
         }
 
         this.addTab('loadMainContetnt.js');

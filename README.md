@@ -79,3 +79,34 @@ Or You can just download and run the AppImage.
 ```
 ./figma-linux-0.4.0-x86_64.AppImage
 ```
+
+# Development
+
+Steps to start development:
+
+1. git clone git@github.com:ChugunovRoman/figma-linux.git
+2. cd figma-linux
+3. npm i
+
+
+To start the app in dev mode:
+```
+npm run dev
+```
+
+To start the app in production mode:
+```
+npm run build; npm start
+```
+
+ATTENTION:
+When You do changes in middleware component, You need to rebuild and restart the app each time.
+Because the middleware execute only on run the app. Hot Reload doesn't work here.
+
+## description of  npm scripts
+
+ * **dev** - runs app in dev mode
+ * **start** - runs already built app
+ * **build** - only builds app from src
+ * **builder** - packs the app into different linux packages (see ./config/builder.json)
+ * **pack** - removes old packages from the installers dir, build the app and pack it

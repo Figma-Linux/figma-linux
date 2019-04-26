@@ -234,7 +234,6 @@ class WindowManager {
                 exec(process.argv.join(' '));
                 E.app.quit();
             }, 1000);
-
         });
         E.app.on('handleCommand', (id: string) => {
             switch (id) {

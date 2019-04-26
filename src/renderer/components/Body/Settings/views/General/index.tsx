@@ -66,6 +66,14 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 							onChange={props.settings.updateWindowFrame}
 						/>
 					</div>
+					<div className="section">
+						<p>Disable Local Fonts</p>
+						<CheckBox
+							title="It's setting disabled nodejs native module. If you have problem with the run app, you can set to the false for this setting in the $HOME/.config/figma-linux/Settings JSON file"
+							value={props.settings.settings.app.disabledFonts}
+							onChange={props.settings.updateDisabledFonts}
+						/>
+					</div>
 				</div>
 				<div>
 					<div className="section">

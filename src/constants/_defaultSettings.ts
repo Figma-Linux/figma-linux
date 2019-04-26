@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS: ISettings = {
 		disabledMainMenu: false,
 		saveLastOpenedTabs: true,
 		windowFrame: false,
+		disabledFonts: false,
 		exportDir: `${process.env.HOME}/Pictures/Figma`,
 		fontDirs: [
 			'/usr/share/fonts',

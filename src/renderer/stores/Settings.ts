@@ -58,6 +58,12 @@ export class Settings {
 	public updateWindowFrame = (show: boolean) => {
 		this.settings.app.windowFrame = show;
 	}
+	@action
+	public updateDisabledFonts = (disabled: boolean) => {
+		this.settings.app.disabledFonts = disabled;
+
+		E.remote.app.emit('setDisableFonts', disabled);
+	}
 
 	@action
 	public selectExportDir = () => {

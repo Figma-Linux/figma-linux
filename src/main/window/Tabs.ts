@@ -33,19 +33,20 @@ export default class Tabs {
         });
         tab.setBounds(rect);
         tab.webContents.loadURL(url);
-        tab.webContents.on('dom-ready', () => {
+        if (Boolean(Settings.get('app.disabledFonts'))) {
+            tab.webContents.on('dom-ready', () => {
             let dirs = Settings.get('app.fontDirs') as string[];
 
             if (!dirs) {
                 dirs = DEFAULT_SETTINGS.app.fontDirs;
             }
-
-            Fonts.getFonts(dirs)
+                Fonts.getFonts(dirs)
                 .catch(err => console.error(`Failed to load local fonts, error: ${err}`))
                 .then(fonts => {
                     tab.webContents.send('updateFonts', fonts);
                 });
-        });
+            });
+        }
         isDev && tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);

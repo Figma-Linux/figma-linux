@@ -33,5 +33,10 @@ declare namespace Electron {
 		once(event: 'setDisableMainMenu', listener: (disabled: boolean) => void): this;
 		addListener(event: 'setDisableMainMenu', listener: (disabled: boolean) => void): this;
 		removeListener(event: 'setDisableMainMenu', listener: (disabled: boolean) => void): this;
+
+		on(event: 'setDisableFonts', listener: (disabled: boolean) => void): this;
+		once(event: 'setDisableFonts', listener: (disabled: boolean) => void): this;
+		addListener(event: 'setDisableFonts', listener: (disabled: boolean) => void): this;
+		removeListener(event: 'setDisableFonts', listener: (disabled: boolean) => void): this;
 	}
 }

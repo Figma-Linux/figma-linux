@@ -140,6 +140,7 @@ interface ISettings {
 		disabledMainMenu: boolean;
 		saveLastOpenedTabs: boolean;
 		windowFrame: boolean;
+		disabledFonts: boolean;
 		exportDir: string;
 		fontDirs: string[];
 		lastOpenedTabs: SavedTab[];

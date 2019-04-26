@@ -128,8 +128,10 @@ const OBJECT_MENU = {
         item('Send Backward', 'Ctrl+[', { action: 'send-backward', click: handleItemAction }),
         item('Send to Back', 'Ctrl+Shift+[', { action: 'send-to-back', click: handleItemAction }),
         SEPARATOR,
-        item('Flip Horizontal', 'Shift+H', { action: 'flip-horizontal', click: handleItemAction }),
-        item('Flip Vertical', 'Shift+V', { action: 'flip-vertical', click: handleItemAction }),
+        item('Flip Horizontal', '', { action: 'flip-horizontal', click: handleItemAction }),
+        item('Flip Vertical', '', { action: 'flip-vertical', click: handleItemAction }),
+        // item('Flip Horizontal', 'Shift+H', { action: 'flip-horizontal', click: handleItemAction }),
+        // item('Flip Vertical', 'Shift+V', { action: 'flip-vertical', click: handleItemAction }),
         SEPARATOR,
         item('Rotate 180˚', null, { action: 'rotate-180', click: handleItemAction }),
         item('Rotate 90˚ Left', null, { action: 'rotate-90-counterclockwise', click: handleItemAction }),
@@ -158,7 +160,8 @@ const OBJECT_MENU = {
         SEPARATOR,
         item('Remove Fill', 'Alt+/', { action: 'remove-fill', click: handleItemAction }),
         item('Remove Stroke', '/', { action: 'remove-stroke', click: handleItemAction }),
-        item('Swap Fill and Stroke', 'Shift+X', { action: 'swap-fill-and-stroke', click: handleItemAction }),
+        item('Swap Fill and Stroke', '', { action: 'swap-fill-and-stroke', click: handleItemAction }),
+        // item('Swap Fill and Stroke', 'Shift+X', { action: 'swap-fill-and-stroke', click: handleItemAction }),
     ],
 } as E.MenuItemConstructorOptions;
 const VECTOR_MENU = {

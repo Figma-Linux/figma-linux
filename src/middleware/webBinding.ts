@@ -1,5 +1,3 @@
-/// <reference path="../../@types/renderer/index.d.ts" />
-
 import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";

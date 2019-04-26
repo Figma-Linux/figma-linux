@@ -3,14 +3,10 @@ import * as E from "electron";
 
 import * as Const from "Const";
 import Args from "./Args";
-import WindowManager, { IWindowManager } from "./window/WindowManager";
+import WindowManager from "./window/WindowManager";
 
-interface IApp {
-    windowManager: IWindowManager;
-}
-
-class App implements IApp {
-    windowManager: IWindowManager;
+class App {
+    windowManager: WindowManager;
 
     constructor() {
         const isSingleInstance = E.app.requestSingleInstanceLock();
@@ -83,11 +79,6 @@ class App implements IApp {
     }
 }
 
-const init = () => {
+export default () => {
     new App;
-}
-
-export default init;
-export {
-    IApp
 }

@@ -17,20 +17,7 @@ import {
     getComponentTitle
 } from "Utils";
 
-interface IWindowManager {
-    home: string;
-    mainWindow: E.BrowserWindow;
-    figmaUiScale: number;
-    panelScale: number;
-
-    getZoom(): Promise<number>;
-    setZoom(zoom: number): void;
-    openUrl(url: string): void;
-    addTab(scriptPreload: string, url: string): E.BrowserView;
-    reloadAllWindows(): void;
-}
-
-class WindowManager implements IWindowManager {
+class WindowManager {
     home: string;
     mainWindow: E.BrowserWindow;
     figmaUiScale: number;
@@ -500,6 +487,3 @@ class WindowManager implements IWindowManager {
 }
 
 export default WindowManager;
-export {
-    IWindowManager
-}

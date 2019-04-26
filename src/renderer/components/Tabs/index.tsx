@@ -1,6 +1,3 @@
-/// <reference path="../../../../@types/common/index.d.ts" />
-/// <reference path="../../../../@types/renderer/stores/index.d.ts" />
-
 import * as E from "electron";
 import * as React from "react";
 import { observer, inject } from "mobx-react";

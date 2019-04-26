@@ -6,9 +6,7 @@ import { DEFAULT_SETTINGS } from 'Const';
 import { isDev } from "Utils";
 import Fonts from "../Fonts";
 
-interface ITabs { }
-
-class Tabs implements ITabs {
+export default class Tabs {
     private static tabs: Array<E.BrowserView> = [];
 
     public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string) => {
@@ -86,9 +84,4 @@ class Tabs implements ITabs {
 
     public static getAll = (): Array<E.BrowserView> => Tabs.tabs;
 
-}
-
-export default Tabs;
-export {
-    ITabs
 }

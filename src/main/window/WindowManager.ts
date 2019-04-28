@@ -283,6 +283,9 @@ class WindowManager {
                 case 'openSettings': {
                     this.addTab('', `component://Settings`);
                 } break;
+                case 'chrome://gpu': {
+                    this.addTab('', `chrome://gpu`, 'chrome://gpu/');
+                } break;
             }
         })
     }

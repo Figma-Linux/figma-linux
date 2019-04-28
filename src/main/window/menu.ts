@@ -274,7 +274,8 @@ const HELP_MENU = {
                     toggleDetachedDevTools(win.webContents);
                 }
             }
-        }
+        },
+        item('GPU', '', { id: 'chrome://gpu', click: commandToMainProcess }),
     ]
 } as E.MenuItemConstructorOptions;
 

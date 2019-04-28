@@ -146,20 +146,21 @@ const initWebApi = (props: IIntiApiOptions) => {
         const msg = event.data;
 
         if (!msg) return;
+
         console.log('channel.port1.onmessage, event: ', event);
+
         if (msg.promiseID != null) {
             const pendingPromise = pendingPromises.get(msg.promiseID);
+
             if (pendingPromise) {
                 pendingPromises.delete(msg.promiseID);
                 if ('result' in msg) {
                     pendingPromise.resolve(msg.result);
-                }
-                else {
+                } else {
                     pendingPromise.reject(msg.error);
                 }
             }
-        }
-        else if (msg.name != null) {
+        } else if (msg.name != null) {
             messageQueue.push(msg);
             tryFlushMessages();
         }

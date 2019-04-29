@@ -6,16 +6,10 @@ import * as url from "url";
 
 import Tabs from "./Tabs";
 import initMainMenu from "./menu";
+import Commander from '../Commander';
 import ActionState from "../ActionState";
 import * as Const from "Const";
-import {
-    isDev,
-    winUrlDev,
-    winUrlProd,
-    isFileBrowser,
-    isComponentUrl,
-    getComponentTitle
-} from "Utils";
+import * as Utils from "Utils";
 
 class WindowManager {
     home: string;
@@ -33,7 +27,7 @@ class WindowManager {
         this.panelScale = Settings.get('ui.scalePanel') as number;
 
         this.mainWindow = new E.BrowserWindow(options);
-        this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
+        this.mainWindow.loadURL(Utils.isDev ? Utils.winUrlDev : Utils.winUrlProd);
 
         if (!Settings.get('app.disabledMainMenu')) {
             initMainMenu();
@@ -48,8 +42,8 @@ class WindowManager {
         this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
 
-        isDev && this.installReactDevTools();
-        isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
+        Utils.isDev && this.installReactDevTools();
+        Utils.isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
 
         this.addIpc();
 
@@ -117,7 +111,7 @@ class WindowManager {
             tabs.forEach((tab, i) => {
                 (t => {
                     setTimeout(() => {
-                        if (isFileBrowser(t.url)) {
+                        if (Utils.isFileBrowser(t.url)) {
                             this.addTab('loadMainContetnt.js', t.url, t.title);
                         } else {
                             this.addTab('loadContetnt.js', t.url, t.title);
@@ -154,7 +148,7 @@ class WindowManager {
             const view = Tabs.focus(id);
             this.mainWindow.setBrowserView(view);
 
-            if (isFileBrowser(view.webContents.getURL())) {
+            if (Utils.isFileBrowser(view.webContents.getURL())) {
                 ActionState.updateInFileBrowserActionState();
             } else {
                 ActionState.updateInProjectActionState();
@@ -169,7 +163,7 @@ class WindowManager {
             const view = Tabs.focus(1);
             this.mainWindow.setBrowserView(view);
 
-            if (isFileBrowser(view.webContents.getURL())) {
+            if (Utils.isFileBrowser(view.webContents.getURL())) {
                 ActionState.updateInFileBrowserActionState();
             } else {
                 ActionState.updateInProjectActionState();
@@ -286,15 +280,19 @@ class WindowManager {
                 case 'chrome://gpu': {
                     this.addTab('', `chrome://gpu`, 'chrome://gpu/');
                 } break;
+
+                default: {
+                    Commander.exec(id);
+                }
             }
         })
     }
 
     public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
-        if (isComponentUrl(url)) {
+        if (Utils.isComponentUrl(url)) {
             this.mainWindow.setBrowserView(null);
             this.mainWindow.webContents.send(Const.TABADDED, {
-                title: title ? title : getComponentTitle(url),
+                title: title ? title : Utils.getComponentTitle(url),
                 showBackBtn: false,
                 url
             });
@@ -308,7 +306,7 @@ class WindowManager {
         tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
         tab.webContents.on('new-window', this.onNewWindow);
 
-        if (isFileBrowser) {
+        if (Utils.isFileBrowser) {
             ActionState.updateInFileBrowserActionState();
         } else {
             ActionState.updateActionState(Const.ACTIONTABSTATE);

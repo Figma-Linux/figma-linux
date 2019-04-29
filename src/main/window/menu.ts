@@ -1,6 +1,7 @@
 import * as E from 'electron';
+import Commander from '../Commander';
 
-import { toggleDetachedDevTools, handleCommandItemClick, handleItemAction } from "Utils";
+import { handleCommandItemClick, handleItemAction } from "Utils";
 import WindowManager from "./WindowManager";
 
 export let isHidden: boolean = false;
@@ -26,11 +27,7 @@ const FILE_MENU = {
         {
             label: 'Close Window',
             accelerator: 'Ctrl+Shift+W',
-            click(item: E.MenuItem, window: E.BrowserWindow) {
-                if (window) {
-                    window.close();
-                }
-            },
+            click() { Commander.exec('close-window'); },
         },
         item('Close Tab', 'Ctrl+W', { id: 'closeTab', click: commandToMainProcess }),
         SEPARATOR,
@@ -257,23 +254,12 @@ const HELP_MENU = {
         {
             label: 'Toggle Developer Tools',
             accelerator: 'Ctrl+Alt+I',
-            click() {
-                const windowManager = WindowManager.instance;
-                const webContents = windowManager.mainWindow.getBrowserView().webContents;
-
-                if (webContents) {
-                    toggleDetachedDevTools(webContents)
-                }
-            },
+            click() { Commander.exec('toggle-developer-tools'); },
         },
         {
             label: 'Toggle Window Developer Tools',
             accelerator: 'Shift+Ctrl+Alt+I',
-            click(item, win) {
-                if (win) {
-                    toggleDetachedDevTools(win.webContents);
-                }
-            }
+            click() { Commander.exec('toggle-window-developer-tools'); },
         },
         item('GPU', '', { id: 'chrome://gpu', click: commandToMainProcess }),
     ]

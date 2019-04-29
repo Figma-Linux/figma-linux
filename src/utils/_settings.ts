@@ -113,6 +113,11 @@ export const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: '', value: 'distribute-top', type: 'action' },
 	{ accelerator: '', value: 'distribute-vertical-center', type: 'action' },
 	{ accelerator: '', value: 'distribute-bottom', type: 'action' },
+
+	{ accelerator: 'Ctrl+Shift+W', value: 'close-window', type: 'id' },
+
+	{ accelerator: 'Ctrl+Alt+I', value: 'toggle-developer-tools', type: 'id' },
+	{ accelerator: 'Shift+Ctrl+Alt+I', value: 'toggle-window-developer-tools', type: 'id' },
 ];
 
 export let isHidden: boolean = false;

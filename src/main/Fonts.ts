@@ -1,15 +1,16 @@
 import * as Settings from 'electron-settings';
+import { Fonts } from 'figma-linux-bindings';
 
-let binding: any = null;
+let fonts: any = null;
 if (!Boolean(Settings.get('app.disabledFonts'))) {
-	binding = require('./binding.node');
+	fonts = require('figma-linux-bindings').getFonts;
 }
 
 class Fonts {
 	public static getFonts = (dirs: Array<string>): Promise<Fonts.IFonts> => new Promise((resolve, reject) => {
-		if (binding) {
+		if (fonts) {
 			console.info('local fonts support is enabled');
-			binding.getFonts(dirs, (err: Error, fonts: Fonts.IFonts) => {
+			fonts(dirs, (err: Error, fonts: Fonts.IFonts) => {
 				if (err) reject(err);
 
 				resolve(fonts);

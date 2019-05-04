@@ -4,6 +4,7 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { sendMsgToMain, shortcutsMap } from "Utils";
+import * as Const from 'Const';
 import shortcutBinding from "./shortcutBinding";
 import { ShortcutMan } from "./ShortcutMan";
 import shortcuts from "./shortcuts";
@@ -26,6 +27,40 @@ const fontMapPromise = new Promise(resolve => {
     resolveFontMapPromise = resolve;
 });
 
+const onClickExportImage = (e: Event, link: HTMLLinkElement) => {
+    E.remote.net.request(`${link.href}`)
+        .on('response', res => {
+            const filetype: string = res.headers['content-type'][0].replace(/^.+\//, '');
+            console.log('response file type: ', filetype);
+
+            const savePath = E.remote.dialog.showSaveDialog({
+                defaultPath: `${Settings.get('app.exportDir')}/${link.textContent.replace(/\..+$/, '')}.${filetype}`,
+                showsTagField: false
+            });
+
+            if (!savePath) return;
+
+            let length: number = 0;
+            const stream = fs.createWriteStream(savePath);
+
+            res.on('data', chunk => {
+                stream.write(chunk);
+
+                if (chunk.length < length) {
+                    stream.end();
+                }
+
+                length = chunk.length;
+            });
+            res.on('error', (err: Error) => {
+                console.log('Export image error: ', err);
+            });
+        })
+        .on('error', error => console.log('request error: ', error))
+        .end();
+
+    e.preventDefault();
+}
 
 const onWebMessage = (event: MessageEvent) => {
     const msg = event.data;
@@ -170,6 +205,11 @@ const initWebApi = (props: IIntiApiOptions) => {
 }
 
 const initWebBindings = () => {
+    setInterval(() => {
+        const link: HTMLLinkElement = document.querySelector('div[class^="code_inspection_panels--inspectorRow"] > a');
+        link && (link.onclick = (e: Event) => { onClickExportImage(e, link); });
+    }, 500);
+
     E.ipcRenderer.on('newFile', () => {
         webPort.postMessage({ name: 'newFile', args: {} });
     });
@@ -366,6 +406,7 @@ const publicAPI: any = {
     },
 
     writeFiles(args: any) {
+        console.log('writeFiles args: ', args);
         const files = args.files;
         if (!Array.isArray(files) || files.length === 0) return;
 
@@ -453,8 +494,7 @@ const publicAPI: any = {
                     try {
                         dirPath = path.join(dirPath, part);
                         fs.mkdirSync(dirPath);
-                    } catch (ex) {
-                    }
+                    } catch (ex) {}
                 }
             }
 
@@ -480,8 +520,8 @@ const init = (fileBrowser: boolean) => {
     window.addEventListener('message', event => {
         // console.log(`window message, ${event.origin} === ${location.origin}, data, ports: `, event.data, event.ports);
         webPort = event.ports[0];
-        webPort.onmessage = onWebMessage;
         console.log(`window message, webPort: `, webPort);
+        webPort && (webPort.onmessage = onWebMessage);
         // console.log('window.__figmaDesktop.fileBrowser: ', window.__figmaDesktop.fileBrowser);
         // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });

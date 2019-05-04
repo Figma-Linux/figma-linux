@@ -3,7 +3,7 @@ import * as E from "electron";
 import * as path from "path";
 
 import { DEFAULT_SETTINGS } from 'Const';
-import { isDev } from "Utils";
+import * as Utils from 'Utils';
 import Fonts from "../Fonts";
 
 export default class Tabs {
@@ -22,7 +22,7 @@ export default class Tabs {
         };
 
         if (preloadScript !== '') {
-            options.webPreferences.preload = path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '');
+            options.webPreferences.preload = path.resolve(Utils.isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '');
         }
 
         const tab = new E.BrowserView(options);
@@ -46,7 +46,7 @@ export default class Tabs {
                 });
         });
 
-        isDev && tab.webContents.toggleDevTools();
+        Utils.isDev && tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);
 

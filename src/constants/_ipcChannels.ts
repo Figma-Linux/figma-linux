@@ -15,5 +15,6 @@ export const SETTITLE = 'setTitle';
 export const SETTABURL = 'setTabUrl';
 export const UPDATEFILEKEY = 'updateFileKey';
 export const UPDATEACTIONSTATE = 'updateActionState';
+export const EXPORTIMAGE = 'exportimage';
 
 export const TOHOME = 'toHome';

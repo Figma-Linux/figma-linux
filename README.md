@@ -110,3 +110,7 @@ Because the middleware execute only on run the app. Hot Reload doesn't work here
  * **build** - only builds app from src
  * **builder** - packs the app into different linux packages (see ./config/builder.json)
  * **pack** - removes old packages from the installers dir, build the app and pack it
+
+# Community
+
+Join us in [telegram](https://t.me/figma_linux) and [spectrum.chat](https://spectrum.chat/figma-linux)

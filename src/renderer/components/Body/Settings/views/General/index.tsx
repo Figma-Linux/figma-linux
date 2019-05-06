@@ -18,7 +18,7 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 				<div>
 					<div className="section grid_1x2">
 						<div>
-							<p>Scale UI</p>
+							<p>Scale Figma UI</p>
 							<Input
 								readonlyInput
 								value={Math.round(props.settings.settings.ui.scaleFigmaUI * 100)}
@@ -43,6 +43,20 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 							onChange={props.settings.updateShowMainMenu}
 						/>
 					</div>
+					<div className="section">
+						<p>Disable menu (The app will be reload)</p>
+						<CheckBox
+							value={props.settings.settings.app.disabledMainMenu}
+							onChange={props.settings.updateDisableMainMenu}
+						/>
+					</div>
+					<div className="section">
+						<p>Do save the last opened tabs?</p>
+						<CheckBox
+							value={props.settings.settings.app.saveLastOpenedTabs}
+							onChange={props.settings.saveLastOpenedTabs}
+						/>
+					</div>
 					<div className="section hidden">
 						<p>Window frame</p>
 						<CheckBox
@@ -50,6 +64,14 @@ const GeneralBody: React.SFC<GeneralBodyProps> = props => {
 							title="Doesn't work now. Need rewrite this feature."
 							value={props.settings.settings.app.windowFrame}
 							onChange={props.settings.updateWindowFrame}
+						/>
+					</div>
+					<div className="section">
+						<p>Disable Local Fonts</p>
+						<CheckBox
+							title="It's setting disabled nodejs native module. If you have problem with the run app, you can set to the false for this setting in the $HOME/.config/figma-linux/Settings JSON file"
+							value={props.settings.settings.app.disabledFonts}
+							onChange={props.settings.updateDisabledFonts}
 						/>
 					</div>
 				</div>

@@ -9,9 +9,12 @@ export const UPDATEUISCALE = 'updateuiscale';
 export const UPDATEPANELSCALE = 'updatepanelscale';
 export const UPDATEPANELHEIGHT = 'updatepanelheight';
 export const UPDATEMAINMENUVIS = 'updatemainmenuvis';
+export const RECIVETABS = 'recivetabs';
 
 export const SETTITLE = 'setTitle';
+export const SETTABURL = 'setTabUrl';
 export const UPDATEFILEKEY = 'updateFileKey';
 export const UPDATEACTIONSTATE = 'updateActionState';
+export const EXPORTIMAGE = 'exportimage';
 
 export const TOHOME = 'toHome';

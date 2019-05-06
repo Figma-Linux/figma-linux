@@ -1,26 +1,24 @@
-const binding = require('./binding.node');
+import * as Settings from 'electron-settings';
+import { Fonts } from 'figma-linux-bindings';
 
-interface IFontsFigmaItem {
-	postscript: string;
-	family: string;
-	id: string;
-	style?: string;
-	weight?: number;
-	stretch?: number;
-	italic?: boolean;
-}
-
-interface IFonts {
-	[path: string]: Array<IFontsFigmaItem>
+let fonts: any = null;
+if (!Boolean(Settings.get('app.disabledFonts'))) {
+	fonts = require('figma-linux-bindings').getFonts;
 }
 
 class Fonts {
-	public static getFonts = (dirs: Array<string>): Promise<IFonts> => new Promise((resolve, reject) => {
-		binding.getFonts(dirs, (err: Error, fonts: IFonts) => {
-			if (err) reject(err);
+	public static getFonts = (dirs: Array<string>): Promise<Fonts.IFonts> => new Promise((resolve, reject) => {
+		if (fonts) {
+			console.info('local fonts support is enabled');
+			fonts(dirs, (err: Error, fonts: Fonts.IFonts) => {
+				if (err) reject(err);
 
-			resolve(fonts);
-		});
+				resolve(fonts);
+			});
+		} else {
+			console.info('local fonts support is disabled');
+			reject(new Error('The Native module is disabled in the app settings'));
+		}
 	});
 }
 

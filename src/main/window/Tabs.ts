@@ -3,12 +3,10 @@ import * as E from "electron";
 import * as path from "path";
 
 import { DEFAULT_SETTINGS } from 'Const';
-import { isDev } from "Utils";
+import * as Utils from 'Utils';
 import Fonts from "../Fonts";
 
-interface ITabs { }
-
-class Tabs implements ITabs {
+export default class Tabs {
     private static tabs: Array<E.BrowserView> = [];
 
     public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string) => {
@@ -24,7 +22,7 @@ class Tabs implements ITabs {
         };
 
         if (preloadScript !== '') {
-            options.webPreferences.preload = path.resolve(isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '');
+            options.webPreferences.preload = path.resolve(Utils.isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`, 'middleware', preloadScript || '');
         }
 
         const tab = new E.BrowserView(options);
@@ -41,14 +39,14 @@ class Tabs implements ITabs {
             if (!dirs) {
                 dirs = DEFAULT_SETTINGS.app.fontDirs;
             }
-
             Fonts.getFonts(dirs)
                 .catch(err => console.error(`Failed to load local fonts, error: ${err}`))
                 .then(fonts => {
                     tab.webContents.send('updateFonts', fonts);
                 });
         });
-        isDev && tab.webContents.toggleDevTools();
+
+        Utils.isDev && tab.webContents.toggleDevTools();
 
         Tabs.tabs.push(tab);
 
@@ -86,9 +84,4 @@ class Tabs implements ITabs {
 
     public static getAll = (): Array<E.BrowserView> => Tabs.tabs;
 
-}
-
-export default Tabs;
-export {
-    ITabs
 }

@@ -1,40 +1,23 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
 import * as Settings from 'electron-settings';
 import * as E from "electron";
+import { exec } from "child_process";
 import * as url from "url";
 
 import Tabs from "./Tabs";
 import initMainMenu from "./menu";
+import Commander from '../Commander';
 import ActionState from "../ActionState";
 import * as Const from "Const";
-import {
-    isDev,
-    winUrlDev,
-    winUrlProd,
-    isFileBrowser,
-    isComponentUrl,
-    getComponentTitle
-} from "Utils";
+import * as Utils from "Utils";
 
-interface IWindowManager {
-    home: string;
-    mainWindow: E.BrowserWindow;
-    figmaUiScale: number;
-    panelScale: number;
-
-    getZoom(): Promise<number>;
-    setZoom(zoom: number): void;
-    openUrl(url: string): void;
-    addTab(scriptPreload: string, url: string): E.BrowserView;
-    reloadAllWindows(): void;
-}
-
-class WindowManager implements IWindowManager {
+class WindowManager {
     home: string;
     mainWindow: E.BrowserWindow;
     figmaUiScale: number;
     panelScale: number;
     closedTabsHistory: Array<string> = [];
+    private tabs: Tab[];
     private static _instance: WindowManager;
     private panelHeight = Settings.get('app.panelHeight') as number;
 
@@ -44,9 +27,14 @@ class WindowManager implements IWindowManager {
         this.panelScale = Settings.get('ui.scalePanel') as number;
 
         this.mainWindow = new E.BrowserWindow(options);
-        this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
+        this.mainWindow.loadURL(Utils.isDev ? Utils.winUrlDev : Utils.winUrlProd);
 
-        initMainMenu();
+        if (!Settings.get('app.disabledMainMenu')) {
+            initMainMenu();
+        } else {
+            this.mainWindow.setMenuBarVisibility(false);
+        }
+
         this.addTab('loadMainContetnt.js');
 
         this.mainWindow.on('resize', this.updateBounds);
@@ -54,10 +42,16 @@ class WindowManager implements IWindowManager {
         this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
 
-        isDev && this.installReactDevTools();
-        isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
+        Utils.isDev && this.installReactDevTools();
+        Utils.isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
 
         this.addIpc();
+
+        E.app.on('will-quit', this.onWillQuit);
+
+        if (Settings.get('app.saveLastOpenedTabs')) {
+            setTimeout(() => this.resoreTabs(), 1000);
+        }
     }
 
     static get instance(): WindowManager {
@@ -110,6 +104,38 @@ class WindowManager implements IWindowManager {
         }
     }
 
+    private resoreTabs = () => {
+        let tabs = Settings.get('app.lastOpenedTabs') as SavedTab[];
+
+        if (Array.isArray(tabs)) {
+            tabs.forEach((tab, i) => {
+                (t => {
+                    setTimeout(() => {
+                        if (Utils.isFileBrowser(t.url)) {
+                            this.addTab('loadMainContetnt.js', t.url, t.title);
+                        } else {
+                            this.addTab('loadContetnt.js', t.url, t.title);
+                        }
+                    }, 1500 * i);
+                })(tab);
+            });
+        }
+    }
+
+    private onWillQuit = () => {
+        const lastOpenedTabs: SavedTab[] = []
+
+        this.tabs.forEach(tab => {
+            if (tab.id > 1) {
+                lastOpenedTabs.push({
+                    title: tab.title,
+                    url: tab.url
+                });
+            }
+        });
+
+        Settings.set('app.lastOpenedTabs', lastOpenedTabs as any);
+    }
 
     private addIpc = () => {
         E.ipcMain.on(Const.NEWTAB, async () => this.addTab());
@@ -122,7 +148,7 @@ class WindowManager implements IWindowManager {
             const view = Tabs.focus(id);
             this.mainWindow.setBrowserView(view);
 
-            if (isFileBrowser(view.webContents.getURL())) {
+            if (Utils.isFileBrowser(view.webContents.getURL())) {
                 ActionState.updateInFileBrowserActionState();
             } else {
                 ActionState.updateInProjectActionState();
@@ -137,7 +163,7 @@ class WindowManager implements IWindowManager {
             const view = Tabs.focus(1);
             this.mainWindow.setBrowserView(view);
 
-            if (isFileBrowser(view.webContents.getURL())) {
+            if (Utils.isFileBrowser(view.webContents.getURL())) {
                 ActionState.updateInFileBrowserActionState();
             } else {
                 ActionState.updateInProjectActionState();
@@ -154,6 +180,13 @@ class WindowManager implements IWindowManager {
             if (!view) return;
 
             this.mainWindow.webContents.send(Const.SETTITLE, { id: view.id, title })
+        });
+        E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
+            const view = this.mainWindow.getBrowserView();
+
+            if (!view) return;
+
+            this.mainWindow.webContents.send(Const.SETTABURL, { id: view.id, url })
         });
 
         E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
@@ -172,6 +205,11 @@ class WindowManager implements IWindowManager {
             this.openFileBrowser();
         });
 
+        E.ipcMain.on(Const.RECIVETABS, (event: Event, tabs: Tab[]) => {
+            this.tabs = tabs;
+        });
+
+
         E.app.on('updateFigmaUiScale', scale => {
             this.updateFigmaUiScale(scale);
         });
@@ -184,6 +222,12 @@ class WindowManager implements IWindowManager {
             if (!hide) {
                 this.mainWindow.setMenuBarVisibility(true);
             }
+        });
+        E.app.on('setDisableMainMenu', hide => {
+            setTimeout(() => {
+                exec(process.argv.join(' '));
+                E.app.quit();
+            }, 1000);
         });
         E.app.on('handleCommand', (id: string) => {
             switch (id) {
@@ -233,15 +277,22 @@ class WindowManager implements IWindowManager {
                 case 'openSettings': {
                     this.addTab('', `component://Settings`);
                 } break;
+                case 'chrome://gpu': {
+                    this.addTab('', `chrome://gpu`, 'chrome://gpu/');
+                } break;
+
+                default: {
+                    Commander.exec(id);
+                }
             }
         })
     }
 
-    public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`): E.BrowserView => {
-        if (isComponentUrl(url)) {
+    public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
+        if (Utils.isComponentUrl(url)) {
             this.mainWindow.setBrowserView(null);
             this.mainWindow.webContents.send(Const.TABADDED, {
-                title: getComponentTitle(url),
+                title: title ? title : Utils.getComponentTitle(url),
                 showBackBtn: false,
                 url
             });
@@ -255,13 +306,13 @@ class WindowManager implements IWindowManager {
         tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
         tab.webContents.on('new-window', this.onNewWindow);
 
-        if (isFileBrowser) {
+        if (Utils.isFileBrowser) {
             ActionState.updateInFileBrowserActionState();
         } else {
             ActionState.updateActionState(Const.ACTIONTABSTATE);
         }
 
-        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true });
+        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true, title });
 
         return tab;
     }
@@ -436,6 +487,3 @@ class WindowManager implements IWindowManager {
 }
 
 export default WindowManager;
-export {
-    IWindowManager
-}

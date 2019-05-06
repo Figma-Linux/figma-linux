@@ -7,7 +7,12 @@ const rootFolder = process.cwd();
 const render = {
     entry: {
         '../middleware/loadMainContetnt': path.resolve(rootFolder, 'src/middleware/loadMainContetnt.ts'),
-        '../middleware/loadContetnt': path.resolve(rootFolder, 'src/middleware/loadContetnt.ts')
+        '../middleware/loadContetnt': path.resolve(rootFolder, 'src/middleware/loadContetnt.ts'),
+        '../middleware/webApi': path.resolve(rootFolder, 'src/middleware/webApi.ts')
+    },
+
+    module: {
+        noParse: /webApi/
     },
 
     resolve: {

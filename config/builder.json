@@ -29,12 +29,6 @@
         "depends": []
     },
 
-    "deb": {
-        "depends": [
-            "libgconf2-4"
-        ]
-    },
-
     "appImage": {
         "category": "Graphics",
         "systemIntegration": "doNotAsk"
@@ -60,7 +54,10 @@
                 ]
             },
             {
-                "target": "snap"
+                "target": "snap",
+                "arch": [
+                    "x64"
+                ]
             },
             {
                 "target": "zip",
@@ -77,7 +74,11 @@
                 ]
             },
             {
-                "target": "pacman"
+                "target": "pacman",
+                "arch": [
+                    "x64",
+                    "ia32"
+                ]
             }
         ]
     }

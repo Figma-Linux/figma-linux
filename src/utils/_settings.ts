@@ -1,5 +1,5 @@
 
-const shortcutsMap: Array<ShortcutsMap> = [
+export const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: 'Ctrl+N', value: 'newFile', type: 'id' },
 	{ accelerator: 'Ctrl+O', value: 'openFileBrowser', type: 'id' },
 	{ accelerator: 'Ctrl+Shift+T', value: 'reopenClosedTab', type: 'id' },
@@ -62,8 +62,10 @@ const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: 'Ctrl+]', value: 'bring-forward', type: 'action' },
 	{ accelerator: 'Ctrl+[', value: 'send-backward', type: 'action' },
 	{ accelerator: 'Ctrl+Shift+[', value: 'send-to-back', type: 'action' },
-	{ accelerator: 'Shift+H', value: 'flip-horizontal', type: 'action' },
-	{ accelerator: 'Shift+V', value: 'flip-vertical', type: 'action' },
+	{ accelerator: '', value: 'flip-horizontal', type: 'action' },
+	{ accelerator: '', value: 'flip-vertical', type: 'action' },
+	// { accelerator: 'Shift+H', value: 'flip-horizontal', type: 'action' },
+	// { accelerator: 'Shift+V', value: 'flip-vertical', type: 'action' },
 	{ accelerator: '', value: 'rotate-180', type: 'action' },
 	{ accelerator: '', value: 'rotate-90-counterclockwise', type: 'action' },
 	{ accelerator: '', value: 'rotate-90-clockwise', type: 'action' },
@@ -82,7 +84,8 @@ const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: 'Alt+L', value: 'collapse-layers', type: 'action' },
 	{ accelerator: 'Alt+/', value: 'remove-fill', type: 'action' },
 	{ accelerator: '/', value: 'remove-stroke', type: 'action' },
-	{ accelerator: 'Shift+X', value: 'swap-fill-and-stroke', type: 'action' },
+	{ accelerator: '', value: 'swap-fill-and-stroke', type: 'action' },
+	// { accelerator: 'Shift+X', value: 'swap-fill-and-stroke', type: 'action' },
 	{ accelerator: 'Ctrl+J', value: 'join-selection', type: 'action' },
 	{ accelerator: '', value: 'smooth-join-selection', type: 'action' },
 	{ accelerator: 'Shift+Backspace', value: 'delete-and-heal-selection', type: 'action' },
@@ -110,11 +113,11 @@ const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: '', value: 'distribute-top', type: 'action' },
 	{ accelerator: '', value: 'distribute-vertical-center', type: 'action' },
 	{ accelerator: '', value: 'distribute-bottom', type: 'action' },
+
+	{ accelerator: 'Ctrl+Shift+W', value: 'close-window', type: 'id' },
+
+	{ accelerator: 'Ctrl+Alt+I', value: 'toggle-developer-tools', type: 'id' },
+	{ accelerator: 'Shift+Ctrl+Alt+I', value: 'toggle-window-developer-tools', type: 'id' },
 ];
 
-let isHidden: boolean = false;
-
-export {
-	isHidden,
-	shortcutsMap
-}
+export let isHidden: boolean = false;

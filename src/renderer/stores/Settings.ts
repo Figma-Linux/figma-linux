@@ -45,8 +45,24 @@ export class Settings {
 		E.remote.app.emit('setHideMainMenu', show);
 	}
 	@action
+	public updateDisableMainMenu = (disabled: boolean) => {
+		this.settings.app.disabledMainMenu = disabled;
+
+		E.remote.app.emit('setDisableMainMenu', disabled);
+	}
+	@action
+	public saveLastOpenedTabs = (save: boolean) => {
+		this.settings.app.saveLastOpenedTabs = save;
+	}
+	@action
 	public updateWindowFrame = (show: boolean) => {
 		this.settings.app.windowFrame = show;
+	}
+	@action
+	public updateDisabledFonts = (disabled: boolean) => {
+		this.settings.app.disabledFonts = disabled;
+
+		E.remote.app.emit('setDisableFonts', disabled);
 	}
 
 	@action

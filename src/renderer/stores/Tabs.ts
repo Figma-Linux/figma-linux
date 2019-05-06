@@ -1,11 +1,11 @@
 import * as E from 'electron';
-import { observable, action, toJS } from 'mobx';
+import { observable, action, autorun, toJS } from 'mobx';
 
 import * as Const from 'Const';
 import { isComponentUrl } from 'Utils';
 
 export class Tabs implements ITabsStore {
-	@observable tabs: Array<Tab> = [];
+	@observable tabs: Tab[] = [];
 	@observable current: number = 1;
 
 	constructor() {
@@ -43,7 +43,7 @@ export class Tabs implements ITabsStore {
 	};
 
 	@action changeTagOrder = (tab: Tab) => {
-		let tabs: Array<Tab> = toJS(this.tabs);
+		let tabs: Tab[] = toJS(this.tabs);
 
 		tabs = tabs.map(t => (t.id === tab.id ? { ...tab, order: tab.order } : t));
 		tabs.sort((a, b) => (a.order > b.order ? 1 : 0));
@@ -57,7 +57,7 @@ export class Tabs implements ITabsStore {
 			: undefined;
 	};
 
-	private generateUniqueId = (collection: Array<number>): number => {
+	private generateUniqueId = (collection: number[]): number => {
 		const getRand = () => Math.round(Math.random() * (5000 - 1000) + 1000);
 		let id = getRand();
 
@@ -71,7 +71,7 @@ export class Tabs implements ITabsStore {
 	private events = () => {
 		E.ipcRenderer.on(Const.TABADDED, (sender: any, data: Tab) => {
 			if (isComponentUrl(data.url)) {
-				const collection: Array<number> = this.tabs.map(el => el.id);
+				const collection: number[] = this.tabs.map(el => el.id);
 
 				data.id = this.generateUniqueId(collection);
 
@@ -85,6 +85,7 @@ export class Tabs implements ITabsStore {
 				this.addTab({
 					id: data.id,
 					url: data.url,
+					title: data.title ? data.title : 'Recent Files',
 					showBackBtn: data.showBackBtn,
 				});
 			}
@@ -102,6 +103,14 @@ export class Tabs implements ITabsStore {
 			(sender: any, data: { id: number; title: string }) => {
 				this.tabs = this.tabs.map(t =>
 					t.id === data.id ? { ...t, title: data.title } : t,
+				);
+			},
+		);
+		E.ipcRenderer.on(
+			Const.SETTABURL,
+			(sender: any, data: { id: number; url: string }) => {
+				this.tabs = this.tabs.map(t =>
+					t.id === data.id ? { ...t, url: data.url } : t,
 				);
 			},
 		);
@@ -127,3 +136,7 @@ export class Tabs implements ITabsStore {
 }
 
 export const tabs: Tabs = new Tabs();
+
+autorun(() => {
+	E.ipcRenderer.send(Const.RECIVETABS, toJS(tabs.tabs));
+});

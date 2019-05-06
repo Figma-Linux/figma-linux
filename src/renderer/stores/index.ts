@@ -1,6 +1,3 @@
-/// <reference path="../../../@types/common/index.d.ts" />
-/// <reference path="../../../@types/renderer/stores/index.d.ts" />
-
 import { tabs } from "./Tabs";
 import route, { Routes } from "./Routes";
 import { Settings, settings } from './Settings';

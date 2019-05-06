@@ -1,14 +1,25 @@
-/// <reference path="../../@types/renderer/index.d.ts" />
-
 import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
-import { sendMsgToMain } from "Utils";
+import { sendMsgToMain, shortcutsMap } from "Utils";
+import * as Const from 'Const';
+import shortcutBinding from "./shortcutBinding";
+import { ShortcutMan } from "./ShortcutMan";
 import shortcuts from "./shortcuts";
 
-const API_VERSION = Infinity;
+import api from "./webApi";
+
+interface IIntiApiOptions {
+    version: number;
+    fileBrowser: boolean;
+    shortcutBinding?: any;
+    shortcutsMap?: ShortcutsMap[];
+    shortcutMan?: any;
+}
+
+const API_VERSION = 12;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
@@ -16,6 +27,40 @@ const fontMapPromise = new Promise(resolve => {
     resolveFontMapPromise = resolve;
 });
 
+const onClickExportImage = (e: Event, link: HTMLLinkElement) => {
+    E.remote.net.request(`${link.href}`)
+        .on('response', res => {
+            const filetype: string = res.headers['content-type'][0].replace(/^.+\//, '');
+            console.log('response file type: ', filetype);
+
+            const savePath = E.remote.dialog.showSaveDialog({
+                defaultPath: `${Settings.get('app.exportDir')}/${link.textContent.replace(/\..+$/, '')}.${filetype}`,
+                showsTagField: false
+            });
+
+            if (!savePath) return;
+
+            let length: number = 0;
+            const stream = fs.createWriteStream(savePath);
+
+            res.on('data', chunk => {
+                stream.write(chunk);
+
+                if (chunk.length < length) {
+                    stream.end();
+                }
+
+                length = chunk.length;
+            });
+            res.on('error', (err: Error) => {
+                console.log('Export image error: ', err);
+            });
+        })
+        .on('error', error => console.log('request error: ', error))
+        .end();
+
+    e.preventDefault();
+}
 
 const onWebMessage = (event: MessageEvent) => {
     const msg = event.data;
@@ -44,12 +89,20 @@ const onWebMessage = (event: MessageEvent) => {
     }
 }
 
-const initWebApi = (version: number, fileBrowser: boolean) => {
+// TODO: Вынести кусок кода в отдельные скрипты,
+// чтобы потом из собрать вебпаком в 1 js файл
+// и передать его функции executeJavaScript
+const initWebApi = (props: IIntiApiOptions) => {
     const channel = new MessageChannel();
     const pendingPromises = new Map();
     let messageHandler: Function;
     let nextPromiseID = 0;
-    let messageQueue: Array<any> = [];
+    let messageQueue: any[] = [];
+
+    // console.log('args: ', args, args.shortcutMan);
+    // const shortcutBinding = new Function(`return ${args.shortcutBinding}`);
+    // console.log('args.shortcutBinding: ', `return ${args.shortcutBinding}`);
+    // console.log('shortcutBinding(args.shortcutsMap): ', shortcutBinding()(args.shortcutsMap, args.shortcutMan));
 
     const tryFlushMessages = () => {
         if (messageHandler) {
@@ -65,9 +118,11 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
 
     window.__figmaContent = false;
 
+    console.log('args.fileBrowser: ', typeof props.fileBrowser, props.fileBrowser);
+
     window.__figmaDesktop = {
-        version: version,
-        fileBrowser: fileBrowser,
+        version: props.version,
+        fileBrowser: props.fileBrowser,
         postMessage: function (name, args, transferList) {
             console.log('postMessage, name, args, transferList: ', name, args, transferList);
             window.__figmaDesktop.fileBrowser = false;
@@ -126,20 +181,21 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
         const msg = event.data;
 
         if (!msg) return;
+
         console.log('channel.port1.onmessage, event: ', event);
+
         if (msg.promiseID != null) {
             const pendingPromise = pendingPromises.get(msg.promiseID);
+
             if (pendingPromise) {
                 pendingPromises.delete(msg.promiseID);
                 if ('result' in msg) {
                     pendingPromise.resolve(msg.result);
-                }
-                else {
+                } else {
                     pendingPromise.reject(msg.error);
                 }
             }
-        }
-        else if (msg.name != null) {
+        } else if (msg.name != null) {
             messageQueue.push(msg);
             tryFlushMessages();
         }
@@ -149,6 +205,11 @@ const initWebApi = (version: number, fileBrowser: boolean) => {
 }
 
 const initWebBindings = () => {
+    setInterval(() => {
+        const link: HTMLLinkElement = document.querySelector('div[class^="code_inspection_panels--inspectorRow"] > a');
+        link && (link.onclick = (e: Event) => { onClickExportImage(e, link); });
+    }, 500);
+
     E.ipcRenderer.on('newFile', () => {
         webPort.postMessage({ name: 'newFile', args: {} });
     });
@@ -178,6 +239,7 @@ const initWebBindings = () => {
             document.execCommand(command);
         }
     });
+
     E.ipcRenderer.on('updateFonts', (event: Event, fonts: any) => {
         fontMap = fonts;
         if (resolveFontMapPromise) {
@@ -189,7 +251,12 @@ const initWebBindings = () => {
 
 const publicAPI: any = {
     setTitle(args: any) {
+        sendMsgToMain('setTabUrl', window.location.href);
         sendMsgToMain('setTitle', args.title);
+    },
+
+    setUser(args: any) {
+        console.log('setUser, args: ', args);
     },
 
     getFonts() {
@@ -339,6 +406,7 @@ const publicAPI: any = {
     },
 
     writeFiles(args: any) {
+        console.log('writeFiles args: ', args);
         const files = args.files;
         if (!Array.isArray(files) || files.length === 0) return;
 
@@ -426,8 +494,7 @@ const publicAPI: any = {
                     try {
                         dirPath = path.join(dirPath, part);
                         fs.mkdirSync(dirPath);
-                    } catch (ex) {
-                    }
+                    } catch (ex) {}
                 }
             }
 
@@ -453,18 +520,26 @@ const init = (fileBrowser: boolean) => {
     window.addEventListener('message', event => {
         // console.log(`window message, ${event.origin} === ${location.origin}, data, ports: `, event.data, event.ports);
         webPort = event.ports[0];
-        webPort.onmessage = onWebMessage;
         console.log(`window message, webPort: `, webPort);
+        webPort && (webPort.onmessage = onWebMessage);
         // console.log('window.__figmaDesktop.fileBrowser: ', window.__figmaDesktop.fileBrowser);
         // window.__figmaDesktop.fileBrowser = false;
     }, { once: true });
 
-    shortcuts();
+    const initWebOptions: IIntiApiOptions = {
+        version: API_VERSION,
+        fileBrowser: fileBrowser,
+        shortcutBinding: shortcutBinding.toString(),
+        shortcutsMap,
+        shortcutMan: ShortcutMan.toString()
+    }
 
-    E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${API_VERSION}, ${fileBrowser})`);
-
+    console.log('api: ', api.toString());
+    E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
 
     initWebBindings();
+
+    shortcuts();
 }
 
 

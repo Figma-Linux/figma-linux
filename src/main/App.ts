@@ -2,18 +2,27 @@ import * as Settings from 'electron-settings';
 import * as E from "electron";
 
 import * as Const from "Const";
+import { cmd } from 'Utils';
 import Args from "./Args";
-import WindowManager, { IWindowManager } from "./window/WindowManager";
+import WindowManager from "./window/WindowManager";
 
-interface IApp {
-    windowManager: IWindowManager;
-}
-
-class App implements IApp {
-    windowManager: IWindowManager;
+class App {
+    windowManager: WindowManager;
 
     constructor() {
         const isSingleInstance = E.app.requestSingleInstanceLock();
+
+        if (Settings.get('app.fontDirs')) {
+            cmd(`find ${(Settings.get('app.fontDirs') as string[]).join(' ')} -type f | wc -l`)
+                .then(output => {
+                    console.info(`You've got a ${output.replace(/[\s\t\r]/, '')} fonts in your os.`);
+
+                    if (parseInt(output) > 3000) {
+                        console.warn(`You've too many fonts. It'll may call problem with run the app.`);
+                    }
+                })
+                .catch(err => console.error(`exec command "find" error: `, err));
+        }
 
         if (!isSingleInstance) {
             E.app.quit();
@@ -83,11 +92,6 @@ class App implements IApp {
     }
 }
 
-const init = () => {
+export default () => {
     new App;
-}
-
-export default init;
-export {
-    IApp
 }

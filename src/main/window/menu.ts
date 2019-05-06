@@ -1,6 +1,7 @@
 import * as E from 'electron';
+import Commander from '../Commander';
 
-import { toggleDetachedDevTools, handleCommandItemClick, handleItemAction } from "Utils";
+import { handleCommandItemClick, handleItemAction } from "Utils";
 import WindowManager from "./WindowManager";
 
 export let isHidden: boolean = false;
@@ -26,11 +27,7 @@ const FILE_MENU = {
         {
             label: 'Close Window',
             accelerator: 'Ctrl+Shift+W',
-            click(item: E.MenuItem, window: E.BrowserWindow) {
-                if (window) {
-                    window.close();
-                }
-            },
+            click() { Commander.exec('close-window'); },
         },
         item('Close Tab', 'Ctrl+W', { id: 'closeTab', click: commandToMainProcess }),
         SEPARATOR,
@@ -128,8 +125,10 @@ const OBJECT_MENU = {
         item('Send Backward', 'Ctrl+[', { action: 'send-backward', click: handleItemAction }),
         item('Send to Back', 'Ctrl+Shift+[', { action: 'send-to-back', click: handleItemAction }),
         SEPARATOR,
-        item('Flip Horizontal', 'Shift+H', { action: 'flip-horizontal', click: handleItemAction }),
-        item('Flip Vertical', 'Shift+V', { action: 'flip-vertical', click: handleItemAction }),
+        item('Flip Horizontal', '', { action: 'flip-horizontal', click: handleItemAction }),
+        item('Flip Vertical', '', { action: 'flip-vertical', click: handleItemAction }),
+        // item('Flip Horizontal', 'Shift+H', { action: 'flip-horizontal', click: handleItemAction }),
+        // item('Flip Vertical', 'Shift+V', { action: 'flip-vertical', click: handleItemAction }),
         SEPARATOR,
         item('Rotate 180˚', null, { action: 'rotate-180', click: handleItemAction }),
         item('Rotate 90˚ Left', null, { action: 'rotate-90-counterclockwise', click: handleItemAction }),
@@ -158,7 +157,8 @@ const OBJECT_MENU = {
         SEPARATOR,
         item('Remove Fill', 'Alt+/', { action: 'remove-fill', click: handleItemAction }),
         item('Remove Stroke', '/', { action: 'remove-stroke', click: handleItemAction }),
-        item('Swap Fill and Stroke', 'Shift+X', { action: 'swap-fill-and-stroke', click: handleItemAction }),
+        item('Swap Fill and Stroke', '', { action: 'swap-fill-and-stroke', click: handleItemAction }),
+        // item('Swap Fill and Stroke', 'Shift+X', { action: 'swap-fill-and-stroke', click: handleItemAction }),
     ],
 } as E.MenuItemConstructorOptions;
 const VECTOR_MENU = {
@@ -254,24 +254,14 @@ const HELP_MENU = {
         {
             label: 'Toggle Developer Tools',
             accelerator: 'Ctrl+Alt+I',
-            click() {
-                const windowManager = WindowManager.instance;
-                const webContents = windowManager.mainWindow.getBrowserView().webContents;
-
-                if (webContents) {
-                    toggleDetachedDevTools(webContents)
-                }
-            },
+            click() { Commander.exec('toggle-developer-tools'); },
         },
         {
             label: 'Toggle Window Developer Tools',
             accelerator: 'Shift+Ctrl+Alt+I',
-            click(item, win) {
-                if (win) {
-                    toggleDetachedDevTools(win.webContents);
-                }
-            }
-        }
+            click() { Commander.exec('toggle-window-developer-tools'); },
+        },
+        item('GPU', '', { id: 'chrome://gpu', click: commandToMainProcess }),
     ]
 } as E.MenuItemConstructorOptions;
 

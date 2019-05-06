@@ -34,7 +34,7 @@ On Debian-based distros You need install the libgconf2-4 library
 
 
 # Repositories
-For now, there are have repository for deb package on Launchpad. <br>
+For now, there are have repository for [deb package on Launchpad](https://launchpad.net/~chrdevs/+archive/ubuntu/figma). <br>
 To add repository, execute command below:
 ```bash
 sudo add-apt-repository ppa:chrdevs/figma

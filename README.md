@@ -1,5 +1,5 @@
 <p>
-	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/figma-linux.jpg">
+	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.png">
 </p>
 
 <p>

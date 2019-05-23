@@ -120,6 +120,10 @@ const initWebApi = (props: IIntiApiOptions) => {
 
     console.log('args.fileBrowser: ', typeof props.fileBrowser, props.fileBrowser);
 
+    if (/file\/.+/.test(location.href)) {
+        props.fileBrowser = false;
+    }
+
     window.__figmaDesktop = {
         version: props.version,
         fileBrowser: props.fileBrowser,

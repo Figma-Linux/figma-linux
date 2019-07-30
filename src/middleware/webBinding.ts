@@ -4,12 +4,11 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { sendMsgToMain, shortcutsMap } from "Utils";
-import * as Const from 'Const';
 import shortcutBinding from "./shortcutBinding";
 import { ShortcutMan } from "./ShortcutMan";
 import shortcuts from "./shortcuts";
 
-import api from "./webApi";
+// import api from "./webApi";
 
 interface IIntiApiOptions {
     version: number;
@@ -537,7 +536,7 @@ const init = (fileBrowser: boolean) => {
         shortcutMan: ShortcutMan.toString()
     }
 
-    console.log('api: ', api.toString());
+    // console.log('api: ', api.toString());
     E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
 
     initWebBindings();

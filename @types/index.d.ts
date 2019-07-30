@@ -39,4 +39,16 @@ declare namespace Electron {
 		addListener(event: 'setDisableFonts', listener: (disabled: boolean) => void): this;
 		removeListener(event: 'setDisableFonts', listener: (disabled: boolean) => void): this;
 	}
+
+	interface IpcMain extends EventEmitter {
+		on(channel: string, listener: Function): this;
+		once(channel: string, listener: Function): this;
+		removeAllListeners(channel: string): this;
+		removeListener(channel: string, listener: Function): this;
+
+		on(channel: 'setTitle', listener: (event: Event, title: string, id: number) => void): this;
+		once(channel: 'setTitle', listener: (event: Event, title: string, id: number) => void): this;
+		removeAllListeners(channel: 'setTitle'): this;
+		removeListener(channel: 'setTitle', listener: (event: Event, title: string, id: number) => void): this;
+	}
 }

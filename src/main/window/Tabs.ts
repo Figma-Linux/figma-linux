@@ -84,4 +84,14 @@ export default class Tabs {
 
     public static getAll = (): Array<E.BrowserView> => Tabs.tabs;
 
+    public static getByWebContentId = (id: number): E.BrowserView | undefined => {
+        for (const tab of Tabs.tabs) {
+            if (tab.webContents.id === id) {
+                return tab;
+            }
+        }
+
+        return undefined;
+    };
+
 }

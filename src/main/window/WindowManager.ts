@@ -173,13 +173,14 @@ class WindowManager {
         E.ipcMain.on(Const.CLOSEALLTAB, () => {
             console.log('Close all tab');
         });
+        E.ipcMain.on('setTitle', (event, title) => {
+            const tab = Tabs.getByWebContentId(event.sender.id);
 
-        E.ipcMain.on(Const.SETTITLE, (event: Event, title: string) => {
-            const view = this.mainWindow.getBrowserView();
+            if (!tab) {
+                return;
+            }
 
-            if (!view) return;
-
-            this.mainWindow.webContents.send(Const.SETTITLE, { id: view.id, title })
+            this.mainWindow.webContents.send(Const.SETTITLE, { id: tab.id, title })
         });
         E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
             const view = this.mainWindow.getBrowserView();

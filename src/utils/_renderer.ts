@@ -19,7 +19,7 @@ export const handleCommandItemClick = (item?: any, window?: E.BrowserWindow) => 
 	currentView.webContents.send('handlePageCommand', item.command);
 };
 
-export const sendMsgToMain = (msg: string, ...data: Array<any>) => {
+export const sendMsgToMain = (msg: string, ...data: any[]) => {
 	E.ipcRenderer.send(msg, ...data);
 };
 

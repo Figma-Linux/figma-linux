@@ -1,15 +1,12 @@
 {
   "name": "figma-linux",
-  "version": "0.5.1",
+  "version": "0.5.3",
   "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
   "main": "main/main.js",
   "repository": "git@github.com:ChugunovRoman/figma-linux.git",
   "homepage": "https://github.com/ChugunovRoman/figma-linux",
   "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
   "license": "MIT",
-  "scripts": {
-    "start": "electron main/main.js"
-  },
   "dependencies": {
     "electron-devtools-installer": "^2.2.4",
     "figma-linux-bindings": "^0.1.15",

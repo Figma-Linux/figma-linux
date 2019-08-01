@@ -6,7 +6,7 @@ export const getComponentTitle = (url: string): string => url.substr(url.search(
 
 export const handleItemAction = (item: any, window: E.BrowserWindow) => {
 	// FIXME: ugly hack
-	if (!/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
+	if ((!item.accelerator && item.accelerator) && !/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
 
 	const currentView = window.getBrowserView();
 

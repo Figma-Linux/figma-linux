@@ -3,6 +3,10 @@ declare namespace Electron {
 		app: App;
 	}
 
+	interface MenuItem {
+		click: (item: MenuItemConstructorOptions, window: BrowserWindow, event: Event) => void;
+	}
+
 	interface App extends EventEmitter {
 		on(event: 'updateActionState', listener: (state: Object) => void): this;
 		once(event: 'updateActionState', listener: (state: Object) => void): this;

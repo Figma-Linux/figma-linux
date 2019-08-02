@@ -82,20 +82,6 @@ class WindowManager {
         return WindowManager._instance;
     }
 
-    reloadAllWindows = () => { }
-
-    getZoom = (): Promise<number> => new Promise((resolve) => {
-        this.mainWindow.webContents.getZoomFactor(z => resolve(z));
-    });
-
-    setZoom = (zoom: number) => {
-        const tabs = Tabs.getAll();
-
-        this.mainWindow.webContents.setZoomFactor(zoom);
-
-        tabs.forEach(t => t.webContents.setZoomFactor(zoom));
-    };
-
     openUrl = (url: string) => {
         if (/figma:\/\//.test(url)) {
             this.addTab('loadContetnt.js', url.replace(/figma:\//, Const.HOMEPAGE));

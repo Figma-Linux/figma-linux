@@ -34,41 +34,41 @@
         "systemIntegration": "doNotAsk"
     },
 
-    "snap": {
-        "plugs": [
-            {
-                "personal-files": {
-                    "interface": "personal-files",
-                    "allow-auto-connection": true,
-                    // "allow-sandbox": true,
-                    "read": [
-                        "$HOME/.config",
-                        "$HOME/.fonts",
-                        "$HOME/.local/share/fonts",
-                        "$HOME/snap/figma-linux/x1/.config/figma-linux/Settings"
-                    ],
-                    "write": [
-                        "$HOME/.config",
-                        "$HOME/.fonts",
-                        "$HOME/.local/share/fonts",
-                        "$HOME/snap/figma-linux/x1/.config/figma-linux/Settings"
-                    ]
-                }
-            },
-            "desktop",
-            "desktop-legacy",
-            "home",
-            "x11",
-            "unity7",
-            "browser-support",
-            "network",
-            "gsettings",
-            "pulseaudio",
-            "opengl",
-            "gsettings",
-            "block-devices"
-        ]
-    },
+    // "snap": {
+    //     "plugs": [
+    //         {
+    //             "personal-files": {
+    //                 "interface": "personal-files",
+    //                 "allow-auto-connection": true,
+    //                 // "allow-sandbox": true,
+    //                 "read": [
+    //                     "$HOME/.config",
+    //                     "$HOME/.fonts",
+    //                     "$HOME/.local/share/fonts",
+    //                     "$HOME/snap/figma-linux/x1/.config/figma-linux/Settings"
+    //                 ],
+    //                 "write": [
+    //                     "$HOME/.config",
+    //                     "$HOME/.fonts",
+    //                     "$HOME/.local/share/fonts",
+    //                     "$HOME/snap/figma-linux/x1/.config/figma-linux/Settings"
+    //                 ]
+    //             }
+    //         },
+    //         "desktop",
+    //         "desktop-legacy",
+    //         "home",
+    //         "x11",
+    //         "unity7",
+    //         "browser-support",
+    //         "network",
+    //         "gsettings",
+    //         "pulseaudio",
+    //         "opengl",
+    //         "gsettings",
+    //         "block-devices"
+    //     ]
+    // },
 
     "linux": {
         "description": "Unofficial desktop application for linux",

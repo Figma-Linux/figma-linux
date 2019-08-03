@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "electron-devtools-installer": "^2.2.4",
-    "electron-settings": "^3.2.0",
+    "electron-settings": "github:ChugunovRoman/electron-settings#figma-linux",
     "figma-linux-bindings": "^0.1.18",
     "mobx": "^5.6.0",
     "mobx-react": "^5.4.2",

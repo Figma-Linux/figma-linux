@@ -6,15 +6,24 @@ import WindowManager from "./WindowManager";
 
 export let isHidden: boolean = false;
 
-const commandToMainProcess = (item: E.MenuItem & { id: string }, window: E.BrowserWindow) => {
+const commandToMainProcess = (item: E.MenuItemConstructorOptions) => {
     E.app.emit('handleCommand', item.id);
 };
 
-const item = (label: string, accelerator: string, params: any) => ({
-    label,
-    accelerator,
-    ...params
-});
+const item = (label: string, accelerator: string, params: Menu.Params) => {
+    const props: E.MenuItemConstructorOptions = {
+        label,
+        enabled: true,
+        ...params
+    };
+
+    if (accelerator) {
+        props.accelerator = accelerator;
+        props.registerAccelerator = false;
+    }
+
+    return new E.MenuItem(props);
+}
 
 const SEPARATOR = { type: 'separator' };
 const FILE_MENU = {
@@ -56,7 +65,7 @@ const EDIT_MENU = {
         item('Paste Properties', 'Alt+Ctrl+V', { action: 'paste-properties', click: handleItemAction }),
         SEPARATOR,
         item('Select All', 'Ctrl+A', { command: 'selectAll', click: handleCommandItemClick }),
-        item('Select None', '', { action: 'deselect-all', click: handleItemAction }),
+        item('Select None', null, { action: 'deselect-all', click: handleItemAction }),
         item('Select Inverse', 'Shift+Ctrl+A', { action: 'select-inverse', click: handleItemAction }),
         SEPARATOR,
         item('Select All with Same Style', null, { action: 'select-same-style', click: handleItemAction }),
@@ -254,12 +263,12 @@ const HELP_MENU = {
         {
             label: 'Toggle Developer Tools',
             accelerator: 'Ctrl+Alt+I',
-            click() { Commander.exec('toggle-developer-tools'); },
+            click(item, window) { Commander.exec('toggle-developer-tools', item, window); },
         },
         {
             label: 'Toggle Window Developer Tools',
             accelerator: 'Shift+Ctrl+Alt+I',
-            click() { Commander.exec('toggle-window-developer-tools'); },
+            click(item, window) { Commander.exec('toggle-window-developer-tools', item, window); },
         },
         item('GPU', '', { id: 'chrome://gpu', click: commandToMainProcess }),
     ]

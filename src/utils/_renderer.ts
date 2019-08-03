@@ -6,7 +6,7 @@ export const getComponentTitle = (url: string): string => url.substr(url.search(
 
 export const handleItemAction = (item: any, window: E.BrowserWindow) => {
 	// FIXME: ugly hack
-	if (!/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
+	if ((!item.accelerator && item.accelerator) && !/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
 
 	const currentView = window.getBrowserView();
 
@@ -19,7 +19,7 @@ export const handleCommandItemClick = (item?: any, window?: E.BrowserWindow) => 
 	currentView.webContents.send('handlePageCommand', item.command);
 };
 
-export const sendMsgToMain = (msg: string, ...data: Array<any>) => {
+export const sendMsgToMain = (msg: string, ...data: any[]) => {
 	E.ipcRenderer.send(msg, ...data);
 };
 

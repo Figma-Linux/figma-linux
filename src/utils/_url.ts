@@ -1,6 +1,3 @@
-import * as E from 'electron';
-import * as Settings from 'electron-settings';
-
 import { resolve } from "path";
 import { format as formatUrl } from "url";
 

@@ -82,20 +82,6 @@ class WindowManager {
         return WindowManager._instance;
     }
 
-    reloadAllWindows = () => { }
-
-    getZoom = (): Promise<number> => new Promise((resolve) => {
-        this.mainWindow.webContents.getZoomFactor(z => resolve(z));
-    });
-
-    setZoom = (zoom: number) => {
-        const tabs = Tabs.getAll();
-
-        this.mainWindow.webContents.setZoomFactor(zoom);
-
-        tabs.forEach(t => t.webContents.setZoomFactor(zoom));
-    };
-
     openUrl = (url: string) => {
         if (/figma:\/\//.test(url)) {
             this.addTab('loadContetnt.js', url.replace(/figma:\//, Const.HOMEPAGE));
@@ -173,13 +159,14 @@ class WindowManager {
         E.ipcMain.on(Const.CLOSEALLTAB, () => {
             console.log('Close all tab');
         });
+        E.ipcMain.on('setTitle', (event, title) => {
+            const tab = Tabs.getByWebContentId(event.sender.id);
 
-        E.ipcMain.on(Const.SETTITLE, (event: Event, title: string) => {
-            const view = this.mainWindow.getBrowserView();
+            if (!tab) {
+                return;
+            }
 
-            if (!view) return;
-
-            this.mainWindow.webContents.send(Const.SETTITLE, { id: view.id, title })
+            this.mainWindow.webContents.send(Const.SETTITLE, { id: tab.id, title })
         });
         E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
             const view = this.mainWindow.getBrowserView();

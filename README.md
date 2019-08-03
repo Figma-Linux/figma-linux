@@ -30,7 +30,7 @@ This app based on the [Electron](http://electron.atom.io)
 <br>
 
 # Dependences
-On Debian-based distros You need install the libgconf2-4 library
+On Debian-based distros You need install the libgconf-2-4 library
 
 
 # Repositories

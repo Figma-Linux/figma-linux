@@ -35,7 +35,7 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
         e.nativeEvent.stopImmediatePropagation();
         e.stopPropagation();
 
-        E.remote.app.emit('handleCommand', 'openSettings');
+        E.remote.app.emit('handle-command', 'openSettings');
     }
 
     private onHomeClick = (event: React.MouseEvent<HTMLDivElement> & Event) => {

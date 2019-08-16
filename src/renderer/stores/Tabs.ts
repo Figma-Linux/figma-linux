@@ -2,7 +2,7 @@ import * as E from 'electron';
 import { observable, action, autorun, toJS } from 'mobx';
 
 import * as Const from 'Const';
-import { isComponentUrl } from 'Utils';
+import { isComponentUrl } from 'Utils/Common';
 
 export class Tabs implements ITabsStore {
 	@observable tabs: Tab[] = [];

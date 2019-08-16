@@ -9,14 +9,17 @@ interface IIntiApiOptions {
 export default (args: IIntiApiOptions) => {
     const channel = new MessageChannel();
     const pendingPromises = new Map();
+    const registeredCallbacks = new Map();
+
     let messageHandler: Function;
     let nextPromiseID = 0;
-    let messageQueue: Array<any> = [];
+    let nextCallbackID = 0;
+    let messageQueue: any[] = [];
 
-    console.log('args: ', args, args.shortcutMan);
-    const shortcutBinding = new Function(`return ${args.shortcutBinding}`);
-    console.log('args.shortcutBinding: ', `return ${args.shortcutBinding}`);
-    console.log('shortcutBinding(args.shortcutsMap): ', shortcutBinding()(args.shortcutsMap, args.shortcutMan));
+    // console.log('args: ', args, args.shortcutMan);
+    // const shortcutBinding = new Function(`return ${args.shortcutBinding}`);
+    // console.log('args.shortcutBinding: ', `return ${args.shortcutBinding}`);
+    // console.log('shortcutBinding(args.shortcutsMap): ', shortcutBinding()(args.shortcutsMap, args.shortcutMan));
 
     const tryFlushMessages = () => {
         if (messageHandler) {
@@ -31,6 +34,12 @@ export default (args: IIntiApiOptions) => {
     }
 
     window.__figmaContent = false;
+
+    console.log('args.fileBrowser: ', typeof args.fileBrowser, args.fileBrowser);
+
+    if (/file\/.+/.test(location.href)) {
+        args.fileBrowser = false;
+    }
 
     window.__figmaDesktop = {
         version: args.version,
@@ -73,6 +82,14 @@ export default (args: IIntiApiOptions) => {
             channel.port1.postMessage({ name, args }, transferList);
 
         },
+        registerCallback: function (name, args, callback) {
+            const id = nextCallbackID++;
+            registeredCallbacks.set(id, callback);
+            channel.port1.postMessage({ name, args, callbackID: id });
+            return () => {
+                channel.port1.postMessage({ cancelCallbackID: id });
+            };
+        },
         promiseMessage: function (name, args, transferList) {
             console.log('promiseMessage, name, args, transferList: ', name, args, transferList);
             return new Promise((resolve, reject) => {
@@ -92,20 +109,21 @@ export default (args: IIntiApiOptions) => {
         const msg = event.data;
 
         if (!msg) return;
+
         console.log('channel.port1.onmessage, event: ', event);
+
         if (msg.promiseID != null) {
             const pendingPromise = pendingPromises.get(msg.promiseID);
+
             if (pendingPromise) {
                 pendingPromises.delete(msg.promiseID);
                 if ('result' in msg) {
                     pendingPromise.resolve(msg.result);
-                }
-                else {
+                } else {
                     pendingPromise.reject(msg.error);
                 }
             }
-        }
-        else if (msg.name != null) {
+        } else if (msg.name != null) {
             messageQueue.push(msg);
             tryFlushMessages();
         }

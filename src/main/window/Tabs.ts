@@ -19,7 +19,7 @@ export default class Tabs {
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
-                webSecurity: true,
+                webSecurity: false,
                 webgl: true,
                 experimentalFeatures: false,
                 zoomFactor: Settings.get('ui.scaleFigmaUI') as number

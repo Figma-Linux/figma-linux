@@ -1,6 +1,6 @@
 {
   "name": "figma-linux",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software.",
   "main": "src/main/index.js",
   "repository": "git@github.com:ChugunovRoman/figma-linux.git",
@@ -24,6 +24,7 @@
     }
   },
   "dependencies": {
+    "chokidar": "^3.0.2",
     "electron-devtools-installer": "^2.2.4",
     "electron-settings": "github:ChugunovRoman/electron-settings#figma-linux",
     "figma-linux-bindings": "^0.1.18",
@@ -40,9 +41,10 @@
     "styled-components": "^3.1.6"
   },
   "devDependencies": {
+    "@types/cheerio": "^0.22.13",
     "@types/electron-devtools-installer": "^2.0.3",
     "@types/electron-settings": "^3.1.1",
-    "@types/node": "^10.5.1",
+    "@types/node": "^10.11.0",
     "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.6",
     "@types/react-redux": "^5.0.15",
@@ -54,7 +56,7 @@
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.11",
-    "electron": "^4.2.8",
+    "electron": "^4.2.9",
     "electron-builder": "^20.40.2",
     "electron-rebuild": "^1.8.2",
     "electron-webpack": "^2.6.1",

@@ -30,15 +30,19 @@
             "@types/**/*.d.ts"
         ],
         "paths": {
+            "Main": ["src/main"],
+            "Main/*": ["src/main/*"],
             "Components": ["src/renderer/components"],
             "Components/*": ["src/renderer/components/*"],
             "Elements/*": ["src/renderer/elements/*"],
             "Elements": ["src/renderer/elements"],
-            "Middleware": ["src/middleware"],
             "Store": ["src/renderer/stores"],
             "Store/*": ["src/renderer/stores/*"],
+            "Middleware": ["src/middleware"],
+            "Middleware/*": ["src/middleware/*"],
             "Const": ["src/constants"],
             "Utils": ["src/utils"],
+            "Utils/*": ["src/utils/*"],
             "*": ["node_modules/@types/*"]
         },
     },

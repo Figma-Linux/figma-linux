@@ -1,4 +1,4 @@
-import { commands } from 'Utils';
+import { commands } from 'Utils/Main';
 
 export default class Commander {
     private constructor() {}

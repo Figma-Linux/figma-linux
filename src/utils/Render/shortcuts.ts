@@ -1,17 +1,12 @@
 import * as E from "electron";
 import * as Settings from "electron-settings";
 
-import { shortcutsMap, handleCommandItemClick } from "Utils";
-import shortcutMan from "./ShortcutMan";
+import { app } from 'Utils/Common';
+import { shortcutsMap } from './ShortcutsMap';
+import shortcutMan from "Middleware/ShortcutMan";
 
 export default () => {
     const currentWindow = E.remote.BrowserWindow.getAllWindows()[0];
-
-    let actionState: any = {};
-
-    E.remote.app.on('updateActionState', (state: any) => {
-        actionState = state;
-    });
 
     for (let shortcut of shortcutsMap) {
         if (shortcut.accelerator === '') continue;
@@ -23,7 +18,9 @@ export default () => {
 
                     console.log('command: ', !Settings.get('app.disabledMainMenu'), shortcut);
 
-                    handleCommandItemClick({ command: shortcut.value, accelerator: shortcut.accelerator }, currentWindow);
+                    // TODO: Replce on Event Emitter. Send the event to Main process
+                    // MenuHelper.handleCommandItemClick({ command: shortcut.value, accelerator: shortcut.accelerator }, currentWindow);
+                    app.emit('handle-page-command', { command: shortcut.value, accelerator: shortcut.accelerator }, currentWindow);
                 });
             } break;
             case 'id': {
@@ -32,7 +29,7 @@ export default () => {
 
                     console.log('id: ', !Settings.get('app.disabledMainMenu'), shortcut);
 
-                    E.remote.app.emit('handleCommand', shortcut.value);
+                    app.emit('handle-command', shortcut.value);
                 });
             } break;
 

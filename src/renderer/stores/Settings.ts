@@ -23,7 +23,7 @@ export class Settings {
 			this.settings.ui.scaleFigmaUI = 1;
 		}
 
-		E.remote.app.emit('updateFigmaUiScale', d);
+		E.remote.app.emit('update-figma-ui-scale', d);
 	}
 	@action
 	public updatePanelScale = (delta: number) => {
@@ -35,20 +35,20 @@ export class Settings {
 			this.settings.ui.scalePanel = 1;
 		}
 
-		E.remote.app.emit('updatePanelScale', d);
+		E.remote.app.emit('update-panel-scale', d);
 	}
 
 	@action
 	public updateShowMainMenu = (show: boolean) => {
 		this.settings.app.showMainMenu = show;
 
-		E.remote.app.emit('setHideMainMenu', show);
+		E.remote.app.emit('set-hide-main-menu', show);
 	}
 	@action
 	public updateDisableMainMenu = (disabled: boolean) => {
 		this.settings.app.disabledMainMenu = disabled;
 
-		E.remote.app.emit('setDisableMainMenu', disabled);
+		E.remote.app.emit('set-disable-main-menu', disabled);
 	}
 	@action
 	public saveLastOpenedTabs = (save: boolean) => {
@@ -62,7 +62,7 @@ export class Settings {
 	public updateDisabledFonts = (disabled: boolean) => {
 		this.settings.app.disabledFonts = disabled;
 
-		E.remote.app.emit('setDisableFonts', disabled);
+		E.remote.app.emit('set-disable-fonts', disabled);
 	}
 
 	@action

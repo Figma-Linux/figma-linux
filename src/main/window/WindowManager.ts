@@ -7,9 +7,12 @@ import * as url from "url";
 import Tabs from "./Tabs";
 import initMainMenu from "./menu";
 import Commander from '../Commander';
-import ActionState from "../ActionState";
+import MenuState from "../MenuState";
 import * as Const from "Const";
-import * as Utils from "Utils";
+import { isDev, isComponentUrl, getComponentTitle } from 'Utils/Common';
+import { winUrlDev, winUrlProd, isFileBrowser } from 'Utils/Main';
+import { registerIpcMainHandlers } from 'Main/events';
+
 
 class WindowManager {
     home: string;
@@ -27,7 +30,7 @@ class WindowManager {
         this.panelScale = Settings.get('ui.scalePanel') as number;
 
         this.mainWindow = new E.BrowserWindow(options);
-        this.mainWindow.loadURL(Utils.isDev ? Utils.winUrlDev : Utils.winUrlProd);
+        this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
         if (!Settings.get('app.disabledMainMenu')) {
             initMainMenu();
@@ -42,10 +45,11 @@ class WindowManager {
         this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
         this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
 
-        Utils.isDev && this.installReactDevTools();
-        Utils.isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
+        isDev && this.installReactDevTools();
+        isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
 
         this.addIpc();
+        registerIpcMainHandlers();
 
         E.app.on('will-quit', this.onWillQuit);
 
@@ -62,7 +66,7 @@ class WindowManager {
         const options: E.BrowserWindowConstructorOptions = {
             width: 1200,
             height: 900,
-            frame: true,
+            // frame: true,
             autoHideMenuBar: Settings.get('app.showMainMenu') as boolean,
             webPreferences: {
                 zoomFactor: 1,
@@ -97,7 +101,7 @@ class WindowManager {
             tabs.forEach((tab, i) => {
                 (t => {
                     setTimeout(() => {
-                        if (Utils.isFileBrowser(t.url)) {
+                        if (isFileBrowser(t.url)) {
                             this.addTab('loadMainContetnt.js', t.url, t.title);
                         } else {
                             this.addTab('loadContetnt.js', t.url, t.title);
@@ -134,10 +138,10 @@ class WindowManager {
             const view = Tabs.focus(id);
             this.mainWindow.setBrowserView(view);
 
-            if (Utils.isFileBrowser(view.webContents.getURL())) {
-                ActionState.updateInFileBrowserActionState();
+            if (isFileBrowser(view.webContents.getURL())) {
+                MenuState.updateInFileBrowserActionState();
             } else {
-                ActionState.updateInProjectActionState();
+                MenuState.updateInProjectActionState();
             }
         });
 
@@ -149,10 +153,10 @@ class WindowManager {
             const view = Tabs.focus(1);
             this.mainWindow.setBrowserView(view);
 
-            if (Utils.isFileBrowser(view.webContents.getURL())) {
-                ActionState.updateInFileBrowserActionState();
+            if (isFileBrowser(view.webContents.getURL())) {
+                MenuState.updateInFileBrowserActionState();
             } else {
-                ActionState.updateInProjectActionState();
+                MenuState.updateInProjectActionState();
             }
         });
 
@@ -167,6 +171,22 @@ class WindowManager {
             }
 
             this.mainWindow.webContents.send(Const.SETTITLE, { id: tab.id, title })
+        });
+        E.ipcMain.on('setPluginMenuData', (event, pluginMenu) => {
+            MenuState.updatePluginState(pluginMenu);
+        });
+        E.ipcMain.on('registerManifestChangeObserver', (event: any, callbackId: any) => {
+            console.log('registerManifestChangeObserver, callbackId: ', callbackId);
+            const tab = Tabs.getByWebContentId(event.sender.id);
+
+            if (!tab) {
+                return;
+            }
+
+            // exports.extensionRegistry.addObserver(callback);
+            // return () => {
+            //     exports.extensionRegistry.removeObserver(callback);
+            // };
         });
         E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
             const view = this.mainWindow.getBrowserView();
@@ -184,8 +204,8 @@ class WindowManager {
             this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: view.id, fileKey: key })
         });
 
-        E.ipcMain.on(Const.UPDATEACTIONSTATE, (event: Event, state: Object) => {
-            ActionState.updateActionState(state);
+        E.ipcMain.on(Const.UPDATEACTIONSTATE, (event: Event, state: MenuState.State) => {
+            MenuState.updateActionState(state);
         });
 
         E.ipcMain.on(Const.TOHOME, (event: Event, title: string) => {
@@ -197,26 +217,26 @@ class WindowManager {
         });
 
 
-        E.app.on('updateFigmaUiScale', scale => {
+        E.app.on('update-figma-ui-scale', scale => {
             this.updateFigmaUiScale(scale);
         });
-        E.app.on('updatePanelScale', scale => {
+        E.app.on('update-panel-scale', scale => {
             this.updatePanelScale(scale);
         });
-        E.app.on('setHideMainMenu', hide => {
+        E.app.on('set-hide-main-menu', hide => {
             this.mainWindow.setAutoHideMenuBar(hide);
 
             if (!hide) {
                 this.mainWindow.setMenuBarVisibility(true);
             }
         });
-        E.app.on('setDisableMainMenu', hide => {
+        E.app.on('set-disable-main-menu', hide => {
             setTimeout(() => {
                 exec(process.argv.join(' '));
                 E.app.quit();
             }, 1000);
         });
-        E.app.on('handleCommand', (id: string) => {
+        E.app.on('handle-command', (id: string) => {
             switch (id) {
                 case 'scale-normal': {
                     this.updateAllScale();
@@ -276,10 +296,10 @@ class WindowManager {
     }
 
     public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
-        if (Utils.isComponentUrl(url)) {
+        if (isComponentUrl(url)) {
             this.mainWindow.setBrowserView(null);
             this.mainWindow.webContents.send(Const.TABADDED, {
-                title: title ? title : Utils.getComponentTitle(url),
+                title: title ? title : getComponentTitle(url),
                 showBackBtn: false,
                 url
             });
@@ -293,10 +313,10 @@ class WindowManager {
         tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
         tab.webContents.on('new-window', this.onNewWindow);
 
-        if (Utils.isFileBrowser) {
-            ActionState.updateInFileBrowserActionState();
+        if (isFileBrowser) {
+            MenuState.updateInFileBrowserActionState();
         } else {
-            ActionState.updateActionState(Const.ACTIONTABSTATE);
+            MenuState.updateActionState(Const.ACTIONTABSTATE);
         }
 
         this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true, title });
@@ -376,7 +396,7 @@ class WindowManager {
         const currentUrl = currentView && currentView.webContents.getURL() || '';
         const go: boolean = url.parse(currentUrl).pathname !== '/files/recent';
 
-        ActionState.updateActionState(Const.INITACTIONINITSTATE);
+        MenuState.updateActionState(Const.INITACTIONINITSTATE);
 
         currentView && go && currentView!.webContents.loadURL(`${this.home}`);
     }

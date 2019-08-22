@@ -19,10 +19,11 @@ const main = {
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', 'node'],
 
         alias: {
-            Components: path.resolve(rootFolder, 'src/renderer/components'),
+            // Components: path.resolve(rootFolder, 'src/renderer/components'),
             Middleware: path.resolve(rootFolder, 'src/middleware'),
-            Store: path.resolve(rootFolder, 'src/renderer/stores'),
+            // Store: path.resolve(rootFolder, 'src/renderer/stores'),
             Const: path.resolve(rootFolder, 'src/constants'),
+            Main: path.resolve(rootFolder, 'src/main'),
             Utils: path.resolve(rootFolder, 'src/utils')
         }
     },

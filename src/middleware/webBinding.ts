@@ -1,12 +1,15 @@
 import * as Settings from 'electron-settings';
-import * as E from "electron";
-import * as path from "path";
-import * as fs from "fs";
+import * as E from 'electron';
+import * as path from 'path';
+import * as fs from 'fs';
 
-import { sendMsgToMain, shortcutsMap } from "Utils";
-import shortcutBinding from "./shortcutBinding";
-import { ShortcutMan } from "./ShortcutMan";
-import shortcuts from "./shortcuts";
+import { sendMsgToMain, registerCallbackWithMainProcess } from 'Utils/Render';
+import { app, isMenuItem } from 'Utils/Common';
+import { postPromiseMessageToMainProcess, postCallbackMessageToMainProcess } from 'Utils/Render';
+import { shortcutsMap } from 'Utils/Render/ShortcutsMap';
+import shortcutBinding from './shortcutBinding';
+import { ShortcutMan } from './ShortcutMan';
+import shortcuts from 'Utils/Render/shortcuts';
 
 // import api from "./webApi";
 
@@ -18,10 +21,11 @@ interface IIntiApiOptions {
     shortcutMan?: any;
 }
 
-const API_VERSION = 12;
+const API_VERSION = 19;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
+const mainProcessCancelCallbacks: Map<number, Function> = new Map();
 const fontMapPromise = new Promise(resolve => {
     resolveFontMapPromise = resolve;
 });
@@ -66,6 +70,23 @@ const onWebMessage = (event: MessageEvent) => {
 
     if (!msg) return;
 
+    if (msg.callbackID != null) {
+        const cancel = registerCallbackWithMainProcess(msg.name, msg.args, (args: any) => {
+            webPort.postMessage({ args, callbackID: msg.callbackID });
+        });
+        mainProcessCancelCallbacks.set(msg.callbackID, cancel);
+        return;
+    }
+    if (msg.cancelCallbackID != null) {
+        mainProcessCancelCallbacks.get(msg.cancelCallbackID)();
+        mainProcessCancelCallbacks.delete(msg.cancelCallbackID);
+        return;
+    }
+    if (!msg.name || !(msg.name in publicAPI)) {
+        console.error('[desktop] Unhandled message', msg.name);
+        return;
+    }
+
     let resultPromise = undefined;
 
     try {
@@ -80,8 +101,7 @@ const onWebMessage = (event: MessageEvent) => {
                     const errorString = error && error.name || 'Promise error';
                     webPort.postMessage({ error: errorString, promiseID: msg.promiseID });
                 });
-            }
-            else {
+            } else {
                 webPort.postMessage({ error: 'No result', promiseID: msg.promiseID });
             }
         }
@@ -94,8 +114,11 @@ const onWebMessage = (event: MessageEvent) => {
 const initWebApi = (props: IIntiApiOptions) => {
     const channel = new MessageChannel();
     const pendingPromises = new Map();
+    const registeredCallbacks = new Map();
+
     let messageHandler: Function;
     let nextPromiseID = 0;
+    let nextCallbackID = 0;
     let messageQueue: any[] = [];
 
     // console.log('args: ', args, args.shortcutMan);
@@ -164,6 +187,14 @@ const initWebApi = (props: IIntiApiOptions) => {
             channel.port1.postMessage({ name, args }, transferList);
 
         },
+        registerCallback: function (name, args, callback) {
+            const id = nextCallbackID++;
+            registeredCallbacks.set(id, callback);
+            channel.port1.postMessage({ name, args, callbackID: id });
+            return () => {
+                channel.port1.postMessage({ cancelCallbackID: id });
+            };
+        },
         promiseMessage: function (name, args, transferList) {
             console.log('promiseMessage, name, args, transferList: ', name, args, transferList);
             return new Promise((resolve, reject) => {
@@ -184,7 +215,7 @@ const initWebApi = (props: IIntiApiOptions) => {
 
         if (!msg) return;
 
-        console.log('channel.port1.onmessage, event: ', event);
+        console.log('channel.port1.onmessage, event: ', event.data);
 
         if (msg.promiseID != null) {
             const pendingPromise = pendingPromises.get(msg.promiseID);
@@ -196,6 +227,11 @@ const initWebApi = (props: IIntiApiOptions) => {
                 } else {
                     pendingPromise.reject(msg.error);
                 }
+            }
+        } else if (msg.callbackID != null) {
+            const registeredCallback = registeredCallbacks.get(msg.callbackID);
+            if (registeredCallback) {
+                registeredCallback(msg.args);
             }
         } else if (msg.name != null) {
             messageQueue.push(msg);
@@ -248,7 +284,11 @@ const initWebBindings = () => {
             resolveFontMapPromise();
             resolveFontMapPromise = null;
         }
-    })
+    });
+
+    E.ipcRenderer.on('handlePluginMenuAction', (event: Event, pluginMenuAction: any) => {
+        webPort.postMessage({ name: 'handlePluginMenuAction', args: { pluginMenuAction } });
+    });
 }
 
 const publicAPI: any = {
@@ -264,6 +304,116 @@ const publicAPI: any = {
     getFonts() {
         return new Promise(resolve => fontMapPromise.then(() => resolve({ data: fontMap })));
     },
+
+    newFile(args: any) {
+        console.log('newFile, args: ', args);
+        sendMsgToMain('newFile', args.info);
+    },
+    openFile(args: any) {
+        console.log('openFile, args: ', args);
+        sendMsgToMain('openTab', '/file/' + args.fileKey, args.title, undefined, args.target);
+    },
+    close(args: any) {
+        console.log('close, args: ', args);
+        sendMsgToMain('closeTab', args.suppressReopening);
+    },
+    setFileKey(args: any) {
+        console.log('setFileKey, args: ', args);
+        sendMsgToMain('updateFileKey', args.fileKey);
+    },
+    setLoading(args: any) {
+        console.log('setLoading, args: ', args);
+        sendMsgToMain('updateLoadingStatus', args.loading);
+    },
+    setSaved(args: any) {
+        console.log('setSaved, args: ', args);
+        sendMsgToMain('updateSaveStatus', args.saved);
+    },
+    updateActionState(args: any) {
+        console.log('updateActionState, args: ', args);
+        sendMsgToMain('updateActionState', args.state);
+    },
+    showFileBrowser() {
+        console.log('showFileBrowser');
+        sendMsgToMain('showFileBrowser');
+    },
+    setIsPreloaded() {
+        console.log('setIsPreloaded');
+        sendMsgToMain('setIsPreloaded');
+    },
+    setPluginMenuData(args: WepApi.SetPluginMenuDataProps) {
+        const pluginMenuData = [];
+        for (const item of args.data) {
+            if (isMenuItem(item)) {
+                pluginMenuData.push(item);
+            } else {
+                console.error('[desktop] invalid plugin menu item', args);
+            }
+        }
+
+        sendMsgToMain('setPluginMenuData', pluginMenuData);
+    },
+
+    createMultipleNewLocalFileExtensions(args: any) {
+        console.log('log', {name: 'createMultipleNewLocalFileExtensions', args });
+        return async () => {
+            const result = await postPromiseMessageToMainProcess('createMultipleNewLocalFileExtensions', args.options, args.depth);
+            console.log('await createMultipleNewLocalFileExtensions, result: ', result);
+            return { data: result };
+        };
+    },
+    getAllLocalFileExtensionIds(...args: any[]) {
+        console.log('log', {name: 'getAllLocalFileExtensionIds', args });
+        return async () => {
+            const list = await postPromiseMessageToMainProcess('getAllLocalFileExtensionIds');
+            console.log('await getAllLocalFileExtensionIds, result: ', list);
+            return { data: list };
+        };
+    },
+    getLocalFileExtensionManifest(args: any) {
+        console.log('log', {name: 'getLocalFileExtensionManifest', args });
+        return async () => {
+            const manifest = await postPromiseMessageToMainProcess('getLocalFileExtensionManifest', args.id);
+            console.log('await getLocalFileExtensionManifest, result: ', manifest);
+            return { data: manifest };
+        };
+    },
+    getLocalFileExtensionSource(args: any) {
+        console.log('log', {name: 'getLocalFileExtensionSource', args });
+        return new Promise((resolve, reject) => {
+            resolve({ data: 'ok' });
+        });
+        // return __awaiter(this, void 0, void 0, function* () {
+        //     const code = yield postPromiseMessageToMainProcess('getLocalFileExtensionSource', args.getNumber('id'));
+        //     return { data: code };
+        // });
+    },
+    removeLocalFileExtension(args: any) {
+        console.log('log', {name: 'removeLocalFileExtension', args });
+        // postMessageToMainProcess('removeLocalFileExtension', args.getNumber('id'));
+    },
+    openExtensionDirectory(args: any) {
+        console.log('log', {name: 'openExtensionDirectory', args });
+        // postMessageToMainProcess('openExtensionDirectory', args.getNumber('id'));
+    },
+    writeNewExtensionToDisk(args: any) {
+        console.log('log', {name: 'writeNewExtensionToDisk', args });
+        return new Promise((resolve, reject) => {
+            resolve({ data: 'ok' });
+        });
+        // return __awaiter(this, void 0, void 0, function* () {
+        //     let id = yield postPromiseMessageToMainProcess('writeNewExtensionToDisk', args.getString('dirName'), args.getArray('files'));
+        //     return { data: id };
+        // });
+    },
+
+    isDevToolsOpened(...args: any[]) {
+        console.log('isDevToolsOpened, args: ', args);
+        return new Promise((res, rej) => {
+            res({ data: true });
+        });
+    },
+
     getFontFile(args: any) {
         return new Promise((resolve, reject) => {
             const fontPath = args.path;
@@ -368,43 +518,6 @@ const publicAPI: any = {
         } else {
             E.clipboard.writeBuffer(format, data);
         }
-    },
-
-    newFile(args: any) {
-        console.log('newFile, args: ', args);
-        sendMsgToMain('newFile', args.info);
-    },
-    openFile(args: any) {
-        console.log('openFile, args: ', args);
-        sendMsgToMain('openTab', '/file/' + args.fileKey, args.title, undefined, args.target);
-    },
-    close(args: any) {
-        console.log('close, args: ', args);
-        sendMsgToMain('closeTab', args.suppressReopening);
-    },
-    setFileKey(args: any) {
-        console.log('setFileKey, args: ', args);
-        sendMsgToMain('updateFileKey', args.fileKey);
-    },
-    setLoading(args: any) {
-        console.log('setLoading, args: ', args);
-        sendMsgToMain('updateLoadingStatus', args.loading);
-    },
-    setSaved(args: any) {
-        console.log('setSaved, args: ', args);
-        sendMsgToMain('updateSaveStatus', args.saved);
-    },
-    updateActionState(args: any) {
-        console.log('updateActionState, args: ', args);
-        sendMsgToMain('updateActionState', args.state);
-    },
-    showFileBrowser() {
-        console.log('showFileBrowser');
-        sendMsgToMain('showFileBrowser');
-    },
-    setIsPreloaded() {
-        console.log('setIsPreloaded');
-        sendMsgToMain('setIsPreloaded');
     },
 
     writeFiles(args: any) {
@@ -535,6 +648,8 @@ const init = (fileBrowser: boolean) => {
         shortcutsMap,
         shortcutMan: ShortcutMan.toString()
     }
+
+    console.log('init(): window.parent.document: ', window.parent.document.body);
 
     // console.log('api: ', api.toString());
     E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);

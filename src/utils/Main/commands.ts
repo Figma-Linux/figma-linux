@@ -1,6 +1,6 @@
 import * as E from 'electron';
 
-import * as Utils from 'Utils';
+import { toggleDetachedDevTools } from 'Utils/Main';
 
 export const commands = (): Map<string, Function> => {
     const map = new Map<string, Function>();
@@ -9,11 +9,11 @@ export const commands = (): Map<string, Function> => {
         const browserView = window.getBrowserView();
 
         if (browserView && browserView.webContents) {
-            Utils.toggleDetachedDevTools(browserView.webContents)
+            toggleDetachedDevTools(browserView.webContents)
         }
     });
     map.set('toggle-window-developer-tools', (item: E.MenuItemConstructorOptions, window: E.BrowserWindow) => {
-        Utils.toggleDetachedDevTools(window.webContents);
+        toggleDetachedDevTools(window.webContents);
     });
 
     map.set('close-window', () => {

@@ -4,7 +4,7 @@ import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
 import * as Const from "Const";
-import { isComponentUrl } from "Utils";
+import { isComponentUrl } from "Utils/Common";
 import TabList from "./tabs";
 import './style.scss'
 

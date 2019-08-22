@@ -8,3 +8,7 @@ export const winUrlProd = formatUrl({
 	protocol: 'file',
 	slashes: true
 });
+
+export const isFileBrowser = (url: string) => {
+	return !/file\/.+/.test(url);
+}

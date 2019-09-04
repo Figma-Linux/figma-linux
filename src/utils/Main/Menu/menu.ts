@@ -97,7 +97,6 @@ export const item = (label: string, accelerator: string, params: Menu.Params) =>
 
     if (accelerator) {
         props.accelerator = accelerator;
-        props.registerAccelerator = false;
     }
 
     return new E.MenuItem(props);

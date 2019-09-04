@@ -2,9 +2,11 @@ import * as Settings from 'electron-settings';
 import * as E from "electron";
 
 import * as Const from "Const";
-import { cmd } from 'Utils';
+import { cmd } from 'Utils/Main';
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
+import Server from './server';
+import './events/app';
 
 class App {
     windowManager: WindowManager;
@@ -47,6 +49,8 @@ class App {
                     this.windowManager.mainWindow.focus();
                 }
             });
+
+            Server.start();
         }
 
         this.appEvent();

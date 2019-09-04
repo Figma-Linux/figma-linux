@@ -2,7 +2,7 @@ import * as React from "react";
 import { observer, inject } from "mobx-react";
 
 import SettingsComponent from "./Settings";
-import { isComponentUrl, getComponentTitle } from "Utils";
+import { isComponentUrl, getComponentTitle } from "Utils/Common";
 import { Settings } from 'Store/Settings';
 
 interface BodyProps {

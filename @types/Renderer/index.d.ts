@@ -6,6 +6,7 @@ interface Window extends EventTarget, WindowTimers, WindowSessionStorage, Window
         fileBrowser: boolean;
 
         postMessage(name: string, args?: any, transferList?: Transferable[]): void;
+        registerCallback(name: string, args: any, callback: Function): void;
         promiseMessage(name: string, args?: any, transferList?: Transferable[]): Promise<void>
         setMessageHandler(handler: Function): void;
     };

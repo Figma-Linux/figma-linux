@@ -8,7 +8,7 @@ const render = {
     entry: {
         '../middleware/loadMainContetnt': path.resolve(rootFolder, 'src/middleware/loadMainContetnt.ts'),
         '../middleware/loadContetnt': path.resolve(rootFolder, 'src/middleware/loadContetnt.ts'),
-        '../middleware/webApi': path.resolve(rootFolder, 'src/middleware/webApi.ts')
+        // '../middleware/webApi': path.resolve(rootFolder, 'src/middleware/webApi.ts')
     },
 
     module: {
@@ -27,6 +27,7 @@ const render = {
             Middleware: path.resolve(rootFolder, 'src/middleware'),
             Store: path.resolve(rootFolder, 'src/renderer/stores'),
             Const: path.resolve(rootFolder, 'src/constants'),
+            Main: path.resolve(rootFolder, 'src/main'),
             Utils: path.resolve(rootFolder, 'src/utils')
         }
     },

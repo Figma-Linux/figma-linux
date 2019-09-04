@@ -1,5 +1,5 @@
 
-export const shortcutsMap: Array<ShortcutsMap> = [
+export const shortcutsMap: ShortcutsMap[] = [
 	{ accelerator: 'Ctrl+N', value: 'newFile', type: 'id' },
 	{ accelerator: 'Ctrl+O', value: 'openFileBrowser', type: 'id' },
 	{ accelerator: 'Ctrl+Shift+T', value: 'reopenClosedTab', type: 'id' },
@@ -119,5 +119,3 @@ export const shortcutsMap: Array<ShortcutsMap> = [
 	{ accelerator: 'Ctrl+Alt+I', value: 'toggle-developer-tools', type: 'id' },
 	{ accelerator: 'Shift+Ctrl+Alt+I', value: 'toggle-window-developer-tools', type: 'id' },
 ];
-
-export let isHidden: boolean = false;

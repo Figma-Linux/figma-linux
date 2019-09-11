@@ -389,6 +389,14 @@ class WindowManager {
         if (to.pathname === '/logout') {
             this.logoutAndRestart(event);
         }
+
+        if (Const.REGEXP_APP_AUTH_REDEEM.test(from.pathname || '')) {
+            return;
+        }
+        if (to.search && to.search.match(/[\?\&]redirected=1/)) {
+            event.preventDefault();
+            return;
+        }
     }
 
     private openFileBrowser = () => {

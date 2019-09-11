@@ -5,11 +5,12 @@ import * as Const from "Const";
 import { cmd } from 'Utils/Main';
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
-import Server from './server';
+import { Session } from './Session';
 import './events/app';
 
 class App {
     windowManager: WindowManager;
+    session: Session;
 
     constructor() {
         const isSingleInstance = E.app.requestSingleInstanceLock();
@@ -50,7 +51,7 @@ class App {
                 }
             });
 
-            Server.start();
+            this.session = new Session();
         }
 
         this.appEvent();
@@ -73,6 +74,7 @@ class App {
         const { figmaUrl } = Args();
 
         this.windowManager = WindowManager.instance;
+        this.session.handleAppReady();
 
         setTimeout(() => {
             figmaUrl !== '' && this.windowManager.openUrl(figmaUrl);

@@ -236,6 +236,9 @@ class WindowManager {
                 E.app.quit();
             }, 1000);
         });
+        E.app.on('sign-out', () => {
+            this.logoutAndRestart();
+        });
         E.app.on('handle-command', (id: string) => {
             switch (id) {
                 case 'scale-normal': {
@@ -324,7 +327,7 @@ class WindowManager {
         return tab;
     }
 
-    public logoutAndRestart = (event?: E.Event) => {
+    private logoutAndRestart = (event?: E.Event) => {
         E.net.request(`${this.home}/logout`).on('response', response => {
             response.on('data', data => { });
             response.on('error', (err: Error) => {

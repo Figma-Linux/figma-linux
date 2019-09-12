@@ -1,6 +1,7 @@
 import * as E from 'electron';
 
 import { toggleDetachedDevTools } from 'Utils/Main';
+import { app } from 'Utils/Common';
 
 export const commands = (): Map<string, Function> => {
     const map = new Map<string, Function>();
@@ -17,11 +18,11 @@ export const commands = (): Map<string, Function> => {
     });
 
     map.set('close-window', () => {
-        if (E.remote) {
-            E.remote.app.exit();
-        } else {
-            E.app.exit();
-        }
+        app.exit();
+    });
+
+    map.set('sign-out', () => {
+        app.emit('sign-out');
     });
 
     return map;

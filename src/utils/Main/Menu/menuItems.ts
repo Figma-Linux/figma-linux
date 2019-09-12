@@ -229,16 +229,11 @@ const HELP_MENU = {
                 E.shell.openExternal('https://www.figma.com/summary-of-policy');
             },
         },
-        // SEPARATOR,
-        // {
-        //     label: 'Sign Out',
-        //     click() {
-        //         // TODO: To do via event emitter
-        //         // const windowManager = WindowManager.instance;
-
-        //         // windowManager.logoutAndRestart();
-        //     },
-        // },
+        SEPARATOR,
+        {
+            label: 'Sign Out',
+            click() { Commander.exec('sign-out'); },
+        },
         SEPARATOR,
         {
             label: 'Toggle Developer Tools',

@@ -232,12 +232,7 @@ const HELP_MENU = {
         SEPARATOR,
         {
             label: 'Sign Out',
-            click() {
-                // TODO: To do via event emitter
-                // const windowManager = WindowManager.instance;
-
-                // windowManager.logoutAndRestart();
-            },
+            click() { Commander.exec('sign-out'); },
         },
         SEPARATOR,
         {

@@ -61,6 +61,12 @@ declare namespace Electron {
 		addListener(event: 'log', listener: (data: any) => void): this;
 		removeListener(event: 'log', listener: (data: any) => void): this;
 		emit(event: 'log', data: any): boolean;
+
+		on(event: 'sign-out', listener: () => void): this;
+		once(event: 'sign-out', listener: () => void): this;
+		addListener(event: 'sign-out', listener: () => void): this;
+		removeListener(event: 'sign-out', listener: () => void): this;
+		emit(event: 'sign-out'): boolean;
 	}
 
 	interface IpcMain extends EventEmitter {

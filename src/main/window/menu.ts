@@ -23,14 +23,6 @@ const init = (template?: E.MenuItemConstructorOptions[]) => {
             menuItem.enabled = state.actionState ? !!state.actionState[action] : false;
         }
     });
-    // E.app.on('updateActionState', (actionState) => {
-    //     if (!actionState) return;
-
-    //     for (let action of Object.keys(menuItemMap)) {
-    //         const menuItem: E.MenuItem = menuItemMap[action];
-    //         menuItem.enabled = actionState ? !!actionState[action] : false;
-    //     }
-    // });
 };
 
 export default init;

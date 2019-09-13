@@ -1,3 +1,8 @@
+# <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icon/128x128.png" width="32"> Figma electron app (unofficial)
+
+Figma-linux it's unofficial desktop application for Linux for the [Figma web application](https://figma.com). <br>
+This app based on the [Electron](http://electron.atom.io)
+
 <p>
 	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.png">
 </p>
@@ -22,22 +27,14 @@
 </p>
 <p>
 	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
-<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DNBUKPV6FBCY&source=url" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+	<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DNBUKPV6FBCY&source=url" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
 </p>
 
-
-# <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icon/128x128.png" width="32"> Figma electron app (unofficial)
-
-Figma-linux it's unofficial desktop application for Linux for the [Figma web application](https://figma.com). <br>
-This app based on the [Electron](http://electron.atom.io)
-
-<br>
-
-# Dependences
+## Dependences
 On Debian-based distros You need install the libgconf-2-4 library
 
 
-# Repositories
+## Repositories
 For now, there are have repository for [deb package on Launchpad](https://launchpad.net/~chrdevs/+archive/ubuntu/figma). <br>
 To add repository, execute command below:
 ```bash
@@ -48,31 +45,36 @@ If You have **NO_PUBKEY** error while on **apt update**, then You must add the k
 sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
 ```
 
-# install
+## install
 [Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
 For debian-based linux distributions:
 ```
-sudo dpkg -i figma-linux_0.4.0_amd64.deb
+sudo dpkg -i figma-linux_0.5.6_amd64.deb
+```
+
+With [snap package](https://snapcraft.io/figma-linux):
+```bash
+snap install figma-linux
 ```
 
 For RedHat-based linux distributions:
 ```
-sudo yum install figma-linux-0.4.0.x86_64.rpm
+sudo yum install figma-linux-0.5.6.x86_64.rpm
 ```
 or
 ```
-sudo rpm -Uvh figma-linux-0.4.0.x86_64.rpm
+sudo rpm -Uvh figma-linux-0.5.6.x86_64.rpm
 ```
 or
 ```
-sudo zypper install figma-linux-0.4.0.x86_64.rpm
+sudo zypper install figma-linux-0.5.6.x86_64.rpm
 ```
 or
 ```
-sudo smart install figma-linux-0.4.0.x86_64.rpm
+sudo smart install figma-linux-0.5.6.x86_64.rpm
 ```
 
-# Run
+## Run
 
 ```
 figma-linux
@@ -81,10 +83,10 @@ figma-linux
 Or You can just download and run the AppImage.
 
 ```
-./figma-linux-0.4.0-x86_64.AppImage
+./figma-linux-0.5.6-x86_64.AppImage
 ```
 
-# Development
+## Development
 
 Steps to start development:
 
@@ -115,6 +117,18 @@ Because the middleware execute only on run the app. Hot Reload doesn't work here
  * **builder** - packs the app into different linux packages (see ./config/builder.json)
  * **pack** - removes old packages from the installers dir, build the app and pack it
 
-# Community
+## Community
 
 Join us in [telegram](https://t.me/figma_linux) and [spectrum.chat](https://spectrum.chat/figma-linux)
+
+
+## Become a Backer
+
+If you like to contribute by funding for sustaining our work, you can to do this via PayPal or Buy me a Coffee:
+
+<p>
+	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
+	<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DNBUKPV6FBCY&source=url" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
+</p>
+
+Thanks sponsors.

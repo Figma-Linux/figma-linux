@@ -1,116 +1,113 @@
 {
-    "appId": "figma-linux",
-    "productName": "figma-linux",
-    "extraMetadata": "main/main.js",
-    "icon": "resources/icon",
-    "extraFiles": [
-        {
-            "from": "lib/"
+  "appId": "figma-linux",
+  "productName": "figma-linux",
+  "extraMetadata": "main/main.js",
+  "icon": "resources/icon",
+  "extraFiles": [{
+    "from": "lib/"
+  }],
+  "files": [
+    "**/*"
+  ],
+  "directories": {
+    "app": "dist/",
+    "buildResources": "build/installers",
+    "output": "build/installers"
+  },
+
+  "protocols": [{
+    "name": "figma",
+    "role": "Viewer",
+    "schemes": [
+      "figma"
+    ]
+  }],
+
+  "pacman": {
+    "depends": []
+  },
+
+  "appImage": {
+    "category": "Graphics",
+    "systemIntegration": "doNotAsk"
+  },
+
+  "snap": {
+    "plugs": [
+      {
+        "home": {
+          "interface": "personal-files",
+          "allow-auto-connection": true,
+          "read": [
+            "$HOME/.config",
+            "$HOME/Documents"
+          ],
+          "write": [
+            "$HOME/.config",
+            "$HOME/Documents"
+          ]
         }
-    ],
-    "files": [
-        "**/*"
-    ],
-    "directories": {
-        "app": "dist/",
-        "buildResources": "build/installers",
-        "output": "build/installers"
-    },
+      },
+      {
+        "removable-devices": {
+          "interface": "removable-media",
+          "allow-auto-connection": true
+        }
+      },
+      "desktop",
+      "desktop-legacy",
+      "home",
+      "x11",
+      "unity7",
+      "browser-support",
+      "network",
+      "gsettings",
+      "pulseaudio",
+      "opengl",
+      "gsettings"
+    ]
+  },
 
-    "protocols": [{
-        "name": "figma",
-        "role": "Viewer",
-        "schemes": [
-            "figma"
+  "linux": {
+    "description": "Unofficial desktop application for linux",
+    "icon": "resources/icon",
+    "category": "Graphic",
+    "target": [{
+        "target": "AppImage",
+        "arch": [
+          "x64"
         ]
-    }],
-
-    "pacman": {
-        "depends": []
-    },
-
-    "appImage": {
-        "category": "Graphics",
-        "systemIntegration": "doNotAsk"
-    },
-
-    // "snap": {
-    //     "plugs": [
-    //         {
-    //             "personal-files": {
-    //                 "interface": "personal-files",
-    //                 "allow-auto-connection": true,
-    //                 // "allow-sandbox": true,
-    //                 "read": [
-    //                     "$HOME/.config",
-    //                     "$HOME/.fonts",
-    //                     "$HOME/.local/share/fonts",
-    //                     "$HOME/snap/figma-linux/x1/.config/figma-linux/Settings"
-    //                 ],
-    //                 "write": [
-    //                     "$HOME/.config",
-    //                     "$HOME/.fonts",
-    //                     "$HOME/.local/share/fonts",
-    //                     "$HOME/snap/figma-linux/x1/.config/figma-linux/Settings"
-    //                 ]
-    //             }
-    //         },
-    //         "desktop",
-    //         "desktop-legacy",
-    //         "home",
-    //         "x11",
-    //         "unity7",
-    //         "browser-support",
-    //         "network",
-    //         "gsettings",
-    //         "pulseaudio",
-    //         "opengl",
-    //         "gsettings",
-    //         "block-devices"
-    //     ]
-    // },
-
-    "linux": {
-        "description": "Unofficial desktop application for linux",
-        "icon": "resources/icon",
-        "category": "Graphic",
-        "target": [
-            {
-                "target": "AppImage",
-                "arch": [
-                    "x64"
-                ]
-            },
-            {
-                "target": "deb",
-                "arch": [
-                    "x64"
-                ]
-            },
-            {
-                "target": "snap",
-                "arch": [
-                    "x64"
-                ]
-            },
-            {
-                "target": "zip",
-                "arch": [
-                    "x64"
-                ]
-            },
-            {
-                "target": "rpm",
-                "arch": [
-                    "x64"
-                ]
-            },
-            {
-                "target": "pacman",
-                "arch": [
-                    "x64"
-                ]
-            }
+      },
+      {
+        "target": "deb",
+        "arch": [
+          "x64"
         ]
-    }
+      },
+      {
+        "target": "snap",
+        "arch": [
+          "x64"
+        ]
+      },
+      {
+        "target": "zip",
+        "arch": [
+          "x64"
+        ]
+      },
+      {
+        "target": "rpm",
+        "arch": [
+          "x64"
+        ]
+      },
+      {
+        "target": "pacman",
+        "arch": [
+          "x64"
+        ]
+      }
+    ]
+  }
 }

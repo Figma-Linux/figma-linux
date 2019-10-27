@@ -1,0 +1,10 @@
+# EditorConfig is awesome:http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All Files
+[*]
+indent_style = space
+indent_size = 2
+insert_final_newline = true

@@ -38,17 +38,25 @@ On Debian-based distros You need install the libgconf-2-4 library
 
 
 ## Repositories
+
+### Ubuntu
+
 For now, there are have repository for [deb package on Launchpad](https://launchpad.net/~chrdevs/+archive/ubuntu/figma). <br>
 To add repository, execute command below:
 ```bash
 sudo add-apt-repository ppa:chrdevs/figma
 ```
-If You have **NO_PUBKEY** error while on **apt update**, then You must add the key manualy:
+If you receive a **NO_PUBKEY** error while running **apt update**, then you must add the key manualy:
 ```bash
 sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
 ```
 
-## install
+### Arch
+
+There is a third-party [`figma-bin`](https://aur.archlinux.org/packages/figma-bin) package available in the AUR.
+
+## Install
+
 [Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
 For debian-based linux distributions:
 ```

@@ -36,7 +36,7 @@ const onClickExportImage = (e: Event, link: HTMLLinkElement) => {
             const filetype: string = res.headers['content-type'][0].replace(/^.+\//, '');
             console.log('response file type: ', filetype);
 
-            const savePath = E.remote.dialog.showSaveDialog({
+            const savePath = E.remote.dialog.showSaveDialogSync({
                 defaultPath: `${Settings.get('app.exportDir')}/${link.textContent.replace(/\..+$/, '')}.${filetype}`,
                 showsTagField: false
             });
@@ -529,7 +529,7 @@ const publicAPI: any = {
         let directoryPath;
         if (files.length === 1 && !files[0].name.includes(path.sep)) {
             const originalFileName = files[0].name;
-            const savePath = E.remote.dialog.showSaveDialog({
+            const savePath = E.remote.dialog.showSaveDialogSync({
                 defaultPath: `${Settings.get('app.exportDir')}/${originalFileName}`,
                 showsTagField: false,
             });
@@ -545,7 +545,7 @@ const publicAPI: any = {
                 }
             }
         } else {
-            const directories = E.remote.dialog.showOpenDialog({
+            const directories = E.remote.dialog.showOpenDialogSync({
                 properties: ['openDirectory', 'createDirectory'],
                 buttonLabel: 'Save',
             });
@@ -571,7 +571,7 @@ const publicAPI: any = {
             ];
             if (path.relative(directoryPath, outputPath).startsWith('..') ||
                 !validExtensions.findIndex(i => i === path.extname(outputPath))) {
-                E.remote.dialog.showMessageBox({
+                E.remote.dialog.showMessageBoxSync({
                     type: 'error',
                     title: 'Export Failed',
                     message: 'Export failed',
@@ -588,7 +588,7 @@ const publicAPI: any = {
         }
         if (filesToBeReplaced > 0 && !skipReplaceConfirmation) {
             const single = filesToBeReplaced === 1;
-            const selectedID = E.remote.dialog.showMessageBox({
+            const selectedID = E.remote.dialog.showMessageBoxSync({
                 type: 'warning',
                 title: 'Replace Existing Files',
                 message: `Replace existing file${single ? '' : `s`}?`,

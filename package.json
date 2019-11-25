@@ -1,6 +1,6 @@
 {
   "name": "figma-linux",
-  "version": "0.5.7",
+  "version": "0.6.0",
   "description": "Figma is the first interface design tool based in the browser, making it easier for teams to create software. Join as in Telegram: https://t.me/figma_linux",
   "main": "src/main/index.js",
   "repository": "git@github.com:ChugunovRoman/figma-linux.git",
@@ -12,8 +12,7 @@
     "start": "electron dist/main/main.js",
     "build": "rm -rf ./dist; electron-webpack app; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
-    "pack": "rm -rf build/installers && npm run build && npm run builder",
-    "postinstall": "npm i figma-linux-bindings"
+    "pack": "rm -rf build/installers && npm run build && npm run builder"
   },
   "electronWebpack": {
     "main": {
@@ -27,7 +26,8 @@
     "chokidar": "^3.0.2",
     "electron-devtools-installer": "^2.2.4",
     "electron-settings": "github:ChugunovRoman/electron-settings#figma-linux",
-    "figma-linux-bindings": "^0.1.18",
+    "figma-linux-rust-binding": "^0.1.3",
+    "electron-build-env": "^0.2",
     "mobx": "^5.6.0",
     "mobx-react": "^5.4.2",
     "mobx-state-router": "^4.0.3",
@@ -56,8 +56,8 @@
     "clean-webpack-plugin": "^0.1.19",
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^0.28.11",
-    "electron": "^3.0.16",
-    "electron-builder": "^20.40.2",
+    "electron": "^7.1.2",
+    "electron-builder": "^22.1.0",
     "electron-rebuild": "^1.8.2",
     "electron-webpack": "^2.6.1",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
@@ -68,7 +68,7 @@
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "ts-loader": "^4.4.2",
-    "typescript": "^3.5.3",
+    "typescript": "^3.7.2",
     "webpack": "^4.14.0",
     "webpack-cli": "2.1.5"
   },

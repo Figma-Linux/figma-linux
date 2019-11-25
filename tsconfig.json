@@ -50,8 +50,8 @@
         "@types/**/*",
         "src/main/index.ts",
         "src/renderer/index.tsx",
-        "src/middleware/loadMainContetnt.ts",
-        "src/middleware/loadContetnt.ts",
+        "src/middleware/loadMainContent.ts",
+        "src/middleware/loadContent.ts",
         "src/middleware/*.ts"
     ],
     "exclude": [

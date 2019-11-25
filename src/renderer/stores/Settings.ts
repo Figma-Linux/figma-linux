@@ -67,7 +67,7 @@ export class Settings {
 
 	@action
 	public selectExportDir = () => {
-		const dirs = E.remote.dialog.showOpenDialog({ properties: ['openDirectory'] });
+		const dirs = E.remote.dialog.showOpenDialogSync({ properties: ['openDirectory'] });
 
 		this.settings.app.exportDir = dirs[0];
 	}
@@ -78,7 +78,7 @@ export class Settings {
 
 	@action
 	public addDir = () => {
-		const dirs = E.remote.dialog.showOpenDialog({ properties: ['openDirectory', 'multiSelections'] });
+		const dirs = E.remote.dialog.showOpenDialogSync({ properties: ['openDirectory', 'multiSelections'] });
 
 		this.settings.app.fontDirs = [
 			...this.settings.app.fontDirs,

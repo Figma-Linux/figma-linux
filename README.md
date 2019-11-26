@@ -47,34 +47,47 @@ If You have **NO_PUBKEY** error while on **apt update**, then You must add the k
 ```bash
 sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
 ```
+And then install:
+```bash
+sudo apt install figma-linux -y
+```
+
+Or Beta deb package:
+```bash
+sudo apt install figma-linux-beta -y
+```
 
 ## install
 [Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
 For debian-based linux distributions:
 ```
-sudo dpkg -i figma-linux_0.5.6_amd64.deb
+sudo dpkg -i figma-linux_0.5.7_amd64.deb
 ```
 
 With [snap package](https://snapcraft.io/figma-linux):
 ```bash
-snap install figma-linux
+sudo snap install figma-linux
+```
+Or Beta release:
+```bash
+sudo snap install --channel=beta figma-linux
 ```
 
 For RedHat-based linux distributions:
 ```
-sudo yum install figma-linux-0.5.6.x86_64.rpm
+sudo yum install figma-linux-0.5.7.x86_64.rpm
 ```
 or
 ```
-sudo rpm -Uvh figma-linux-0.5.6.x86_64.rpm
+sudo rpm -Uvh figma-linux-0.5.7.x86_64.rpm
 ```
 or
 ```
-sudo zypper install figma-linux-0.5.6.x86_64.rpm
+sudo zypper install figma-linux-0.5.7.x86_64.rpm
 ```
 or
 ```
-sudo smart install figma-linux-0.5.6.x86_64.rpm
+sudo smart install figma-linux-0.5.7.x86_64.rpm
 ```
 
 ## Run
@@ -86,7 +99,7 @@ figma-linux
 Or You can just download and run the AppImage.
 
 ```
-./figma-linux-0.5.6-x86_64.AppImage
+./figma-linux-0.5.7-x86_64.AppImage
 ```
 
 ## Development

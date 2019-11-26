@@ -37,7 +37,6 @@ export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuI
             };
         }
         default: {
-            // throw exception
             assertNever(input);
         }
     }

@@ -5,7 +5,7 @@ import { isDev } from 'Utils/Common';
 
 
 export function listenToWebBinding(channel: string, listener: Function) {
-    E.ipcMain.on(`web:${channel}`, (event: E.Event, ...args: any[]) => {
+    E.ipcMain.on(`web:${channel}`, (event: E.IpcMainEvent, ...args: any[]) => {
         isDev && console.log(`[ipc] from web: ${channel}`);
 
         event.returnValue = listener(event.sender, ...args);
@@ -13,7 +13,7 @@ export function listenToWebBinding(channel: string, listener: Function) {
 }
 
 export function listenToWebBindingPromise(channel: string, listener: Function) {
-    E.ipcMain.on(`web-promise:${channel}`, (event: E.Event, promiseID: number, ...args: any[]) => async () => {
+    E.ipcMain.on(`web-promise:${channel}`, (event: E.IpcMainEvent, promiseID: number, ...args: any[]) => async () => {
         isDev && console.log(`[ipc] from web: ${channel} (promise ${promiseID})`);
 
         let result;
@@ -38,7 +38,7 @@ export function listenToWebBindingPromise(channel: string, listener: Function) {
 }
 
 export function listenToWebRegisterCallback(channel: string, listener: Function) {
-    E.ipcMain.on(`web-callback:${channel}`, (event: E.Event, args: any, callbackID: number) => {
+    E.ipcMain.on(`web-callback:${channel}`, (event: E.IpcMainEvent, args: any, callbackID: number) => {
         isDev && console.log(`[ipc] from web: ${channel} (callback ${callbackID})`);
 
         const view = Tab.getByWebContentId(event.sender.id);

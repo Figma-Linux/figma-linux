@@ -1,6 +1,6 @@
 interface AppProps { }
 
-interface Window extends EventTarget, WindowTimers, WindowSessionStorage, WindowLocalStorage, WindowConsole, GlobalEventHandlers, IDBEnvironment, WindowBase64, GlobalFetch {
+interface Window extends EventTarget, WindowTimers, WindowSessionStorage, WindowLocalStorage, WindowConsole, GlobalEventHandlers, IDBEnvironment, WindowBase64, AnimationFrameProvider, WindowOrWorkerGlobalScope, WindowEventHandlers {
     __figmaDesktop: {
         version: number;
         fileBrowser: boolean;
@@ -14,4 +14,7 @@ interface Window extends EventTarget, WindowTimers, WindowSessionStorage, Window
     __figmaContent: any;
 }
 
-declare var window: Window;
+declare var Window: {
+  prototype: Window;
+  new(): Window;
+};

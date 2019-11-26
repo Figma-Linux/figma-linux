@@ -1,9 +1,9 @@
 import * as Settings from 'electron-settings';
-import { Fonts } from 'figma-linux-bindings';
+import { Fonts } from 'figma-linux-rust-binding';
 
 let fonts: any = null;
 if (!Boolean(Settings.get('app.disabledFonts'))) {
-	fonts = require('figma-linux-bindings').getFonts;
+	fonts = require('figma-linux-rust-binding').getFonts;
 }
 
 class Fonts {

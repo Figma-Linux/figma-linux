@@ -34,7 +34,8 @@ class WindowManager {
 
         if (!Settings.get('app.disabledMainMenu')) {
             initMainMenu();
-        } else {
+          } else {
+            E.Menu.setApplicationMenu(null);
             this.mainWindow.setMenuBarVisibility(false);
         }
 

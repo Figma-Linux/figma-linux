@@ -155,7 +155,7 @@ const VECTOR_MENU = {
         item('Smooth Join Selection', null, { action: 'smooth-join-selection', click: handleItemAction }),
         item('Delete and Heal Selection', 'Shift+Backspace', { action: 'delete-and-heal-selection', click: handleItemAction }),
     ],
-};
+} as E.MenuItemConstructorOptions;
 const TEXT_MENU = {
     label: 'Text',
     submenu: [

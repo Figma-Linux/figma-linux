@@ -28,8 +28,7 @@
   },
 
   "appImage": {
-    "category": "Graphics",
-    "systemIntegration": "doNotAsk"
+    "category": "Graphics"
   },
 
   "snap": {
@@ -40,18 +39,19 @@
           "allow-auto-connection": true,
           "read": [
             "$HOME/.config",
+            "$HOME/.local",
             "$HOME/Documents"
           ],
           "write": [
             "$HOME/.config",
+            "$HOME/.local",
             "$HOME/Documents"
           ]
         }
       },
       {
         "removable-devices": {
-          "interface": "removable-media",
-          "allow-auto-connection": true
+          "interface": "removable-media"
         }
       },
       "desktop",

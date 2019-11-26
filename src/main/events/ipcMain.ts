@@ -12,7 +12,7 @@ export const registerIpcMainHandlers = () => {
         let added: any[] = [];
         let existed: any[] = [];
 
-        const pickedPaths = await E.dialog.showOpenDialog(options);
+        const pickedPaths = await E.dialog.showOpenDialogSync(options);
 
         if (!pickedPaths) {
             return { added, existed };

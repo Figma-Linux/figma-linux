@@ -31,12 +31,13 @@ class App {
             E.app.quit();
             return;
         } else {
-            E.app.on('second-instance', (cmdLine, workDir) => {
+            E.app.on('second-instance', (event, argv) => {
                 let projectLink = '';
-                const paramIndex: number = workDir.findIndex((i: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i));
+                console.log('second-instance, argv: ', argv);
+                const paramIndex: number = argv.findIndex((i: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i));
 
                 if (paramIndex !== -1) {
-                    projectLink = workDir[paramIndex];
+                    projectLink = argv[paramIndex];
                 }
 
                 if (this.windowManager && this.windowManager.mainWindow) {
@@ -63,7 +64,7 @@ class App {
 
 
     private appEvent = () => {
-        E.protocol.registerStandardSchemes([Const.PROTOCOL]);
+        E.app.setAsDefaultProtocolClient(Const.PROTOCOL);
 
         E.app.on('ready', this.ready);
         E.app.on('browser-window-created', (e, window) => window.setMenu(null));
@@ -81,11 +82,11 @@ class App {
         }, 1500);
 
         E.protocol.registerHttpProtocol(Const.PROTOCOL, (req, cb) => {
-            this.windowManager.openUrl(req.url);
+          this.windowManager.addTab('loadMainContent.js', req.url);
 
             cb({
                 url: req.url,
-                method: 'GET'
+                method: req.method
             });
         }, err => err && console.log('failed to register http protocol, err: ', err));
     }

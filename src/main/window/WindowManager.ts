@@ -9,7 +9,7 @@ import initMainMenu from "./menu";
 import Commander from '../Commander';
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, getComponentTitle } from 'Utils/Common';
+import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from 'Utils/Common';
 import { winUrlDev, winUrlProd, isFileBrowser } from 'Utils/Main';
 import { registerIpcMainHandlers } from 'Main/events';
 
@@ -38,7 +38,7 @@ class WindowManager {
             this.mainWindow.setMenuBarVisibility(false);
         }
 
-        this.addTab('loadMainContetnt.js');
+        this.addTab('loadMainContent.js');
 
         this.mainWindow.on('resize', this.updateBounds);
         this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
@@ -66,9 +66,9 @@ class WindowManager {
         const options: E.BrowserWindowConstructorOptions = {
             width: 1200,
             height: 900,
-            // frame: true,
             autoHideMenuBar: Settings.get('app.showMainMenu') as boolean,
             webPreferences: {
+                sandbox: false,
                 zoomFactor: 1,
                 nodeIntegration: true,
                 nodeIntegrationInWorker: false,
@@ -87,10 +87,15 @@ class WindowManager {
     }
 
     openUrl = (url: string) => {
-        if (/figma:\/\//.test(url)) {
-            this.addTab('loadContetnt.js', url.replace(/figma:\//, Const.HOMEPAGE));
+        if (isRedeemAuthUrl(url)) {
+          const normalizedUrl = normalizeUrl(url);
+          const tab = Tabs.getAll()[0];
+
+          tab.webContents.loadURL(normalizedUrl);
+        } else if (/figma:\/\//.test(url)) {
+            this.addTab('loadContent.js', url.replace(/figma:\//, Const.HOMEPAGE));
         } else if (/https?:\/\//.test(url)) {
-            this.addTab('loadContetnt.js', url);
+            this.addTab('loadContent.js', url);
         }
     }
 
@@ -102,9 +107,9 @@ class WindowManager {
                 (t => {
                     setTimeout(() => {
                         if (isFileBrowser(t.url)) {
-                            this.addTab('loadMainContetnt.js', t.url, t.title);
+                            this.addTab('loadMainContent.js', t.url, t.title);
                         } else {
-                            this.addTab('loadContetnt.js', t.url, t.title);
+                            this.addTab('loadContent.js', t.url, t.title);
                         }
                     }, 1500 * i);
                 })(tab);
@@ -263,7 +268,7 @@ class WindowManager {
                     if (this.closedTabsHistory.length <= 0) return;
 
                     const url = this.closedTabsHistory.pop();
-                    const script = /files\/recent$/.test(url) ? 'loadMainContetnt.js' : 'loadContetnt.js';
+                    const script = /files\/recent$/.test(url) ? 'loadMainContent.js' : 'loadContent.js';
 
                     this.addTab(script, url);
                 } break;
@@ -298,7 +303,7 @@ class WindowManager {
         })
     }
 
-    public addTab = (scriptPreload: string = 'loadMainContetnt.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
+    public addTab = (scriptPreload: string = 'loadMainContent.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
         if (isComponentUrl(url)) {
             this.mainWindow.setBrowserView(null);
             this.mainWindow.webContents.send(Const.TABADDED, {
@@ -336,7 +341,7 @@ class WindowManager {
             response.on('end', () => {
                 if (response.statusCode >= 200 && response.statusCode <= 299) {
 
-                    E.session.defaultSession!.cookies.flushStore(() => {
+                    E.session.defaultSession!.cookies.flushStore().then(() => {
                         const view = Tabs.focus(1);
                         this.mainWindow.setBrowserView(view);
                         view.webContents.reload();
@@ -361,9 +366,19 @@ class WindowManager {
     private onNewWindow = (event: Event, url: string) => {
         let view;
 
+        console.log('newWindow, url: ', url);
+
         if (/start_google_sso/.test(url)) return;
 
-        view = Tabs.newTab(`${url}`, this.getBounds(), 'loadContetnt.js');
+        if (/\/app_auth\/.*\/grant/.test(url)) {
+          E.shell.openExternal(url);
+
+          event.preventDefault();
+
+          return;
+        }
+
+        view = Tabs.newTab(`${url}`, this.getBounds(), 'loadContent.js');
 
         view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
 
@@ -371,8 +386,11 @@ class WindowManager {
         this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false });
     }
 
-    private onMainWindowWillNavigate = (event: E.Event, newUrl: string) => {
+    private onMainWindowWillNavigate = (event: any, newUrl: string) => {
+        // const currentUrl = event.sender.getURL();
         const currentUrl = event.sender.getURL();
+
+        console.log('from: ', currentUrl, " to: ", newUrl);
 
         if (newUrl === currentUrl) {
             event.preventDefault();

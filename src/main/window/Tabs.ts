@@ -1,7 +1,6 @@
 import * as Settings from 'electron-settings';
 import * as E from "electron";
 import * as path from "path";
-import * as fs from "fs";
 
 import { DEFAULT_SETTINGS, HOMEPAGE, RESOURCESDIR } from 'Const';
 import { isDev } from 'Utils/Common';
@@ -33,7 +32,9 @@ export default class Tabs {
 
         tab.setAutoResize({
             width: true,
-            height: true
+            height: true,
+            horizontal: true,
+            vertical: true
         });
         tab.setBounds(rect);
         tab.webContents.loadURL(url);
@@ -48,8 +49,6 @@ export default class Tabs {
                 .then(fonts => {
                     tab.webContents.send('updateFonts', fonts);
                 });
-
-            // tab.webContents.executeJavaScript(`(${dom})()`);
         });
 
         isDev && tab.webContents.toggleDevTools();

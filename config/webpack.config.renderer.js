@@ -6,8 +6,8 @@ const rootFolder = process.cwd();
 
 const render = {
     entry: {
-        '../middleware/loadMainContetnt': path.resolve(rootFolder, 'src/middleware/loadMainContetnt.ts'),
-        '../middleware/loadContetnt': path.resolve(rootFolder, 'src/middleware/loadContetnt.ts'),
+        '../middleware/loadMainContent': path.resolve(rootFolder, 'src/middleware/loadMainContent.ts'),
+        '../middleware/loadContent': path.resolve(rootFolder, 'src/middleware/loadContent.ts'),
         // '../middleware/webApi': path.resolve(rootFolder, 'src/middleware/webApi.ts')
     },
 
@@ -39,8 +39,8 @@ const render = {
             template: path.resolve(rootFolder, 'src', 'index.html'),
             filename: path.resolve(rootFolder, 'dist', 'index.html'),
             excludeChunks: [
-                '../middleware/loadMainContetnt',
-                '../middleware/loadContetnt'
+                '../middleware/loadMainContent',
+                '../middleware/loadContent'
             ]
         })
     ]

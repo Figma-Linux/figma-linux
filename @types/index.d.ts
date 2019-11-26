@@ -7,7 +7,7 @@ declare namespace Electron {
 		click: (item: MenuItemConstructorOptions, window: BrowserWindow, event: Event) => void;
 	}
 
-	interface App extends EventEmitter {
+	interface App extends NodeJS.EventEmitter {
 		on(event: 'handle-command', listener: (command: string) => void): this;
 		once(event: 'handle-command', listener: (command: string) => void): this;
 		addListener(event: 'handle-command', listener: (command: string) => void): this;
@@ -69,21 +69,21 @@ declare namespace Electron {
 		emit(event: 'sign-out'): boolean;
 	}
 
-	interface IpcMain extends EventEmitter {
-		on(channel: string, listener: (event: Event, args: any) => void): this;
-		once(channel: string, listener: (event: Event, args: any) => void): this;
+	interface IpcMain extends NodeJS.EventEmitter {
+		on(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
+		once(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
 		removeAllListeners(channel: string): this;
-		removeListener(channel: string, listener: (event: Event, args: any) => void): this;
+		removeListener(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
 
-		on(channel: 'setTitle', listener: (event: Event, title: string) => void): this;
-		once(channel: 'setTitle', listener: (event: Event, title: string) => void): this;
+		on(channel: 'setTitle', listener: (event: IpcMainEvent, title: string) => void): this;
+		once(channel: 'setTitle', listener: (event: IpcMainEvent, title: string) => void): this;
 		removeAllListeners(channel: 'setTitle'): this;
-		removeListener(channel: 'setTitle', listener: (event: Event, title: string) => void): this;
+		removeListener(channel: 'setTitle', listener: (event: IpcMainEvent, title: string) => void): this;
 
-		on(channel: 'setPluginMenuData', listener: (event: Event, pluginMenu: Menu.MenuItem[]) => void): this;
-		once(channel: 'setPluginMenuData', listener: (event: Event, pluginMenu: Menu.MenuItem[]) => void): this;
+		on(channel: 'setPluginMenuData', listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
+		once(channel: 'setPluginMenuData', listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
 		removeAllListeners(channel: 'setPluginMenuData'): this;
-		removeListener(channel: 'setPluginMenuData', listener: (event: Event, pluginMenu: Menu.MenuItem[]) => void): this;
+		removeListener(channel: 'setPluginMenuData', listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
 	}
 
 	interface RequestHeaders {

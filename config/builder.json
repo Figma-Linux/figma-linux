@@ -28,8 +28,7 @@
   },
 
   "appImage": {
-    "category": "Graphics",
-    "systemIntegration": "doNotAsk"
+    "category": "Graphics"
   },
 
   "snap": {

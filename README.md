@@ -60,9 +60,12 @@ Or Beta deb package:
 sudo apt install figma-linux-beta -y
 ```
 
-### Arch
+## Arch Linux
 
-There is a third-party [`figma-bin`](https://aur.archlinux.org/packages/figma-bin) package available in the AUR.
+There is a [figma-linux](https://aur.archlinux.org/packages/figma-linux/) package available in the AUR
+```bash
+yay -S figma-linux
+```
 
 ## Install
 

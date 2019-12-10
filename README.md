@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icon/128x128.png" width="32"> Figma electron app (unofficial)
+# <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icons/128x128.png" width="32"> Figma electron app (unofficial)
 
 Figma-linux it's unofficial desktop application for Linux for the [Figma web application](https://figma.com). <br>
 This app based on the [Electron](http://electron.atom.io)

@@ -2,7 +2,7 @@
   "appId": "figma-linux",
   "productName": "figma-linux",
   "extraMetadata": "main/main.js",
-  "icon": "resources/icon",
+  "icon": "resources/icons",
   "extraFiles": [{
     "from": "lib/"
   }],
@@ -70,7 +70,7 @@
 
   "linux": {
     "description": "Unofficial desktop application for linux",
-    "icon": "resources/icon",
+    "icon": "resources/icons",
     "category": "Graphic",
     "target": [{
         "target": "AppImage",

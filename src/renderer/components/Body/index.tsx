@@ -3,55 +3,55 @@ import { observer, inject } from "mobx-react";
 
 import SettingsComponent from "./Settings";
 import { isComponentUrl, getComponentTitle } from "Utils/Common";
-import { Settings } from 'Store/Settings';
+import { Settings } from "Store/Settings";
 
 interface BodyProps {
-    tabs?: ITabsStore;
-    settings?: Settings;
+  tabs?: TabsStore;
+  settings?: Settings;
 }
 
-@inject('tabs')
-@inject('settings')
+@inject("tabs")
+@inject("settings")
 @observer
 class Body extends React.Component<BodyProps, {}> {
-    props: BodyProps;
-    private components: any;
+  props: BodyProps;
+  private components: any;
 
-    constructor(props: BodyProps) {
-        super(props);
+  constructor(props: BodyProps) {
+    super(props);
 
-        this.props = props;
-        this.components = {
-            Settings: <SettingsComponent />
-        };
+    this.props = props;
+    this.components = {
+      Settings: <SettingsComponent />,
+    };
+  }
+
+  private loadComponent = () => {
+    const tabs = this.props.tabs.tabs;
+    const currentTabId = this.props.tabs.current;
+    const currentTab = tabs.find(t => t.id === currentTabId);
+
+    if (currentTab && isComponentUrl(currentTab.url)) {
+      const name = getComponentTitle(currentTab.url);
+
+      return this.components[name];
     }
 
-    private loadComponent = () => {
-        const tabs = this.props.tabs.tabs;
-        const currentTabId = this.props.tabs.current;
-        const currentTab = tabs.find(t => t.id === currentTabId);
+    return "";
+  };
 
-        if (currentTab && isComponentUrl(currentTab.url)) {
-            const name = getComponentTitle(currentTab.url);
-
-            return this.components[name];
-        }
-
-        return '';
-    }
-
-    render() {
-        return (
-            <div
-                id="body"
-                style={{
-                    height: `calc(100% - ${this.props.settings.settings.app.panelHeight + 1}px)`
-                }}
-            >
-                {this.loadComponent()}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div
+        id="body"
+        style={{
+          height: `calc(100% - ${this.props.settings.settings.app.panelHeight + 1}px)`,
+        }}
+      >
+        {this.loadComponent()}
+      </div>
+    );
+  }
 }
 
 export default Body;

@@ -1,7 +1,7 @@
-import * as E from 'electron';
+import * as E from "electron";
 
-import * as Const from 'Const';
-import { isSameCookieDomain } from 'Utils/Main';
+import * as Const from "Const";
+import { isSameCookieDomain } from "Utils/Main";
 
 export class Session {
   private _hasFigmaSession: boolean;
@@ -14,29 +14,32 @@ export class Session {
 
   public hasFigmaSession = (): boolean => {
     return this._hasFigmaSession;
-  }
+  };
 
   public handleAppReady = () => {
-    E.session.defaultSession.cookies.get({
-        url: Const.HOMEPAGE
+    E.session.defaultSession.cookies
+      .get({
+        url: Const.HOMEPAGE,
       })
       .then(cookies => {
-        E.session.defaultSession.cookies.on('changed', this.handleCookiesChanged);
+        E.session.defaultSession.cookies.on("changed", this.handleCookiesChanged);
 
-        this._hasFigmaSession = !!cookies.find((cookie) => {
+        this._hasFigmaSession = !!cookies.find(cookie => {
           return cookie.name === Const.FIGMA_SESSION_COOKIE_NAME;
         });
 
-        console.log('[wm] already signed in?', this._hasFigmaSession);
+        console.log("[wm] already signed in?", this._hasFigmaSession);
       })
-      .catch((error: Error) => console.error('[wm] failed to get cookies during handleAppReady:', Const.HOMEPAGE, error));
+      .catch((error: Error) =>
+        console.error("[wm] failed to get cookies during handleAppReady:", Const.HOMEPAGE, error),
+      );
   };
 
   private handleCookiesChanged = (event: E.Event, cookie: E.Cookie, cause: string, removed: boolean) => {
-    if (isSameCookieDomain(cookie.domain || '', Const.PARSED_HOMEPAGE.hostname || '')) {
+    if (isSameCookieDomain(cookie.domain || "", Const.PARSED_HOMEPAGE.hostname || "")) {
       if (cookie.name === Const.FIGMA_SESSION_COOKIE_NAME) {
-        console.log(`${cookie.name} cookie changed:`, cause, cookie.name, cookie.domain, removed ? 'removed' : '');
+        console.log(`${cookie.name} cookie changed:`, cause, cookie.name, cookie.domain, removed ? "removed" : "");
       }
     }
-  }
+  };
 }

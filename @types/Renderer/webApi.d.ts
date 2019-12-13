@@ -1,5 +1,5 @@
 declare namespace WepApi {
-	interface SetPluginMenuDataProps {
-		data: Menu.MenuItem[];
-	}
+  interface SetPluginMenuDataProps {
+    data: Menu.MenuItem[];
+  }
 }

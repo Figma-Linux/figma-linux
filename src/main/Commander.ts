@@ -1,9 +1,9 @@
-import { commands } from 'Utils/Main';
+import { commands } from "Utils/Main";
 
 export default class Commander {
-    private constructor() {}
+  private constructor() {}
 
-    public static exec(id: string, ...args: any[]) {
-        commands().get(id)(...args);
-    }
+  public static exec(id: string, ...args: any[]): void {
+    commands().get(id)(...args);
+  }
 }

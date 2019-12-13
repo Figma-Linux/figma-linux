@@ -2,8 +2,8 @@
   "useTabs": false,
   "printWidth": 120,
   "tabWidth": 2,
-  "singleQuote": true,
-  "trailingComma": "es5",
+  "singleQuote": false,
+  "trailingComma": "all",
   "jsxBracketSameLine": false,
   "parser": "typescript",
   "semi": true

@@ -13,7 +13,7 @@
     "build": "rm -rf ./dist; electron-webpack app; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
     "pack": "rm -rf build/installers && npm run build && npm run builder",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint": "eslint src/**/*.{ts,tsx} && prettier src/**/*.{ts,tsx} --write",
     "precommit": "lint-staged"
   },
   "lint-staged": {

@@ -1,4 +1,5 @@
 {
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.tabSize": 2,
   "[javascript]": {
     "editor.formatOnSave": true
@@ -19,5 +20,6 @@
     {"language":  "typescriptreact",  "autoFix":  true  }
   ],
   "eslint.autoFixOnSave": true,
-  "eslint.alwaysShowStatus": true
+  "eslint.alwaysShowStatus": true,
+  "prettier.singleQuote": false,
 }

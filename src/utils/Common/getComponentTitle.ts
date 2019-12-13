@@ -1,1 +1,1 @@
-export const getComponentTitle = (url: string): string => url.substr(url.search(/\/\//)+2);
+export const getComponentTitle = (url: string): string => url.substr(url.search(/\/\//) + 2);

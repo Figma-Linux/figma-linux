@@ -1,526 +1,545 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
-import * as Settings from 'electron-settings';
+import * as Settings from "electron-settings";
 import * as E from "electron";
 import { exec } from "child_process";
 import * as url from "url";
 
 import Tabs from "./Tabs";
 import initMainMenu from "./menu";
-import Commander from '../Commander';
+import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from 'Utils/Common';
-import { winUrlDev, winUrlProd, isFileBrowser } from 'Utils/Main';
-import { registerIpcMainHandlers } from 'Main/events';
-
+import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from "Utils/Common";
+import { winUrlDev, winUrlProd, isFileBrowser } from "Utils/Main";
+import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
-    home: string;
-    mainWindow: E.BrowserWindow;
-    figmaUiScale: number;
-    panelScale: number;
-    closedTabsHistory: Array<string> = [];
-    private tabs: Tab[];
-    private static _instance: WindowManager;
-    private panelHeight = Settings.get('app.panelHeight') as number;
+  home: string;
+  mainWindow: E.BrowserWindow;
+  figmaUiScale: number;
+  panelScale: number;
+  closedTabsHistory: Array<string> = [];
+  private tabs: Tab[];
+  private static _instance: WindowManager;
+  private panelHeight = Settings.get("app.panelHeight") as number;
 
-    private constructor(options: E.BrowserWindowConstructorOptions, home: string) {
-        this.home = home;
-        this.figmaUiScale = Settings.get('ui.scaleFigmaUI') as number;
-        this.panelScale = Settings.get('ui.scalePanel') as number;
+  private constructor(options: E.BrowserWindowConstructorOptions, home: string) {
+    this.home = home;
+    this.figmaUiScale = Settings.get("ui.scaleFigmaUI") as number;
+    this.panelScale = Settings.get("ui.scalePanel") as number;
 
-        this.mainWindow = new E.BrowserWindow(options);
-        this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
+    this.mainWindow = new E.BrowserWindow(options);
+    this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
-        if (!Settings.get('app.disabledMainMenu')) {
-            initMainMenu();
-          } else {
-            E.Menu.setApplicationMenu(null);
-            this.mainWindow.setMenuBarVisibility(false);
-        }
-
-        this.addTab('loadMainContent.js');
-
-        this.mainWindow.on('resize', this.updateBounds);
-        this.mainWindow.on('maximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-        this.mainWindow.on('unmaximize', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-        this.mainWindow.on('move', (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-
-        isDev && this.installReactDevTools();
-        isDev && this.mainWindow.webContents.openDevTools({ mode: 'detach' });
-
-        this.addIpc();
-        registerIpcMainHandlers();
-
-        E.app.on('will-quit', this.onWillQuit);
-
-        if (Settings.get('app.saveLastOpenedTabs')) {
-            setTimeout(() => this.resoreTabs(), 1000);
-        }
+    if (!Settings.get("app.disabledMainMenu")) {
+      initMainMenu();
+    } else {
+      E.Menu.setApplicationMenu(null);
+      this.mainWindow.setMenuBarVisibility(false);
     }
 
-    static get instance(): WindowManager {
-        if (WindowManager._instance) {
-            return WindowManager._instance;
-        }
+    this.addTab("loadMainContent.js");
 
-        const options: E.BrowserWindowConstructorOptions = {
-            width: 1200,
-            height: 900,
-            autoHideMenuBar: Settings.get('app.showMainMenu') as boolean,
-            webPreferences: {
-                sandbox: false,
-                zoomFactor: 1,
-                nodeIntegration: true,
-                nodeIntegrationInWorker: false,
-                webviewTag: false,
-                webSecurity: false,
-                webgl: true,
-                experimentalFeatures: true
-            }
-        };
+    this.mainWindow.on("resize", this.updateBounds);
+    this.mainWindow.on("maximize", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
+    this.mainWindow.on("unmaximize", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
+    this.mainWindow.on("move", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
 
-        const home = Const.HOMEPAGE;
+    isDev && this.installReactDevTools();
+    isDev && this.mainWindow.webContents.openDevTools({ mode: "detach" });
 
-        WindowManager._instance = new WindowManager(options, home);
+    this.addIpc();
+    registerIpcMainHandlers();
 
-        return WindowManager._instance;
+    E.app.on("will-quit", this.onWillQuit);
+
+    if (Settings.get("app.saveLastOpenedTabs")) {
+      setTimeout(() => this.resoreTabs(), 1000);
+    }
+  }
+
+  static get instance(): WindowManager {
+    if (WindowManager._instance) {
+      return WindowManager._instance;
     }
 
-    openUrl = (url: string) => {
-        if (isRedeemAuthUrl(url)) {
-          const normalizedUrl = normalizeUrl(url);
-          const tab = Tabs.getAll()[0];
+    const options: E.BrowserWindowConstructorOptions = {
+      width: 1200,
+      height: 900,
+      autoHideMenuBar: Settings.get("app.showMainMenu") as boolean,
+      webPreferences: {
+        sandbox: false,
+        zoomFactor: 1,
+        nodeIntegration: true,
+        nodeIntegrationInWorker: false,
+        webviewTag: false,
+        webSecurity: false,
+        webgl: true,
+        experimentalFeatures: true,
+      },
+    };
 
-          tab.webContents.loadURL(normalizedUrl);
-        } else if (/figma:\/\//.test(url)) {
-            this.addTab('loadContent.js', url.replace(/figma:\//, Const.HOMEPAGE));
-        } else if (/https?:\/\//.test(url)) {
-            this.addTab('loadContent.js', url);
-        }
+    const home = Const.HOMEPAGE;
+
+    WindowManager._instance = new WindowManager(options, home);
+
+    return WindowManager._instance;
+  }
+
+  openUrl = (url: string) => {
+    if (isRedeemAuthUrl(url)) {
+      const normalizedUrl = normalizeUrl(url);
+      const tab = Tabs.getAll()[0];
+
+      tab.webContents.loadURL(normalizedUrl);
+    } else if (/figma:\/\//.test(url)) {
+      this.addTab("loadContent.js", url.replace(/figma:\//, Const.HOMEPAGE));
+    } else if (/https?:\/\//.test(url)) {
+      this.addTab("loadContent.js", url);
     }
+  };
 
-    private resoreTabs = () => {
-        let tabs = Settings.get('app.lastOpenedTabs') as SavedTab[];
+  private resoreTabs = () => {
+    const tabs = Settings.get("app.lastOpenedTabs") as SavedTab[];
 
-        if (Array.isArray(tabs)) {
-            tabs.forEach((tab, i) => {
-                (t => {
-                    setTimeout(() => {
-                        if (isFileBrowser(t.url)) {
-                            this.addTab('loadMainContent.js', t.url, t.title);
-                        } else {
-                            this.addTab('loadContent.js', t.url, t.title);
-                        }
-                    }, 1500 * i);
-                })(tab);
-            });
-        }
-    }
-
-    private onWillQuit = () => {
-        const lastOpenedTabs: SavedTab[] = []
-
-        this.tabs.forEach(tab => {
-            if (tab.id > 1) {
-                lastOpenedTabs.push({
-                    title: tab.title,
-                    url: tab.url
-                });
-            }
-        });
-
-        Settings.set('app.lastOpenedTabs', lastOpenedTabs as any);
-    }
-
-    private addIpc = () => {
-        E.ipcMain.on(Const.NEWTAB, async () => this.addTab());
-
-        E.ipcMain.on(Const.CLOSETAB, (event: Event, id: number) => {
-            this.closeTab(id);
-        });
-
-        E.ipcMain.on(Const.FOCUSTAB, (event: Event, id: number) => {
-            const view = Tabs.focus(id);
-            this.mainWindow.setBrowserView(view);
-
-            if (isFileBrowser(view.webContents.getURL())) {
-                MenuState.updateInFileBrowserActionState();
+    if (Array.isArray(tabs)) {
+      tabs.forEach((tab, i) => {
+        (t => {
+          setTimeout(() => {
+            if (isFileBrowser(t.url)) {
+              this.addTab("loadMainContent.js", t.url, t.title);
             } else {
-                MenuState.updateInProjectActionState();
+              this.addTab("loadContent.js", t.url, t.title);
             }
-        });
-
-        E.ipcMain.on(Const.CLEARVIEW, (event: Event) => {
-            this.mainWindow.setBrowserView(null);
-        });
-
-        E.ipcMain.on(Const.MAINTAB, (event: Event) => {
-            const view = Tabs.focus(1);
-            this.mainWindow.setBrowserView(view);
-
-            if (isFileBrowser(view.webContents.getURL())) {
-                MenuState.updateInFileBrowserActionState();
-            } else {
-                MenuState.updateInProjectActionState();
-            }
-        });
-
-        E.ipcMain.on(Const.CLOSEALLTAB, () => {
-            console.log('Close all tab');
-        });
-        E.ipcMain.on('setTitle', (event, title) => {
-            const tab = Tabs.getByWebContentId(event.sender.id);
-
-            if (!tab) {
-                return;
-            }
-
-            this.mainWindow.webContents.send(Const.SETTITLE, { id: tab.id, title })
-        });
-        E.ipcMain.on('setPluginMenuData', (event, pluginMenu) => {
-            MenuState.updatePluginState(pluginMenu);
-        });
-        E.ipcMain.on('registerManifestChangeObserver', (event: any, callbackId: any) => {
-            console.log('registerManifestChangeObserver, callbackId: ', callbackId);
-            const tab = Tabs.getByWebContentId(event.sender.id);
-
-            if (!tab) {
-                return;
-            }
-
-            // exports.extensionRegistry.addObserver(callback);
-            // return () => {
-            //     exports.extensionRegistry.removeObserver(callback);
-            // };
-        });
-        E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
-            const view = this.mainWindow.getBrowserView();
-
-            if (!view) return;
-
-            this.mainWindow.webContents.send(Const.SETTABURL, { id: view.id, url })
-        });
-
-        E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
-            const view = this.mainWindow.getBrowserView();
-
-            if (!view) return;
-
-            this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: view.id, fileKey: key })
-        });
-
-        E.ipcMain.on(Const.UPDATEACTIONSTATE, (event: Event, state: MenuState.State) => {
-            MenuState.updateActionState(state);
-        });
-
-        E.ipcMain.on(Const.TOHOME, (event: Event, title: string) => {
-            this.openFileBrowser();
-        });
-
-        E.ipcMain.on(Const.RECIVETABS, (event: Event, tabs: Tab[]) => {
-            this.tabs = tabs;
-        });
-
-
-        E.app.on('update-figma-ui-scale', scale => {
-            this.updateFigmaUiScale(scale);
-        });
-        E.app.on('update-panel-scale', scale => {
-            this.updatePanelScale(scale);
-        });
-        E.app.on('set-hide-main-menu', hide => {
-            this.mainWindow.setAutoHideMenuBar(hide);
-
-            if (!hide) {
-                this.mainWindow.setMenuBarVisibility(true);
-            }
-        });
-        E.app.on('set-disable-main-menu', hide => {
-            setTimeout(() => {
-                exec(process.argv.join(' '));
-                E.app.quit();
-            }, 1000);
-        });
-        E.app.on('sign-out', () => {
-            this.logoutAndRestart();
-        });
-        E.app.on('handle-command', (id: string) => {
-            switch (id) {
-                case 'scale-normal': {
-                    this.updateAllScale();
-                } break;
-                case 'scale-inc0.1': {
-                    this.updateAllScale(0.1);
-                } break;
-                case 'scale-dic0.1': {
-                    this.updateAllScale(-0.1);
-                } break;
-                case 'scale-inc0.05': {
-                    this.updateAllScale(0.05);
-                } break;
-                case 'scale-dic0.05': {
-                    this.updateAllScale(-0.05);
-                } break;
-                case 'openFileBrowser': {
-                    this.openFileBrowser();
-                } break;
-                case 'reopenClosedTab': {
-                    if (this.closedTabsHistory.length <= 0) return;
-
-                    const url = this.closedTabsHistory.pop();
-                    const script = /files\/recent$/.test(url) ? 'loadMainContent.js' : 'loadContent.js';
-
-                    this.addTab(script, url);
-                } break;
-                case 'closeTab': {
-                    const currentView = this.mainWindow.getBrowserView();
-
-                    if (currentView.id === 1) return;
-
-                    this.mainWindow.webContents.send(Const.CLOSETAB, { id: currentView.id });
-                    this.closeTab(currentView.id);
-                } break;
-                case 'newFile': {
-                    const currentView = this.addTab();
-                    const onDidFinishLoad = () => {
-                        currentView.webContents.send('newFile');
-                        currentView.webContents.removeListener('did-finish-load', onDidFinishLoad);
-                    }
-
-                    currentView.webContents.on('did-finish-load', onDidFinishLoad);
-                } break;
-                case 'openSettings': {
-                    this.addTab('', `component://Settings`);
-                } break;
-                case 'chrome://gpu': {
-                    this.addTab('', `chrome://gpu`, 'chrome://gpu/');
-                } break;
-
-                default: {
-                    Commander.exec(id);
-                }
-            }
-        })
+          }, 1500 * i);
+        })(tab);
+      });
     }
+  };
 
-    public addTab = (scriptPreload: string = 'loadMainContent.js', url: string = `${this.home}/login`, title?: string): E.BrowserView => {
-        if (isComponentUrl(url)) {
-            this.mainWindow.setBrowserView(null);
-            this.mainWindow.webContents.send(Const.TABADDED, {
-                title: title ? title : getComponentTitle(url),
-                showBackBtn: false,
-                url
-            });
+  private onWillQuit = () => {
+    const lastOpenedTabs: SavedTab[] = [];
 
-            return null;
-        }
+    this.tabs.forEach(tab => {
+      if (tab.id > 1) {
+        lastOpenedTabs.push({
+          title: tab.title,
+          url: tab.url,
+        });
+      }
+    });
 
-        const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
+    Settings.set("app.lastOpenedTabs", lastOpenedTabs as any);
+  };
 
-        this.mainWindow.setBrowserView(tab);
-        tab.webContents.on('will-navigate', this.onMainWindowWillNavigate);
-        tab.webContents.on('new-window', this.onNewWindow);
+  private addIpc = () => {
+    E.ipcMain.on(Const.NEWTAB, async () => this.addTab());
 
-        if (isFileBrowser) {
-            MenuState.updateInFileBrowserActionState();
-        } else {
-            MenuState.updateActionState(Const.ACTIONTABSTATE);
-        }
+    E.ipcMain.on(Const.CLOSETAB, (event: Event, id: number) => {
+      this.closeTab(id);
+    });
 
-        this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true, title });
+    E.ipcMain.on(Const.FOCUSTAB, (event: Event, id: number) => {
+      const view = Tabs.focus(id);
+      this.mainWindow.setBrowserView(view);
 
-        return tab;
-    }
+      if (isFileBrowser(view.webContents.getURL())) {
+        MenuState.updateInFileBrowserActionState();
+      } else {
+        MenuState.updateInProjectActionState();
+      }
+    });
 
-    private logoutAndRestart = (event?: E.Event) => {
-        E.net.request(`${this.home}/logout`).on('response', response => {
-            response.on('data', data => { });
-            response.on('error', (err: Error) => {
-                console.log('Request error: ', err);
-            });
-            response.on('end', () => {
-                if (response.statusCode >= 200 && response.statusCode <= 299) {
+    E.ipcMain.on(Const.CLEARVIEW, (event: Event) => {
+      this.mainWindow.setBrowserView(null);
+    });
 
-                    E.session.defaultSession!.cookies.flushStore().then(() => {
-                        const view = Tabs.focus(1);
-                        this.mainWindow.setBrowserView(view);
-                        view.webContents.reload();
+    E.ipcMain.on(Const.MAINTAB, (event: Event) => {
+      const view = Tabs.focus(1);
+      this.mainWindow.setBrowserView(view);
 
-                        Tabs.closeAll();
+      if (isFileBrowser(view.webContents.getURL())) {
+        MenuState.updateInFileBrowserActionState();
+      } else {
+        MenuState.updateInProjectActionState();
+      }
+    });
 
-                        this.mainWindow.webContents.send(Const.CLOSEALLTAB);
-                    });
-                }
+    E.ipcMain.on(Const.CLOSEALLTAB, () => {
+      console.log("Close all tab");
+    });
+    E.ipcMain.on("setTitle", (event, title) => {
+      const tab = Tabs.getByWebContentId(event.sender.id);
 
-                if (response.statusCode >= 400) {
-                    E.session.defaultSession!.clearStorageData();
-                    this.mainWindow.webContents.loadURL(`${this.home}`);
-                }
-            });
-        }).end();
-
-        event && event.preventDefault();
+      if (!tab) {
         return;
-    }
+      }
 
-    private onNewWindow = (event: Event, url: string) => {
-        let view;
+      this.mainWindow.webContents.send(Const.SETTITLE, { id: tab.id, title });
+    });
+    E.ipcMain.on("setPluginMenuData", (event, pluginMenu) => {
+      MenuState.updatePluginState(pluginMenu);
+    });
+    E.ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
+      console.log("registerManifestChangeObserver, callbackId: ", callbackId);
+      const tab = Tabs.getByWebContentId(event.sender.id);
 
-        console.log('newWindow, url: ', url);
+      if (!tab) {
+        return;
+      }
 
-        if (/start_google_sso/.test(url)) return;
+      // exports.extensionRegistry.addObserver(callback);
+      // return () => {
+      //     exports.extensionRegistry.removeObserver(callback);
+      // };
+    });
+    E.ipcMain.on(Const.SETTABURL, (event: Event, url: string) => {
+      const view = this.mainWindow.getBrowserView();
 
-        if (/\/app_auth\/.*\/grant/.test(url)) {
-          E.shell.openExternal(url);
+      if (!view) return;
 
-          event.preventDefault();
+      this.mainWindow.webContents.send(Const.SETTABURL, { id: view.id, url });
+    });
 
-          return;
+    E.ipcMain.on(Const.UPDATEFILEKEY, (event: Event, key: string) => {
+      const view = this.mainWindow.getBrowserView();
+
+      if (!view) return;
+
+      this.mainWindow.webContents.send(Const.UPDATEFILEKEY, { id: view.id, fileKey: key });
+    });
+
+    E.ipcMain.on(Const.UPDATEACTIONSTATE, (event: Event, state: MenuState.State) => {
+      MenuState.updateActionState(state);
+    });
+
+    E.ipcMain.on(Const.TOHOME, (event: Event, title: string) => {
+      this.openFileBrowser();
+    });
+
+    E.ipcMain.on(Const.RECIVETABS, (event: Event, tabs: Tab[]) => {
+      this.tabs = tabs;
+    });
+
+    E.app.on("update-figma-ui-scale", scale => {
+      this.updateFigmaUiScale(scale);
+    });
+    E.app.on("update-panel-scale", scale => {
+      this.updatePanelScale(scale);
+    });
+    E.app.on("set-hide-main-menu", hide => {
+      this.mainWindow.setAutoHideMenuBar(hide);
+
+      if (!hide) {
+        this.mainWindow.setMenuBarVisibility(true);
+      }
+    });
+    E.app.on("set-disable-main-menu", hide => {
+      setTimeout(() => {
+        exec(process.argv.join(" "));
+        E.app.quit();
+      }, 1000);
+    });
+    E.app.on("sign-out", () => {
+      this.logoutAndRestart();
+    });
+    E.app.on("handle-command", (id: string) => {
+      switch (id) {
+        case "scale-normal":
+          {
+            this.updateAllScale();
+          }
+          break;
+        case "scale-inc0.1":
+          {
+            this.updateAllScale(0.1);
+          }
+          break;
+        case "scale-dic0.1":
+          {
+            this.updateAllScale(-0.1);
+          }
+          break;
+        case "scale-inc0.05":
+          {
+            this.updateAllScale(0.05);
+          }
+          break;
+        case "scale-dic0.05":
+          {
+            this.updateAllScale(-0.05);
+          }
+          break;
+        case "openFileBrowser":
+          {
+            this.openFileBrowser();
+          }
+          break;
+        case "reopenClosedTab":
+          {
+            if (this.closedTabsHistory.length <= 0) return;
+
+            const url = this.closedTabsHistory.pop();
+            const script = /files\/recent$/.test(url) ? "loadMainContent.js" : "loadContent.js";
+
+            this.addTab(script, url);
+          }
+          break;
+        case "closeTab":
+          {
+            const currentView = this.mainWindow.getBrowserView();
+
+            if (currentView.id === 1) return;
+
+            this.mainWindow.webContents.send(Const.CLOSETAB, { id: currentView.id });
+            this.closeTab(currentView.id);
+          }
+          break;
+        case "newFile":
+          {
+            const currentView = this.addTab();
+            const onDidFinishLoad = () => {
+              currentView.webContents.send("newFile");
+              currentView.webContents.removeListener("did-finish-load", onDidFinishLoad);
+            };
+
+            currentView.webContents.on("did-finish-load", onDidFinishLoad);
+          }
+          break;
+        case "openSettings":
+          {
+            this.addTab("", `component://Settings`);
+          }
+          break;
+        case "chrome://gpu":
+          {
+            this.addTab("", `chrome://gpu`, "chrome://gpu/");
+          }
+          break;
+
+        default: {
+          Commander.exec(id);
         }
+      }
+    });
+  };
 
-        view = Tabs.newTab(`${url}`, this.getBounds(), 'loadContent.js');
+  public addTab = (scriptPreload = "loadMainContent.js", url = `${this.home}/login`, title?: string): E.BrowserView => {
+    if (isComponentUrl(url)) {
+      this.mainWindow.setBrowserView(null);
+      this.mainWindow.webContents.send(Const.TABADDED, {
+        title: title ? title : getComponentTitle(url),
+        showBackBtn: false,
+        url,
+      });
 
-        view.webContents.on('will-navigate', this.onMainWindowWillNavigate);
-
-        this.mainWindow.setBrowserView(view);
-        this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false });
+      return null;
     }
 
-    private onMainWindowWillNavigate = (event: any, newUrl: string) => {
-        // const currentUrl = event.sender.getURL();
-        const currentUrl = event.sender.getURL();
+    const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
 
-        console.log('from: ', currentUrl, " to: ", newUrl);
+    this.mainWindow.setBrowserView(tab);
+    tab.webContents.on("will-navigate", this.onMainWindowWillNavigate);
+    tab.webContents.on("new-window", this.onNewWindow);
 
-        if (newUrl === currentUrl) {
-            event.preventDefault();
-            return;
-        }
-
-        const from = url.parse(currentUrl);
-        const to = url.parse(newUrl);
-
-        if (from.pathname === '/login') {
-            Tabs.reloadAll();
-
-            event.preventDefault();
-            return;
-        }
-
-        if (to.pathname === '/logout') {
-            this.logoutAndRestart(event);
-        }
-
-        if (Const.REGEXP_APP_AUTH_REDEEM.test(from.pathname || '')) {
-            return;
-        }
-        if (to.search && to.search.match(/[\?\&]redirected=1/)) {
-            event.preventDefault();
-            return;
-        }
+    if (isFileBrowser) {
+      MenuState.updateInFileBrowserActionState();
+    } else {
+      MenuState.updateActionState(Const.ACTIONTABSTATE);
     }
 
-    private openFileBrowser = () => {
-        const currentView = this.mainWindow.getBrowserView();
-        const currentUrl = currentView && currentView.webContents.getURL() || '';
-        const go: boolean = url.parse(currentUrl).pathname !== '/files/recent';
+    this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true, title });
 
-        MenuState.updateActionState(Const.INITACTIONINITSTATE);
+    return tab;
+  };
 
-        currentView && go && currentView!.webContents.loadURL(`${this.home}`);
+  private logoutAndRestart = (event?: E.Event) => {
+    E.net
+      .request(`${this.home}/logout`)
+      .on("response", response => {
+        response.on("error", (err: Error) => {
+          console.log("Request error: ", err);
+        });
+        response.on("end", () => {
+          if (response.statusCode >= 200 && response.statusCode <= 299) {
+            E.session.defaultSession!.cookies.flushStore().then(() => {
+              const view = Tabs.focus(1);
+              this.mainWindow.setBrowserView(view);
+              view.webContents.reload();
+
+              Tabs.closeAll();
+
+              this.mainWindow.webContents.send(Const.CLOSEALLTAB);
+            });
+          }
+
+          if (response.statusCode >= 400) {
+            E.session.defaultSession!.clearStorageData();
+            this.mainWindow.webContents.loadURL(`${this.home}`);
+          }
+        });
+      })
+      .end();
+
+    event && event.preventDefault();
+    return;
+  };
+
+  private onNewWindow = (event: Event, url: string) => {
+    console.log("newWindow, url: ", url);
+
+    if (/start_google_sso/.test(url)) return;
+
+    if (/\/app_auth\/.*\/grant/.test(url)) {
+      E.shell.openExternal(url);
+
+      event.preventDefault();
+
+      return;
     }
 
-    private closeTab = (id: number) => {
-        const views = Tabs.getAll();
-        const currentView = this.mainWindow.getBrowserView();
-        const index: number = views.findIndex(t => t.id == id);
-        const view = Tabs.focus(views[index > 0 ? index - 1 : index].id);
-        this.mainWindow.setBrowserView(view);
+    const view = Tabs.newTab(`${url}`, this.getBounds(), "loadContent.js");
 
-        if (!currentView) {
-            Tabs.close(id);
-            return;
-        };
+    view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
 
-        this.closedTabsHistory.push(currentView.webContents.getURL());
+    this.mainWindow.setBrowserView(view);
+    this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false });
+  };
 
-        Tabs.close(id);
+  private onMainWindowWillNavigate = (event: any, newUrl: string) => {
+    // const currentUrl = event.sender.getURL();
+    const currentUrl = event.sender.getURL();
+
+    console.log("from: ", currentUrl, " to: ", newUrl);
+
+    if (newUrl === currentUrl) {
+      event.preventDefault();
+      return;
     }
 
-    private updateAllScale = (scale?: number) => {
-        const views = Tabs.getAll();
-        let panelHeight = 0;
+    const from = url.parse(currentUrl);
+    const to = url.parse(newUrl);
 
-        if (scale) {
-            this.panelScale += scale;
-            this.figmaUiScale += scale;
-        } else {
-            this.panelScale = 1;
-            this.figmaUiScale = 1;
-        }
+    if (from.pathname === "/login") {
+      Tabs.reloadAll();
 
-        panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
-        this.panelHeight = panelHeight;
-        this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight)
-
-        Settings.set('app.panelHeight', panelHeight);
-
-        this.mainWindow.webContents.send(Const.UPDATEPANELSCALE, this.panelScale);
-        this.mainWindow.webContents.send(Const.UPDATEUISCALE, this.figmaUiScale);
-
-        this.updateBounds();
-
-        for (let view of views) {
-            view.webContents.setZoomFactor(this.figmaUiScale);
-        }
+      event.preventDefault();
+      return;
     }
 
-    private updateFigmaUiScale = (figmaScale: number) => {
-        const views = Tabs.getAll();
-
-        this.figmaUiScale = +figmaScale.toFixed(2);
-
-        for (let view of views) {
-            view.webContents.setZoomFactor(+figmaScale.toFixed(2));
-        }
+    if (to.pathname === "/logout") {
+      this.logoutAndRestart(event);
     }
 
-    private updatePanelScale = (panelScale: number) => {
-        let panelHeight = 0;
+    if (Const.REGEXP_APP_AUTH_REDEEM.test(from.pathname || "")) {
+      return;
+    }
+    if (to.search && to.search.match(/[\?\&]redirected=1/)) {
+      event.preventDefault();
+      return;
+    }
+  };
 
-        this.panelScale = +panelScale.toFixed(2);
-        panelHeight = Math.floor(Const.TOPPANELHEIGHT * panelScale);
-        this.panelHeight = panelHeight;
-        this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight)
+  private openFileBrowser = () => {
+    const currentView = this.mainWindow.getBrowserView();
+    const currentUrl = (currentView && currentView.webContents.getURL()) || "";
+    const go: boolean = url.parse(currentUrl).pathname !== "/files/recent";
 
-        Settings.set('app.panelHeight', panelHeight);
+    MenuState.updateActionState(Const.INITACTIONINITSTATE);
 
-        this.updateBounds();
+    currentView && go && currentView!.webContents.loadURL(`${this.home}`);
+  };
+
+  private closeTab = (id: number) => {
+    const views = Tabs.getAll();
+    const currentView = this.mainWindow.getBrowserView();
+    const index: number = views.findIndex(t => t.id == id);
+    const view = Tabs.focus(views[index > 0 ? index - 1 : index].id);
+    this.mainWindow.setBrowserView(view);
+
+    if (!currentView) {
+      Tabs.close(id);
+      return;
     }
 
-    private getBounds = () => {
-        return {
-            x: 0,
-            y: this.panelHeight,
-            width: this.mainWindow.getContentBounds().width,
-            height: this.mainWindow.getContentBounds().height - this.panelHeight
-        };
+    this.closedTabsHistory.push(currentView.webContents.getURL());
+
+    Tabs.close(id);
+  };
+
+  private updateAllScale = (scale?: number) => {
+    const views = Tabs.getAll();
+    let panelHeight = 0;
+
+    if (scale) {
+      this.panelScale += scale;
+      this.figmaUiScale += scale;
+    } else {
+      this.panelScale = 1;
+      this.figmaUiScale = 1;
     }
 
-    private updateBounds = (event?: Event) => {
-        const views = Tabs.getAll();
+    panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
+    this.panelHeight = panelHeight;
+    this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight);
 
-        views.forEach((bw: E.BrowserView) => {
-            bw.setBounds(this.getBounds());
-        })
-    }
+    Settings.set("app.panelHeight", panelHeight);
 
-    private installReactDevTools = () => {
-        installExtension(REACT_DEVELOPER_TOOLS)
-            .then((name: string) => console.log(`Added Extension:  ${name}`))
-            .catch((err: Error) => console.log('An error occurred: ', err));
+    this.mainWindow.webContents.send(Const.UPDATEPANELSCALE, this.panelScale);
+    this.mainWindow.webContents.send(Const.UPDATEUISCALE, this.figmaUiScale);
+
+    this.updateBounds();
+
+    for (const view of views) {
+      view.webContents.setZoomFactor(this.figmaUiScale);
     }
+  };
+
+  private updateFigmaUiScale = (figmaScale: number) => {
+    const views = Tabs.getAll();
+
+    this.figmaUiScale = +figmaScale.toFixed(2);
+
+    for (const view of views) {
+      view.webContents.setZoomFactor(+figmaScale.toFixed(2));
+    }
+  };
+
+  private updatePanelScale = (panelScale: number) => {
+    let panelHeight = 0;
+
+    this.panelScale = +panelScale.toFixed(2);
+    panelHeight = Math.floor(Const.TOPPANELHEIGHT * panelScale);
+    this.panelHeight = panelHeight;
+    this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight);
+
+    Settings.set("app.panelHeight", panelHeight);
+
+    this.updateBounds();
+  };
+
+  private getBounds = () => {
+    return {
+      x: 0,
+      y: this.panelHeight,
+      width: this.mainWindow.getContentBounds().width,
+      height: this.mainWindow.getContentBounds().height - this.panelHeight,
+    };
+  };
+
+  private updateBounds = (event?: Event) => {
+    const views = Tabs.getAll();
+
+    views.forEach((bw: E.BrowserView) => {
+      bw.setBounds(this.getBounds());
+    });
+  };
+
+  private installReactDevTools = () => {
+    installExtension(REACT_DEVELOPER_TOOLS)
+      .then((name: string) => console.log(`Added Extension:  ${name}`))
+      .catch((err: Error) => console.log("An error occurred: ", err));
+  };
 }
 
 export default WindowManager;

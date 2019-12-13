@@ -29,134 +29,134 @@
  */
 
 interface Sequence {
-	sequence: string;
-	callback: Function;
+  sequence: string;
+  callback: Function;
 }
 
 /**
  * Singleton for register shortcuts in window
  */
 export class ShortcutMan {
-	private static _instance: ShortcutMan;
-	private sequenceMap: Array<Sequence> = [];
-	private shiftMap: any = {
-		'~': '`',
-		'!': '1',
-		'@': '2',
-		'#': '3',
-		'$': '4',
-		'%': '5',
-		'^': '6',
-		'&': '7',
-		'*': '8',
-		'(': '9',
-		')': '0',
-		'_': '-',
-		'+': '=',
-		'|': '\\',
-		'}': ']',
-		'{': '[',
-		'"': '\'',
-		':': ';',
-		'?': '/',
-		'>': '.',
-		'<': ','
-	};
+  private static _instance: ShortcutMan;
+  private sequenceMap: Array<Sequence> = [];
+  private shiftMap: any = {
+    "~": "`",
+    "!": "1",
+    "@": "2",
+    "#": "3",
+    $: "4",
+    "%": "5",
+    "^": "6",
+    "&": "7",
+    "*": "8",
+    "(": "9",
+    ")": "0",
+    _: "-",
+    "+": "=",
+    "|": "\\",
+    "}": "]",
+    "{": "[",
+    '"': "'",
+    ":": ";",
+    "?": "/",
+    ">": ".",
+    "<": ",",
+  };
 
-	/**
-	 * Register event handler
-	 */
-	private constructor () {
-		window.addEventListener('keydown', event => {
-			const key = event.key.toLocaleLowerCase();
-			let pressedSequence: Array<string> = [];
+  /**
+   * Register event handler
+   */
+  private constructor() {
+    window.addEventListener("keydown", event => {
+      const key = event.key.toLocaleLowerCase();
+      const pressedSequence: Array<string> = [];
 
-			if (event.shiftKey) {
-				pressedSequence.push('shift');
-			}
-			if (event.altKey) {
-				pressedSequence.push('alt');
-			}
-			if (event.ctrlKey) {
-				pressedSequence.push('ctrl');
-			}
-			if (event.metaKey) {
-				pressedSequence.push('meta');
-			}
+      if (event.shiftKey) {
+        pressedSequence.push("shift");
+      }
+      if (event.altKey) {
+        pressedSequence.push("alt");
+      }
+      if (event.ctrlKey) {
+        pressedSequence.push("ctrl");
+      }
+      if (event.metaKey) {
+        pressedSequence.push("meta");
+      }
 
-			if (key !== 'control' && key !== 'alt' && key !== 'shift' && key !== 'meta') {
-				// If pressed the shift key
-				if (event.shiftKey && this.shiftMap[key]) {
-					pressedSequence.push(this.shiftMap[key]);
-				} else {
-					pressedSequence.push(key);
-				}
-			}
+      if (key !== "control" && key !== "alt" && key !== "shift" && key !== "meta") {
+        // If pressed the shift key
+        if (event.shiftKey && this.shiftMap[key]) {
+          pressedSequence.push(this.shiftMap[key]);
+        } else {
+          pressedSequence.push(key);
+        }
+      }
 
-			const _sequence = this.sort(pressedSequence.join('+'));
-			const sequence = this.sequenceMap.find(item => item.sequence === _sequence);
+      const _sequence = this.sort(pressedSequence.join("+"));
+      const sequence = this.sequenceMap.find(item => item.sequence === _sequence);
 
-			if (!sequence) return;
+      if (!sequence) return;
 
-			sequence.callback();
-		});
-	}
+      sequence.callback();
+    });
+  }
 
-	/**
-	 * Adding the sequence and the callback
-	 * to the sequence collection
-	 */
-	public bind = (sequence: string, cb: Function) => {
-		if (sequence === '') return;
+  /**
+   * Adding the sequence and the callback
+   * to the sequence collection
+   */
+  public bind = (sequence: string, cb: Function) => {
+    if (sequence === "") return;
 
-		this.sequenceMap.push({
-			sequence: this.sort(sequence),
-			callback: cb
-		});
-	}
+    this.sequenceMap.push({
+      sequence: this.sort(sequence),
+      callback: cb,
+    });
+  };
 
-	/**
-	 * Deleting a sequence fron the sequence collection
-	 */
-	public unbind = (sequence: string) => {
-		const _sequence = this.sort(sequence);
+  /**
+   * Deleting a sequence fron the sequence collection
+   */
+  public unbind = (sequence: string) => {
+    const _sequence = this.sort(sequence);
 
-		this.sequenceMap = this.sequenceMap.filter(item => item.sequence !== _sequence);
-	}
+    this.sequenceMap = this.sequenceMap.filter(item => item.sequence !== _sequence);
+  };
 
-	/**
-	 * Getting instance
-	 */
-	public static get instance() {
-		if (ShortcutMan._instance) {
-			return ShortcutMan._instance
-		}
+  /**
+   * Getting instance
+   */
+  public static get instance() {
+    if (ShortcutMan._instance) {
+      return ShortcutMan._instance;
+    }
 
-		return new ShortcutMan();
-	}
+    return new ShortcutMan();
+  }
 
-	/**
-	 * Checking the transmitted key sequence to uniqueness.
-	 * If function returned the false, that transmitted sequence was be found.
-	 * If function returned true, that transmitted sequence is unique.
-	 */
-	public checkForUniqueness = (sequence: string): boolean => {
-		const _sequence = this.sort(sequence);
-		const index = this.sequenceMap.findIndex(item => item.sequence === _sequence);
+  /**
+   * Checking the transmitted key sequence to uniqueness.
+   * If function returned the false, that transmitted sequence was be found.
+   * If function returned true, that transmitted sequence is unique.
+   */
+  public checkForUniqueness = (sequence: string): boolean => {
+    const _sequence = this.sort(sequence);
+    const index = this.sequenceMap.findIndex(item => item.sequence === _sequence);
 
-		return index === -1 ? true : false
-	}
+    return index === -1 ? true : false;
+  };
 
-	/**
-	 * Sorting sequence
-	 */
-	private sort = (sequence: string) => {
-		return sequence
-			.split('+')
-			.sort((a, b) => a.length > b.length ? -1 : 1)
-			.join('+')
-			.toLocaleLowerCase();
-	}
+  /**
+   * Sorting sequence
+   */
+  private sort = (sequence: string) => {
+    return sequence
+      .split("+")
+      .sort((a, b) => (a.length > b.length ? -1 : 1))
+      .join("+")
+      .toLocaleLowerCase();
+  };
 }
 
 export default ShortcutMan.instance;

@@ -1,11 +1,11 @@
 import * as E from "electron";
 
 export const toggleDetachedDevTools = (webContents: E.WebContents) => {
-	if (webContents.isDevToolsOpened()) {
-		webContents.closeDevTools();
+  if (webContents.isDevToolsOpened()) {
+    webContents.closeDevTools();
 
-		return;
-	}
+    return;
+  }
 
-	webContents.openDevTools({ mode: 'detach' });
-}
+  webContents.openDevTools({ mode: "detach" });
+};

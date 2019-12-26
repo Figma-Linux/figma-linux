@@ -1,0 +1,15 @@
+name: figma-linux
+version: '0.6.1'
+summary: Unofficial Figma desktop app for Linux platform
+description: |
+  Figma is the first interface design tool based in the browser,
+  making it easier for teams to create software.
+  Join as in Telegram: https://t.me/figma_linux.
+
+grade: stable
+confinement: classic
+
+parts:
+  figma-linux:
+    plugin: dump
+    source: https://github.com/Figma-Linux/figma-linux/releases/download/v0.6.1/figma-linux-0.6.1.zip

@@ -8,6 +8,9 @@ description: |
 
 grade: stable
 confinement: classic
+architectures:
+  - build-on: amd64
+    run-on: amd64
 
 parts:
   figma-linux:

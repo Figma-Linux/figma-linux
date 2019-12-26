@@ -12,7 +12,18 @@
     "start": "electron dist/main/main.js",
     "build": "rm -rf ./dist; electron-webpack app; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
-    "pack": "rm -rf build/installers && npm run build && npm run builder"
+    "pack": "rm -rf build/installers && npm run build && npm run builder",
+    "check": "npm run lint && npm run prettier",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "prettier": "prettier src/**/*.{ts,tsx} --write",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts, tsx, js, jsx}": [
+      "node_modules/.bin/eslint src/**/*.{ts,tsx}",
+      "prettier --write",
+      "git add"
+    ]
   },
   "electronWebpack": {
     "main": {
@@ -50,6 +61,8 @@
     "@types/react-redux": "^5.0.15",
     "@types/react-router-dom": "^4.3.1",
     "@types/redux": "^3.6.0",
+    "@typescript-eslint/eslint-plugin": "^2.11.0",
+    "@typescript-eslint/parser": "^2.11.0",
     "awesome-typescript-loader": "^3.4.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
@@ -60,11 +73,18 @@
     "electron-builder": "^22.1.0",
     "electron-rebuild": "^1.8.2",
     "electron-webpack": "^2.6.1",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.17.0",
     "fork-ts-checker-webpack-plugin": "^0.4.2",
+    "husky": "^3.1.0",
+    "lint-staged": "^10.0.0-beta.7",
     "mini-css-extract-plugin": "^0.4.5",
     "native-ext-loader": "^2.1.0",
     "node-loader": "^0.6.0",
     "node-sass": "^4.9.4",
+    "prettier": "^1.19.1",
     "sass-loader": "^7.0.3",
     "style-loader": "^0.21.0",
     "ts-loader": "^4.4.2",

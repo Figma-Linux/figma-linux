@@ -1,27 +1,25 @@
 import { RouterState, RouterStore } from "mobx-state-router";
 
 const routes = [
-	{
-		name: 'general',
-		pattern: '/'
-	},
-	{
-		name: 'shortcuts',
-		pattern: '/shortcuts'
-	},
-]
+  {
+    name: "general",
+    pattern: "/",
+  },
+  {
+    name: "shortcuts",
+    pattern: "/shortcuts",
+  },
+];
 
 class Routes {
-	route: RouterStore;
+  route: RouterStore;
 
-	constructor() {
-		this.route = new RouterStore(this, routes, new RouterState('general'));
-	}
+  constructor() {
+    this.route = new RouterStore(this, routes, new RouterState("general"));
+  }
 }
 
 const routeStore = new Routes();
 
 export default routeStore;
-export {
-	Routes
-}
+export { Routes };

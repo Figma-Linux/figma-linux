@@ -37,7 +37,7 @@ plugs:
 parts:
   figma-linux:
     plugin: dump
-    source: https://github.com/Figma-Linux/figma-linux/releases/download/v0.6.1/figma-linux-0.6.1.zip
+    source: https://github.com/Figma-Linux/figma-linux/releases/download/v0.6.1/figma-linux-test.zip
 
 apps:
   figma-linux:

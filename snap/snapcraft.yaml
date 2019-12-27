@@ -41,7 +41,7 @@ parts:
 
 apps:
   figma-linux:
-    desktop: resources/figma-linux.desktop
+    desktop: ../resources/figma-linux.desktop
     command: figma-linux
     plugs:
       - home

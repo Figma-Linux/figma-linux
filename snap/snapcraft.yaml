@@ -42,7 +42,7 @@ parts:
 apps:
   figma-linux:
     desktop: ../resources/figma-linux-snap.desktop
-    command: $SNAP/figma-linux
+    command: ${SNAP}/figma-linux
     # command: command.sh
     plugs:
       - home

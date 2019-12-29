@@ -42,7 +42,7 @@ parts:
 apps:
   figma-linux:
     desktop: ../resources/figma-linux-snap.desktop
-    command: figma-linux
+    command: $SNAP/figma-linux
     # command: command.sh
     plugs:
       - home
@@ -59,6 +59,6 @@ apps:
     environment:
       DISABLE_WAYLAND: '1'
       TMPDIR: $XDG_RUNTIME_DIR
-      PATH: '$SNAP:$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH'
+      PATH: '$SNAP:$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$SNAP:$PATH'
       SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
       LD_LIBRARY_PATH: '$SNAP_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu'

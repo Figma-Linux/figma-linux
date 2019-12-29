@@ -42,7 +42,8 @@ parts:
 apps:
   figma-linux:
     desktop: ../resources/figma-linux-snap.desktop
-    command: command.sh
+    command: ${SNAP}/figma-linux
+    # command: command.sh
     plugs:
       - home
       - removable-devices

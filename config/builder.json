@@ -85,12 +85,6 @@
         ]
       },
       {
-        "target": "snap",
-        "arch": [
-          "x64"
-        ]
-      },
-      {
         "target": "zip",
         "arch": [
           "x64"

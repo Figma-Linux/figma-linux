@@ -19,10 +19,6 @@ plugs:
     interface: content
     target: $SNAP/gnome-platform
     default-provider: gnome-3-28-1804
-  appmenu-gtk-module:
-    interface: content
-    target: $SNAP/gnome-platform
-    default-provider: appmenu-gtk-module
   gtk-3-themes:
     interface: content
     target: $SNAP/data-dir/themes

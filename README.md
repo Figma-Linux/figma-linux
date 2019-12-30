@@ -27,6 +27,7 @@ This app based on the [Electron](http://electron.atom.io)
 </p>
 
 [![figma-linux](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
+[![Snap Status](https://build.snapcraft.io/badge/ChugunovRoman/figma-linux.svg)](https://build.snapcraft.io/user/ChugunovRoman/figma-linux)
 
 <p>
 	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>

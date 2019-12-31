@@ -12,7 +12,7 @@
     "start": "electron dist/main/main.js",
     "build": "rm -rf ./dist; electron-webpack app; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
-    "pack": "rm -rf build/installers && npm run build && npm run builder",
+    "pack": "rm -rf build/installers && npm run build && npm run builder && ./scripts/appimage.sh $npm_package_version",
     "check": "npm run lint && npm run prettier",
     "lint": "eslint src/**/*.{ts,tsx}",
     "prettier": "prettier src/**/*.{ts,tsx} --write",

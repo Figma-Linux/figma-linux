@@ -26,7 +26,9 @@ This app based on the [Electron](http://electron.atom.io)
 	</a>
 </p>
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade)
 [![figma-linux](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
+[![Snap Status](https://build.snapcraft.io/badge/ChugunovRoman/figma-linux.svg)](https://build.snapcraft.io/user/ChugunovRoman/figma-linux)
 
 <p>
 	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
@@ -69,6 +71,7 @@ yay -S figma-linux
 
 ## Install
 
+
 [Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
 For debian-based linux distributions:
 ```
@@ -101,26 +104,37 @@ or
 sudo smart install figma-linux-0.5.7.x86_64.rpm
 ```
 
+## AppImage
+For normal work of the app via AppImage, you need install it via command:
+```bash
+sudo ./figma-linux-0.6.1.AppImage -i
+```
+
+It installs the desktop file, icons and creates lymbolic link to the AppImage file.
+After that, you can run app via the icon or command:
+```
+figma-linux
+```
+
+For display rest flags for AppImage:
+```
+./figma-linux-0.6.1.AppImage -h
+```
+
 ## Run
 
 ```
 figma-linux
 ```
 
-Or You can just download and run the AppImage.
-
-```
-./figma-linux-0.5.7-x86_64.AppImage
-```
-
 ## Development
 
 Steps to start development:
 
-1. git clone git@github.com:ChugunovRoman/figma-linux.git
-2. cd figma-linux
-3. npm i
-
+1.  git clone git@github.com:ChugunovRoman/figma-linux.git
+2.  cd figma-linux
+3.  install Rust via [rustup](https://rustup.rs/)
+4.  npm i
 
 To start the app in dev mode:
 ```

@@ -6,10 +6,58 @@ description: |
   making it easier for teams to create software.
   Join as in Telegram: https://t.me/figma_linux.
 
+icon: resources/icons/256x256.png
+base: core18
 grade: stable
-confinement: classic
+confinement: strict
+architectures:
+  - build-on: amd64
+    run-on: amd64
+
+plugs:
+  gnome-3-28-1804:
+    interface: content
+    target: $SNAP/gnome-platform
+    default-provider: gnome-3-28-1804
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/data-dir/themes
+    default-provider: gtk-common-themes
+  icon-themes:
+    interface: content
+    target: $SNAP/data-dir/icons
+    default-provider: gtk-common-themes
+  sound-themes:
+    interface: content
+    target: $SNAP/data-dir/sounds
+    default-provider: gtk-common-themes
+  removable-devices:
+    interface: removable-media
 
 parts:
   figma-linux:
     plugin: dump
-    source: https://github.com/Figma-Linux/figma-linux/releases/download/v0.6.1/figma-linux-0.6.1.zip
+    source: https://github.com/Figma-Linux/figma-linux/releases/download/v$SNAPCRAFT_PROJECT_VERSION/figma-linux-$SNAPCRAFT_PROJECT_VERSION.zip
+
+apps:
+  figma-linux:
+    desktop: ../resources/figma-linux-snap.desktop
+    command: command.sh
+    plugs:
+      - home
+      - removable-devices
+      - desktop
+      - desktop-legacy
+      - x11
+      - unity7
+      - browser-support
+      - network
+      - gsettings
+      - pulseaudio
+      - opengl
+    environment:
+      DISABLE_WAYLAND: '1'
+      TMPDIR: $XDG_RUNTIME_DIR
+      PATH: '$SNAP:$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH'
+      SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
+      LD_LIBRARY_PATH: '$SNAP_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu'

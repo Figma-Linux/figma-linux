@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=figma-linux
+Comment=Unofficial desktop application for linux
+Exec=figma-linux %U
+Terminal=false
+Type=Application
+Icon=figma-linux
+StartupWMClass=figma-linux
+X-AppImage-Version=0.6.1
+Categories=Graphics;
+MimeType=application/figma;x-scheme-handler/figma;

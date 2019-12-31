@@ -72,12 +72,9 @@
     "description": "Unofficial desktop application for linux",
     "icon": "resources/icons",
     "category": "Graphic",
-    "target": [{
-        "target": "AppImage",
-        "arch": [
-          "x64"
-        ]
-      },
+    "packageCategory": "Graphic",
+    "maintainer": "Chugunov Roman <Zebs-BMK@yandex.ru>",
+    "target": [
       {
         "target": "deb",
         "arch": [

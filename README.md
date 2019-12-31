@@ -69,6 +69,23 @@ There is a [figma-linux](https://aur.archlinux.org/packages/figma-linux/) packag
 yay -S figma-linux
 ```
 
+## AppImage
+For normal work of the app via AppImage, you need install it via command:
+```bash
+sudo ./figma-linux-0.6.1.AppImage -i
+```
+
+It installs the desktop file, icons and creates lymbolic link to the AppImage file.
+After that, you can run app via the icon or command:
+```
+figma-linux
+```
+
+For display rest flags for AppImage:
+```
+./figma-linux-0.6.1.AppImage -h
+```
+
 ## Install
 
 [Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
@@ -107,12 +124,6 @@ sudo smart install figma-linux-0.5.7.x86_64.rpm
 
 ```
 figma-linux
-```
-
-Or You can just download and run the AppImage.
-
-```
-./figma-linux-0.5.7-x86_64.AppImage
 ```
 
 ## Development

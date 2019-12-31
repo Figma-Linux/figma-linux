@@ -120,7 +120,8 @@ Steps to start development:
 
 1. git clone git@github.com:ChugunovRoman/figma-linux.git
 2. cd figma-linux
-3. npm i
+3. install Rust via [rustup](https://rustup.rs/)
+4. npm i
 
 
 To start the app in dev mode:

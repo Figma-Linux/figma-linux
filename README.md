@@ -26,6 +26,7 @@ This app based on the [Electron](http://electron.atom.io)
 	</a>
 </p>
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade)
 [![figma-linux](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
 [![Snap Status](https://build.snapcraft.io/badge/ChugunovRoman/figma-linux.svg)](https://build.snapcraft.io/user/ChugunovRoman/figma-linux)
 
@@ -118,11 +119,10 @@ Or You can just download and run the AppImage.
 
 Steps to start development:
 
-1. git clone git@github.com:ChugunovRoman/figma-linux.git
-2. cd figma-linux
-3. install Rust via [rustup](https://rustup.rs/)
-4. npm i
-
+1.  git clone git@github.com:ChugunovRoman/figma-linux.git
+2.  cd figma-linux
+3.  install Rust via [rustup](https://rustup.rs/)
+4.  npm i
 
 To start the app in dev mode:
 ```

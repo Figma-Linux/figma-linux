@@ -350,6 +350,8 @@ class WindowManager {
 
     this.mainWindow.webContents.send(Const.TABADDED, { id: tab.id, url, showBackBtn: true, title });
 
+    this.mainWindow.setBrowserView(tab);
+
     return tab;
   };
 
@@ -407,10 +409,7 @@ class WindowManager {
   };
 
   private onMainWindowWillNavigate = (event: any, newUrl: string) => {
-    // const currentUrl = event.sender.getURL();
     const currentUrl = event.sender.getURL();
-
-    console.log("from: ", currentUrl, " to: ", newUrl);
 
     if (newUrl === currentUrl) {
       event.preventDefault();

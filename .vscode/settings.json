@@ -13,13 +13,9 @@
   "[typescriptreact]": {
     "editor.formatOnSave": true
   },
-  "eslint.validate":  [
-    "javascript",
-    "javascriptreact",
-    {"language":  "typescript",  "autoFix":  true  },
-    {"language":  "typescriptreact",  "autoFix":  true  }
-  ],
-  "eslint.autoFixOnSave": true,
   "eslint.alwaysShowStatus": true,
-  "prettier.singleQuote": false
+  "prettier.singleQuote": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

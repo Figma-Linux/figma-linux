@@ -21,7 +21,7 @@ interface IntiApiOptions {
   shortcutMan?: any;
 }
 
-const API_VERSION = 19;
+const API_VERSION = 20;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;

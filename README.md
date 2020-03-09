@@ -48,6 +48,10 @@ To add repository, execute command below:
 ```bash
 sudo add-apt-repository ppa:chrdevs/figma
 ```
+Then update your packages:
+```bash
+sudo apt update
+```
 If you receive a **NO_PUBKEY** error while running **apt update**, then you must add the key manualy:
 ```bash
 sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC

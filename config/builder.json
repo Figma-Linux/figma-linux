@@ -1,6 +1,6 @@
 {
   "appId": "figma-linux",
-  "productName": "figma-linux",
+  "productName": "Figma",
   "extraMetadata": "main/main.js",
   "icon": "resources/icons",
   "extraFiles": [{

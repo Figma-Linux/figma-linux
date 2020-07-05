@@ -1,0 +1,16 @@
+@import '../../colors.scss';
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: $black_3;
+  padding: 10px 14px 10px 30px;
+  align-items: center;
+
+  &__text {
+    padding: 0;
+    margin: 0;
+  }
+  &__close {}
+}

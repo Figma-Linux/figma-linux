@@ -13,6 +13,10 @@ onError((err: any) => {
 
 shortcuts();
 
+if (module.hot) {
+  module.hot.accept();
+}
+
 const root: string = isDev ? "app" : "react-page";
 
 render(

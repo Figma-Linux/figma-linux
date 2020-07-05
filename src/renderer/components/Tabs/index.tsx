@@ -221,7 +221,7 @@ class Tabs extends React.Component<TabsProps, {}> {
     });
   };
 
-  render() {
+  render(): JSX.Element {
     return <TabList tabs={toJS(this.props.tabs) as TabsStore} close={this.close} clickTab={this.clickTab} />;
   }
 }

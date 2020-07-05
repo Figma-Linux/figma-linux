@@ -1,44 +1,163 @@
+@import '../colors.scss';
+
 $list: a b c d e f g h i j k l m n o p q r s t;
 
-html, body, #app, #react-page {
-	margin: 0;
-	padding: 0;
-	outline: none;
-	border: 0;
-	height: 100%;
+html,
+body,
+#app,
+#react-page {
+  --fontSize: 16px;
+  --fontSubtitleSize: 18px;
+  --fontTitleSize: 22px;
+  --fontColorDark: #333333;
+  --fontColorLight: #FFFFFF;
+  --fontColorInactive: rgba(255,255,255,0.5);
 
-	font: {
-		family: 'Roboto', sans-serif;
-	}
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  height: 100%;
+
+  font: {
+    family: 'Inter', sans-serif;
+    size: var(--fontSize);
+    weight: 400;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+#body {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.hover:hover {
+  cursor: pointer;
 }
 
 @each $i in $list {
-	.gridArea-#{$i} {
-		grid-area: #{$i}
-	}
+  .gridArea-#{$i} {
+    grid-area: #{$i}
+  }
 }
 
 @for $i from 1 through 50 {
-	.order#{$i} {
-		order: #{$i};
-	}
+  .order#{$i} {
+    order: #{$i};
+  }
 }
 
 .hidden {
-	display: none;
+  display: none;
 }
 
-.grid_1x2 {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
+.section {
+  padding: 30px 0px;
+  border-bottom: 1px solid $llgray_1;
+
+  &_end {
+    border-bottom: 0px;
+  }
 }
 
-.grid_2x1 {
-	display: grid;
-	grid-template: "a b" "c c";
-	grid-template-columns: 1fr 20px;
+.grid {
+  display: grid;
+
+  &_1x2 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  &_1x3 {
+    grid-template-columns: 10fr 2fr 10fr;
+  }
 }
 
 .grid_cgap5per {
-	grid-column-gap: 5%;
+  grid-column-gap: 5%;
+}
+
+.justify__content {
+  justify-content: left;
+
+  &_center {
+    justify-content: center;
+  }
+
+  &_right {
+    justify-content: right;
+  }
+}
+
+.align_items_center {
+  align-items: center;
+}
+
+.flex {
+  display: flex;
+
+  &_column {
+    flex-direction: column;
+  }
+
+  &_grow_1 {
+    flex-grow: 1;
+  }
+}
+
+.width {
+  &_60px {
+    width: 60px;
+  }
+  &_100px {
+    width: 100px;
+  }
+  &_110px {
+    width: 110px;
+  }
+  &_120px {
+    width: 120px;
+  }
+}
+
+.border_light {
+  border: 1px solid $llgray_1;
+}
+
+.border_gray {
+  border: 1px solid $lgray_2;
+}
+
+.pad {
+  &_left {
+    &_6px {
+      padding-left: 6px;
+    }
+    &_10px {
+      padding-left: 10px;
+    }
+  }
+
+  &_top {
+    &_10px {
+      padding-top: 10px;
+    }
+  }
+}
+
+.marg {
+  &_right {
+    &_10px {
+      margin-right: 10px;
+    }
+  }
 }

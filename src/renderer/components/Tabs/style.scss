@@ -8,37 +8,41 @@
 .tab {
 	display: inline-flex;
 	align-items: center;
-	padding: 0px 10px;
+  padding: 0px 10px;
+  user-select: none;
+
 	&:hover {
 		background-color: $gray_1;
 	}
 
-	& > span {
-		position: relative;
-		// pointer-events: none;
-		user-select: none;
-		cursor: default;
-		white-space: nowrap;
-		font: {
-			size: 10px;
-		}
-		color: $white_1;
+	// & > span {
+	// 	position: relative;
+	// 	// pointer-events: none;
+	// 	user-select: none;
+	// 	cursor: default;
+	// 	white-space: nowrap;
+	// 	font: {
+	// 		size: 10px;
+	// 	}
+	// 	color: $white_1;
 
-		&:hover {
-			&::after {
-				cursor: pointer;
-			}
-		}
+	// 	&:hover {
+  //     user-select: none;
 
-		&::after {
-			content: '';
-			position: absolute;
-			top: -8px;
-			left: -10px;
-			height: 28px;
-			width: 115%;
-		}
-	}
+	// 		&::after {
+  //       cursor: pointer;
+	// 		}
+	// 	}
+
+	// 	&::after {
+	// 		content: '';
+	// 		position: absolute;
+	// 		top: -8px;
+	// 		left: -10px;
+	// 		height: 28px;
+	// 		width: 115%;
+	// 	}
+	// }
 }
 .active {
 	background-color: $gray_1;

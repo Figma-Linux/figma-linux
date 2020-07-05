@@ -9,6 +9,7 @@ import { postPromiseMessageToMainProcess } from "Utils/Render";
 import { shortcutsMap } from "Utils/Render/ShortcutsMap";
 import shortcutBinding from "./shortcutBinding";
 import { ShortcutMan } from "./ShortcutMan";
+import { themes } from "./ThemesManager";
 import shortcuts from "Utils/Render/shortcuts";
 
 // import api from "./webApi";
@@ -21,7 +22,7 @@ interface IntiApiOptions {
   shortcutMan?: any;
 }
 
-const API_VERSION = 19;
+const API_VERSION = 20;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
@@ -635,7 +636,7 @@ const publicAPI: any = {
   },
 };
 
-const init = (fileBrowser: boolean) => {
+const init = (fileBrowser: boolean): void => {
   window.addEventListener(
     "message",
     event => {
@@ -665,6 +666,10 @@ const init = (fileBrowser: boolean) => {
   initWebBindings();
 
   shortcuts();
+
+  setTimeout(() => {
+    themes.init();
+  }, 100);
 };
 
 export default init;

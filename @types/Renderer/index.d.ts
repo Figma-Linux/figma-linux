@@ -1,12 +1,8 @@
 interface Window
   extends EventTarget,
-    WindowTimers,
     WindowSessionStorage,
     WindowLocalStorage,
-    WindowConsole,
     GlobalEventHandlers,
-    IDBEnvironment,
-    WindowBase64,
     AnimationFrameProvider,
     WindowOrWorkerGlobalScope,
     WindowEventHandlers {

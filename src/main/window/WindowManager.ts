@@ -16,6 +16,7 @@ import { registerIpcMainHandlers } from "Main/events";
 class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
+  settingsView: E.BrowserView | null = null;
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
@@ -308,9 +309,22 @@ class WindowManager {
           break;
         case "openSettings":
           {
-            this.addTab("", `component://Settings`);
+            this.initSettingsView();
           }
           break;
+        case "closeSettings": {
+          if (!this.settingsView) {
+            break;
+          }
+
+          if (this.settingsView.webContents.isDevToolsOpened()) {
+            this.settingsView.webContents.closeDevTools();
+          }
+
+          this.mainWindow.removeBrowserView(this.settingsView);
+
+          break;
+        }
         case "chrome://gpu":
           {
             this.addTab("", `chrome://gpu`, "chrome://gpu/");
@@ -353,6 +367,41 @@ class WindowManager {
     this.mainWindow.setBrowserView(tab);
 
     return tab;
+  };
+
+  private initSettingsView = () => {
+    this.settingsView = new E.BrowserView({
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+        experimentalFeatures: false,
+      },
+    });
+
+    this.mainWindow.addBrowserView(this.settingsView);
+
+    const windowBounds = this.mainWindow.getBounds();
+
+    this.settingsView.setBounds({
+      height: windowBounds.height,
+      width: windowBounds.width,
+      y: 0,
+      x: 0,
+    });
+
+    this.settingsView.setAutoResize({
+      width: true,
+      height: true,
+      horizontal: true,
+      vertical: true,
+    });
+
+    this.settingsView.webContents.loadURL(isDev ? winUrlDev : winUrlProd);
+
+    this.settingsView.webContents.on("did-finish-load", () => {
+      this.settingsView.webContents.send("renderView", "Settings");
+      this.settingsView.webContents.openDevTools({ mode: "detach" });
+    });
   };
 
   private logoutAndRestart = (event?: E.Event) => {

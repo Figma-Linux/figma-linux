@@ -1,0 +1,30 @@
+@import '../../colors.scss';
+
+.text {
+  font: {
+    size: var(--fontSize);
+    family: 'Inter', sans-serif;
+  }
+
+  &_title {
+    display: block;
+    font-size: var(--fontTitleSize);
+    font-weight: 600;
+  }
+  &_subtitle {
+    display: block;
+    padding-bottom: 20px;
+    font-size: var(--fontSubtitleSize);
+    font-weight: 600;
+  }
+
+  &_light {
+    color: var(--fontColorLight);
+  }
+  &_dark {
+    color: var(--fontColorDark);
+  }
+  &_inactive {
+    color: var(--fontColorInactive);
+  }
+}

@@ -1,4 +1,4 @@
-export const DEFAULT_SETTINGS: ISettings = {
+export const DEFAULT_SETTINGS: SettingsInterface = {
   app: {
     panelHeight: 28,
     showMainMenu: false,

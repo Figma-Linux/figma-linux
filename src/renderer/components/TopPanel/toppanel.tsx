@@ -16,8 +16,8 @@ const TopPanel: React.SFC<TopPanelProps> = props => {
   const currentTab: Tab | undefined = props.getTab(props.current);
 
   return (
-    <div className="panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
-      <div className="panelButtons gridArea-a">
+    <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
+      <div className="panelButtons">
         <div className={`button main ${props.current === 1 ? "active" : ""}`} onClick={props.onMainTab}>
           <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -46,7 +46,7 @@ const TopPanel: React.SFC<TopPanelProps> = props => {
         </div>
       </div>
       <Tabs />
-      <div className="panelButtons gridArea-c">
+      <div className="panelButtons">
         <div className={`button`} onClick={props.openSettings} title="settings">
           <svg width="16" height="16" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0)">

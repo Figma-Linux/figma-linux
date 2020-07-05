@@ -4,15 +4,18 @@ import { observer, inject } from "mobx-react";
 
 import Panel from "./toppanel";
 import { Settings } from "Store/Settings";
+import { Views } from "Store/Views";
 import "./style.scss";
 
 interface TopPanelProps {
   tabs?: TabsStore;
   settings?: Settings;
+  views?: Views;
 }
 
 @inject("tabs")
 @inject("settings")
+@inject("views")
 @observer
 class TopPanel extends React.Component<TopPanelProps, {}> {
   props: TopPanelProps;
@@ -46,7 +49,8 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     E.ipcRenderer.send("newtab");
   };
 
-  render() {
+  render(): JSX.Element {
+    console.log("render TopPanel component");
     return (
       <Panel
         scalePanel={this.props.settings.settings.ui.scalePanel}

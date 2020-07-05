@@ -26,7 +26,7 @@ export default class Tabs {
     if (preloadScript !== "") {
       options.webPreferences.preload = path.resolve(
         isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`,
-        "middleware",
+        "renderer/middleware",
         preloadScript || "",
       );
     }

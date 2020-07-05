@@ -66,6 +66,7 @@ class App {
 
   private appEvent = (): void => {
     E.app.setAsDefaultProtocolClient(Const.PROTOCOL);
+    E.app.allowRendererProcessReuse = false;
 
     E.app.on("ready", this.ready);
     E.app.on("browser-window-created", (e, window) => window.setMenu(null));

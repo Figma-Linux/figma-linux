@@ -1,20 +1,38 @@
 import * as React from "react";
+import { observer, inject } from "mobx-react";
 
-import Body from "./Body";
+import { Views } from "Store/Views";
 import TopPanel from "./TopPanel";
+import Settings from "./Settings";
 import "./style.scss";
 
-class App extends React.Component<{}, {}> {
-  props: {};
+interface AppProps {
+  views?: Views;
+}
 
-  constructor(props: {}) {
+const viewMap = {
+  TopPanel,
+  Settings,
+};
+
+@inject("views")
+@observer
+class App extends React.Component<AppProps, {}> {
+  props: AppProps;
+
+  constructor(props: AppProps) {
     super(props);
 
     this.props = props;
   }
 
-  render() {
-    return [<TopPanel key="1" />, <Body key="2" />];
+  render(): JSX.Element {
+    const View = viewMap[this.props.views.view];
+    return (
+      <div id="body">
+        <View />
+      </div>
+    );
   }
 }
 

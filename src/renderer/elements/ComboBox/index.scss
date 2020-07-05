@@ -1,0 +1,36 @@
+@import '../../colors.scss';
+
+.combobox {
+  -webkit-appearance: none;
+  padding: 5px 10px;
+  width: 150px;
+  border-radius: 3px;
+  background: #FFFFFF;
+  outline: none;
+
+  &:focus {
+    background: #FFFFFF;
+    outline: none;
+  }
+
+  &:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent;
+    border-color: #fff transparent transparent transparent;
+  }
+
+  // &::after {
+  //   content: '';
+  //   position: absolute;
+  //   top: 1px;
+  //   right: 1px;
+  //   width: 20px;
+  //   height: 20px;
+  //   background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABvSURBVHgBtY3BDYAgDEVtSbjqBrIKYQFXcBNGcASZgCMXQEdwFO8kaDEhIXr2X9q815923e8B7/3EGOullKYVIQSNiAumlI6csy6gyhjjSmOk0gkFOOcE53yj1QCAuChKqfl5UVvN0V7lJ9ba4c1uIf8mDo1oUVIAAAAASUVORK5CYII=')
+  // }
+}

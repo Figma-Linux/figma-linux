@@ -5,7 +5,7 @@ import { observable, action, toJS, autorun } from "mobx";
 import * as Const from "Const";
 
 export class Settings {
-  @observable settings: ISettings;
+  @observable settings: SettingsInterface;
 
   constructor() {
     this.settings = S.getAll() as any;

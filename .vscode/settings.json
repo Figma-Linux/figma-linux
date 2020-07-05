@@ -13,6 +13,15 @@
   "[typescriptreact]": {
     "editor.formatOnSave": true
   },
+  "[scss]": {
+    "editor.formatOnSave": true
+  },
+  "[css]": {
+    "editor.formatOnSave": true
+  },
+  "[sass]": {
+    "editor.formatOnSave": true
+  },
   "eslint.alwaysShowStatus": true,
   "prettier.singleQuote": false,
   "editor.codeActionsOnSave": {

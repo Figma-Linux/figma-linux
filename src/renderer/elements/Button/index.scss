@@ -1,0 +1,51 @@
+@import '../../colors.scss';
+
+.button {
+  --buttonWidthXxs: 2px;
+  --buttonWidthXs: 4px;
+  --buttonWidthS: 6px;
+  --buttonWidthM: 8px;
+  --buttonWidthL: 12px;
+  --buttonWidthXl: 16px;
+  --buttonWidthXxl: 20px;
+
+  --buttonHeightXxs: 2px;
+  --buttonHeightXs: 4px;
+  --buttonHeightS: 6px;
+  --buttonHeightM: 8px;
+  --buttonHeightL: 12px;
+  --buttonHeightXl: 16px;
+  --buttonHeightXxl: 20px;
+
+  transition: all .1s ease;
+
+
+  &_default {
+    padding: var(--buttonHeightS) var(--buttonWidthM);
+  }
+  &_default:hover {
+    cursor: pointer;
+    box-shadow: 0 0 1px 0px $black_2;
+  }
+
+  &_thin {
+    padding: var(buttonHeightS) var(--buttonWidthM);
+  }
+  &_thick {
+    padding: var(buttonHeightL) var(--buttonWidthXxl);
+  }
+
+  &_rounded {
+    border-radius: 5px;
+  }
+
+  &_clear {
+    background: transparent;
+    border: 0px;
+    padding: 0px;
+  }
+  &_clear:hover {
+    border: 0px;
+    box-shadow: none;
+  }
+}

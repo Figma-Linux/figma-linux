@@ -1,0 +1,82 @@
+@import '../../colors.scss';
+
+.settings {
+  padding: 5% 0px;
+  width: 70%;
+  margin: auto;
+  height: -webkit-fill-available;
+
+  &__panel {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    background: $gray_1;
+    color: $white_1;
+    padding: 14px 10px 14px 30px;
+  }
+
+  &__body {
+    background: $white_1;
+    padding: 20px 30px;
+    height: 700px;
+  }
+
+  &__tab {
+    padding: 10px 0px;
+    margin-right: 36px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &>.settings-panel {
+    border-right: 2px solid $lgray_1;
+
+    .item {
+      display: flex;
+      padding: 0 20px;
+      align-items: center;
+      justify-content: left;
+      transition: background-color .1s ease;
+
+      &:hover {
+        background-color: $blue_1;
+        cursor: pointer;
+      }
+
+      &.active {
+        background-color: $blue_1;
+
+        & .label {
+          color: $white_1;
+        }
+      }
+
+      &>.icon {
+        width: 38px;
+      }
+
+      &>.label {
+        font: {
+          size: 18px;
+          weight: 500;
+        }
+
+        margin: 12px 0px;
+        color: $black_2;
+      }
+    }
+  }
+
+  &>.body {
+    padding: 10px 30px 10px 20px;
+    background-color: $llgray_1;
+
+    & h1,
+    h2 {
+      text-align: center;
+      color: $black_2
+    }
+  }
+}

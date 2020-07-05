@@ -1,0 +1,46 @@
+@import '../../colors.scss';
+
+.list {
+  height: 170px;
+  position: relative;
+  overflow-y: scroll;
+  padding-left: 10px;
+  background-color: $white_1;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $gray_2;
+    border-radius: 5px;
+  }
+
+  &__item {
+    display: flex;
+    color: $black_2;
+    align-items: center;
+    padding: 10px 0px 10px 0px;
+
+    &>span {
+      max-width: calc(100vw - 320px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+  }
+
+  &__delete {
+    margin-right: 10px;
+    height: 16px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

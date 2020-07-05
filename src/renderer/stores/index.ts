@@ -1,17 +1,17 @@
 import { tabs } from "./Tabs";
-import route, { Routes } from "./Routes";
+import { Views, views } from "./Views";
 import { Settings, settings } from "./Settings";
 
 export interface Stores {
   tabs: TabsStore;
   settings: Settings;
-  route: Routes;
+  views: Views;
 }
 
 const stores: Stores = {
   tabs,
   settings,
-  route,
+  views,
 };
 
 export default stores;

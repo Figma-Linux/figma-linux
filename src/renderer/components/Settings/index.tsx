@@ -37,7 +37,6 @@ class Settings extends React.Component<SettingsProps, {}> {
   };
 
   render(): JSX.Element {
-    console.log("render Settings component");
     const View = this.viewMap[this.props.views!.settingsView];
     const viewName = this.props.views!.settingsView;
 

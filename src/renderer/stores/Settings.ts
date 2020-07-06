@@ -92,16 +92,16 @@ export class Settings {
   };
 
   private events = (): void => {
-    E.ipcRenderer.on(Const.UPDATEUISCALE, (sender: Event, scale: number) => {
+    E.ipcRenderer.on("updateUiScale", (sender, scale) => {
       this.settings.ui.scaleFigmaUI = scale;
     });
-    E.ipcRenderer.on(Const.UPDATEPANELSCALE, (sender: Event, scale: number) => {
+    E.ipcRenderer.on("updatePanelScale", (sender, scale) => {
       this.settings.ui.scalePanel = scale;
     });
-    E.ipcRenderer.on(Const.UPDATEPANELHEIGHT, (sender: Event, height: number) => {
+    E.ipcRenderer.on("updatePanelHeight", (sender, height) => {
       this.settings.app.panelHeight = height;
     });
-    E.ipcRenderer.on(Const.UPDATEMAINMENUVIS, (sender: Event, show: boolean) => {
+    E.ipcRenderer.on("updateMainMenuVisibility", (sender, show) => {
       this.settings.app.showMainMenu = show;
     });
   };

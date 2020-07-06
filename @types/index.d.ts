@@ -101,6 +101,10 @@ declare namespace Electron {
   interface IpcRenderer extends NodeJS.EventEmitter {
     on(channel: "renderView", listener: (event: IpcRendererEvent, view: View) => void): this;
     on(channel: "renderSettingsView", listener: (event: IpcRendererEvent, view: SettingsView) => void): this;
+    on(channel: "updateMainMenuVisibility", listener: (event: IpcRendererEvent, show: boolean) => void): this;
+    on(channel: "updatePanelHeight", listener: (event: IpcRendererEvent, height: number) => void): this;
+    on(channel: "updatePanelScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
+    on(channel: "updateUiScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", title: string): this;
@@ -110,6 +114,10 @@ declare namespace Electron {
   interface WebContents extends NodeJS.EventEmitter {
     send(channel: "renderView", view: View): void;
     send(channel: "renderSettingsView", view: SettingsView): void;
+    send(channel: "updateMainMenuVisibility", show: boolean): void;
+    send(channel: "updatePanelHeight", height: number): void;
+    send(channel: "updatePanelScale", scale: number): void;
+    send(channel: "updateUiScale", scale: number): void;
   }
 
   interface RequestHeaders {

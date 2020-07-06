@@ -26,40 +26,39 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     this.props = props;
   }
 
-  private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event) => {
+  private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
     E.ipcRenderer.send("maintab");
-    this.props.tabs!.setFocus(1);
+    this.props.tabs.setFocus(1);
   };
 
-  private onOpenSettings = (e: React.MouseEvent<HTMLDivElement> & Event) => {
+  private onOpenSettings = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
     E.remote.app.emit("handle-command", "openSettings");
   };
 
-  private onHomeClick = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+  private onHomeClick = (): void => {
     E.ipcRenderer.send("toHome");
   };
 
-  private newTab = () => {
+  private newTab = (): void => {
     E.ipcRenderer.send("newtab");
   };
 
   render(): JSX.Element {
-    console.log("render TopPanel component");
     return (
       <Panel
         scalePanel={this.props.settings.settings.ui.scalePanel}
-        current={this.props.tabs!.current}
+        current={this.props.tabs.current}
         onMainTab={this.onMainTab}
         openSettings={this.onOpenSettings}
         onHomeClick={this.onHomeClick}
         newTab={this.newTab}
-        getTab={this.props.tabs!.getTab}
+        getTab={this.props.tabs.getTab}
       />
     );
   }

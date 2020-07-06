@@ -42,9 +42,9 @@ class WindowManager {
     this.addTab("loadMainContent.js");
 
     this.mainWindow.on("resize", this.updateBounds);
-    this.mainWindow.on("maximize", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-    this.mainWindow.on("unmaximize", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
-    this.mainWindow.on("move", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
+    this.mainWindow.on("maximize", () => setTimeout(() => this.updateBounds(), 100));
+    this.mainWindow.on("unmaximize", () => setTimeout(() => this.updateBounds(), 100));
+    this.mainWindow.on("move", () => setTimeout(() => this.updateBounds(), 100));
 
     isDev && this.installReactDevTools();
     isDev && this.mainWindow.webContents.openDevTools({ mode: "detach" });
@@ -488,17 +488,17 @@ class WindowManager {
     }
   };
 
-  private openFileBrowser = () => {
+  private openFileBrowser = (): void => {
     const currentView = this.mainWindow.getBrowserView();
     const currentUrl = (currentView && currentView.webContents.getURL()) || "";
     const go: boolean = url.parse(currentUrl).pathname !== "/files/recent";
 
     MenuState.updateActionState(Const.INITACTIONINITSTATE);
 
-    currentView && go && currentView!.webContents.loadURL(`${this.home}`);
+    currentView && go && currentView.webContents.loadURL(`${this.home}`);
   };
 
-  private closeTab = (id: number) => {
+  private closeTab = (id: number): void => {
     const views = Tabs.getAll();
     const currentView = this.mainWindow.getBrowserView();
     const index: number = views.findIndex(t => t.id == id);
@@ -515,7 +515,7 @@ class WindowManager {
     Tabs.close(id);
   };
 
-  private updateAllScale = (scale?: number) => {
+  private updateAllScale = (scale?: number): void => {
     const views = Tabs.getAll();
     let panelHeight = 0;
 
@@ -529,12 +529,12 @@ class WindowManager {
 
     panelHeight = Math.floor(Const.TOPPANELHEIGHT * this.panelScale);
     this.panelHeight = panelHeight;
-    this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight);
+    this.mainWindow.webContents.send("updatePanelHeight", panelHeight);
 
     Settings.set("app.panelHeight", panelHeight);
 
-    this.mainWindow.webContents.send(Const.UPDATEPANELSCALE, this.panelScale);
-    this.mainWindow.webContents.send(Const.UPDATEUISCALE, this.figmaUiScale);
+    this.mainWindow.webContents.send("updatePanelScale", this.panelScale);
+    this.mainWindow.webContents.send("updateUiScale", this.figmaUiScale);
 
     this.updateBounds();
 
@@ -543,7 +543,7 @@ class WindowManager {
     }
   };
 
-  private updateFigmaUiScale = (figmaScale: number) => {
+  private updateFigmaUiScale = (figmaScale: number): void => {
     const views = Tabs.getAll();
 
     this.figmaUiScale = +figmaScale.toFixed(2);
@@ -553,20 +553,21 @@ class WindowManager {
     }
   };
 
-  private updatePanelScale = (panelScale: number) => {
+  private updatePanelScale = (panelScale: number): void => {
     let panelHeight = 0;
 
     this.panelScale = +panelScale.toFixed(2);
     panelHeight = Math.floor(Const.TOPPANELHEIGHT * panelScale);
     this.panelHeight = panelHeight;
-    this.mainWindow.webContents.send(Const.UPDATEPANELHEIGHT, panelHeight);
+    this.mainWindow.webContents.send("updatePanelHeight", panelHeight);
 
     Settings.set("app.panelHeight", panelHeight);
 
+    this.mainWindow.webContents.send("updatePanelScale", this.panelScale);
     this.updateBounds();
   };
 
-  private getBounds = () => {
+  private getBounds = (): E.Rectangle => {
     return {
       x: 0,
       y: this.panelHeight,
@@ -575,7 +576,7 @@ class WindowManager {
     };
   };
 
-  private updateBounds = (event?: Event) => {
+  private updateBounds = (): void => {
     const views = Tabs.getAll();
 
     views.forEach((bw: E.BrowserView) => {
@@ -583,7 +584,7 @@ class WindowManager {
     });
   };
 
-  private installReactDevTools = () => {
+  private installReactDevTools = (): void => {
     installExtension(REACT_DEVELOPER_TOOLS)
       .then((name: string) => console.log(`Added Extension:  ${name}`))
       .catch((err: Error) => console.log("An error occurred: ", err));

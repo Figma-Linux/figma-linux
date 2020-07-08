@@ -153,7 +153,7 @@ const initWebApi = (props: IntiApiOptions) => {
   window.__figmaDesktop = {
     version: props.version,
     fileBrowser: props.fileBrowser,
-    postMessage: function(name, args, transferList) {
+    postMessage: function(name, args, transferList): void {
       console.log("postMessage, name, args, transferList: ", name, args, transferList);
 
       // FIXME: ugly hack
@@ -194,11 +194,11 @@ const initWebApi = (props: IntiApiOptions) => {
       const id = nextCallbackID++;
       registeredCallbacks.set(id, callback);
       channel.port1.postMessage({ name, args, callbackID: id });
-      return () => {
+      return (): void => {
         channel.port1.postMessage({ cancelCallbackID: id });
       };
     },
-    promiseMessage: function(name, args, transferList) {
+    promiseMessage: function(name, args, transferList): Promise<any> {
       console.log("promiseMessage, name, args, transferList: ", name, args, transferList);
       return new Promise((resolve, reject) => {
         const id = nextPromiseID++;
@@ -206,14 +206,14 @@ const initWebApi = (props: IntiApiOptions) => {
         channel.port1.postMessage({ name, args, promiseID: id }, transferList);
       });
     },
-    setMessageHandler: function(handler) {
+    setMessageHandler: function(handler): void {
       console.log("setMessageHandler: handler", handler);
       messageHandler = handler;
       tryFlushMessages();
     },
   };
 
-  channel.port1.onmessage = (event: MessageEvent) => {
+  channel.port1.onmessage = (event: MessageEvent): void => {
     const msg = event.data;
 
     if (!msg) return;
@@ -245,11 +245,11 @@ const initWebApi = (props: IntiApiOptions) => {
   window.postMessage("init", location.origin, [channel.port2]);
 };
 
-const initWebBindings = () => {
+const initWebBindings = (): void => {
   setInterval(() => {
     const link: HTMLLinkElement = document.querySelector('div[class^="code_inspection_panels--inspectorRow"] > a');
     link &&
-      (link.onclick = (e: Event) => {
+      (link.onclick = (e: Event): void => {
         onClickExportImage(e, link);
       });
   }, 500);

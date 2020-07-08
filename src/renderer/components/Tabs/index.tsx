@@ -23,18 +23,18 @@ class Tabs extends React.Component<TabsProps, {}> {
     this.props = props;
   }
 
-  private close = (e: React.MouseEvent<any> & Event, id: number) => {
+  private close = (e: React.MouseEvent<HTMLDivElement> & Event, id: number): void => {
     e.stopPropagation();
 
-    const tabs = toJS(this.props.tabs!.tabs);
+    const tabs = toJS(this.props.tabs.tabs);
     const tab = this.props.tabs.getTab(id);
-    const currentTabId: number = toJS(this.props.tabs!.current);
+    const currentTabId: number = toJS(this.props.tabs.current);
     const index: number = tabs.findIndex(t => t.id === id);
 
     if (isComponentUrl(tab.url)) {
-      E.ipcRenderer.send(Const.MAINTAB);
+      E.ipcRenderer.send("setFocusToMainTab");
     } else {
-      E.ipcRenderer.send(Const.CLOSETAB, id);
+      E.ipcRenderer.send("closeTab", id);
     }
 
     this.props.tabs.deleteTab(id);
@@ -42,13 +42,13 @@ class Tabs extends React.Component<TabsProps, {}> {
     if (id !== currentTabId) return;
 
     if (isComponentUrl(tab.url)) {
-      this.props.tabs!.setFocus(1);
+      this.props.tabs.setFocus(1);
     } else {
-      this.props.tabs!.setFocus(index !== 0 ? tabs[index > 0 ? index - 1 : index].id : 1);
+      this.props.tabs.setFocus(index !== 0 ? tabs[index > 0 ? index - 1 : index].id : 1);
     }
   };
 
-  private clickTab = (e: React.MouseEvent<any> & Event, tab: Tab) => {
+  private clickTab = (e: React.MouseEvent<HTMLDivElement> & Event, tab: Tab): void => {
     e.stopPropagation();
 
     switch (e.button) {
@@ -164,9 +164,9 @@ class Tabs extends React.Component<TabsProps, {}> {
     const tab = this.props.tabs.getTab(id);
 
     if (isComponentUrl(tab.url)) {
-      E.ipcRenderer.send(Const.CLEARVIEW);
+      E.ipcRenderer.send("clearView");
     } else {
-      E.ipcRenderer.send(Const.FOCUSTAB, id);
+      E.ipcRenderer.send("setTabFocus", id);
     }
 
     this.props.tabs!.setFocus(id);

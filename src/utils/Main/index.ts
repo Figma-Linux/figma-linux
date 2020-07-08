@@ -3,7 +3,6 @@
  */
 export * from "./net";
 export * from "./url";
-export * from "./cmd";
 export * from "./cookies";
 export * from "./devTools";
 export * from "./Menu/menu";

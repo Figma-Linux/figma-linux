@@ -30,7 +30,7 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.ipcRenderer.send("maintab");
+    E.ipcRenderer.send("setFocusToMainTab");
     this.props.tabs.setFocus(1);
   };
 
@@ -46,7 +46,7 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
   };
 
   private newTab = (): void => {
-    E.ipcRenderer.send("newtab");
+    E.ipcRenderer.send("newTab");
   };
 
   render(): JSX.Element {

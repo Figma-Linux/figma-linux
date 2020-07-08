@@ -83,19 +83,17 @@ declare namespace Electron {
     on(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
     on(channel: "setTitle", listener: (event: IpcMainEvent, title: string) => void): this;
     on(channel: "setPluginMenuData", listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
-    once(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
-    once(channel: "setTitle", listener: (event: IpcMainEvent, title: string) => void): this;
-    once(channel: "setPluginMenuData", listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
-    removeAllListeners(channel: string): this;
-    removeAllListeners(channel: "setTitle"): this;
-    removeAllListeners(channel: "setPluginMenuData"): this;
-
-    removeListener(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
-    removeListener(channel: "setTitle", listener: (event: IpcMainEvent, title: string) => void): this;
-    removeListener(
-      channel: "setPluginMenuData",
-      listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void,
-    ): this;
+    on(channel: "receiveTabs", listener: (event: IpcMainEvent, tabs: Tab[]) => void): this;
+    on(channel: "toHome", listener: (event: IpcMainEvent) => void): this;
+    on(channel: "updateActionState", listener: (event: IpcMainEvent, state: MenuState.State) => void): this;
+    on(channel: "updateFileKey", listener: (event: IpcMainEvent, key: string) => void): this;
+    on(channel: "setTabUrl", listener: (event: IpcMainEvent, url: string) => void): this;
+    on(channel: "closeAllTab", listener: (event: IpcMainEvent) => void): this;
+    on(channel: "setFocusToMainTab", listener: (event: IpcMainEvent) => void): this;
+    on(channel: "clearView", listener: (event: IpcMainEvent) => void): this;
+    on(channel: "setTabFocus", listener: (event: IpcMainEvent, id: number) => void): this;
+    on(channel: "closeTab", listener: (event: IpcMainEvent, id: number) => void): this;
+    on(channel: "newTab", listener: (event: IpcMainEvent, id: number) => void): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -105,10 +103,30 @@ declare namespace Electron {
     on(channel: "updatePanelHeight", listener: (event: IpcRendererEvent, height: number) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
     on(channel: "updateUiScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
+    on(
+      channel: "updateFileKey",
+      listener: (event: IpcRendererEvent, data: { id: number; fileKey: string }) => void,
+    ): this;
+    on(channel: "setTabUrl", listener: (event: IpcRendererEvent, data: { id: number; url: string }) => void): this;
+    on(channel: "closeAllTabl", listener: (event: IpcRendererEvent) => void): this;
+    on(channel: "setTitle", listener: (event: IpcRendererEvent, data: { id: number; title: string }) => void): this;
+    on(channel: "closeTab", listener: (event: IpcRendererEvent, data: { id: number }) => void): this;
+    on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
 
     send(channel: string, ...args: any[]): void;
-    send(channel: "setTitle", title: string): this;
+    send(channel: "setTitle", data: { id: number; title: string }): this;
     send(channel: "setPluginMenuData", pluginMenu: Menu.MenuItem[]): this;
+    send(channel: "receiveTabs", tabs: Tab[]): this;
+    send(channel: "toHome"): this;
+    send(channel: "updateActionState", state: MenuState.State): this;
+    send(channel: "closeAllTab"): this;
+    send(channel: "setFocusToMainTab"): this;
+    send(channel: "clearView"): this;
+    send(channel: "updateFileKey", data: { id: number; fileKey: string }): this;
+    send(channel: "setTabUrl", data: { id: number; url: string }): this;
+    send(channel: "setTabFocus", id: number): this;
+    send(channel: "closeTab", id: number): this;
+    send(channel: "newTab"): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {
@@ -118,6 +136,12 @@ declare namespace Electron {
     send(channel: "updatePanelHeight", height: number): void;
     send(channel: "updatePanelScale", scale: number): void;
     send(channel: "updateUiScale", scale: number): void;
+    send(channel: "closeAllTab"): void;
+    send(channel: "updateFileKey", data: { id: number; fileKey: string }): this;
+    send(channel: "setTabUrl", data: { id: number; url: string }): this;
+    send(channel: "setTitle", data: { id: number; title: string }): void;
+    send(channel: "closeTab", data: { id: number }): this;
+    send(channel: "didTabAdd", data: Tab): this;
   }
 
   interface RequestHeaders {

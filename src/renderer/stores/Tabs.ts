@@ -67,7 +67,7 @@ export class Tabs implements TabsStore {
   };
 
   private events = (): void => {
-    E.ipcRenderer.on(Const.TABADDED, (sender: any, data: Tab) => {
+    E.ipcRenderer.on("didTabAdd", (sender, data) => {
       if (isComponentUrl(data.url)) {
         const collection: number[] = this.tabs.map(el => el.id);
 
@@ -91,23 +91,23 @@ export class Tabs implements TabsStore {
       this.setFocus(data.id);
     });
 
-    E.ipcRenderer.on(Const.CLOSEALLTAB, () => {
+    E.ipcRenderer.on("closeAllTabl", () => {
       this.current = 1;
       this.tabs = [];
     });
 
-    E.ipcRenderer.on(Const.SETTITLE, (sender: any, data: { id: number; title: string }) => {
+    E.ipcRenderer.on("setTitle", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, title: data.title } : t));
     });
-    E.ipcRenderer.on(Const.SETTABURL, (sender: any, data: { id: number; url: string }) => {
+    E.ipcRenderer.on("setTabUrl", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, url: data.url } : t));
     });
 
-    E.ipcRenderer.on(Const.UPDATEFILEKEY, (sender: any, data: { id: number; fileKey: string }) => {
+    E.ipcRenderer.on("updateFileKey", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, fileKey: data.fileKey } : t));
     });
 
-    E.ipcRenderer.on(Const.CLOSETAB, (sender: any, data: { id: number }) => {
+    E.ipcRenderer.on("closeTab", (sender, data) => {
       const index: number = this.tabs.findIndex(t => t.id === data.id);
       this.deleteTab(data.id);
 
@@ -119,5 +119,5 @@ export class Tabs implements TabsStore {
 export const tabs: Tabs = new Tabs();
 
 autorun(() => {
-  E.ipcRenderer.send(Const.RECIVETABS, toJS(tabs.tabs));
+  E.ipcRenderer.send("receiveTabs", toJS(tabs.tabs));
 });

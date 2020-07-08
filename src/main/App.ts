@@ -2,7 +2,7 @@ import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { cmd } from "Utils/Main";
+import { isFigmaValidUrl } from "Utils/Main";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
@@ -15,18 +15,6 @@ class App {
   constructor() {
     const isSingleInstance = E.app.requestSingleInstanceLock();
 
-    if (Settings.get("app.fontDirs")) {
-      cmd(`find ${(Settings.get("app.fontDirs") as string[]).join(" ")} -type f | wc -l`)
-        .then(output => {
-          console.info(`You've got a ${output.replace(/[\s\t\r]/, "")} fonts in your os.`);
-
-          if (parseInt(output) > 3000) {
-            console.warn(`You've too many fonts. It'll may call problem with run the app.`);
-          }
-        })
-        .catch(err => console.error(`exec command "find" error: `, err));
-    }
-
     if (!isSingleInstance) {
       E.app.quit();
       return;
@@ -34,9 +22,7 @@ class App {
       E.app.on("second-instance", (event, argv) => {
         let projectLink = "";
         console.log("second-instance, argv: ", argv);
-        const paramIndex: number = argv.findIndex((i: string) =>
-          /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i),
-        );
+        const paramIndex: number = argv.findIndex(i => isFigmaValidUrl(i));
 
         if (paramIndex !== -1) {
           projectLink = argv[paramIndex];

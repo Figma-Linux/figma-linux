@@ -5,10 +5,27 @@ import { Corner } from "./icons/Corner";
 import { Folder } from "./icons/Folder";
 import { Github } from "./icons/Github";
 import { Pencil } from "./icons/Pencil";
+import { Arrow } from "./icons/Arrow";
+import { Main } from "./icons/Main";
+import { Plus } from "./icons/Plus";
+import { Maximize } from "./icons/Maximize";
+import { Minimize } from "./icons/Minimize";
+import { Settings } from "./icons/Settings";
 
 import "./index.scss";
 
-type Icons = "Close" | "Corner" | "Folder" | "Github" | "Pencil";
+type Icons =
+  | "Close"
+  | "Corner"
+  | "Folder"
+  | "Github"
+  | "Pencil"
+  | "Arrow"
+  | "Main"
+  | "Plus"
+  | "Maximize"
+  | "Minimize"
+  | "Settings";
 
 export interface IconProps {
   color?: string;
@@ -27,6 +44,12 @@ export class Icon extends React.Component<ContainerProps, {}> {
     Folder,
     Github,
     Pencil,
+    Arrow,
+    Main,
+    Plus,
+    Maximize,
+    Minimize,
+    Settings,
   };
 
   constructor(props: ContainerProps) {

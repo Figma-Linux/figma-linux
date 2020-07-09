@@ -55,7 +55,7 @@ class Tabs extends React.Component<TabsProps, {}> {
       // Handle left click, set focuse on the target tab
       case 0:
         {
-          const tabEl = e.target as any;
+          // const tabEl = e.target as any;
 
           this.focus(e, tab.id);
 
@@ -158,7 +158,7 @@ class Tabs extends React.Component<TabsProps, {}> {
     }
   };
 
-  private focus = (event: React.MouseEvent<any> & Event, id: number) => {
+  private focus = (event: React.MouseEvent<HTMLDivElement> & Event, id: number): void => {
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
     const tab = this.props.tabs.getTab(id);
@@ -169,15 +169,15 @@ class Tabs extends React.Component<TabsProps, {}> {
       E.ipcRenderer.send("setTabFocus", id);
     }
 
-    this.props.tabs!.setFocus(id);
+    this.props.tabs.setFocus(id);
   };
 
-  private popup = (event: React.MouseEvent<any> & Event, id: number) => {
+  private popup = (event: React.MouseEvent<HTMLDivElement> & Event, id: number): void => {
     const context: E.MenuItemConstructorOptions[] = [
       {
         id: "copyAppUrl",
         label: "Copy App Url",
-        click: () => {
+        click: (): void => {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
           tab && E.clipboard.writeText(encodeURI(`figma://file/${tab.fileKey}/${tab.title}`));
@@ -186,7 +186,7 @@ class Tabs extends React.Component<TabsProps, {}> {
       {
         id: "copyUrl",
         label: "Copy Url",
-        click: () => {
+        click: (): void => {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
           tab && E.clipboard.writeText(`${Const.HOMEPAGE}/file/${tab.fileKey}`);
@@ -196,7 +196,7 @@ class Tabs extends React.Component<TabsProps, {}> {
       {
         id: "openInBrowser",
         label: "Open in Browser",
-        click: () => {
+        click: (): void => {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
           tab && E.remote.shell.openExternal(`${Const.HOMEPAGE}/file/${tab.fileKey}`);
@@ -207,7 +207,7 @@ class Tabs extends React.Component<TabsProps, {}> {
         id: "close",
         label: "Close",
         visible: true,
-        click: () => {
+        click: (): void => {
           console.log("close tab id: ", id);
           this.close(event, id);
         },

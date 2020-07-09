@@ -395,7 +395,7 @@ class WindowManager {
 
     this.settingsView.webContents.on("did-finish-load", () => {
       this.settingsView.webContents.send("renderView", "Settings");
-      this.settingsView.webContents.openDevTools({ mode: "detach" });
+      isDev && this.settingsView.webContents.openDevTools({ mode: "detach" });
     });
   };
 

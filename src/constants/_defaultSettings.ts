@@ -1,6 +1,6 @@
 export const DEFAULT_SETTINGS: SettingsInterface = {
   app: {
-    panelHeight: 28,
+    panelHeight: 40,
     showMainMenu: false,
     disabledMainMenu: false,
     saveLastOpenedTabs: true,

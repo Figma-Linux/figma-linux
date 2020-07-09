@@ -4,7 +4,7 @@
   display: grid;
   grid-template: "a b c";
   grid-template-columns: auto 1fr auto;
-  background-color: $black_1;
+  background-color: $gray_1;
 
   &>.panelButtons {
     display: inline-flex;
@@ -14,9 +14,9 @@
     &>.button {
       display: flex;
       align-items: center;
-      padding: 6px 8px 6px 6px;
+      padding: 12px;
       &:hover {
-        background-color: $gray_1;
+        background-color: $gray_2;
         cursor: pointer;
       }
     }

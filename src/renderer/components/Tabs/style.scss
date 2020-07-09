@@ -1,83 +1,78 @@
 @import '../../colors.scss';
 
 .tabBar {
-	position: relative;
-	display: flex;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
 }
 
 .tab {
-	display: inline-flex;
-	align-items: center;
-  padding: 0px 10px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
   user-select: none;
 
-	&:hover {
-		background-color: $gray_1;
-	}
+  &:hover {
+    background-color: $gray_2;
+  }
 
-	// & > span {
-	// 	position: relative;
-	// 	// pointer-events: none;
-	// 	user-select: none;
-	// 	cursor: default;
-	// 	white-space: nowrap;
-	// 	font: {
-	// 		size: 10px;
-	// 	}
-	// 	color: $white_1;
+  &__text {
+    width: 70px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+    font-size: var(--fontControlSize);
+    margin-right: 6px;
+  }
 
-	// 	&:hover {
-  //     user-select: none;
+  &__close {
+    height: 16px;
 
-	// 		&::after {
-  //       cursor: pointer;
-	// 		}
-	// 	}
+    &:hover {
+      cursor: pointer;
+    }
+  }
 
-	// 	&::after {
-	// 		content: '';
-	// 		position: absolute;
-	// 		top: -8px;
-	// 		left: -10px;
-	// 		height: 28px;
-	// 		width: 115%;
-	// 	}
-	// }
-}
-.active {
-	background-color: $gray_1;
+  &_active {
+    background-color: $gray_2;
+  }
 }
 
 .fakeTab {
-	position: relative;
-	display: inline;
-	align-items: center;
-	padding: 0px 10px;
-	pointer-events: none;
-	user-select: none;
-	background-color: transparent;
+  position: relative;
+  display: inline;
+  align-items: center;
+  padding: 0px 10px;
+  pointer-events: none;
+  user-select: none;
+  background-color: transparent;
 
-	& > span {
-		opacity: 0;
-		white-space: nowrap;
-		font: {
-			size: 10px;
-		}
-	}
+  &>span {
+    opacity: 0;
+    white-space: nowrap;
+
+    font: {
+      size: 10px;
+    }
+  }
 }
 
 .tabClose {
-	margin: 0px 0px 3px 10px;
-	&:hover {
-		cursor: pointer;
-	}
+  margin: 0px 0px 3px 10px;
+
+  &:hover {
+    cursor: pointer;
+  }
 }
+
 .newTab {
-	display: flex;
-	align-items: center;
-	padding: 2px 6px;
-	&:hover {
-		background-color: $black_1;
-		cursor: pointer;
-	}
+  display: flex;
+  align-items: center;
+  padding: 2px 6px;
+
+  &:hover {
+    background-color: $black_1;
+    cursor: pointer;
+  }
 }

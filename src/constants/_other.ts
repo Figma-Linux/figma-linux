@@ -3,7 +3,7 @@ import { parse } from "url";
 export const HOMEPAGE = "https://www.figma.com";
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
-export const TOPPANELHEIGHT = 28;
+export const TOPPANELHEIGHT = 40;
 
 export const PROTOCOL = "figma";
 

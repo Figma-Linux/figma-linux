@@ -667,9 +667,11 @@ const init = (fileBrowser: boolean): void => {
 
   shortcuts();
 
-  setTimeout(() => {
-    themes.init();
-  }, 100);
+  document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      themes.init();
+    }, 10);
+  });
 };
 
 export default init;

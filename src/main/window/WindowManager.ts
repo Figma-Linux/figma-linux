@@ -10,7 +10,7 @@ import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
 import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from "Utils/Common";
-import { winUrlDev, winUrlProd, isFileBrowser } from "Utils/Main";
+import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
@@ -238,6 +238,11 @@ class WindowManager {
     });
     E.app.on("sign-out", () => {
       this.logoutAndRestart();
+    });
+    E.app.on("toggle-settings-developer-tools", () => {
+      if (this.settingsView) {
+        toggleDetachedDevTools(this.settingsView.webContents);
+      }
     });
     E.app.on("handle-command", (id: string) => {
       switch (id) {

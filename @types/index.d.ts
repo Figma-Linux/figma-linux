@@ -21,6 +21,7 @@ declare namespace Electron {
     on(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
+    on(event: "toggle-settings-developer-tools", listener: () => void): this;
 
     once(event: "handle-command", listener: (command: string) => void): this;
     once(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
@@ -35,6 +36,7 @@ declare namespace Electron {
     once(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
     once(event: "themes-add-repository", listener: () => void): this;
     once(event: "themes-remove-repository", listener: () => void): this;
+    once(event: "toggle-settings-developer-tools", listener: () => void): this;
 
     addListener(event: "handle-command", listener: (command: string) => void): this;
     addListener(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
@@ -49,6 +51,7 @@ declare namespace Electron {
     addListener(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
     addListener(event: "themes-add-repository", listener: () => void): this;
     addListener(event: "themes-remove-repository", listener: () => void): this;
+    addListener(event: "toggle-settings-developer-tools", listener: () => void): this;
 
     removeListener(event: "handle-command", listener: (command: string) => void): this;
     removeListener(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
@@ -63,6 +66,7 @@ declare namespace Electron {
     removeListener(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
     removeListener(event: "themes-add-repository", listener: () => void): this;
     removeListener(event: "themes-remove-repository", listener: () => void): this;
+    removeListener(event: "toggle-settings-developer-tools", listener: () => void): this;
 
     emit(event: "handle-command", command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
@@ -77,6 +81,7 @@ declare namespace Electron {
     emit(event: "themes-change", theme: Themes.Palette): boolean;
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
+    emit(event: "toggle-settings-developer-tools"): boolean;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {

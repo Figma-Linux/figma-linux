@@ -215,38 +215,38 @@ const HELP_MENU = {
   submenu: [
     {
       label: "Help Page",
-      click() {
+      click(): void {
         E.shell.openExternal("https://help.figma.com");
       },
     },
     {
       label: "Community Forum",
-      click() {
+      click(): void {
         E.shell.openExternal("https://spectrum.chat/figma");
       },
     },
     {
       label: "Video Tutorials",
-      click() {
+      click(): void {
         E.shell.openExternal("https://www.youtube.com/playlist?list=PLXDU_eVOJTx4HJKh8tQkQRtIe5YlP5smB");
       },
     },
     {
       label: "Release Notes",
-      click() {
+      click(): void {
         E.shell.openExternal("http://releases.figma.com");
       },
     },
     {
       label: "Legal Summary",
-      click() {
+      click(): void {
         E.shell.openExternal("https://www.figma.com/summary-of-policy");
       },
     },
     SEPARATOR,
     {
       label: "Sign Out",
-      click() {
+      click(): void {
         Commander.exec("sign-out");
       },
     },
@@ -254,22 +254,28 @@ const HELP_MENU = {
     {
       label: "Toggle Developer Tools",
       accelerator: "Ctrl+Alt+I",
-      click(item, window) {
+      click(item, window): void {
         Commander.exec("toggle-developer-tools", item, window);
       },
     },
     {
       label: "Toggle Window Developer Tools",
       accelerator: "Shift+Ctrl+Alt+I",
-      click(item, window) {
+      click(item, window): void {
         Commander.exec("toggle-window-developer-tools", item, window);
+      },
+    },
+    {
+      label: "Toggle Settings Developer Tools",
+      click(item, window): void {
+        Commander.exec("toggle-settings-developer-tools", item, window);
       },
     },
     item("GPU", "", { id: "chrome://gpu", click: commandToMainProcess }),
   ],
 } as E.MenuItemConstructorOptions;
 
-export const getMenuTemlate = (pluginMenuItems?: any[]) => {
+export const getMenuTemlate = (pluginMenuItems?: any[]): E.MenuItemConstructorOptions[] => {
   const menu: E.MenuItemConstructorOptions[] = [
     FILE_MENU,
     EDIT_MENU,

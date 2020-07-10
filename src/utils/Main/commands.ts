@@ -17,6 +17,10 @@ export const commands = (): Map<string, Function> => {
     toggleDetachedDevTools(window.webContents);
   });
 
+  map.set("toggle-settings-developer-tools", (item: E.MenuItemConstructorOptions, window: E.BrowserWindow) => {
+    app.emit("toggle-settings-developer-tools");
+  });
+
   map.set("close-window", () => {
     app.exit();
   });

@@ -117,4 +117,5 @@ export const shortcutsMap: ShortcutsMap[] = [
 
   { accelerator: "Ctrl+Alt+I", value: "toggle-developer-tools", type: "id" },
   { accelerator: "Shift+Ctrl+Alt+I", value: "toggle-window-developer-tools", type: "id" },
+  { accelerator: "", value: "toggle-settings-developer-tools", type: "id" },
 ];

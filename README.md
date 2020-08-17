@@ -114,7 +114,7 @@ For normal work of the app via AppImage, you need install it via command:
 sudo ./figma-linux-0.6.1.AppImage -i
 ```
 
-It installs the desktop file, icons and creates lymbolic link to the AppImage file.
+It installs the desktop file, icons and creates symbolic link to the AppImage file.
 After that, you can run app via the icon or command:
 ```
 figma-linux

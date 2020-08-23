@@ -109,7 +109,12 @@ sudo smart install figma-linux-0.5.7.x86_64.rpm
 ```
 
 ## AppImage
-For normal work of the app via AppImage, you need install it via command:
+For normal work of the app via AppImage, you need to
+make it an executable
+```bash
+chmod +x figma-linux-0.6.1.AppImage
+```
+and install it via command:
 ```bash
 sudo ./figma-linux-0.6.1.AppImage -i
 ```

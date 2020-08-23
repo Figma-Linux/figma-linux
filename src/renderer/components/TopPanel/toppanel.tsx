@@ -25,7 +25,7 @@ const TopPanel: React.SFC<TopPanelProps> = props => {
         </Button>
         {!currentTab || (!!currentTab && currentTab.showBackBtn) ? (
           <Button className="button_clear" onClick={props.onHomeClick}>
-            <Icon color="#7A7A7A" type="Arrow" size="18" />
+            <Icon color="#7A7A7A" type="ArrowLeft" size="18" />
           </Button>
         ) : null}
         <Button className="button_clear" onClick={props.newTab}>

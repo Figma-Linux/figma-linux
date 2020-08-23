@@ -2,8 +2,6 @@ import * as E from "electron";
 import * as S from "electron-settings";
 import { observable, action, toJS, autorun } from "mobx";
 
-import * as Const from "Const";
-
 export class Settings {
   @observable settings: SettingsInterface;
 
@@ -89,6 +87,17 @@ export class Settings {
     }
 
     this.settings.app.fontDirs = this.settings.app.fontDirs.filter((e, i) => i !== index);
+  };
+
+  @action
+  public changeTheme = (id: string): void => {
+    if (!this.settings.theme) {
+      this.settings.theme = {
+        currentTheme: "0",
+      };
+    }
+
+    this.settings.theme.currentTheme = id;
   };
 
   private events = (): void => {

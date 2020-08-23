@@ -14,7 +14,7 @@ interface HeaderProps {
 const Header: React.SFC<HeaderProps> = props => {
   return (
     <div className="header">
-      <Text color="light" type="subtitle" className="header__text">
+      <Text color="light" className="header__text">
         {props.text}
       </Text>
       {props.displayCloseButton ? (

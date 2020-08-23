@@ -18,7 +18,8 @@ declare namespace Electron {
     on(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     on(event: "log", listener: (data: any) => void): this;
     on(event: "sign-out", listener: () => void): this;
-    on(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
+    on(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
+    on(event: "set-default-theme", listener: () => void): this;
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
@@ -33,7 +34,8 @@ declare namespace Electron {
     once(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     once(event: "log", listener: (data: any) => void): this;
     once(event: "sign-out", listener: () => void): this;
-    once(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
+    once(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
+    once(event: "set-default-theme", listener: () => void): this;
     once(event: "themes-add-repository", listener: () => void): this;
     once(event: "themes-remove-repository", listener: () => void): this;
     once(event: "toggle-settings-developer-tools", listener: () => void): this;
@@ -48,7 +50,8 @@ declare namespace Electron {
     addListener(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     addListener(event: "log", listener: (data: any) => void): this;
     addListener(event: "sign-out", listener: () => void): this;
-    addListener(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
+    addListener(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
+    addListener(event: "set-default-theme", listener: () => void): this;
     addListener(event: "themes-add-repository", listener: () => void): this;
     addListener(event: "themes-remove-repository", listener: () => void): this;
     addListener(event: "toggle-settings-developer-tools", listener: () => void): this;
@@ -63,7 +66,8 @@ declare namespace Electron {
     removeListener(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     removeListener(event: "log", listener: (data: any) => void): this;
     removeListener(event: "sign-out", listener: () => void): this;
-    removeListener(event: "themes-change", listener: (theme: Themes.Palette) => void): this;
+    removeListener(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
+    removeListener(event: "set-default-theme", listener: () => void): this;
     removeListener(event: "themes-add-repository", listener: () => void): this;
     removeListener(event: "themes-remove-repository", listener: () => void): this;
     removeListener(event: "toggle-settings-developer-tools", listener: () => void): this;
@@ -78,7 +82,8 @@ declare namespace Electron {
     emit(event: "os-menu-invalidated", dependencies: MenuState.MenuStateParams): boolean;
     emit(event: "log", data: any): boolean;
     emit(event: "sign-out"): boolean;
-    emit(event: "themes-change", theme: Themes.Palette): boolean;
+    emit(event: "themes-change", theme: Themes.Theme): boolean;
+    emit(event: "set-default-theme"): boolean;
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggle-settings-developer-tools"): boolean;
@@ -117,6 +122,7 @@ declare namespace Electron {
     on(channel: "setTitle", listener: (event: IpcRendererEvent, data: { id: number; title: string }) => void): this;
     on(channel: "closeTab", listener: (event: IpcRendererEvent, data: { id: number }) => void): this;
     on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
+    on(channel: "getUploadedThemes", listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -136,6 +142,7 @@ declare namespace Electron {
 
   interface WebContents extends NodeJS.EventEmitter {
     send(channel: "renderView", view: View): void;
+    send(channel: "getUploadedThemes", themes: Themes.Theme[]): void;
     send(channel: "renderSettingsView", view: SettingsView): void;
     send(channel: "updateMainMenuVisibility", show: boolean): void;
     send(channel: "updatePanelHeight", height: number): void;

@@ -10,6 +10,9 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
     fontDirs: ["/usr/share/fonts", `${process.env.HOME}/.local/share/fonts`],
     lastOpenedTabs: [],
   },
+  theme: {
+    currentTheme: "0",
+  },
   ui: {
     scalePanel: 1,
     scaleFigmaUI: 1,

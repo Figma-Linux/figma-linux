@@ -1,0 +1,135 @@
+@import '../../../../colors.scss';
+
+.themes {}
+
+.themeview {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-column-gap: 3%;
+  overflow-y: scroll;
+  height: 490px;
+  margin-right: -28px;
+  padding-right: 20px;
+
+  &::-webkit-scrollbar {
+    position: absolute;
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $gray_2;
+    border-radius: 4px;
+  }
+
+  &_item {
+    &_tumbl {
+      flex-direction: column;
+      height: 222px;
+
+      border: 1px solid #828282;
+      border-radius: 2px;
+
+      &_top {
+        height: 8px;
+      }
+
+      &_toolpanel {
+        display: grid;
+        grid-template-columns: 60px 1fr 60px;
+        height: 24px;
+
+        &>div {
+          display: flex;
+          align-items: flex-end;
+        }
+
+        &>div:nth-child(1) {
+          padding-left: 6px;
+        }
+
+        &>div:nth-child(2) {
+          justify-content: center;
+        }
+
+      }
+
+      &_body {
+        display: grid;
+        grid-template-columns: 60px 1fr 60px;
+        height: 127px;
+
+        &_left {
+          padding-left: 8px;
+
+          &_text1 {
+            width: 40px;
+            height: 4px;
+          }
+
+          &_text2 {
+            margin-top: 6px;
+            width: 28px;
+            height: 4px;
+          }
+        }
+
+        &_center {}
+
+        &_right {}
+      }
+
+      &_panel {
+        display: flex;
+        justify-content: space-between;
+        background: $black_2;
+        padding: 14px;
+
+        &_name {
+          width: 11vw;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          font-size: 16px;
+        }
+
+        &_author {
+          font-size: 12px;
+          width: 11vw;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          color: $second_text_color;
+        }
+
+        &>div {
+          display: flex;
+        }
+
+        &>div:nth-child(1) {
+          flex-direction: column;
+        }
+
+        &>div:nth-child(2) {
+          align-self: center;
+        }
+
+      }
+    }
+
+    &_control {
+      padding: 10px 0;
+    }
+  }
+}
+
+.template_button {
+  height: 14px;
+  width: 30px;
+  border-radius: 2px;
+  background: aqua;
+  margin: 1px;
+}

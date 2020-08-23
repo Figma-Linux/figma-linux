@@ -27,4 +27,8 @@
   &_inactive {
     color: var(--fontColorInactive);
   }
+
+  &_nopadding {
+    padding: 0;
+  }
 }

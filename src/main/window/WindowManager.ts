@@ -9,8 +9,8 @@ import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from "Utils/Common";
-import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools } from "Utils/Main";
+import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle, app } from "Utils/Common";
+import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
@@ -20,6 +20,7 @@ class WindowManager {
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
+  themes: Themes.Theme[] = [];
   private tabs: Tab[];
   private static _instance: WindowManager;
   private panelHeight = Settings.get("app.panelHeight") as number;
@@ -57,6 +58,14 @@ class WindowManager {
     if (Settings.get("app.saveLastOpenedTabs")) {
       setTimeout(() => this.resoreTabs(), 1000);
     }
+
+    getThemesFromDirectory()
+      .then(themes => {
+        this.themes = themes;
+      })
+      .catch(error => {
+        throw new Error(error);
+      });
   }
 
   static get instance(): WindowManager {
@@ -400,6 +409,8 @@ class WindowManager {
 
     this.settingsView.webContents.on("did-finish-load", () => {
       this.settingsView.webContents.send("renderView", "Settings");
+      this.settingsView.webContents.send("getUploadedThemes", this.themes);
+
       isDev && this.settingsView.webContents.openDevTools({ mode: "detach" });
     });
   };

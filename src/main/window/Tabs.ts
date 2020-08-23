@@ -3,7 +3,8 @@ import * as E from "electron";
 import * as path from "path";
 
 import { DEFAULT_SETTINGS } from "Const";
-import { isDev } from "Utils/Common";
+import { isDev, app } from "Utils/Common";
+import { getThemeById } from "Utils/Main";
 import Fonts from "../Fonts";
 
 export default class Tabs {
@@ -43,6 +44,13 @@ export default class Tabs {
     tab.webContents.loadURL(url);
     tab.webContents.on("dom-ready", () => {
       let dirs = Settings.get("app.fontDirs") as string[];
+
+      const currentThemeId = Settings.get("theme.currentTheme") as string;
+      if (currentThemeId !== "0") {
+        getThemeById(currentThemeId).then(theme => {
+          app.emit("themes-change", theme);
+        });
+      }
 
       if (!dirs) {
         dirs = DEFAULT_SETTINGS.app.fontDirs;

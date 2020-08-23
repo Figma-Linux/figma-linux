@@ -152,5 +152,8 @@ interface SettingsInterface {
     scalePanel: number;
     scaleFigmaUI: number;
   };
+  theme: {
+    currentTheme: string;
+  };
   [path: string]: any;
 }

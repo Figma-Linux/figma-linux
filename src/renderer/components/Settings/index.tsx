@@ -7,6 +7,7 @@ import { Text } from "Elements";
 import Header from "../Header";
 import General from "./views/General";
 import Shortcuts from "./views/Shortcuts";
+import Themes from "./views/Themes";
 import { Views } from "Store/Views";
 
 interface SettingsProps {
@@ -20,7 +21,7 @@ class Settings extends React.Component<SettingsProps, {}> {
   viewMap = {
     General,
     Shortcuts,
-    Themes: Shortcuts,
+    Themes,
   };
 
   constructor(props: SettingsProps) {
@@ -37,17 +38,17 @@ class Settings extends React.Component<SettingsProps, {}> {
   };
 
   render(): JSX.Element {
-    const View = this.viewMap[this.props.views!.settingsView];
-    const viewName = this.props.views!.settingsView;
+    const View = this.viewMap[this.props.views.settingsView];
+    const viewName = this.props.views.settingsView;
 
     return (
       <div className="settings">
         <Header text="Settings" displayCloseButton={true} onCloseClick={this.onCloseClick} />
         <div className="settings__panel">
-          <div className="tab settings__tab" onClick={() => this.props.views!.setSettingsView("General")}>
+          <div className="tab settings__tab" onClick={(): void => this.props.views.setSettingsView("General")}>
             <Text color={viewName === "General" ? "light" : "inactive"}>General</Text>
           </div>
-          <div className="tab settings__tab" onClick={() => this.props.views!.setSettingsView("Themes")}>
+          <div className="tab settings__tab" onClick={(): void => this.props.views.setSettingsView("Themes")}>
             <Text color={viewName === "Themes" ? "light" : "inactive"}>Themes</Text>
           </div>
         </div>

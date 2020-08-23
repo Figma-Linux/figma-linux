@@ -2,7 +2,8 @@ import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { isFigmaValidUrl } from "Utils/Main";
+import { themesDirectory } from "Utils/Common";
+import { isFigmaValidUrl, mkdirIfNotExists } from "Utils/Main";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
@@ -41,13 +42,18 @@ class App {
       });
 
       this.session = new Session();
+
+      mkdirIfNotExists(themesDirectory).catch(error => {
+        console.error("mkdirIfNotExists error: ", error);
+      });
     }
 
     this.appEvent();
 
-    if (Object.keys(Settings.getAll()).length === 0) {
-      Settings.setAll(Const.DEFAULT_SETTINGS);
-    }
+    Settings.setAll({
+      ...(Settings.getAll() as SettingsInterface),
+      ...Const.DEFAULT_SETTINGS,
+    });
   }
 
   private appEvent = (): void => {

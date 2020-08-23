@@ -81,6 +81,10 @@ h6 {
   &_1x3 {
     grid-template-columns: 10fr 2fr 10fr;
   }
+
+  &_1x3_input {
+    grid-template-columns: 10fr 30px 10fr;
+  }
 }
 
 .grid_cgap5per {
@@ -96,6 +100,10 @@ h6 {
 
   &_right {
     justify-content: right;
+  }
+
+  &_space_around {
+    justify-content: space-around;
   }
 }
 

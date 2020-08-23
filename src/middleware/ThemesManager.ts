@@ -1,17 +1,20 @@
-import { DEFAULT_PALETTE, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, SVG_MAP } from "Const";
-import { getColorsMap, app } from "Utils/Common";
+import { DEFAULT_THEME, DEFAULT_PALETTE, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, SVG_MAP } from "Const";
+import { getColorsMap, app, variablesColorsMap } from "Utils/Common";
 
 export class ThemesManager {
-  private currentTheme: Themes.ColorsMap;
+  private currentTheme: Themes.Theme;
 
   constructor() {
-    this.currentTheme = getColorsMap(DEFAULT_PALETTE);
+    this.currentTheme = DEFAULT_THEME;
 
-    app.on("themes-change", theme => {
-      this.currentTheme = getColorsMap(theme);
+    app.on("themes-change", theme => this.changePalette(theme));
+    app.on("set-default-theme", () => this.changePalette(DEFAULT_THEME));
+  }
 
-      this.init();
-    });
+  private changePalette(theme: Themes.Theme) {
+    this.currentTheme = theme;
+
+    this.setThemeVariables();
   }
 
   private getCoreStylesheet(): Themes.CSSRuleListCustom {
@@ -40,12 +43,24 @@ export class ThemesManager {
     return isMatch;
   }
 
+  private setThemeVariables() {
+    const keys = Object.keys(this.currentTheme.palette);
+
+    for (const key of keys) {
+      document.documentElement.style.setProperty(`--${key}`, (this.currentTheme.palette as any)[key]);
+    }
+  }
+
   init(): void {
     const figmaCoreStylesheet = this.getCoreStylesheet();
 
     if (!figmaCoreStylesheet) {
       return;
     }
+
+    const colorsMap = getColorsMap(this.currentTheme.palette);
+
+    this.setThemeVariables();
 
     for (const cssRule of figmaCoreStylesheet) {
       if (cssRule.selectorText != undefined && this.isRuleIgnored(cssRule.selectorText) === false) {
@@ -63,8 +78,8 @@ export class ThemesManager {
           PROPS_WITH_COLOR.forEach(colorProp => {
             const colorValue = cssRule.style[colorProp];
 
-            if (colorValue != "" && this.currentTheme.hasOwnProperty(colorValue)) {
-              cssRule.style[colorProp] = this.currentTheme[colorValue];
+            if (colorValue != "" && colorsMap.hasOwnProperty(colorValue)) {
+              cssRule.style[colorProp] = `var(--${variablesColorsMap[colorValue]})`;
             }
           });
         }

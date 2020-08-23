@@ -11,8 +11,22 @@
     outline: none;
   }
 
+  &__content_before {
+    display: flex;
+    justify-self: center;
+  }
+  &__content_after {
+    display: flex;
+    justify-self: center;
+  }
+
   &_inline {
     display: inline-flex;
+  }
+
+  &_grid3 {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
   }
 
   &__range {

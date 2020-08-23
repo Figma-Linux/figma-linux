@@ -5,12 +5,17 @@ import { Corner } from "./icons/Corner";
 import { Folder } from "./icons/Folder";
 import { Github } from "./icons/Github";
 import { Pencil } from "./icons/Pencil";
-import { Arrow } from "./icons/Arrow";
+import { ArrowLeft } from "./icons/ArrowLeft";
+import { ArrowRight } from "./icons/ArrowRight";
 import { Main } from "./icons/Main";
 import { Plus } from "./icons/Plus";
 import { Maximize } from "./icons/Maximize";
 import { Minimize } from "./icons/Minimize";
 import { Settings } from "./icons/Settings";
+import { Hand } from "./icons/Hand";
+import { Component } from "./icons/Component";
+import { Burger } from "./icons/Burger";
+import { Delete } from "./icons/Delete";
 
 import "./index.scss";
 
@@ -20,11 +25,16 @@ type Icons =
   | "Folder"
   | "Github"
   | "Pencil"
-  | "Arrow"
+  | "ArrowLeft"
+  | "ArrowRight"
   | "Main"
   | "Plus"
   | "Maximize"
   | "Minimize"
+  | "Hand"
+  | "Component"
+  | "Burger"
+  | "Delete"
   | "Settings";
 
 export interface IconProps {
@@ -44,11 +54,16 @@ export class Icon extends React.Component<ContainerProps, {}> {
     Folder,
     Github,
     Pencil,
-    Arrow,
+    ArrowLeft,
+    ArrowRight,
     Main,
     Plus,
     Maximize,
     Minimize,
+    Hand,
+    Component,
+    Burger,
+    Delete,
     Settings,
   };
 

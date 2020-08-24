@@ -51,8 +51,8 @@ class App {
     this.appEvent();
 
     Settings.setAll({
-      ...(Settings.getAll() as SettingsInterface),
       ...Const.DEFAULT_SETTINGS,
+      ...(Settings.getAll() as SettingsInterface),
     });
   }
 

@@ -48,6 +48,10 @@ To add repository, execute command below:
 ```bash
 sudo add-apt-repository ppa:chrdevs/figma
 ```
+Then update your packages:
+```bash
+sudo apt update
+```
 If you receive a **NO_PUBKEY** error while running **apt update**, then you must add the key manualy:
 ```bash
 sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
@@ -105,12 +109,17 @@ sudo smart install figma-linux-0.5.7.x86_64.rpm
 ```
 
 ## AppImage
-For normal work of the app via AppImage, you need install it via command:
+For normal work of the app via AppImage, you need to
+make it an executable
+```bash
+chmod +x figma-linux-0.6.1.AppImage
+```
+and install it via command:
 ```bash
 sudo ./figma-linux-0.6.1.AppImage -i
 ```
 
-It installs the desktop file, icons and creates lymbolic link to the AppImage file.
+It installs the desktop file, icons and creates symbolic link to the AppImage file.
 After that, you can run app via the icon or command:
 ```
 figma-linux

@@ -11,7 +11,6 @@ interface TopPanelProps {
   getTab(id: number): Tab | undefined;
   newTab(): void;
   closew(e: React.MouseEvent<HTMLDivElement>) : void;
-  restw(e: React.MouseEvent<HTMLDivElement>) : void;
   maxiw(e: React.MouseEvent<HTMLDivElement>) : void;
   miniw(e: React.MouseEvent<HTMLDivElement>) : void;
 

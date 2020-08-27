@@ -7,6 +7,7 @@
 
 .tab {
 	display: inline-flex;
+	-webkit-app-region: no-drag;
 	align-items: center;
 	padding: 0px 10px;
 	&:hover {
@@ -41,10 +42,12 @@
 	}
 }
 .active {
+	-webkit-app-region: no-drag;
 	background-color: $gray_1;
 }
 
 .fakeTab {
+	-webkit-app-region: no-drag;
 	position: relative;
 	display: inline;
 	align-items: center;
@@ -63,12 +66,14 @@
 }
 
 .tabClose {
+	-webkit-app-region: no-drag;
 	margin: 0px 0px 3px 10px;
 	&:hover {
 		cursor: pointer;
 	}
 }
 .newTab {
+	-webkit-app-region: no-drag;
 	display: flex;
 	align-items: center;
 	padding: 2px 6px;

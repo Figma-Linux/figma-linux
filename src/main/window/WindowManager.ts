@@ -66,6 +66,7 @@ class WindowManager {
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
       height: 900,
+      frame: !(Settings.get("app.disabledMainMenu") as boolean),
       autoHideMenuBar: Settings.get("app.showMainMenu") as boolean,
       webPreferences: {
         sandbox: false,

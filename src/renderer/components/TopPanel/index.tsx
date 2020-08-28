@@ -10,8 +10,6 @@ interface TopPanelProps {
   tabs?: TabsStore;
   settings?: Settings;
 }
-const remote = require('electron').remote;
-const win = remote.getCurrentWindow(); 
 
 @inject("tabs")
 @inject("settings")
@@ -43,28 +41,23 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
   private onHomeClick = (event: React.MouseEvent<HTMLDivElement> & Event) => {
     E.ipcRenderer.send("toHome");
   };
-  private closew =  (event: React.MouseEvent<HTMLDivElement> & Event) => {
-    win.close();
+  private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+    E.ipcRenderer.send("app-exit");
   };
-  private maxiw =  (event: React.MouseEvent<HTMLDivElement> & Event) => {
-    if (win.isMaximized()) {
-    win.restore();
-    } else {
-    win.maximize();
-    }
+  private maxiw = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+    E.ipcRenderer.send("window-maximize");
   };
-  private miniw =  (event: React.MouseEvent<HTMLDivElement> & Event) => {
-    win.minimize();
+  private miniw = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+    E.ipcRenderer.send("window-minimize");
   };
 
   private newTab = () => {
     E.ipcRenderer.send("newtab");
   };
 
-  render() { 
+  render() {
     return (
       <Panel
-      
         miniw={this.miniw}
         maxiw={this.maxiw}
         closew={this.closew}
@@ -79,6 +72,5 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     );
   }
 }
-
 
 export default TopPanel;

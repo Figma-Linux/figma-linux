@@ -9,7 +9,7 @@ import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from "Utils/Common";
+import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle, app } from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -135,6 +135,20 @@ class WindowManager {
 
   private addIpc = () => {
     E.ipcMain.on(Const.NEWTAB, async () => this.addTab());
+
+    E.ipcMain.on("app-exit", () => {
+      app.quit();
+    });
+    E.ipcMain.on("window-minimize", () => {
+      this.mainWindow.minimize();
+    });
+    E.ipcMain.on("window-maximize", () => {
+      if (this.mainWindow.isMaximized()) {
+        this.mainWindow.restore();
+      } else {
+        this.mainWindow.maximize();
+      }
+    });
 
     E.ipcMain.on(Const.CLOSETAB, (event: Event, id: number) => {
       this.closeTab(id);

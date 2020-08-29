@@ -5,7 +5,7 @@ about: Create a report to help us improve the app
 ---
 
 * App version:
-* Operating System (Platform and Version):
+* The output of `screenfetch`:
 * Type of installed package (Snap, AppImage, deb, rpm, pacman):
 
 **Bug description**

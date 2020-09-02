@@ -30,3 +30,7 @@ export const getParsedUrl = (data: string): Url.UrlWithStringQuery => {
 
   return Url.parse(url);
 };
+
+export const isAppAuthLink = (url: string) => /figma:\/\/app_auth\/redeem\?g_secret=.*/.test(url);
+
+export const isValidProjectLink = (url: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(url);

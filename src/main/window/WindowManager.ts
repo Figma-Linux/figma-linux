@@ -16,6 +16,7 @@ import { registerIpcMainHandlers } from "Main/events";
 class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
+  mainTab: E.BrowserView;
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
@@ -38,7 +39,7 @@ class WindowManager {
       this.mainWindow.setMenuBarVisibility(false);
     }
 
-    this.addTab("loadMainContent.js");
+    this.mainTab = this.addTab("loadMainContent.js");
 
     this.mainWindow.on("resize", this.updateBounds);
     this.mainWindow.on("maximize", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
@@ -98,6 +99,10 @@ class WindowManager {
     } else if (/https?:\/\//.test(url)) {
       this.addTab("loadContent.js", url);
     }
+  };
+
+  reloadMainTab = () => {
+    this.mainTab.webContents.reload();
   };
 
   private resoreTabs = () => {

@@ -34,12 +34,6 @@ plugs:
   removable-devices:
     interface: removable-media
 
-slots:
-  fontconfig-cache-gnome-3-34-1804:
-    interface: content
-    read:
-      - $SNAP_COMMON/cache/fontconfig
-
 parts:
   figma-linux:
     plugin: dump

@@ -15,10 +15,10 @@ architectures:
     run-on: amd64
 
 plugs:
-  gnome-3-28-1804:
+  fontconfig-cache-gnome-3-34-1804:
     interface: content
-    target: $SNAP/gnome-platform
-    default-provider: gnome-3-28-1804
+    target: $SNAP_COMMON/cache/fontconfig
+    default-provider: fontconfig-cache-prototype
   gtk-3-themes:
     interface: content
     target: $SNAP/data-dir/themes
@@ -33,6 +33,12 @@ plugs:
     default-provider: gtk-common-themes
   removable-devices:
     interface: removable-media
+
+slots:
+  fontconfig-cache-gnome-3-34-1804:
+    interface: content
+    read:
+      - $SNAP_COMMON/cache/fontconfig
 
 parts:
   figma-linux:

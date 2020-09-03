@@ -15,10 +15,10 @@ architectures:
     run-on: amd64
 
 plugs:
-  fontconfig-cache-gnome-3-34-1804:
+  gnome-3-28-1804:
     interface: content
-    target: $SNAP_COMMON/cache/fontconfig
-    default-provider: fontconfig-cache-prototype
+    target: $SNAP/gnome-platform
+    default-provider: gnome-3-28-1804
   gtk-3-themes:
     interface: content
     target: $SNAP/data-dir/themes
@@ -37,7 +37,7 @@ plugs:
 parts:
   figma-linux:
     plugin: dump
-    source: https://github.com/Figma-Linux/figma-linux/releases/download/v$SNAPCRAFT_PROJECT_VERSION/figma-linux-$SNAPCRAFT_PROJECT_VERSION.zip
+    source: https://github.com/Figma-Linux/figma-linux/releases/download/v$SNAPCRAFT_PROJECT_VERSION/figma-linux.zip
 
 apps:
   figma-linux:

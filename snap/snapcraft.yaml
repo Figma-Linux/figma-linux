@@ -38,6 +38,7 @@ parts:
   figma-linux:
     plugin: dump
     source: http://192.168.43.140:8081
+    source-type: zip
 
 apps:
   figma-linux:

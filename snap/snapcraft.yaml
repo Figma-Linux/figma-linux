@@ -38,6 +38,8 @@ parts:
   figma-linux:
     plugin: dump
     source: https://github.com/Figma-Linux/figma-linux/releases/download/v$SNAPCRAFT_PROJECT_VERSION/figma-linux-$SNAPCRAFT_PROJECT_VERSION.zip
+    stage-packages:
+      - fonts-noto-cjk
 
 apps:
   figma-linux:

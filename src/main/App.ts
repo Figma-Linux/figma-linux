@@ -35,11 +35,14 @@ class App {
       E.app.on("second-instance", (event, argv) => {
         let projectLink = "";
         console.log("second-instance, argv: ", argv);
+
         const paramIndex = argv.findIndex(i => isValidProjectLink(i));
         const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
 
         if (hasAppAuthorization) {
-          this.windowManager.reloadMainTab();
+          setTimeout(() => {
+            this.windowManager.loadRecentFilesMainTab();
+          }, 2000);
         }
 
         if (paramIndex !== -1) {

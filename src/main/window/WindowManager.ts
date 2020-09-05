@@ -9,7 +9,15 @@ import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle, app } from "Utils/Common";
+import {
+  isDev,
+  isComponentUrl,
+  isRedeemAuthUrl,
+  isProtoLink,
+  normalizeUrl,
+  getComponentTitle,
+  app,
+} from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -101,8 +109,8 @@ class WindowManager {
     }
   };
 
-  reloadMainTab = () => {
-    this.mainTab.webContents.reload();
+  loadRecentFilesMainTab = () => {
+    this.mainTab.webContents.loadURL(Const.RECENT_FILES);
   };
 
   private resoreTabs = () => {
@@ -408,24 +416,17 @@ class WindowManager {
   };
 
   private onNewWindow = (event: Event, url: string) => {
+    event.preventDefault();
     console.log("newWindow, url: ", url);
 
     if (/start_google_sso/.test(url)) return;
 
-    if (/\/app_auth\/.*\/grant/.test(url)) {
-      E.shell.openExternal(url);
-
-      event.preventDefault();
-
+    if (isProtoLink(url)) {
+      this.addTab("loadContent.js", url);
       return;
     }
 
-    const view = Tabs.newTab(`${url}`, this.getBounds(), "loadContent.js");
-
-    view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
-
-    this.mainWindow.setBrowserView(view);
-    this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false });
+    E.shell.openExternal(url);
   };
 
   private onMainWindowWillNavigate = (event: any, newUrl: string) => {

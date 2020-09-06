@@ -9,13 +9,22 @@ import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle } from "Utils/Common";
+import {
+  isDev,
+  isComponentUrl,
+  isRedeemAuthUrl,
+  isProtoLink,
+  normalizeUrl,
+  getComponentTitle,
+  app,
+} from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
+  mainTab: E.BrowserView;
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
@@ -38,7 +47,7 @@ class WindowManager {
       this.mainWindow.setMenuBarVisibility(false);
     }
 
-    this.addTab("loadMainContent.js");
+    this.mainTab = this.addTab("loadMainContent.js");
 
     this.mainWindow.on("resize", this.updateBounds);
     this.mainWindow.on("maximize", (e: Event) => setTimeout(() => this.updateBounds(e), 100));
@@ -100,6 +109,10 @@ class WindowManager {
     }
   };
 
+  loadRecentFilesMainTab = () => {
+    this.mainTab.webContents.loadURL(Const.RECENT_FILES);
+  };
+
   private resoreTabs = () => {
     const tabs = Settings.get("app.lastOpenedTabs") as SavedTab[];
 
@@ -135,6 +148,20 @@ class WindowManager {
 
   private addIpc = () => {
     E.ipcMain.on(Const.NEWTAB, async () => this.addTab());
+
+    E.ipcMain.on("app-exit", () => {
+      app.quit();
+    });
+    E.ipcMain.on("window-minimize", () => {
+      this.mainWindow.minimize();
+    });
+    E.ipcMain.on("window-maximize", () => {
+      if (this.mainWindow.isMaximized()) {
+        this.mainWindow.restore();
+      } else {
+        this.mainWindow.maximize();
+      }
+    });
 
     E.ipcMain.on(Const.CLOSETAB, (event: Event, id: number) => {
       this.closeTab(id);
@@ -389,24 +416,17 @@ class WindowManager {
   };
 
   private onNewWindow = (event: Event, url: string) => {
+    event.preventDefault();
     console.log("newWindow, url: ", url);
 
     if (/start_google_sso/.test(url)) return;
 
-    if (/\/app_auth\/.*\/grant/.test(url)) {
-      E.shell.openExternal(url);
-
-      event.preventDefault();
-
+    if (isProtoLink(url)) {
+      this.addTab("loadContent.js", url);
       return;
     }
 
-    const view = Tabs.newTab(`${url}`, this.getBounds(), "loadContent.js");
-
-    view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
-
-    this.mainWindow.setBrowserView(view);
-    this.mainWindow.webContents.send(Const.TABADDED, { id: view.id, url, showBackBtn: false });
+    E.shell.openExternal(url);
   };
 
   private onMainWindowWillNavigate = (event: any, newUrl: string) => {

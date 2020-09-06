@@ -3,6 +3,7 @@ import * as E from "electron";
 
 import * as Const from "Const";
 import { cmd } from "Utils/Main";
+import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
@@ -34,9 +35,15 @@ class App {
       E.app.on("second-instance", (event, argv) => {
         let projectLink = "";
         console.log("second-instance, argv: ", argv);
-        const paramIndex: number = argv.findIndex((i: string) =>
-          /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i),
-        );
+
+        const paramIndex = argv.findIndex(i => isValidProjectLink(i));
+        const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
+
+        if (hasAppAuthorization) {
+          setTimeout(() => {
+            this.windowManager.loadRecentFilesMainTab();
+          }, 2000);
+        }
 
         if (paramIndex !== -1) {
           projectLink = argv[paramIndex];

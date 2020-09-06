@@ -10,11 +10,9 @@ interface TopPanelProps {
   onHomeClick(e: React.MouseEvent<HTMLDivElement>): void;
   getTab(id: number): Tab | undefined;
   newTab(): void;
-  closew(e: React.MouseEvent<HTMLDivElement>) : void;
-  restw(e: React.MouseEvent<HTMLDivElement>) : void;
-  maxiw(e: React.MouseEvent<HTMLDivElement>) : void;
-  miniw(e: React.MouseEvent<HTMLDivElement>) : void;
-
+  closew(e: React.MouseEvent<HTMLDivElement>): void;
+  maxiw(e: React.MouseEvent<HTMLDivElement>): void;
+  miniw(e: React.MouseEvent<HTMLDivElement>): void;
 }
 
 const TopPanel: React.SFC<TopPanelProps> = props => {
@@ -52,7 +50,6 @@ const TopPanel: React.SFC<TopPanelProps> = props => {
       </div>
       <Tabs />
       <div className="panelButtons gridArea-c">
-        
         <div className={`button`} onClick={props.openSettings} title="settings">
           <svg width="16" height="16" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clipPath="url(#clip0)">
@@ -72,25 +69,30 @@ const TopPanel: React.SFC<TopPanelProps> = props => {
             </defs>
           </svg>
         </div>
-        <div className="button Minimize" onClick={props.miniw}> 
+        <div className="button Minimize" onClick={props.miniw}>
           <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
             <path d="M 11.457627,12.135593 H 1.9661017 v -1.222335 h 9.4915253" fill="#fff" />
           </svg>
         </div>
-        <div className="button Maximize" onClick={props.maxiw}> 
+        <div className="button Maximize" onClick={props.maxiw}>
           <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-            <path d="m 3,2.7627119 h 8.237288 V 11 H 3 V 2.7627119 M 3.9152542,3.6779661 V 10.084746 H 10.322034 V 3.6779661 Z" fill="#fff" />
+            <path
+              d="m 3,2.7627119 h 8.237288 V 11 H 3 V 2.7627119 M 3.9152542,3.6779661 V 10.084746 H 10.322034 V 3.6779661 Z"
+              fill="#fff"
+            />
           </svg>
         </div>
-        <div className="button Close" onClick={props.closew}> 
+        <div className="button Close" onClick={props.closew}>
           <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-            <path d="m 11.521447,3.6402606 -0.874071,-0.874071 -3.46529,3.46529 -3.4652896,-3.46529 -0.8740713,0.874071 3.4652897,3.46529 -3.4652897,3.4652904 0.8740713,0.874071 3.4652896,-3.4652904 3.46529,3.4652904 0.874071,-0.874071 -3.4652899,-3.4652904 z" fill="#fff" />
+            <path
+              d="m 11.521447,3.6402606 -0.874071,-0.874071 -3.46529,3.46529 -3.4652896,-3.46529 -0.8740713,0.874071 3.4652897,3.46529 -3.4652897,3.4652904 0.8740713,0.874071 3.4652896,-3.4652904 3.46529,3.4652904 0.874071,-0.874071 -3.4652899,-3.4652904 z"
+              fill="#fff"
+            />
           </svg>
         </div>
       </div>
     </div>
   );
 };
-
 
 export default TopPanel;

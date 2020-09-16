@@ -53,7 +53,7 @@ class ExtensionManager {
     if (entry && entry.watcher) {
       try {
         entry.watcher.close();
-      } catch (e) {}
+      } catch (e) { }
     }
 
     this.extensionMap.delete(id);
@@ -80,7 +80,7 @@ class ExtensionManager {
         if (parsed && parsed.name) {
           entry.lastKnownName = parsed.name;
         }
-      } catch (e) {}
+      } catch (e) { }
 
       return entry.lastKnownName;
     }

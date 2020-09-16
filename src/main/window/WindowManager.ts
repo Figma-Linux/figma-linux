@@ -118,15 +118,13 @@ class WindowManager {
 
     if (Array.isArray(tabs)) {
       tabs.forEach((tab, i) => {
-        (t => {
           setTimeout(() => {
-            if (isFileBrowser(t.url)) {
-              this.addTab("loadMainContent.js", t.url, t.title);
+          if (isFileBrowser(tab.url)) {
+            this.addTab("loadMainContent.js", tab.url, tab.title);
             } else {
-              this.addTab("loadContent.js", t.url, t.title);
+            this.addTab("loadContent.js", tab.url, tab.title);
             }
           }, 1500 * i);
-        })(tab);
       });
     }
   };
@@ -423,6 +421,11 @@ class WindowManager {
 
     if (isProtoLink(url)) {
       this.addTab("loadContent.js", url);
+      return;
+    }
+
+    if (/figma.com\/my_plugins/.test(url)) {
+      this.addTab("loadMainContent.js", url);
       return;
     }
 

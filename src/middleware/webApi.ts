@@ -44,7 +44,7 @@ export default (args: IntiApiOptions): void => {
   window.__figmaDesktop = {
     version: args.version,
     fileBrowser: args.fileBrowser,
-    postMessage: function(name, args, transferList) {
+    postMessage: function (name, args, transferList) {
       console.log("postMessage, name, args, transferList: ", name, args, transferList);
 
       // FIXME: ugly hack
@@ -81,7 +81,7 @@ export default (args: IntiApiOptions): void => {
 
       channel.port1.postMessage({ name, args }, transferList);
     },
-    registerCallback: function(name, args, callback) {
+    registerCallback: function (name, args, callback) {
       const id = nextCallbackID++;
       registeredCallbacks.set(id, callback);
       channel.port1.postMessage({ name, args, callbackID: id });
@@ -89,7 +89,7 @@ export default (args: IntiApiOptions): void => {
         channel.port1.postMessage({ cancelCallbackID: id });
       };
     },
-    promiseMessage: function(name, args, transferList) {
+    promiseMessage: function (name, args, transferList) {
       console.log("promiseMessage, name, args, transferList: ", name, args, transferList);
       return new Promise((resolve, reject) => {
         const id = nextPromiseID++;
@@ -97,7 +97,7 @@ export default (args: IntiApiOptions): void => {
         channel.port1.postMessage({ name, args, promiseID: id }, transferList);
       });
     },
-    setMessageHandler: function(handler) {
+    setMessageHandler: function (handler) {
       console.log("setMessageHandler: handler", handler);
       messageHandler = handler;
       tryFlushMessages();
@@ -109,7 +109,7 @@ export default (args: IntiApiOptions): void => {
 
     if (!msg) return;
 
-    console.log("channel.port1.onmessage, event: ", event);
+    console.log("webApi channel.port1.onmessage, event, event.data: ", event, event.data);
 
     if (msg.promiseID != null) {
       const pendingPromise = pendingPromises.get(msg.promiseID);

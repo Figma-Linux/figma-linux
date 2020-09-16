@@ -14,7 +14,7 @@ export function listenToWebBinding(channel: string, listener: Function): void {
 export function listenToWebBindingPromise(channel: string, listener: Function): void {
   E.ipcMain.on(
     `web-promise:${channel}`,
-    (event: E.IpcMainEvent, promiseID: number, ...args: any[]) => async (): Promise<void> => {
+    async (event: E.IpcMainEvent, promiseID: number, ...args: any[]) => {
       isDev && console.log(`[ipc] from web: ${channel} (promise ${promiseID})`);
 
       let result;

@@ -3,7 +3,7 @@ import * as path from "path";
 import { promises } from "fs";
 
 import { MANIFEST_FILE_NAME } from "Const";
-import { listenToWebBindingPromise, listenToWebRegisterCallback, loadExtensionManifest } from "Utils/Main";
+import { listenToWebBindingPromise, listenToWebRegisterCallback } from "Utils/Main";
 
 import Ext from "Main/ExtensionManager";
 
@@ -54,9 +54,30 @@ export const registerIpcMainHandlers = () => {
   });
 
   listenToWebBindingPromise("getLocalFileExtensionManifest", (webContents: E.WebContents, id: number) => {
-    return loadExtensionManifest(id);
+    return Ext.loadExtensionManifest(id);
   });
 
+  listenToWebBindingPromise("getLocalFileExtensionSource", (webContents: E.WebContents, id: number) => {
+    return Ext.getLocalFileExtensionSource(id);
+  });
+
+
+  listenToWebBindingPromise("removeLocalFileExtension", async (webContents: E.WebContents, id: number) => {
+    Ext.removePath(id);
+  });
+
+  listenToWebBindingPromise("openExtensionDirectory", async (webContents: E.WebContents, id: number) => {
+    console.error("TODO");
+  });
+
+  type NewExtension = {
+    dirName: string,
+    files: Array<{ name: string, content: string }>,
+  };
+  listenToWebBindingPromise("writeNewExtensionToDisk", async (webContents: E.WebContents, data: NewExtension) => {
+    console.error("TODO");
+    return /*extId*/;
+  });
   listenToWebRegisterCallback(
     "registerManifestChangeObserver",
     (webContents: E.WebContents, args: any, callback: Function) => {

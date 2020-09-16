@@ -10,6 +10,7 @@ class ExtensionManager {
   constructor() {
     this.extensionMap = new Map();
     this.manifestObservers = [];
+    this.reload();
   }
 
   public addPath(path: string): { id: number; existed: boolean } {
@@ -35,7 +36,7 @@ class ExtensionManager {
       this.extensionMap.set(id, { path });
     }
 
-    // storage_1.scheduleSaveSoon();
+    this.save();
 
     return { id, existed: false };
   }
@@ -58,7 +59,7 @@ class ExtensionManager {
     }
 
     this.extensionMap.delete(id);
-    // storage_1.scheduleSaveSoon();
+    this.save();
     this.notifyObservers({ id, type: "removed" });
   }
 
@@ -122,6 +123,14 @@ class ExtensionManager {
     }
   }
 
+  save() {
+    Settings.set("app.savedExtensions", this.saveToJson() as any);
+  }
+
+  reload() {
+    this.loadFromJson(Settings.get("app.savedExtensions") as any);
+  }
+
   public saveToJson(): Extensions.ExtensionJson[] {
     return Array.from(this.extensionMap.entries()).map(([id, { path, lastKnownName }]) => {
       return { id, manifestPath: path, lastKnownName };
@@ -171,7 +180,7 @@ class ExtensionManager {
       let [main, ui] = await Promise.all([
         promises.readFile(join(dirname(extensionPath), parsed.main), { encoding: "utf8" }),
         promises.readFile(join(dirname(extensionPath), parsed.ui), { encoding: "utf8" }),
-      ])
+      ]);
       return { source: main, html: ui };
     }
     throw new Error("manifest is invalid: " + JSON.stringify(manifest));

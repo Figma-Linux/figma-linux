@@ -140,14 +140,14 @@ figma-linux
 
 Steps to start development:
 
-1.  git clone git@github.com:ChugunovRoman/figma-linux.git
+1.  git clone git@github.com:Figma-Linux/figma-linux.git
 2.  cd figma-linux
 3.  install Rust via [rustup](https://rustup.rs/)
 4.  npm i
 
 To start the app in dev mode:
 ```
-npm run dev
+npm run build; npm run dev
 ```
 
 To start the app in production mode:
@@ -156,8 +156,7 @@ npm run build; npm start
 ```
 
 ATTENTION:
-When You do changes in middleware component, You need to rebuild and restart the app each time.
-Because the middleware execute only on run the app. Hot Reload doesn't work here.
+When you do changes in middleware component, You need to rebuild (`npm run build`) and restart the app each time, because the middleware execute only on run the app, Hot Reload won't work.
 
 ## description of  npm scripts
 

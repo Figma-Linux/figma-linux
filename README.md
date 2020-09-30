@@ -1,7 +1,7 @@
 # <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icons/128x128.png" width="32"> Figma electron app (unofficial)
 
-Figma-linux it's unofficial desktop application for Linux for the [Figma web application](https://figma.com). <br>
-This app based on the [Electron](http://electron.atom.io)
+Figma-linux is the unofficial desktop application for Linux for the [Figma web application](https://figma.com). <br>
+This app is based on [Electron](http://electron.atom.io)
 
 <p>
 	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.png">
@@ -43,8 +43,8 @@ On Debian-based distros You need install the libgconf-2-4 library
 
 ### Ubuntu
 
-For now, there are have repository for [deb package on Launchpad](https://launchpad.net/~chrdevs/+archive/ubuntu/figma). <br>
-To add repository, execute command below:
+For now, there is a repository for [deb package on Launchpad](https://launchpad.net/~chrdevs/+archive/ubuntu/figma). <br>
+To add the repository, execute the command below:
 ```bash
 sudo add-apt-repository ppa:chrdevs/figma
 ```
@@ -61,7 +61,7 @@ And then install:
 sudo apt install figma-linux -y
 ```
 
-Or Beta deb package:
+Or the Beta deb package:
 ```bash
 sudo apt install figma-linux-beta -y
 ```
@@ -114,18 +114,18 @@ make it an executable
 ```bash
 chmod +x figma-linux-0.6.1.AppImage
 ```
-and install it via command:
+and install it via this command:
 ```bash
 sudo ./figma-linux-0.6.1.AppImage -i
 ```
 
-It installs the desktop file, icons and creates symbolic link to the AppImage file.
-After that, you can run app via the icon or command:
+It installs the desktop file, icons and creates the symbolic link to the AppImage file.
+After that, you can run the app via the icon or the command:
 ```
 figma-linux
 ```
 
-For display rest flags for AppImage:
+To display rest flags for the AppImage:
 ```
 ./figma-linux-0.6.1.AppImage -h
 ```

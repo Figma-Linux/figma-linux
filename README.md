@@ -165,7 +165,9 @@ Because the middleware execute only on run the app. Hot Reload doesn't work here
  * **start** - runs already built app
  * **build** - only builds app from src
  * **builder** - packs the app into different linux packages (see ./config/builder.json)
+    * Config builder.json have all the build target you should remove the ones you don't want, or you don't have the dependencies otherwise the build will fail
  * **pack** - removes old packages from the installers dir, build the app and pack it
+    * In order to pack the app you'll need appimagetool installed https://appimage.github.io/appimagetool/
 
 ## Community
 

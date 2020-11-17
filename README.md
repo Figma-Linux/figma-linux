@@ -1,7 +1,7 @@
 # <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icons/128x128.png" width="32"> Figma electron app (unofficial)
 
-Figma-linux is the unofficial desktop application for Linux for the [Figma web application](https://figma.com). <br>
-This app is based on [Electron](http://electron.atom.io)
+
+Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](https://figma.com) desktop app for Linux.
 
 <p>
 	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.png">
@@ -35,63 +35,61 @@ This app is based on [Electron](http://electron.atom.io)
 	<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DNBUKPV6FBCY&source=url" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
 </p>
 
-## Dependences
-On Debian-based distros You need install the libgconf-2-4 library
+## Installation
+### Universal
+You can install Figma-linux from Snap [here.](https://snapcraft.io/figma-linux)
 
-
-## Repositories
-
-### Ubuntu
-
-For now, there is a repository for [deb package on Launchpad](https://launchpad.net/~chrdevs/+archive/ubuntu/figma). <br>
-To add the repository, execute the command below:
+Alternatively, type
 ```bash
-sudo add-apt-repository ppa:chrdevs/figma
+sudo snap install figma-linux // Release Channel
+sudo snap install --channel=beta figma-linux // Beta Channel
 ```
-Then update your packages:
+in your terminal.
+
+There is also an AppImage available.
+Get it on our [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, then make it executable and install using these terminal commands:
 ```bash
-sudo apt update
+chmod +x figma-linux-*.AppImage 
+sudo ./figma-linux-*.AppImage -i
 ```
-If you receive a **NO_PUBKEY** error while running **apt update**, then you must add the key manualy:
+
+
+### Debian-based Distros
+Firstly, install `libgconf-2-4`:
 ```bash
-sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
+sudo apt install libgconf-2-4
 ```
-And then install:
+Download the .deb package from the [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, and install it with `dpkg` or your favorite .deb installer.
 ```bash
-sudo apt install figma-linux -y
-```
-
-Or the Beta deb package:
-```bash
-sudo apt install figma-linux-beta -y
-```
-
-## Arch Linux
-
-There is a [figma-linux](https://aur.archlinux.org/packages/figma-linux/) package available in the AUR
-```bash
-yay -S figma-linux
-```
-
-## Install
-
-
-[Download](https://github.com/ChugunovRoman/figma-linux/releases) app package for You linux distribution. <br>
-For debian-based linux distributions:
-```
 sudo dpkg -i figma-linux_0.5.7_amd64.deb
 ```
 
-With [snap package](https://snapcraft.io/figma-linux):
+### Ubuntu
+
+On Ubuntu, you can use our PPA:
 ```bash
-sudo snap install figma-linux
+sudo add-apt-repository ppa:chrdevs/figma && sudo apt update && sudo apt install figma-linux -y
 ```
-Or Beta release:
+for the release package, 
 ```bash
-sudo snap install --channel=beta figma-linux
+sudo add-apt-repository ppa:chrdevs/figma && sudo apt update && sudo apt install figma-linux-beta -y
+```
+for the beta version.
+
+If you receive a `NO_PUBKEY` error while running `apt update`, then you must add the key manualy:
+```bash
+sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
 ```
 
-For RedHat-based linux distributions:
+
+### Arch-based distros
+
+Figma-linux is available on the [AUR](https://aur.archlinux.org/packages/figma-linux/).
+You can use an AUR helper like `yay` to install it:
+```bash
+yay -S figma-linux
+```
+### RPM-based distros
 ```
 sudo yum install figma-linux-0.5.7.x86_64.rpm
 ```
@@ -108,73 +106,41 @@ or
 sudo smart install figma-linux-0.5.7.x86_64.rpm
 ```
 
-## AppImage
-For normal work of the app via AppImage, you need to
-make it an executable
+
+
+## Building from source
+
+1. Clone the repository:
 ```bash
-chmod +x figma-linux-0.6.1.AppImage
+git clone https://github.com/Figma-Linux/figma-linux
+cd linux
 ```
-and install it via this command:
+2. Install Rust:
 ```bash
-sudo ./figma-linux-0.6.1.AppImage -i
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
-
-It installs the desktop file, icons and creates the symbolic link to the AppImage file.
-After that, you can run the app via the icon or the command:
+3. Install prerequisites from npm:
+```bash 
+npm i
 ```
-figma-linux
-```
-
-To display rest flags for the AppImage:
-```
-./figma-linux-0.6.1.AppImage -h
-```
-
-## Run
-
-```
-figma-linux
-```
-
-## Development
-
-Steps to start development:
-
-1.  git clone git@github.com:ChugunovRoman/figma-linux.git
-2.  cd figma-linux
-3.  install Rust via [rustup](https://rustup.rs/)
-4.  npm i
-
-To start the app in dev mode:
-```
+To run Figma-linux from npm in dev mode execute this:
+```bash
 npm run dev
 ```
+Or use  ```npm run build``` to build the app for production, `npm run start` to run the built version, ```npm run builder``` to package the app for distribution or `npm run pack` to remove old packages from the installer directory and pack the app.
 
-To start the app in production mode:
-```
-npm run build; npm start
-```
+Please note - when making changes in the middleware, you need to rebuild the app for them to take effect.
 
-ATTENTION:
-When You do changes in middleware component, You need to rebuild and restart the app each time.
-Because the middleware execute only on run the app. Hot Reload doesn't work here.
 
-## description of  npm scripts
 
- * **dev** - runs app in dev mode
- * **start** - runs already built app
- * **build** - only builds app from src
- * **builder** - packs the app into different linux packages (see ./config/builder.json)
- * **pack** - removes old packages from the installers dir, build the app and pack it
 
 ## Community
 
-Join us in [telegram](https://t.me/figma_linux) and [spectrum.chat](https://spectrum.chat/figma-linux)
+Join us on [telegram](https://t.me/figma_linux) and [spectrum.chat](https://spectrum.chat/figma-linux)
 
 
 ## Become a Backer
-
-If you like to contribute by funding for sustaining our work, you can to do this via PayPal or Buy me a Coffee:
+You can contribute to figma-linux development by supporting us on Paypal or Buy me a Coffee:
 
 <p>
 	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>

@@ -51,7 +51,11 @@ Get it on our [Releases](https://github.com/Figma-Linux/figma-linux/releases) pa
 chmod +x figma-linux-*.AppImage 
 sudo ./figma-linux-*.AppImage -i
 ```
-
+This is not a portable AppImage - it will install figma-linux on your system, after which you can run it from terminal or from your app list.
+For more info, execute
+```bash
+./figma-linux-*.AppImage -h
+```
 
 ### Debian-based Distros
 Firstly, install `libgconf-2-4`:
@@ -60,7 +64,7 @@ sudo apt install libgconf-2-4
 ```
 Download the .deb package from the [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, and install it with `dpkg` or your favorite .deb installer.
 ```bash
-sudo dpkg -i figma-linux_0.5.7_amd64.deb
+sudo dpkg -i figma-linux_*_amd64.deb
 ```
 
 ### Ubuntu
@@ -87,7 +91,7 @@ yay -S figma-linux
 Download the .rpm package from our [Releases](https://github.com/Figma-Linux/figma-linux/release) page, then install it:
 
 ```bash
-sudo dnf install figma-linux-0.5.7.x86_64.rpm
+sudo dnf install figma-linux-*.x86_64.rpm
 ```
 
 
@@ -139,4 +143,4 @@ You can contribute to figma-linux development by supporting us on Paypal or Buy 
 	<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DNBUKPV6FBCY&source=url" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
 </p>
 
-Thanks sponsors.
+Thanks to the supporters.

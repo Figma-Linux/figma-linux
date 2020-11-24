@@ -41,8 +41,7 @@ You can install Figma-linux from Snap [here.](https://snapcraft.io/figma-linux)
 
 Alternatively, type
 ```bash
-sudo snap install figma-linux // Release Channel
-sudo snap install --channel=beta figma-linux // Beta Channel
+sudo snap install figma-linux 
 ```
 in your terminal.
 
@@ -70,11 +69,6 @@ On Ubuntu, you can use our PPA:
 ```bash
 sudo add-apt-repository ppa:chrdevs/figma && sudo apt update && sudo apt install figma-linux -y
 ```
-for the release package, 
-```bash
-sudo add-apt-repository ppa:chrdevs/figma && sudo apt update && sudo apt install figma-linux-beta -y
-```
-for the beta version.
 
 If you receive a `NO_PUBKEY` error while running `apt update`, then you must add the key manualy:
 ```bash
@@ -90,20 +84,10 @@ You can use an AUR helper like `yay` to install it:
 yay -S figma-linux
 ```
 ### RPM-based distros
-```
-sudo yum install figma-linux-0.5.7.x86_64.rpm
-```
-or
-```
-sudo rpm -Uvh figma-linux-0.5.7.x86_64.rpm
-```
-or
-```
-sudo zypper install figma-linux-0.5.7.x86_64.rpm
-```
-or
-```
-sudo smart install figma-linux-0.5.7.x86_64.rpm
+Download the .rpm package from our [Releases](https://github.com/Figma-Linux/figma-linux/release) page, then install it:
+
+```bash
+sudo dnf install figma-linux-0.5.7.x86_64.rpm
 ```
 
 

@@ -127,7 +127,15 @@ To run Figma-linux from npm in dev mode execute this:
 ```bash
 npm run dev
 ```
-Or use  ```npm run build``` to build the app for production, `npm run start` to run the built version, ```npm run builder``` to package the app for distribution or `npm run pack` to remove old packages from the installer directory and pack the app.
+Aside from that, you can also run:
+
+- ```npm run build``` to built the app for production
+- ```npm run start``` to run the built version
+- ```npm run builder``` to package the app for distribution. 
+- * The build targets are listed in ```./config/builder.json```. You can remove the ones you don't need or don't have dependencies for.
+- ```npm run pack``` to remove old packages from the installer directory, then pack the app.
+- * This depends on [AppImageTool](https://appimage.github.io/appimagetool/) being installed.
+
 
 Please note - when making changes in the middleware, you need to rebuild the app for them to take effect.
 

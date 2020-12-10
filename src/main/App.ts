@@ -2,8 +2,8 @@ import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { themesDirectory } from "Utils/Common";
-import { isFigmaValidUrl, mkdirIfNotExists } from "Utils/Main";
+import { isAppAuthLink, isValidProjectLink, themesDirectory } from "Utils/Common";
+import { mkdirIfNotExists } from "Utils/Main";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
@@ -23,7 +23,15 @@ class App {
       E.app.on("second-instance", (event, argv) => {
         let projectLink = "";
         console.log("second-instance, argv: ", argv);
-        const paramIndex: number = argv.findIndex(i => isFigmaValidUrl(i));
+
+        const paramIndex = argv.findIndex(i => isValidProjectLink(i));
+        const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
+
+        if (hasAppAuthorization) {
+          setTimeout(() => {
+            this.windowManager.loadRecentFilesMainTab();
+          }, 2000);
+        }
 
         if (paramIndex !== -1) {
           projectLink = argv[paramIndex];

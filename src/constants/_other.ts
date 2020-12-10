@@ -1,6 +1,7 @@
 import { parse } from "url";
 
 export const HOMEPAGE = "https://www.figma.com";
+export const RECENT_FILES = "https://www.figma.com/files/recent";
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
 export const TOPPANELHEIGHT = 40;

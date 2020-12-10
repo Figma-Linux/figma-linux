@@ -12,7 +12,7 @@ export default class Tabs {
 
   private static tabs: Array<E.BrowserView> = [];
 
-  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string) => {
+  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string): E.BrowserView => {
     const options: E.BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,

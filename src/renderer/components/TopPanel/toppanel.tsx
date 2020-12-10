@@ -12,6 +12,9 @@ interface TopPanelProps {
   onHomeClick(e: React.MouseEvent<HTMLDivElement>): void;
   getTab(id: number): Tab | undefined;
   newTab(): void;
+  closew(e: React.MouseEvent<HTMLDivElement>): void;
+  maxiw(e: React.MouseEvent<HTMLDivElement>): void;
+  miniw(e: React.MouseEvent<HTMLDivElement>): void;
 }
 
 const TopPanel: React.SFC<TopPanelProps> = props => {
@@ -36,6 +39,15 @@ const TopPanel: React.SFC<TopPanelProps> = props => {
       <div className="panelButtons">
         <Button className="button_clear" onClick={props.openSettings}>
           <Icon color="#7A7A7A" type="Settings" size="18" />
+        </Button>
+        <Button className="button_clear" onClick={props.miniw}>
+          <Icon color="#7A7A7A" type="Minimize" size="18" />
+        </Button>
+        <Button className="button_clear" onClick={props.maxiw}>
+          <Icon color="#7A7A7A" type="Maximize" size="18" />
+        </Button>
+        <Button className="button_clear" onClick={props.closew}>
+          <Icon color="#7A7A7A" type="Close" size="18" />
         </Button>
       </div>
     </div>

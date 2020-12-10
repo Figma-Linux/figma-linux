@@ -301,20 +301,20 @@ function make_user_fontconfig {
   echo "</fontconfig>"
 }
 
-if [ "$SNAP_DESKTOP_COMPONENTS_NEED_UPDATE" = "true" ]; then
-  rm -rf "$XDG_DATA_HOME"/{fontconfig,fonts,fonts-*,themes,.themes}
+# if [ "$SNAP_DESKTOP_COMPONENTS_NEED_UPDATE" = "true" ]; then
+#   rm -rf "$XDG_DATA_HOME"/{fontconfig,fonts,fonts-*,themes,.themes}
 
-  # This fontconfig fragment is installed in a location that is
-  # included by the system fontconfig configuration: namely the
-  # etc/fonts/conf.d/50-user.conf file.
-  mkdir -p "$XDG_CONFIG_HOME/fontconfig"
-  make_user_fontconfig > "$XDG_CONFIG_HOME/fontconfig/fonts.conf"
+#   # This fontconfig fragment is installed in a location that is
+#   # included by the system fontconfig configuration: namely the
+#   # etc/fonts/conf.d/50-user.conf file.
+#   mkdir -p "$XDG_CONFIG_HOME/fontconfig"
+#   make_user_fontconfig > "$XDG_CONFIG_HOME/fontconfig/fonts.conf"
 
-  # the themes symlink are needed for GTK 3.18 when the prefix isn't changed
-  # GTK 3.20 looks into XDG_DATA_DIR which has connected themes.
-  ln -sf "$SNAP/data-dir/themes" "$XDG_DATA_HOME"
-  ln -sfn "$SNAP/data-dir/themes" "$SNAP_USER_DATA/.themes"
-fi
+#   # the themes symlink are needed for GTK 3.18 when the prefix isn't changed
+#   # GTK 3.20 looks into XDG_DATA_DIR which has connected themes.
+#   ln -sf "$SNAP/data-dir/themes" "$XDG_DATA_HOME"
+#   ln -sfn "$SNAP/data-dir/themes" "$SNAP_USER_DATA/.themes"
+# fi
 
 # Build mime.cache
 # needed for gtk and qt icon

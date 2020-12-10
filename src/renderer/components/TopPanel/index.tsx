@@ -44,6 +44,15 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
   private onHomeClick = (): void => {
     E.ipcRenderer.send("toHome");
   };
+  private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+    E.ipcRenderer.send("app-exit");
+  };
+  private maxiw = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+    E.ipcRenderer.send("window-maximize");
+  };
+  private miniw = (event: React.MouseEvent<HTMLDivElement> & Event) => {
+    E.ipcRenderer.send("window-minimize");
+  };
 
   private newTab = (): void => {
     E.ipcRenderer.send("newTab");
@@ -52,6 +61,9 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
   render(): JSX.Element {
     return (
       <Panel
+        miniw={this.miniw}
+        maxiw={this.maxiw}
+        closew={this.closew}
         scalePanel={this.props.settings.settings.ui.scalePanel}
         current={this.props.tabs.current}
         onMainTab={this.onMainTab}

@@ -9,7 +9,15 @@ import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isComponentUrl, isRedeemAuthUrl, normalizeUrl, getComponentTitle, app } from "Utils/Common";
+import {
+  isDev,
+  isComponentUrl,
+  isRedeemAuthUrl,
+  isProtoLink,
+  normalizeUrl,
+  getComponentTitle,
+  app,
+} from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -17,6 +25,7 @@ class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
   settingsView: E.BrowserView | null = null;
+  mainTab: E.BrowserView;
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
@@ -40,7 +49,7 @@ class WindowManager {
       this.mainWindow.setMenuBarVisibility(false);
     }
 
-    this.addTab("loadMainContent.js");
+    this.mainTab = this.addTab("loadMainContent.js");
 
     this.mainWindow.on("resize", this.updateBounds);
     this.mainWindow.on("maximize", () => setTimeout(() => this.updateBounds(), 100));
@@ -76,6 +85,7 @@ class WindowManager {
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
       height: 900,
+      frame: !(Settings.get("app.disabledMainMenu") as boolean),
       autoHideMenuBar: Settings.get("app.showMainMenu") as boolean,
       webPreferences: {
         sandbox: false,
@@ -109,7 +119,11 @@ class WindowManager {
     }
   };
 
-  private resoreTabs = (): void => {
+  loadRecentFilesMainTab = () => {
+    this.mainTab.webContents.loadURL(Const.RECENT_FILES);
+  };
+
+  private resoreTabs = () => {
     const tabs = Settings.get("app.lastOpenedTabs") as SavedTab[];
 
     if (Array.isArray(tabs)) {
@@ -144,6 +158,20 @@ class WindowManager {
 
   private addIpc = (): void => {
     E.ipcMain.on("newTab", () => this.addTab());
+
+    E.ipcMain.on("app-exit", () => {
+      app.quit();
+    });
+    E.ipcMain.on("window-minimize", () => {
+      this.mainWindow.minimize();
+    });
+    E.ipcMain.on("window-maximize", () => {
+      if (this.mainWindow.isMaximized()) {
+        this.mainWindow.restore();
+      } else {
+        this.mainWindow.maximize();
+      }
+    });
 
     E.ipcMain.on("closeTab", (event, id) => {
       this.closeTab(id);
@@ -448,24 +476,17 @@ class WindowManager {
   };
 
   private onNewWindow = (event: Event, url: string) => {
+    event.preventDefault();
     console.log("newWindow, url: ", url);
 
     if (/start_google_sso/.test(url)) return;
 
-    if (/\/app_auth\/.*\/grant/.test(url)) {
-      E.shell.openExternal(url);
-
-      event.preventDefault();
-
+    if (isProtoLink(url)) {
+      this.addTab("loadContent.js", url);
       return;
     }
 
-    const view = Tabs.newTab(`${url}`, this.getBounds(), "loadContent.js");
-
-    view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
-
-    this.mainWindow.setBrowserView(view);
-    this.mainWindow.webContents.send("didTabAdd", { id: view.id, url, showBackBtn: false });
+    E.shell.openExternal(url);
   };
 
   private onMainWindowWillNavigate = (event: any, newUrl: string): void => {

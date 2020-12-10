@@ -17,7 +17,7 @@ interface TopPanelProps {
   miniw(e: React.MouseEvent<HTMLDivElement>): void;
 }
 
-const TopPanel: React.SFC<TopPanelProps> = props => {
+const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
   const currentTab: Tab | undefined = props.getTab(props.current);
 
   return (

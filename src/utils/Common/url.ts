@@ -35,6 +35,6 @@ export const isAppAuthGrandLink = (url: string) => /\/app_auth\/.*\/grant/.test(
 
 export const isAppAuthLink = (url: string) => /figma:\/\/app_auth\/redeem\?g_secret=.*/.test(url);
 
-export const isValidProjectLink = (url: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(url);
+export const isValidProjectLink = (url: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com\/file\/)/.test(url);
 
 export const isProtoLink = (url: string) => /^https:\/\/w{0,3}?.figma.com\/proto/.test(url);

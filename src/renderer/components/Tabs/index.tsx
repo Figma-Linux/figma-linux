@@ -4,7 +4,7 @@ import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
 import * as Const from "Const";
-import { isComponentUrl } from "Utils/Common";
+import { isComponentUrl, isValidProjectLink } from "Utils/Common";
 import TabList from "./tabs";
 import "./style.scss";
 
@@ -52,7 +52,7 @@ class Tabs extends React.Component<TabsProps, {}> {
     e.stopPropagation();
 
     switch (e.button) {
-      // Handle left click, set focuse on the target tab
+      // Handle left click, set focus on the target tab
       case 0:
         {
           // const tabEl = e.target as any;
@@ -180,7 +180,15 @@ class Tabs extends React.Component<TabsProps, {}> {
         click: (): void => {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
-          tab && E.clipboard.writeText(encodeURI(`figma://file/${tab.fileKey}/${tab.title}`));
+          console.log("Copy App url, tab.url: ", tab.url);
+
+          let url = `figma://file/${tab.fileKey}/${tab.title}`;
+
+          if (!isValidProjectLink(tab.url)) {
+            url = tab.url;
+          }
+
+          tab && E.clipboard.writeText(encodeURI(url));
         },
       },
       {
@@ -189,7 +197,15 @@ class Tabs extends React.Component<TabsProps, {}> {
         click: (): void => {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
-          tab && E.clipboard.writeText(`${Const.HOMEPAGE}/file/${tab.fileKey}`);
+          let url = `${Const.HOMEPAGE}/file/${tab.fileKey}`;
+
+          console.log("Copy url, tab.url: ", tab.url);
+
+          if (!isValidProjectLink(tab.url)) {
+            url = tab.url;
+          }
+
+          tab && E.clipboard.writeText(url);
         },
       },
       { type: "separator" },

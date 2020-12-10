@@ -11,7 +11,7 @@ interface ThemeViewItemProps {
   onClickApply(e: React.MouseEvent<HTMLDivElement, MouseEvent>, theme: Themes.Theme): void;
 }
 
-const ThemeItem: React.SFC<ThemeViewItemProps> = props => {
+const ThemeItem: React.FunctionComponent<ThemeViewItemProps> = props => {
   const theme = props.theme;
 
   return (

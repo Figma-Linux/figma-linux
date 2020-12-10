@@ -14,7 +14,7 @@ export interface InputTextProps {
   readonlyInput?: boolean;
 }
 
-export const InputText: React.SFC<InputTextProps> = props => {
+export const InputText: React.FunctionComponent<InputTextProps> = props => {
   return (
     <React.Fragment>
       {props.contentBefore ? <div className="input__content_before">{props.contentBefore}</div> : ""}

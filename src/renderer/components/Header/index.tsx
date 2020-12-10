@@ -11,7 +11,7 @@ interface HeaderProps {
   onCloseClick?(e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void;
 }
 
-const Header: React.SFC<HeaderProps> = props => {
+const Header: React.FunctionComponent<HeaderProps> = props => {
   return (
     <div className="header">
       <Text color="light" className="header__text">

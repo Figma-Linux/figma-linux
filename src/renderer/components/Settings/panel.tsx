@@ -2,7 +2,7 @@ import * as React from "react";
 
 import "./style.scss";
 
-const SettingsPanel: React.SFC<{}> = props => {
+const SettingsPanel: React.FunctionComponent<{}> = props => {
   return (
     <div className="settings-panel">
       <div onClick={() => {}}>

@@ -3,7 +3,7 @@ import * as React from "react";
 import { IconProps } from "..";
 import "../index.scss";
 
-export const Component: React.SFC<IconProps> = props => {
+export const Component: React.FunctionComponent<IconProps> = props => {
   const size = props.size ? props.size : "18";
   const color = props.color ? props.color : "#FFFFFF";
 

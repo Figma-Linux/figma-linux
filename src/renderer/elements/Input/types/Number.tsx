@@ -9,7 +9,7 @@ export interface InputNumberProps {
   suffix?: string;
 }
 
-export const InputNumber: React.SFC<InputNumberProps> = props => {
+export const InputNumber: React.FunctionComponent<InputNumberProps> = props => {
   return (
     <React.Fragment>
       <div className="button minus" onClick={e => props.onChange(e, +props.value - 5)}>

@@ -10,7 +10,7 @@ interface GeneralBodyProps {
   settings?: Settings;
 }
 
-const GeneralBody: React.SFC<GeneralBodyProps> = props => {
+const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
   return (
     <div className="general">
       <div className="section grid grid_1x3">

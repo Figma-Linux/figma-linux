@@ -3,7 +3,7 @@ import * as React from "react";
 import { IconProps } from "..";
 import "../index.scss";
 
-export const Pencil: React.SFC<IconProps> = props => {
+export const Pencil: React.FunctionComponent<IconProps> = props => {
   const size = props.size ? props.size : "16";
 
   return (

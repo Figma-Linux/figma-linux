@@ -9,7 +9,7 @@ interface Props {
   clickTab(e: React.MouseEvent<any>, tab: Tab): void;
 }
 
-const Tabs: React.SFC<Props> = props => {
+const Tabs: React.FunctionComponent<Props> = props => {
   return (
     <div className="tabBar">
       {props.tabs.tabs.map((t: Tab, i) => (
@@ -17,8 +17,9 @@ const Tabs: React.SFC<Props> = props => {
           key={i}
           className={`tab ${props.tabs.current === t.id ? "tab_active" : ""}`}
           onClick={e => props.clickTab(e, t)}
+          onAuxClick={e => props.clickTab(e, t)}
         >
-          <Text color="light" className="tab__text">
+          <Text color="light" className="tab__text pointer_events_none">
             {t.title}
           </Text>
           <Button className="tab__close button_clear" onClick={(e): void => props.close(e, t.id)}>

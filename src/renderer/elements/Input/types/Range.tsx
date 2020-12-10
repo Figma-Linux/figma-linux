@@ -14,7 +14,7 @@ export interface InputRangeProps {
   step?: number;
 }
 
-export const InputRange: React.SFC<InputRangeProps> = props => {
+export const InputRange: React.FunctionComponent<InputRangeProps> = props => {
   return (
     <React.Fragment>
       <input

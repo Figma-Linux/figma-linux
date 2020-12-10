@@ -17,6 +17,7 @@ import {
   normalizeUrl,
   getComponentTitle,
   app,
+  isValidProjectLink,
 } from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
@@ -51,6 +52,7 @@ class WindowManager {
 
     this.mainTab = this.addTab("loadMainContent.js");
 
+    this.mainTab.webContents.on("will-navigate", this.onMainTabWillNavigate);
     this.mainWindow.on("resize", this.updateBounds);
     this.mainWindow.on("maximize", () => setTimeout(() => this.updateBounds(), 100));
     this.mainWindow.on("unmaximize", () => setTimeout(() => this.updateBounds(), 100));
@@ -65,7 +67,7 @@ class WindowManager {
     E.app.on("will-quit", this.onWillQuit);
 
     if (Settings.get("app.saveLastOpenedTabs")) {
-      setTimeout(() => this.resoreTabs(), 1000);
+      setTimeout(() => this.restoreTabs(), 1000);
     }
 
     getThemesFromDirectory()
@@ -123,7 +125,7 @@ class WindowManager {
     this.mainTab.webContents.loadURL(Const.RECENT_FILES);
   };
 
-  private resoreTabs = () => {
+  private restoreTabs = () => {
     const tabs = Settings.get("app.lastOpenedTabs") as SavedTab[];
 
     if (Array.isArray(tabs)) {
@@ -318,7 +320,7 @@ class WindowManager {
             if (this.closedTabsHistory.length <= 0) return;
 
             const url = this.closedTabsHistory.pop();
-            const script = /files\/recent$/.test(url) ? "loadMainContent.js" : "loadContent.js";
+            const script = isValidProjectLink(url) ? "loadContent.js" : "loadMainContent.js";
 
             this.addTab(script, url);
           }
@@ -487,6 +489,14 @@ class WindowManager {
     }
 
     E.shell.openExternal(url);
+  };
+
+  private onMainTabWillNavigate = (event: E.Event, url: string): void => {
+    if (isValidProjectLink(url)) {
+      this.addTab("loadContent.js", url);
+
+      event.preventDefault();
+    }
   };
 
   private onMainWindowWillNavigate = (event: any, newUrl: string): void => {

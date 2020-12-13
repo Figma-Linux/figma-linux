@@ -70,7 +70,6 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
         openSettings={this.onOpenSettings}
         onHomeClick={this.onHomeClick}
         newTab={this.newTab}
-        getTab={this.props.tabs.getTab}
       />
     );
   }

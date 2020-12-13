@@ -18,8 +18,9 @@
   }
 
   &__text {
-    width: 70px;
+    width: 100px;
     overflow: hidden;
+    text-align: center;
     white-space: nowrap;
     text-overflow: clip;
     font-size: var(--fontControlSize);

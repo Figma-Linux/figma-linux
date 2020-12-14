@@ -1,8 +1,9 @@
+import { app } from "electron";
 import * as fs from "fs";
 import * as path from "path";
 import { uuid } from "uuidv4";
 
-import { themesDirectory } from "Utils/Common";
+export const themesDirectory = path.resolve(app.getPath("userData"), "Themes");
 
 export async function readThemeFile(filePath: string): Promise<Themes.Theme> {
   const buffer = await fs.promises.readFile(filePath);

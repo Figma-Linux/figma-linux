@@ -1,12 +1,9 @@
 import * as E from "electron";
 import { observable, action, autorun, toJS } from "mobx";
 
-import * as Const from "Const";
-import { isComponentUrl } from "Utils/Common";
-
 export class Tabs implements TabsStore {
   @observable tabs: Tab[] = [];
-  @observable current = 1;
+  @observable current: number | undefined;
 
   constructor() {
     this.events();
@@ -30,7 +27,7 @@ export class Tabs implements TabsStore {
   };
 
   @action
-  setFocus = (id: number): void => {
+  setFocus = (id?: number): void => {
     this.current = id;
   };
 
@@ -68,31 +65,18 @@ export class Tabs implements TabsStore {
 
   private events = (): void => {
     E.ipcRenderer.on("didTabAdd", (sender, data) => {
-      if (isComponentUrl(data.url)) {
-        const collection: number[] = this.tabs.map(el => el.id);
-
-        data.id = this.generateUniqueId(collection);
-
-        this.addTab({
-          id: data.id,
-          url: data.url,
-          title: data.title,
-          showBackBtn: data.showBackBtn,
-        });
-      } else {
-        this.addTab({
-          id: data.id,
-          url: data.url,
-          title: data.title ? data.title : "Recent Files",
-          showBackBtn: data.showBackBtn,
-        });
-      }
+      this.addTab({
+        id: data.id,
+        url: data.url,
+        title: data.title ? data.title : "Recent Files",
+        showBackBtn: data.showBackBtn,
+      });
 
       this.setFocus(data.id);
     });
 
-    E.ipcRenderer.on("closeAllTabl", () => {
-      this.current = 1;
+    E.ipcRenderer.on("closeAllTabs", () => {
+      this.current = undefined;
       this.tabs = [];
     });
 

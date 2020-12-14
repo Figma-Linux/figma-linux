@@ -2,8 +2,8 @@ import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { isAppAuthLink, isValidProjectLink, themesDirectory } from "Utils/Common";
-import { mkdirIfNotExists } from "Utils/Main";
+import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
+import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
@@ -58,9 +58,9 @@ class App {
 
     this.appEvent();
 
-    Settings.setAll({
+    Settings.set({
       ...Const.DEFAULT_SETTINGS,
-      ...(Settings.getAll() as SettingsInterface),
+      ...(Settings.getSync() as SettingsInterface),
     });
   }
 
@@ -83,18 +83,14 @@ class App {
       figmaUrl !== "" && this.windowManager.openUrl(figmaUrl);
     }, 1500);
 
-    E.protocol.registerHttpProtocol(
-      Const.PROTOCOL,
-      (req, cb) => {
-        this.windowManager.addTab("loadMainContent.js", req.url);
+    E.protocol.registerHttpProtocol(Const.PROTOCOL, (req: E.ProtocolRequest, cb: (req: E.ProtocolResponse) => void) => {
+      this.windowManager.addTab("loadMainContent.js", req.url);
 
-        cb({
-          url: req.url,
-          method: req.method,
-        });
-      },
-      err => err && console.log("failed to register http protocol, err: ", err),
-    );
+      cb({
+        url: req.url,
+        method: req.method,
+      });
+    });
   };
 
   private onWindowAllClosed = (): void => {

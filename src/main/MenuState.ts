@@ -8,7 +8,7 @@ import { INITACTIONINITSTATE, ACTIONTABSTATE, ACTIONFILEBROWSERSTATE } from "Con
  */
 class MenuState {
   public static actionState: MenuState.State = INITACTIONINITSTATE;
-  public static pluginMenuData: any[] = [];
+  public static pluginMenuData: Menu.MenuItem[] = [];
 
   private static update = (state: MenuState.MenuStateParams) => {
     const app = E.remote ? E.remote.app : E.app;

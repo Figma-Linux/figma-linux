@@ -20,9 +20,10 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
   return (
     <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
       <div className="panelButtons">
-        <Button className={`button_clear${props.current === 1 ? " tab_active" : ""}`} onClick={props.onMainTab}>
+        <Button className={`button_clear${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
           <Icon color="#7A7A7A" type="Main" size="18" />
         </Button>
+        {/* // TODO: Add the new project button */}
       </div>
       <Tabs />
       <div className="panelButtons">

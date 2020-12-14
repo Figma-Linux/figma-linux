@@ -4,7 +4,7 @@ import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
 import * as Const from "Const";
-import { isComponentUrl, isValidProjectLink } from "Utils/Common";
+import { isValidProjectLink } from "Utils/Common";
 import TabList from "./tabs";
 import "./style.scss";
 
@@ -27,25 +27,19 @@ class Tabs extends React.Component<TabsProps, {}> {
     e.stopPropagation();
 
     const tabs = toJS(this.props.tabs.tabs);
-    const tab = this.props.tabs.getTab(id);
-    const currentTabId: number = toJS(this.props.tabs.current);
-    const index: number = tabs.findIndex(t => t.id === id);
+    const currentTabId: number | undefined = toJS(this.props.tabs.current);
+    const currentTabIndex: number = tabs.findIndex(t => t.id === id);
 
-    if (isComponentUrl(tab.url)) {
-      E.ipcRenderer.send("setFocusToMainTab");
-    } else {
-      E.ipcRenderer.send("closeTab", id);
-    }
+    E.ipcRenderer.send("closeTab", id);
 
     this.props.tabs.deleteTab(id);
 
-    if (id !== currentTabId) return;
+    if (!currentTabId || id !== currentTabId) return;
 
-    if (isComponentUrl(tab.url)) {
-      this.props.tabs.setFocus(1);
-    } else {
-      this.props.tabs.setFocus(index !== 0 ? tabs[index > 0 ? index - 1 : index].id : 1);
-    }
+    const index = currentTabIndex > 0 ? currentTabIndex - 1 : currentTabIndex;
+    const nextTab = this.props.tabs!.tabs[index];
+
+    this.props.tabs.setFocus(nextTab ? nextTab.id : undefined);
   };
 
   private clickTab = (e: React.MouseEvent<HTMLDivElement> & Event, tab: Tab): void => {
@@ -59,7 +53,7 @@ class Tabs extends React.Component<TabsProps, {}> {
 
           this.focus(e, tab.id);
 
-          // Move tab
+          // TODO: implement moving of tabs
           // if (/tab/.test(tabEl.className)) {
           //     const currentTab: Tab = this.props.tabs.tabs.find(t => t.id === tab.id )
           //     const TabContainer = tabEl.parentNode as any;
@@ -161,13 +155,8 @@ class Tabs extends React.Component<TabsProps, {}> {
   private focus = (event: React.MouseEvent<HTMLDivElement> & Event, id: number): void => {
     event.stopPropagation();
     event.nativeEvent.stopImmediatePropagation();
-    const tab = this.props.tabs.getTab(id);
 
-    if (isComponentUrl(tab.url)) {
-      E.ipcRenderer.send("clearView");
-    } else {
-      E.ipcRenderer.send("setTabFocus", id);
-    }
+    E.ipcRenderer.send("setTabFocus", id);
 
     this.props.tabs.setFocus(id);
   };

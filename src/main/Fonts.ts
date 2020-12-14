@@ -2,7 +2,7 @@ import * as Settings from "electron-settings";
 import { Fonts } from "figma-linux-rust-binding";
 
 let fonts: any = null;
-if (!Boolean(Settings.get("app.disabledFonts"))) {
+if (!Boolean(Settings.getSync("app.disabledFonts"))) {
   fonts = require("figma-linux-rust-binding").getFonts;
 }
 

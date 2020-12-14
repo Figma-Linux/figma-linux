@@ -1,7 +1,6 @@
 import * as E from "electron";
 
 import { toggleDetachedDevTools } from "Utils/Main";
-import { app } from "Utils/Common";
 
 export const commands = (): Map<string, Function> => {
   const map = new Map<string, Function>();
@@ -18,15 +17,15 @@ export const commands = (): Map<string, Function> => {
   });
 
   map.set("toggle-settings-developer-tools", (item: E.MenuItemConstructorOptions, window: E.BrowserWindow) => {
-    app.emit("toggle-settings-developer-tools");
+    E.app.emit("toggle-settings-developer-tools");
   });
 
   map.set("close-window", () => {
-    app.exit();
+    E.app.exit();
   });
 
   map.set("sign-out", () => {
-    app.emit("sign-out");
+    E.app.emit("sign-out");
   });
 
   return map;

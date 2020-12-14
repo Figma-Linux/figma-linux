@@ -2,7 +2,6 @@ import * as React from "react";
 import { observer, inject } from "mobx-react";
 
 import { DEFAULT_THEME } from "Const";
-import { app } from "Utils/Common";
 import { Input, List, Text, Icon } from "Elements";
 import { InputTypes } from "Elements/Input";
 
@@ -29,12 +28,14 @@ class ThemesBody extends React.Component<ThemeViewProps, {}> {
   }
 
   onClickApply = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, theme: Themes.Theme): void => {
-    app.emit("themes-change", theme);
+    // TODO: rewrite events
+    // app.emit("themes-change", theme);
     this.props.settings.changeTheme(theme.id);
   };
   onClickDelete = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, id: string): void => {};
   onClickDefaultThemeApply = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
-    app.emit("set-default-theme");
+    // TODO: rewrite events
+    // app.emit("set-default-theme");
     this.props.settings.changeTheme("0");
   };
 

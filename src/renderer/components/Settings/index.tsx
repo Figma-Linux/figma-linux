@@ -34,7 +34,7 @@ class Settings extends React.Component<SettingsProps, {}> {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.remote.app.emit("handle-command", "closeSettings");
+    E.ipcRenderer.send("closeSettingsView");
   };
 
   render(): JSX.Element {

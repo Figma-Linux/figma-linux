@@ -1,8 +1,3 @@
-import * as path from "path";
-import { app } from "Utils/Common";
-
-export const themesDirectory = path.resolve(app.getPath("userData"), "Themes");
-
 export const variablesColorsMap: Themes.ColorsMap = {
   "rgb(255, 255, 255)": "panel",
   "rgb(252, 252, 252)": "panel",

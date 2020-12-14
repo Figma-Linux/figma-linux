@@ -1,4 +1,3 @@
-import * as Settings from "electron-settings";
 import * as E from "electron";
 import * as path from "path";
 import * as fs from "fs";
@@ -38,8 +37,10 @@ const onClickExportImage = (e: Event, link: HTMLLinkElement) => {
       const filetype: string = res.headers["content-type"][0].replace(/^.+\//, "");
       console.log("response file type: ", filetype);
 
+      // TODO: rewrite execute dialogs
       const savePath = E.remote.dialog.showSaveDialogSync({
-        defaultPath: `${Settings.get("app.exportDir")}/${link.textContent.replace(/\..+$/, "")}.${filetype}`,
+        // defaultPath: `${Settings.getSync("app.exportDir")}/${link.textContent.replace(/\..+$/, "")}.${filetype}`,
+        defaultPath: "/tmp",
         showsTagField: false,
       });
 
@@ -534,8 +535,10 @@ const publicAPI: any = {
     let directoryPath;
     if (files.length === 1 && !files[0].name.includes(path.sep)) {
       const originalFileName = files[0].name;
+      // TODO: rewrite execute dialogs
       const savePath = E.remote.dialog.showSaveDialogSync({
-        defaultPath: `${Settings.get("app.exportDir")}/${originalFileName}`,
+        // defaultPath: `${Settings.getSync("app.exportDir")}/${originalFileName}`,
+        defaultPath: "/tmp",
         showsTagField: false,
       });
 
@@ -550,6 +553,7 @@ const publicAPI: any = {
         }
       }
     } else {
+      // TODO: rewrite execute dialogs
       const directories = E.remote.dialog.showOpenDialogSync({
         properties: ["openDirectory", "createDirectory"],
         buttonLabel: "Save",

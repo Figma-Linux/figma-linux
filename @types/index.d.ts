@@ -1,6 +1,10 @@
 declare namespace Electron {
-  interface MainInterface extends CommonInterface {
+  interface RemoteMainInterface {
     app: App;
+  }
+
+  interface MenuItemConstructorOptions {
+    click?: (menuItem: Menu.PluginMenuItem, browserWindow: BrowserWindow | undefined, event: KeyboardEvent) => void;
   }
 
   interface MenuItem {
@@ -10,11 +14,6 @@ declare namespace Electron {
   interface App extends NodeJS.EventEmitter {
     on(event: "handle-command", listener: (command: string) => void): this;
     on(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    on(event: "update-figma-ui-scale", listener: (scale: number) => void): this;
-    on(event: "update-panel-scale", listener: (scale: number) => void): this;
-    on(event: "set-hide-main-menu", listener: (hide: boolean) => void): this;
-    on(event: "set-disable-main-menu", listener: (disabled: boolean) => void): this;
-    on(event: "set-disable-fonts", listener: (disabled: boolean) => void): this;
     on(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     on(event: "log", listener: (data: any) => void): this;
     on(event: "sign-out", listener: () => void): this;
@@ -26,11 +25,6 @@ declare namespace Electron {
 
     once(event: "handle-command", listener: (command: string) => void): this;
     once(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    once(event: "update-figma-ui-scale", listener: (scale: number) => void): this;
-    once(event: "update-panel-scale", listener: (scale: number) => void): this;
-    once(event: "set-hide-main-menu", listener: (hide: boolean) => void): this;
-    once(event: "set-disable-main-menu", listener: (disabled: boolean) => void): this;
-    once(event: "set-disable-fonts", listener: (disabled: boolean) => void): this;
     once(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     once(event: "log", listener: (data: any) => void): this;
     once(event: "sign-out", listener: () => void): this;
@@ -42,11 +36,6 @@ declare namespace Electron {
 
     addListener(event: "handle-command", listener: (command: string) => void): this;
     addListener(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    addListener(event: "update-figma-ui-scale", listener: (scale: number) => void): this;
-    addListener(event: "update-panel-scale", listener: (scale: number) => void): this;
-    addListener(event: "set-hide-main-menu", listener: (hide: boolean) => void): this;
-    addListener(event: "set-disable-main-menu", listener: (disabled: boolean) => void): this;
-    addListener(event: "set-disable-fonts", listener: (disabled: boolean) => void): this;
     addListener(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     addListener(event: "log", listener: (data: any) => void): this;
     addListener(event: "sign-out", listener: () => void): this;
@@ -58,11 +47,6 @@ declare namespace Electron {
 
     removeListener(event: "handle-command", listener: (command: string) => void): this;
     removeListener(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    removeListener(event: "update-figma-ui-scale", listener: (scale: number) => void): this;
-    removeListener(event: "update-panel-scale", listener: (scale: number) => void): this;
-    removeListener(event: "set-hide-main-menu", listener: (hide: boolean) => void): this;
-    removeListener(event: "set-disable-main-menu", listener: (disabled: boolean) => void): this;
-    removeListener(event: "set-disable-fonts", listener: (disabled: boolean) => void): this;
     removeListener(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     removeListener(event: "log", listener: (data: any) => void): this;
     removeListener(event: "sign-out", listener: () => void): this;
@@ -74,11 +58,6 @@ declare namespace Electron {
 
     emit(event: "handle-command", command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
-    emit(event: "update-figma-ui-scale", scale: number): boolean;
-    emit(event: "update-panel-scale", scale: number): boolean;
-    emit(event: "set-hide-main-menu", hide: boolean): boolean;
-    emit(event: "set-disable-main-menu", disabled: boolean): boolean;
-    emit(event: "set-disable-fonts", disabled: boolean): boolean;
     emit(event: "os-menu-invalidated", dependencies: MenuState.MenuStateParams): boolean;
     emit(event: "log", data: any): boolean;
     emit(event: "sign-out"): boolean;
@@ -100,10 +79,17 @@ declare namespace Electron {
     on(channel: "setTabUrl", listener: (event: IpcMainEvent, url: string) => void): this;
     on(channel: "closeAllTab", listener: (event: IpcMainEvent) => void): this;
     on(channel: "setFocusToMainTab", listener: (event: IpcMainEvent) => void): this;
-    on(channel: "clearView", listener: (event: IpcMainEvent) => void): this;
     on(channel: "setTabFocus", listener: (event: IpcMainEvent, id: number) => void): this;
     on(channel: "closeTab", listener: (event: IpcMainEvent, id: number) => void): this;
     on(channel: "newTab", listener: (event: IpcMainEvent, id: number) => void): this;
+    on(channel: "requestForGetSettings", listener: (event: IpcMainEvent, key?: string) => void): this;
+    on(channel: "setSettings", listener: (event: IpcMainEvent, value: any, key?: string) => void): this;
+    on(channel: "openSettingsView", listener: (event: IpcMainEvent) => void): this;
+    on(channel: "closeSettingsView", listener: (event: IpcMainEvent) => void): this;
+    on(channel: "updateFigmaUiScale", listener: (event: IpcMainEvent, scale: number) => void): this;
+    on(channel: "updatePanelScale", listener: (event: IpcMainEvent, scale: number) => void): this;
+    on(channel: "setVisibleMainMenu", listener: (event: IpcMainEvent, visible: boolean) => void): this;
+    on(channel: "setDisableMainMenu", listener: (event: IpcMainEvent, disable: boolean) => void): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -118,11 +104,12 @@ declare namespace Electron {
       listener: (event: IpcRendererEvent, data: { id: number; fileKey: string }) => void,
     ): this;
     on(channel: "setTabUrl", listener: (event: IpcRendererEvent, data: { id: number; url: string }) => void): this;
-    on(channel: "closeAllTabl", listener: (event: IpcRendererEvent) => void): this;
+    on(channel: "closeAllTabs", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "setTitle", listener: (event: IpcRendererEvent, data: { id: number; title: string }) => void): this;
     on(channel: "closeTab", listener: (event: IpcRendererEvent, data: { id: number }) => void): this;
     on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
     on(channel: "getUploadedThemes", listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void): this;
+    on(channel: "getSettings", listener: (event: IpcRendererEvent, settings: any) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -132,12 +119,19 @@ declare namespace Electron {
     send(channel: "updateActionState", state: MenuState.State): this;
     send(channel: "closeAllTab"): this;
     send(channel: "setFocusToMainTab"): this;
-    send(channel: "clearView"): this;
     send(channel: "updateFileKey", data: { id: number; fileKey: string }): this;
     send(channel: "setTabUrl", data: { id: number; url: string }): this;
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
     send(channel: "newTab"): this;
+    send(channel: "setSettings", value: any, key?: string): this;
+    send(channel: "openSettingsView"): this;
+    send(channel: "closeSettingsView"): this;
+    send(channel: "requestForGetSettings"): this;
+    send(channel: "updateFigmaUiScale", scale: number): this;
+    send(channel: "updatePanelScale", scale: number): this;
+    send(channel: "setVisibleMainMenu", visible: boolean): this;
+    send(channel: "setDisableMainMenu", disable: boolean): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {
@@ -154,6 +148,7 @@ declare namespace Electron {
     send(channel: "setTitle", data: { id: number; title: string }): void;
     send(channel: "closeTab", data: { id: number }): this;
     send(channel: "didTabAdd", data: Tab): this;
+    send(channel: "getSettings", settings: any): this;
   }
 
   interface RequestHeaders {

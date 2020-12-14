@@ -1,5 +1,5 @@
 import { DEFAULT_THEME, DEFAULT_PALETTE, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, SVG_MAP } from "Const";
-import { getColorsMap, app, variablesColorsMap } from "Utils/Common";
+import { getColorsMap, variablesColorsMap } from "Utils/Common";
 
 export class ThemesManager {
   private currentTheme: Themes.Theme;
@@ -7,8 +7,9 @@ export class ThemesManager {
   constructor() {
     this.currentTheme = DEFAULT_THEME;
 
-    app.on("themes-change", theme => this.changePalette(theme));
-    app.on("set-default-theme", () => this.changePalette(DEFAULT_THEME));
+    // TODO: rewrite events
+    // app.on("themes-change", theme => this.changePalette(theme));
+    // app.on("set-default-theme", () => this.changePalette(DEFAULT_THEME));
   }
 
   private changePalette(theme: Themes.Theme) {

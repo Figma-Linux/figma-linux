@@ -3,7 +3,7 @@ import * as E from "electron";
 import * as path from "path";
 
 import { DEFAULT_SETTINGS } from "Const";
-import { isDev, app } from "Utils/Common";
+import { isDev } from "Utils/Common";
 import { getThemeById } from "Utils/Main";
 import Fonts from "../Fonts";
 
@@ -12,7 +12,7 @@ export default class Tabs {
 
   private static tabs: Array<E.BrowserView> = [];
 
-  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string): E.BrowserView => {
+  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string, save = true): E.BrowserView => {
     const options: E.BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,
@@ -20,7 +20,7 @@ export default class Tabs {
         webSecurity: true,
         webgl: true,
         experimentalFeatures: false,
-        zoomFactor: Settings.get("ui.scaleFigmaUI") as number,
+        zoomFactor: 1,
       },
     };
 
@@ -43,14 +43,15 @@ export default class Tabs {
     tab.setBounds(rect);
     tab.webContents.loadURL(url);
     tab.webContents.on("dom-ready", () => {
-      let dirs = Settings.get("app.fontDirs") as string[];
+      let dirs = Settings.getSync("app.fontDirs") as string[];
+      // let dirs = ["/usr/share/fonts", "/usr/local/share/fonts", "/home/ruut/.local/share/fonts"];
 
-      const currentThemeId = Settings.get("theme.currentTheme") as string;
-      if (currentThemeId !== "0") {
-        getThemeById(currentThemeId).then(theme => {
-          app.emit("themes-change", theme);
-        });
-      }
+      // const currentThemeId = Settings.getSync("theme.currentTheme") as string;
+      // if (currentThemeId !== "0") {
+      //   getThemeById(currentThemeId).then(theme => {
+      //     E.app.emit("themes-change", theme);
+      //   });
+      // }
 
       if (!dirs) {
         dirs = DEFAULT_SETTINGS.app.fontDirs;
@@ -64,15 +65,16 @@ export default class Tabs {
 
     isDev && tab.webContents.toggleDevTools();
 
-    Tabs.tabs.push(tab);
+    if (save) {
+      Tabs.tabs.push(tab);
+    }
 
     return tab;
   };
 
   public static closeAll = () => {
     Tabs.tabs = Tabs.tabs.filter(t => {
-      if (t.id != 1) {
-        t.destroy();
+      if (t.webContents.id != 1) {
         return false;
       } else {
         return true;
@@ -82,19 +84,49 @@ export default class Tabs {
 
   public static close = (id: number) => {
     Tabs.tabs = Tabs.tabs.filter(t => {
-      if (t.id != id) {
+      if (t.webContents.id != id) {
         return true;
       } else {
-        t.destroy();
+        // FIXME: https://github.com/electron/electron/pull/23578#issuecomment-703736447
+        t.webContents.loadURL("about:blank");
+        (t.webContents as any).destroy();
         return false;
       }
     });
   };
 
-  public static reloadAll = () => Tabs.tabs.forEach(t => (!t.isDestroyed() ? t.webContents.reload() : ""));
+  public static reloadAll = () => Tabs.tabs.forEach(t => (!t.webContents.isDestroyed() ? t.webContents.reload() : ""));
 
   public static focus = (id: number): E.BrowserView => {
-    return Tabs.tabs.find(t => t.id === id) as E.BrowserView;
+    return Tabs.tabs.find(t => t.webContents.id === id) as E.BrowserView;
+  };
+
+  public static getTab = (webContentsId: number): E.BrowserView | undefined => {
+    let tab: E.BrowserView | undefined;
+
+    Tabs.tabs.forEach(t => {
+      if (t.webContents.id === webContentsId) {
+        tab = t;
+      }
+    });
+
+    return tab;
+  };
+
+  public static getTabByIndex = (index: number): E.BrowserView | undefined => {
+    return Tabs.tabs[index];
+  };
+
+  public static getTabIndex = (webContentsId: number): number | undefined => {
+    let index: number | undefined;
+
+    Tabs.tabs.forEach((t, i) => {
+      if (t.webContents.id === webContentsId) {
+        index = i;
+      }
+    });
+
+    return index;
   };
 
   public static getAll = (): Array<E.BrowserView> => Tabs.tabs;

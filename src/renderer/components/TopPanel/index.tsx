@@ -31,14 +31,14 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     e.stopPropagation();
 
     E.ipcRenderer.send("setFocusToMainTab");
-    this.props.tabs.setFocus(1);
+    this.props.tabs.setFocus();
   };
 
   private onOpenSettings = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.remote.app.emit("handle-command", "openSettings");
+    E.ipcRenderer.send("openSettingsView");
   };
 
   private onHomeClick = (): void => {

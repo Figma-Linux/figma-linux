@@ -1,8 +1,6 @@
 import * as Url from "url";
 import { PROTOCOL, HOMEPAGE } from "Const";
 
-export const isComponentUrl = (url: string): boolean => /^component:\/\/\w+/.test(url);
-
 export const isRedeemAuthUrl = (url: string): boolean => /[a-z]{4,5}:\/\/app_auth\/redeem.+/.test(url);
 
 export const isFigmaProtocolUrl = (url: string): boolean => {

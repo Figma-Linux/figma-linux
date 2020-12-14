@@ -1,10 +1,10 @@
 import * as E from "electron";
 
-import { getMenuTemlate } from "Utils/Main";
+import { getMenuTemplate } from "Utils/Main";
 import { stringOfActionMenuItemName, assertNever } from "Utils/Common";
 import MenuState from "Main/MenuState";
 
-export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
+export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow): void => {
   const currentView = window.getBrowserView();
 
   if (item && item.pluginMenuAction && currentView) {
@@ -15,13 +15,14 @@ export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.Brow
 export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuItem | undefined => {
   switch (input.type) {
     case "run-menu-action": {
-      const label = stringOfActionMenuItemName(input.name);
+      const item = input as Menu.Items.Menu;
+      const label = stringOfActionMenuItemName(item.name);
       return {
         type: "normal",
         label,
         click: handlePluginMenuAction,
-        enabled: !input.disabled,
-        pluginMenuAction: input.menuAction,
+        enabled: !item.disabled,
+        pluginMenuAction: item.menuAction,
       };
     }
     case "separator": {
@@ -30,10 +31,11 @@ export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuI
       };
     }
     case "submenu": {
+      const item = input as Menu.Items.Submenu;
       return {
         type: "submenu",
-        label: input.name,
-        submenu: input.submenu.map(electronOfPluginMenuItem),
+        label: item.name,
+        submenu: item.submenu.map(electronOfPluginMenuItem),
       };
     }
     default: {
@@ -55,7 +57,7 @@ export const setMenuFromTemplate = (
   if (template) {
     mainMenu = E.Menu.buildFromTemplate(template as E.MenuItemConstructorOptions[]);
   } else {
-    mainMenu = E.Menu.buildFromTemplate(getMenuTemlate(pluginMenuItems) as E.MenuItemConstructorOptions[]);
+    mainMenu = E.Menu.buildFromTemplate(getMenuTemplate(pluginMenuItems) as E.MenuItemConstructorOptions[]);
   }
 
   E.Menu.setApplicationMenu(mainMenu);
@@ -90,7 +92,7 @@ export const resetMenu = (pluginMenuData: Menu.MenuItem[], template?: E.MenuItem
   }
 };
 
-export const item = (label: string, accelerator: string, params: Menu.Params) => {
+export const item = (label: string, accelerator: string, params: E.MenuItemConstructorOptions) => {
   const props: E.MenuItemConstructorOptions = {
     label,
     enabled: true,
@@ -101,24 +103,24 @@ export const item = (label: string, accelerator: string, params: Menu.Params) =>
     props.accelerator = accelerator;
   }
 
-  return new E.MenuItem(props);
+  return props;
 };
 
-export const commandToMainProcess = (item: E.MenuItemConstructorOptions) => {
+export const commandToMainProcess = (item: Menu.PluginMenuItem) => {
   E.app.emit("handle-command", item.id);
 };
 
-export const handleCommandItemClick = (item: any, window: E.BrowserWindow) => {
+export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
   const currentView = window.getBrowserView();
 
-  currentView.webContents.send("handlePageCommand", item.command);
+  currentView.webContents.send("handlePageCommand", item.id);
 };
 
-export const handleItemAction = (item: any, window: E.BrowserWindow) => {
+export const handleItemAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
   // FIXME: ugly hack
-  if (!item.accelerator && item.accelerator && !/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
+  if (item.accelerator && !/ctrl|alt|shift|meta/i.test(item.accelerator as string)) return;
 
   const currentView = window.getBrowserView();
 
-  currentView.webContents.send("handleAction", item.action, "os-menu");
+  currentView.webContents.send("handleAction", item.id, "os-menu");
 };

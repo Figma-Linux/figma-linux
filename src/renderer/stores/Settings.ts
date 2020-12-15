@@ -1,14 +1,12 @@
 import * as E from "electron";
-import { DEFAULT_SETTINGS } from "Const";
-import { observable, action, toJS, autorun } from "mobx";
+import * as S from "electron-settings";
+import { observable, action, toJS } from "mobx";
 
 export class Settings {
   @observable settings?: SettingsInterface;
 
   constructor() {
-    this.settings = DEFAULT_SETTINGS;
-
-    E.ipcRenderer.send("requestForGetSettings");
+    this.settings = S.getSync() as SettingsInterface;
 
     this.events();
   }
@@ -103,18 +101,19 @@ export class Settings {
     this.settings.theme.currentTheme = id;
   };
 
+  public setSettings = () => {
+    const settings = toJS(this.settings);
+
+    S.set(settings);
+  };
+
   private events = (): void => {
-    E.ipcRenderer.on("getSettings", (sender, settings) => {
-      console.log("getSettings, settings: ", settings);
-      this.settings = settings;
-    });
     E.ipcRenderer.on("updateUiScale", (sender, scale) => {
       this.settings.ui.scaleFigmaUI = scale;
     });
-    // TODO: rewrite getting of settings
-    // E.ipcRenderer.on("updatePanelScale", (sender, scale) => {
-    //   this.settings.ui.scalePanel = scale;
-    // });
+    E.ipcRenderer.on("updatePanelScale", (sender, scale) => {
+      this.settings.ui.scalePanel = scale;
+    });
     E.ipcRenderer.on("updatePanelHeight", (sender, height) => {
       this.settings.app.panelHeight = height;
     });
@@ -125,8 +124,3 @@ export class Settings {
 }
 
 export const settings = new Settings();
-
-autorun(() => {
-  // TODO: rewrite save settings
-  E.ipcRenderer.send("setSettings", toJS(settings.settings));
-});

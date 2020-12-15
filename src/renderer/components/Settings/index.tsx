@@ -9,11 +9,14 @@ import General from "./views/General";
 import Shortcuts from "./views/Shortcuts";
 import Themes from "./views/Themes";
 import { Views } from "Store/Views";
+import { Settings as SettingsStore } from "Store/Settings";
 
 interface SettingsProps {
+  settings?: SettingsStore;
   views?: Views;
 }
 
+@inject("settings")
 @inject("views")
 @observer
 class Settings extends React.Component<SettingsProps, {}> {
@@ -33,6 +36,8 @@ class Settings extends React.Component<SettingsProps, {}> {
   onCloseClick = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
+
+    this.props.settings!.setSettings();
 
     E.ipcRenderer.send("closeSettingsView");
   };

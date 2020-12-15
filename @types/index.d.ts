@@ -22,39 +22,7 @@ declare namespace Electron {
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
-
-    once(event: "handle-command", listener: (command: string) => void): this;
-    once(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    once(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
-    once(event: "log", listener: (data: any) => void): this;
-    once(event: "sign-out", listener: () => void): this;
-    once(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
-    once(event: "set-default-theme", listener: () => void): this;
-    once(event: "themes-add-repository", listener: () => void): this;
-    once(event: "themes-remove-repository", listener: () => void): this;
-    once(event: "toggle-settings-developer-tools", listener: () => void): this;
-
-    addListener(event: "handle-command", listener: (command: string) => void): this;
-    addListener(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    addListener(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
-    addListener(event: "log", listener: (data: any) => void): this;
-    addListener(event: "sign-out", listener: () => void): this;
-    addListener(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
-    addListener(event: "set-default-theme", listener: () => void): this;
-    addListener(event: "themes-add-repository", listener: () => void): this;
-    addListener(event: "themes-remove-repository", listener: () => void): this;
-    addListener(event: "toggle-settings-developer-tools", listener: () => void): this;
-
-    removeListener(event: "handle-command", listener: (command: string) => void): this;
-    removeListener(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    removeListener(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
-    removeListener(event: "log", listener: (data: any) => void): this;
-    removeListener(event: "sign-out", listener: () => void): this;
-    removeListener(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
-    removeListener(event: "set-default-theme", listener: () => void): this;
-    removeListener(event: "themes-add-repository", listener: () => void): this;
-    removeListener(event: "themes-remove-repository", listener: () => void): this;
-    removeListener(event: "toggle-settings-developer-tools", listener: () => void): this;
+    on(event: "settings-ready", listener: (settings: SettingsInterface) => void): this;
 
     emit(event: "handle-command", command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
@@ -66,6 +34,7 @@ declare namespace Electron {
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggle-settings-developer-tools"): boolean;
+    emit(event: "settings-ready", settings: SettingsInterface): boolean;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -82,8 +51,6 @@ declare namespace Electron {
     on(channel: "setTabFocus", listener: (event: IpcMainEvent, id: number) => void): this;
     on(channel: "closeTab", listener: (event: IpcMainEvent, id: number) => void): this;
     on(channel: "newTab", listener: (event: IpcMainEvent, id: number) => void): this;
-    on(channel: "requestForGetSettings", listener: (event: IpcMainEvent, key?: string) => void): this;
-    on(channel: "setSettings", listener: (event: IpcMainEvent, value: any, key?: string) => void): this;
     on(channel: "openSettingsView", listener: (event: IpcMainEvent) => void): this;
     on(channel: "closeSettingsView", listener: (event: IpcMainEvent) => void): this;
     on(channel: "updateFigmaUiScale", listener: (event: IpcMainEvent, scale: number) => void): this;
@@ -109,7 +76,6 @@ declare namespace Electron {
     on(channel: "closeTab", listener: (event: IpcRendererEvent, data: { id: number }) => void): this;
     on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
     on(channel: "getUploadedThemes", listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void): this;
-    on(channel: "getSettings", listener: (event: IpcRendererEvent, settings: any) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -124,10 +90,8 @@ declare namespace Electron {
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
     send(channel: "newTab"): this;
-    send(channel: "setSettings", value: any, key?: string): this;
     send(channel: "openSettingsView"): this;
     send(channel: "closeSettingsView"): this;
-    send(channel: "requestForGetSettings"): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
     send(channel: "updatePanelScale", scale: number): this;
     send(channel: "setVisibleMainMenu", visible: boolean): this;
@@ -148,7 +112,6 @@ declare namespace Electron {
     send(channel: "setTitle", data: { id: number; title: string }): void;
     send(channel: "closeTab", data: { id: number }): this;
     send(channel: "didTabAdd", data: Tab): this;
-    send(channel: "getSettings", settings: any): this;
   }
 
   interface RequestHeaders {

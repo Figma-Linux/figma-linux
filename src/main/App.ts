@@ -58,9 +58,10 @@ class App {
 
     this.appEvent();
 
-    Settings.set({
+    const settings = Settings.getSync();
+    Settings.setSync({
       ...Const.DEFAULT_SETTINGS,
-      ...(Settings.getSync() as SettingsInterface),
+      ...settings,
     });
   }
 
@@ -76,7 +77,7 @@ class App {
   private ready = (): void => {
     const { figmaUrl } = Args();
 
-    this.windowManager = WindowManager.instance;
+    this.windowManager = new WindowManager();
     this.session.handleAppReady();
 
     setTimeout(() => {

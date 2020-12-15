@@ -23,13 +23,30 @@ class WindowManager {
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
   private tabs: Tab[];
-  private static _instance: WindowManager;
   private panelHeight = Settings.getSync("app.panelHeight") as number;
 
-  private constructor(options: E.BrowserWindowConstructorOptions, home: string) {
-    this.home = home;
+  constructor() {
+    this.home = Const.HOMEPAGE;
     this.figmaUiScale = Settings.getSync("ui.scaleFigmaUI") as number;
     this.panelScale = Settings.getSync("ui.scalePanel") as number;
+
+    const options: E.BrowserWindowConstructorOptions = {
+      width: 1200,
+      height: 900,
+      frame: !(Settings.getSync("app.disabledMainMenu") as boolean),
+      autoHideMenuBar: Settings.getSync("app.showMainMenu") as boolean,
+      webPreferences: {
+        sandbox: false,
+        zoomFactor: 1,
+        nodeIntegration: true,
+        nodeIntegrationInWorker: false,
+        webviewTag: false,
+        webSecurity: false,
+        webgl: true,
+        experimentalFeatures: true,
+        enableRemoteModule: true,
+      },
+    };
 
     this.mainWindow = new E.BrowserWindow(options);
     this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
@@ -67,35 +84,8 @@ class WindowManager {
       .catch(error => {
         throw new Error(error);
       });
-  }
 
-  static get instance(): WindowManager {
-    if (WindowManager._instance) {
-      return WindowManager._instance;
-    }
-
-    const options: E.BrowserWindowConstructorOptions = {
-      width: 1200,
-      height: 900,
-      frame: !(Settings.getSync("app.disabledMainMenu") as boolean),
-      autoHideMenuBar: Settings.getSync("app.showMainMenu") as boolean,
-      webPreferences: {
-        sandbox: false,
-        zoomFactor: 1,
-        nodeIntegration: true,
-        nodeIntegrationInWorker: false,
-        webviewTag: false,
-        webSecurity: false,
-        webgl: true,
-        experimentalFeatures: true,
-      },
-    };
-
-    const home = Const.HOMEPAGE;
-
-    WindowManager._instance = new WindowManager(options, home);
-
-    return WindowManager._instance;
+    this.updatePanelScale(this.panelScale);
   }
 
   openUrl = (url: string) => {
@@ -228,20 +218,6 @@ class WindowManager {
     });
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
-    });
-    E.ipcMain.on("requestForGetSettings", async (event, key) => {
-      let settings = {};
-
-      if (key) {
-        settings = await Settings.get(key);
-      } else {
-        settings = await Settings.get();
-      }
-
-      this.mainWindow.webContents.send("getSettings", settings);
-    });
-    E.ipcMain.on("setSettings", async (event, settings, key) => {
-      await Settings.set(settings);
     });
     E.ipcMain.on("openSettingsView", () => {
       this.initSettingsView();
@@ -403,6 +379,7 @@ class WindowManager {
         nodeIntegration: true,
         contextIsolation: false,
         experimentalFeatures: false,
+        enableRemoteModule: true,
       },
     });
 
@@ -599,7 +576,7 @@ class WindowManager {
 
     Settings.set("app.panelHeight", panelHeight);
 
-    // this.mainWindow.webContents.send("updatePanelScale", this.panelScale);
+    this.mainWindow.webContents.send("updatePanelScale", this.panelScale);
     this.updateBounds();
   };
 

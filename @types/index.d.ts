@@ -42,7 +42,6 @@ declare namespace Electron {
     on(channel: "setTitle", listener: (event: IpcMainEvent, title: string) => void): this;
     on(channel: "setPluginMenuData", listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
     on(channel: "receiveTabs", listener: (event: IpcMainEvent, tabs: Tab[]) => void): this;
-    on(channel: "toHome", listener: (event: IpcMainEvent) => void): this;
     on(channel: "updateActionState", listener: (event: IpcMainEvent, state: MenuState.State) => void): this;
     on(channel: "updateFileKey", listener: (event: IpcMainEvent, key: string) => void): this;
     on(channel: "setTabUrl", listener: (event: IpcMainEvent, url: string) => void): this;
@@ -57,6 +56,7 @@ declare namespace Electron {
     on(channel: "updatePanelScale", listener: (event: IpcMainEvent, scale: number) => void): this;
     on(channel: "setVisibleMainMenu", listener: (event: IpcMainEvent, visible: boolean) => void): this;
     on(channel: "setDisableMainMenu", listener: (event: IpcMainEvent, disable: boolean) => void): this;
+    on(channel: "startAppAuth", listener: (event: IpcMainEvent, auth: { grantPath: string }) => void): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -81,7 +81,6 @@ declare namespace Electron {
     send(channel: "setTitle", data: { id: number; title: string }): this;
     send(channel: "setPluginMenuData", pluginMenu: Menu.MenuItem[]): this;
     send(channel: "receiveTabs", tabs: Tab[]): this;
-    send(channel: "toHome"): this;
     send(channel: "updateActionState", state: MenuState.State): this;
     send(channel: "closeAllTab"): this;
     send(channel: "setFocusToMainTab"): this;

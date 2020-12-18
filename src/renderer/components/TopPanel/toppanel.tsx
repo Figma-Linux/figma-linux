@@ -9,7 +9,6 @@ interface TopPanelProps {
 
   onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
   openSettings(e: React.MouseEvent<HTMLDivElement>): void;
-  onHomeClick(e: React.MouseEvent<HTMLDivElement>): void;
   newTab(): void;
   closew(e: React.MouseEvent<HTMLDivElement>): void;
   maxiw(e: React.MouseEvent<HTMLDivElement>): void;

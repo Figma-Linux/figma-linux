@@ -9,7 +9,15 @@ import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
-import { isDev, isRedeemAuthUrl, isProtoLink, normalizeUrl, getComponentTitle, isValidProjectLink } from "Utils/Common";
+import {
+  isDev,
+  isProtoLink,
+  normalizeUrl,
+  isValidProjectLink,
+  isPrototypeUrl,
+  isAppAuthGrandLink,
+  isAppAuthRedeem,
+} from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -17,6 +25,7 @@ class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
   settingsView: E.BrowserView | null = null;
+  authView: E.BrowserWindow | null = null;
   mainTab: E.BrowserView;
   figmaUiScale: number;
   panelScale: number;
@@ -89,7 +98,7 @@ class WindowManager {
   }
 
   openUrl = (url: string) => {
-    if (isRedeemAuthUrl(url)) {
+    if (isAppAuthRedeem(url)) {
       const normalizedUrl = normalizeUrl(url);
       const tab = Tabs.getAll()[0];
 
@@ -170,7 +179,6 @@ class WindowManager {
     E.ipcMain.on("setFocusToMainTab", () => {
       this.mainWindow.setBrowserView(this.mainTab);
 
-      isFileBrowser(this.mainTab.webContents.getURL());
       MenuState.updateInFileBrowserActionState();
     });
     E.ipcMain.on("closeAllTab", () => {
@@ -213,8 +221,29 @@ class WindowManager {
     E.ipcMain.on("updateActionState", (event, state) => {
       MenuState.updateActionState(state);
     });
-    E.ipcMain.on("toHome", () => {
-      this.openFileBrowser();
+    E.ipcMain.on("openFile", (event, args) => {
+      console.log("event: openFile, args: ", args);
+    });
+    E.ipcMain.on("setFeatureFlags", (event, args) => {
+      console.log("event: setFeatureFlags, args: ", args);
+    });
+    E.ipcMain.on("startAppAuth", (event, args) => {
+      if (isAppAuthGrandLink(args.grantPath)) {
+        const url = `${this.home}${args.grantPath}`;
+        const options: E.BrowserWindowConstructorOptions = {
+          width: 800,
+          height: 600,
+          webPreferences: {
+            sandbox: true,
+          },
+        };
+
+        this.authView = new E.BrowserWindow(options);
+        this.authView.loadURL(url);
+      }
+    });
+    E.ipcMain.on("finishAppAuth", (event, args) => {
+      console.log("event: finishAppAuth, args: ", args);
     });
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
@@ -338,6 +367,17 @@ class WindowManager {
     });
   };
 
+  public destroyAuthView = (): void => {
+    if (!this.authView) {
+      return;
+    }
+    this.authView.destroy();
+
+    setTimeout(() => {
+      this.authView = null;
+    }, 1000);
+  };
+
   public addTab = (scriptPreload = "loadMainContent.js", url = `${this.home}/login`, title?: string): E.BrowserView => {
     const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
 
@@ -345,11 +385,7 @@ class WindowManager {
     tab.webContents.on("will-navigate", this.onMainWindowWillNavigate);
     tab.webContents.on("new-window", this.onNewWindow);
 
-    if (isFileBrowser) {
-      MenuState.updateInFileBrowserActionState();
-    } else {
-      MenuState.updateActionState(Const.ACTIONTABSTATE);
-    }
+    MenuState.updateActionState(Const.ACTIONTABSTATE);
 
     this.mainWindow.webContents.send("didTabAdd", { id: tab.webContents.id, url, showBackBtn: true, title });
 
@@ -458,7 +494,7 @@ class WindowManager {
   };
 
   private onMainTabWillNavigate = (event: E.Event, url: string): void => {
-    if (isValidProjectLink(url)) {
+    if (isValidProjectLink(url) || isPrototypeUrl(url)) {
       this.addTab("loadContent.js", url);
 
       event.preventDefault();
@@ -487,9 +523,6 @@ class WindowManager {
       this.logoutAndRestart(event);
     }
 
-    if (Const.REGEXP_APP_AUTH_REDEEM.test(from.pathname || "")) {
-      return;
-    }
     if (to.search && to.search.match(/[\?\&]redirected=1/)) {
       event.preventDefault();
       return;

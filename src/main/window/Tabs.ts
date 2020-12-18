@@ -16,7 +16,6 @@ export default class Tabs {
     const options: E.BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,
-        contextIsolation: true,
         webSecurity: true,
         webgl: true,
         experimentalFeatures: false,

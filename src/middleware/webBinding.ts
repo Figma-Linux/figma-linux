@@ -21,7 +21,7 @@ interface IntiApiOptions {
   shortcutMan?: any;
 }
 
-const API_VERSION = 22;
+const API_VERSION = 28;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
@@ -317,7 +317,7 @@ const publicAPI: any = {
   },
   openFile(args: any) {
     console.log("openFile, args: ", args);
-    sendMsgToMain("openTab", "/file/" + args.fileKey, args.title, undefined, args.target);
+    sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
   close(args: any) {
     console.log("close, args: ", args);
@@ -358,6 +358,21 @@ const publicAPI: any = {
     }
 
     sendMsgToMain("setPluginMenuData", pluginMenuData);
+  },
+
+  openPrototype(args: any) {
+    console.log("openPrototype, args: ", args);
+    sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, "?node-id=" + args.pageId, args.target);
+  },
+  setFeatureFlags(args: any) {
+    console.log("setFeatureFlags, args: ", args);
+    sendMsgToMain("setFeatureFlags", args);
+  },
+  startAppAuth(args: any) {
+    sendMsgToMain("startAppAuth", args);
+  },
+  finishAppAuth(args: any) {
+    sendMsgToMain("finishAppAuth", args);
   },
 
   createMultipleNewLocalFileExtensions(args: any) {

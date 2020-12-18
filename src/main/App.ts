@@ -2,7 +2,7 @@ import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
+import { isAppAuthRedeem, isAppAuthLink, isValidProjectLink, normalizeUrl } from "Utils/Common";
 import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";
@@ -85,6 +85,17 @@ class App {
     }, 1500);
 
     E.protocol.registerHttpProtocol(Const.PROTOCOL, (req: E.ProtocolRequest, cb: (req: E.ProtocolResponse) => void) => {
+      if (isAppAuthRedeem(req.url)) {
+        const url = normalizeUrl(req.url);
+
+        this.windowManager.mainTab.webContents.loadURL(url);
+        this.windowManager.destroyAuthView();
+
+        setTimeout(this.windowManager.loadRecentFilesMainTab, 500);
+
+        return;
+      }
+
       this.windowManager.addTab("loadMainContent.js", req.url);
 
       cb({

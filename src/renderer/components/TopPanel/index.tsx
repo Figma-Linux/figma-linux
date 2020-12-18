@@ -41,9 +41,6 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     E.ipcRenderer.send("openSettingsView");
   };
 
-  private onHomeClick = (): void => {
-    E.ipcRenderer.send("toHome");
-  };
   private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {
     E.ipcRenderer.send("app-exit");
   };
@@ -68,7 +65,6 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
         current={this.props.tabs.current}
         onMainTab={this.onMainTab}
         openSettings={this.onOpenSettings}
-        onHomeClick={this.onHomeClick}
         newTab={this.newTab}
       />
     );

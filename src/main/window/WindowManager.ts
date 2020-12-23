@@ -17,6 +17,7 @@ import {
   isPrototypeUrl,
   isAppAuthGrandLink,
   isAppAuthRedeem,
+  parseURL,
 } from "Utils/Common";
 import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
@@ -25,7 +26,6 @@ class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
   settingsView: E.BrowserView | null = null;
-  authView: E.BrowserWindow | null = null;
   mainTab: E.BrowserView;
   figmaUiScale: number;
   panelScale: number;
@@ -221,6 +221,9 @@ class WindowManager {
     E.ipcMain.on("updateActionState", (event, state) => {
       MenuState.updateActionState(state);
     });
+    E.ipcMain.on("log", (event, log) => {
+      console.log("event, log: ", log);
+    });
     E.ipcMain.on("openFile", (event, args) => {
       console.log("event: openFile, args: ", args);
     });
@@ -229,21 +232,15 @@ class WindowManager {
     });
     E.ipcMain.on("startAppAuth", (event, args) => {
       if (isAppAuthGrandLink(args.grantPath)) {
-        const url = `${this.home}${args.grantPath}`;
-        const options: E.BrowserWindowConstructorOptions = {
-          width: 800,
-          height: 600,
-          webPreferences: {
-            sandbox: true,
-          },
-        };
+        const url = `${this.home}${args.grantPath}?desktop_protocol=figma`;
 
-        this.authView = new E.BrowserWindow(options);
-        this.authView.loadURL(url);
+        E.shell.openExternal(url);
       }
     });
     E.ipcMain.on("finishAppAuth", (event, args) => {
-      console.log("event: finishAppAuth, args: ", args);
+      const url = `${this.home}${args.redirectURL}`;
+
+      this.mainTab.webContents.loadURL(url);
     });
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
@@ -367,15 +364,21 @@ class WindowManager {
     });
   };
 
-  public destroyAuthView = (): void => {
-    if (!this.authView) {
-      return;
-    }
-    this.authView.destroy();
+  public tryHandleAppAuthRedeemUrl = (url: string): boolean => {
+    if (isAppAuthRedeem(url)) {
+      const normalizedUrl = normalizeUrl(url);
+      const parsedUrl = parseURL(normalizedUrl);
 
-    setTimeout(() => {
-      this.authView = null;
-    }, 1000);
+      const secret = parsedUrl.searchParams.get("g_secret");
+      if (secret) {
+        this.mainTab.webContents.send("redeemAppAuth", secret);
+        return true;
+      }
+
+      return true;
+    }
+
+    return false;
   };
 
   public addTab = (scriptPreload = "loadMainContent.js", url = `${this.home}/login`, title?: string): E.BrowserView => {
@@ -503,6 +506,10 @@ class WindowManager {
 
   private onMainWindowWillNavigate = (event: any, newUrl: string): void => {
     const currentUrl = event.sender.getURL();
+
+    if (isAppAuthRedeem(newUrl)) {
+      return;
+    }
 
     if (newUrl === currentUrl) {
       event.preventDefault();

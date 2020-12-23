@@ -27,10 +27,8 @@ class App {
         const paramIndex = argv.findIndex(i => isValidProjectLink(i));
         const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
 
-        if (hasAppAuthorization) {
-          setTimeout(() => {
-            this.windowManager.loadRecentFilesMainTab();
-          }, 2000);
+        if (this.windowManager.tryHandleAppAuthRedeemUrl(hasAppAuthorization)) {
+          return;
         }
 
         if (paramIndex !== -1) {
@@ -85,14 +83,7 @@ class App {
     }, 1500);
 
     E.protocol.registerHttpProtocol(Const.PROTOCOL, (req: E.ProtocolRequest, cb: (req: E.ProtocolResponse) => void) => {
-      if (isAppAuthRedeem(req.url)) {
-        const url = normalizeUrl(req.url);
-
-        this.windowManager.mainTab.webContents.loadURL(url);
-        this.windowManager.destroyAuthView();
-
-        setTimeout(this.windowManager.loadRecentFilesMainTab, 500);
-
+      if (this.windowManager.tryHandleAppAuthRedeemUrl(req.url)) {
         return;
       }
 

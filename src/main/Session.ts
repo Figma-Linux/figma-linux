@@ -17,6 +17,19 @@ export class Session {
   };
 
   public handleAppReady = () => {
+    E.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+      const whitelist = ["fullscreen", "pointerLock"];
+      callback(whitelist.includes(permission));
+    });
+    E.session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+      details.requestHeaders["User-Agent"] = Const.UserAgent.Windows;
+      callback({ cancel: false, requestHeaders: details.requestHeaders });
+    });
+
+    const defaultUserAgent = E.session.defaultSession.getUserAgent();
+    const userAgent = defaultUserAgent.replace(/Figma([^\/]+)\/([^\s]+)/, "Figma$1/$2 Figma/$2");
+
+    E.session.defaultSession.setUserAgent(userAgent);
     E.session.defaultSession.cookies
       .get({
         url: Const.HOMEPAGE,

@@ -16,9 +16,9 @@ export default class Tabs {
     const options: E.BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,
-        webSecurity: true,
         webgl: true,
-        experimentalFeatures: false,
+        contextIsolation: false,
+        worldSafeExecuteJavaScript: true,
         zoomFactor: 1,
       },
     };
@@ -43,7 +43,6 @@ export default class Tabs {
     tab.webContents.loadURL(url);
     tab.webContents.on("dom-ready", () => {
       let dirs = Settings.getSync("app.fontDirs") as string[];
-      // let dirs = ["/usr/share/fonts", "/usr/local/share/fonts", "/home/ruut/.local/share/fonts"];
 
       // const currentThemeId = Settings.getSync("theme.currentTheme") as string;
       // if (currentThemeId !== "0") {

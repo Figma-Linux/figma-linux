@@ -228,7 +228,17 @@ class WindowManager {
       console.log("event: openFile, args: ", args);
     });
     E.ipcMain.on("setFeatureFlags", (event, args) => {
-      console.log("event: setFeatureFlags, args: ", args);
+      Settings.get().then(settings => {
+        Settings.set({
+          ...settings,
+          app: {
+            ...(settings.app as any),
+            featureFlags: {
+              ...args.featureFlags,
+            },
+          },
+        });
+      });
     });
     E.ipcMain.on("startAppAuth", (event, args) => {
       if (isAppAuthGrandLink(args.grantPath)) {

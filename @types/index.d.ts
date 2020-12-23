@@ -58,6 +58,7 @@ declare namespace Electron {
     on(channel: "setDisableMainMenu", listener: (event: IpcMainEvent, disable: boolean) => void): this;
     on(channel: "startAppAuth", listener: (event: IpcMainEvent, auth: { grantPath: string }) => void): this;
     on(channel: "finishAppAuth", listener: (event: IpcMainEvent, auth: { redirectURL: string }) => void): this;
+    on(channel: "setFeatureFlags", listener: (event: IpcMainEvent, auth: { featureFlags: FeatureFlags }) => void): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {

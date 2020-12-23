@@ -2,7 +2,7 @@ import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { isAppAuthRedeem, isAppAuthLink, isValidProjectLink, normalizeUrl } from "Utils/Common";
+import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
 import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
 import WindowManager from "./window/WindowManager";

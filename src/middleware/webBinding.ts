@@ -369,7 +369,6 @@ const publicAPI: any = {
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, "?node-id=" + args.pageId, args.target);
   },
   setFeatureFlags(args: any) {
-    console.log("setFeatureFlags, args: ", args);
     sendMsgToMain("setFeatureFlags", args);
   },
   startAppAuth(args: any) {

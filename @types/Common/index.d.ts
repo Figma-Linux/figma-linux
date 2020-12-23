@@ -136,6 +136,10 @@ interface SctionState {
   "distribute-bottom": boolean;
 }
 
+interface FeatureFlags {
+  desktop_beta_use_agent_for_fonts?: boolean;
+}
+
 interface SettingsInterface {
   app: {
     panelHeight: number;
@@ -147,6 +151,7 @@ interface SettingsInterface {
     exportDir: string;
     fontDirs: string[];
     lastOpenedTabs: SavedTab[];
+    featureFlags: FeatureFlags;
   };
   ui: {
     scalePanel: number;

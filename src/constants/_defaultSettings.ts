@@ -9,6 +9,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
     exportDir: `${process.env.HOME}/Pictures/Figma`,
     fontDirs: ["/usr/share/fonts", "/usr/local/share/fonts", `${process.env.HOME}/.local/share/fonts`],
     lastOpenedTabs: [],
+    featureFlags: {},
   },
   theme: {
     currentTheme: "0",

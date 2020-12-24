@@ -5,6 +5,7 @@ import { exec } from "child_process";
 import * as url from "url";
 
 import Tabs from "./Tabs";
+import { logger } from "../Logger";
 import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
@@ -182,7 +183,7 @@ class WindowManager {
       MenuState.updateInFileBrowserActionState();
     });
     E.ipcMain.on("closeAllTab", () => {
-      console.log("Close all tab");
+      logger.debug("Close all tab");
     });
     E.ipcMain.on("setTitle", (event, title) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
@@ -197,7 +198,7 @@ class WindowManager {
       MenuState.updatePluginState(pluginMenu);
     });
     E.ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
-      console.log("registerManifestChangeObserver, callbackId: ", callbackId);
+      logger.debug("registerManifestChangeObserver, callbackId: ", callbackId);
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -222,10 +223,10 @@ class WindowManager {
       MenuState.updateActionState(state);
     });
     E.ipcMain.on("log", (event, log) => {
-      console.log("event, log: ", log);
+      logger.debug("event, log: ", log);
     });
     E.ipcMain.on("openFile", (event, args) => {
-      console.log("event: openFile, args: ", args);
+      logger.debug("event: openFile, args: ", args);
     });
     E.ipcMain.on("setFeatureFlags", (event, args) => {
       Settings.get().then(settings => {
@@ -465,7 +466,7 @@ class WindowManager {
       .request(`${this.home}/logout`)
       .on("response", response => {
         response.on("error", (err: Error) => {
-          console.log("Request error: ", err);
+          logger.error("Request error: ", err);
         });
         response.on("end", () => {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
@@ -494,7 +495,7 @@ class WindowManager {
 
   private onNewWindow = (event: Event, url: string) => {
     event.preventDefault();
-    console.log("newWindow, url: ", url);
+    logger.debug("newWindow, url: ", url);
 
     if (/start_google_sso/.test(url)) return;
 
@@ -651,8 +652,8 @@ class WindowManager {
 
   private installReactDevTools = (): void => {
     installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name: string) => console.log(`Added Extension:  ${name}`))
-      .catch((err: Error) => console.log("An error occurred: ", err));
+      .then((name: string) => logger.info(`Added Extension:  ${name}`))
+      .catch((err: Error) => logger.error("An error occurred: ", err));
   };
 }
 

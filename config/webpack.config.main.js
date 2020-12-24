@@ -32,6 +32,7 @@ module.exports = config => {
     Const: path.resolve(rootFolder, "src/constants"),
     Main: path.resolve(rootFolder, "src/main"),
     Utils: path.resolve(rootFolder, "src/utils"),
+    Enums: path.resolve(rootFolder, "@types/enums.ts"),
   };
 
   config.devtool = "source-map";

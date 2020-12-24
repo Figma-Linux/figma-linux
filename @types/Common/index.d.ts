@@ -22,7 +22,14 @@ interface ShortcutsMap {
 type View = "TopPanel" | "Settings";
 type SettingsView = "General" | "Shortcuts" | "Themes";
 
-interface SctionState {
+type ValidObject = null | undefined | number | boolean | string | ObjectKeys | ValidObject[] | Error;
+
+interface ObjectKeys {
+  [key: string]: ValidObject;
+}
+
+// TODO: don't uses?
+interface SectionState {
   [state: string]: boolean;
   newFile: boolean;
   openFileBrowser: boolean;
@@ -142,6 +149,7 @@ interface FeatureFlags {
 
 interface SettingsInterface {
   app: {
+    logLevel: string;
     panelHeight: number;
     showMainMenu: boolean;
     disabledMainMenu: boolean;

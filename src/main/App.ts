@@ -1,10 +1,12 @@
 import * as Settings from "electron-settings";
 import * as E from "electron";
+import * as _ from "lodash";
 
 import * as Const from "Const";
 import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
 import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
+import { logger } from "./Logger";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
 import "./events/app";
@@ -22,7 +24,7 @@ class App {
     } else {
       E.app.on("second-instance", (event, argv) => {
         let projectLink = "";
-        console.log("second-instance, argv: ", argv);
+        logger.debug("second-instance, argv: ", argv);
 
         const paramIndex = argv.findIndex(i => isValidProjectLink(i));
         const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
@@ -50,17 +52,21 @@ class App {
       this.session = new Session();
 
       mkdirIfNotExists(themesDirectory).catch(error => {
-        console.error("mkdirIfNotExists error: ", error);
+        logger.error("mkdirIfNotExists error: ", error);
       });
     }
 
     this.appEvent();
 
+    // TODO: to move in separate storage module
     const settings = Settings.getSync();
-    Settings.setSync({
-      ...Const.DEFAULT_SETTINGS,
-      ...settings,
+    const mergedSettings = _.mergeWith(Const.DEFAULT_SETTINGS, settings, (oldValue, newValue, key) => {
+      if (key === "version") {
+        return oldValue;
+      }
     });
+
+    Settings.setSync(mergedSettings);
   }
 
   private appEvent = (): void => {

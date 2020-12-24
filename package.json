@@ -40,6 +40,7 @@
     "electron-devtools-installer": "^2.2.4",
     "electron-settings": "^4.0.2",
     "figma-linux-rust-binding": "=0.1.4",
+    "lodash": "^4.17.20",
     "mobx": "^5.6.0",
     "mobx-react": "^5.4.2",
     "react": "^16.5.2",
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@types/cheerio": "^0.22.13",
     "@types/electron-devtools-installer": "^2.0.3",
+    "@types/lodash": "^4.14.166",
     "@types/node": "^12.12.13",
     "@types/react": "^16.4.16",
     "@types/react-dom": "^16.0.6",

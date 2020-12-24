@@ -1,5 +1,6 @@
 import * as Chokidar from "chokidar";
 
+import { logger } from "./Logger";
 import { loadExtensionManifest } from "Utils/Main";
 
 class ExtensionManager {
@@ -149,7 +150,7 @@ class ExtensionManager {
       try {
         callback(args);
       } catch (ex) {
-        console.error(ex);
+        logger.error(ex);
       }
     });
   }

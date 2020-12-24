@@ -4,8 +4,9 @@ import * as path from "path";
 
 import { DEFAULT_SETTINGS } from "Const";
 import { isDev } from "Utils/Common";
-import { getThemeById } from "Utils/Main";
+// import { getThemeById } from "Utils/Main";
 import Fonts from "../Fonts";
+import { logger } from "../Logger";
 
 export default class Tabs {
   public static registeredCancelCallbackMap: Map<number, Function> = new Map();
@@ -55,7 +56,7 @@ export default class Tabs {
         dirs = DEFAULT_SETTINGS.app.fontDirs;
       }
       Fonts.getFonts(dirs)
-        .catch(err => console.error(`Failed to load local fonts, error: ${err}`))
+        .catch(err => logger.error(`Failed to load local fonts, error: ${err}`))
         .then(fonts => {
           tab.webContents.send("updateFonts", fonts);
         });

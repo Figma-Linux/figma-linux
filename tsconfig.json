@@ -43,6 +43,7 @@
       "Const": ["src/constants"],
       "Utils": ["src/utils"],
       "Utils/*": ["src/utils/*"],
+      "Enums": ["@types/enums.ts"],
       "*": ["node_modules/@types/*"]
     },
   },

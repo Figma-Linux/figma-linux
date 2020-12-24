@@ -1,6 +1,7 @@
 import * as E from "electron";
 
 import * as Const from "Const";
+import { logger } from "./Logger";
 import { isSameCookieDomain } from "Utils/Main";
 
 export class Session {
@@ -37,17 +38,17 @@ export class Session {
           return cookie.name === Const.FIGMA_SESSION_COOKIE_NAME;
         });
 
-        console.log("[wm] already signed in?", this._hasFigmaSession);
+        logger.info("[wm] already signed in?", this._hasFigmaSession);
       })
       .catch((error: Error) =>
-        console.error("[wm] failed to get cookies during handleAppReady:", Const.HOMEPAGE, error),
+        logger.error("[wm] failed to get cookies during handleAppReady:", Const.HOMEPAGE, error),
       );
   };
 
   private handleCookiesChanged = (event: E.Event, cookie: E.Cookie, cause: string, removed: boolean) => {
     if (isSameCookieDomain(cookie.domain || "", Const.PARSED_HOMEPAGE.hostname || "")) {
       if (cookie.name === Const.FIGMA_SESSION_COOKIE_NAME) {
-        console.log(`${cookie.name} cookie changed:`, cause, cookie.name, cookie.domain, removed ? "removed" : "");
+        logger.debug(`${cookie.name} cookie changed:`, cause, cookie.name, cookie.domain, removed ? "removed" : "");
       }
     }
   };

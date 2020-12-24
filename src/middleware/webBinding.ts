@@ -59,10 +59,10 @@ const onClickExportImage = (e: Event, link: HTMLLinkElement) => {
         length = chunk.length;
       });
       res.on("error", (err: Error) => {
-        console.log("Export image error: ", err);
+        sendMsgToMain("log-error", "Export image error: ", err);
       });
     })
-    .on("error", error => console.log("request error: ", error))
+    .on("error", error => sendMsgToMain("log-error", "request error: ", error))
     .end();
 
   e.preventDefault();
@@ -86,14 +86,13 @@ const onWebMessage = (event: MessageEvent) => {
     return;
   }
   if (!msg.name || !(msg.name in publicAPI)) {
-    console.error("[desktop] Unhandled message", msg.name);
+    sendMsgToMain("log-error", "[desktop] Unhandled message", msg.name);
     return;
   }
 
   let resultPromise = undefined;
 
   try {
-    console.log("onWebMessage, msg: ", msg);
     resultPromise = msg.name && publicAPI && publicAPI[msg.name](msg.args);
   } finally {
     if (msg.promiseID != null) {
@@ -144,8 +143,6 @@ const initWebApi = (props: IntiApiOptions) => {
   };
 
   window.__figmaContent = false;
-
-  console.log("args.fileBrowser: ", typeof props.fileBrowser, props.fileBrowser);
 
   if (/file\/.+/.test(location.href)) {
     props.fileBrowser = false;
@@ -200,7 +197,6 @@ const initWebApi = (props: IntiApiOptions) => {
       };
     },
     promiseMessage: function(name, args, transferList): Promise<any> {
-      console.log("promiseMessage, name, args, transferList: ", name, args, transferList);
       return new Promise((resolve, reject) => {
         const id = nextPromiseID++;
         pendingPromises.set(id, { resolve, reject });
@@ -208,7 +204,6 @@ const initWebApi = (props: IntiApiOptions) => {
       });
     },
     setMessageHandler: function(handler): void {
-      console.log("setMessageHandler: handler", handler);
       messageHandler = handler;
       tryFlushMessages();
     },
@@ -219,8 +214,6 @@ const initWebApi = (props: IntiApiOptions) => {
 
     if (!msg) return;
 
-    console.log("channel.port1.onmessage, event: ", event.data);
-
     if (msg.promiseID != null) {
       const pendingPromise = pendingPromises.get(msg.promiseID);
 
@@ -229,6 +222,7 @@ const initWebApi = (props: IntiApiOptions) => {
         if ("result" in msg) {
           pendingPromise.resolve(msg.result);
         } else {
+          sendMsgToMain("log-error", msg.error);
           pendingPromise.reject(msg.error);
         }
       }
@@ -316,39 +310,30 @@ const publicAPI: any = {
   },
 
   newFile(args: any) {
-    console.log("newFile, args: ", args);
     sendMsgToMain("newFile", args.info);
   },
   openFile(args: any) {
-    console.log("openFile, args: ", args);
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
   close(args: any) {
-    console.log("close, args: ", args);
     sendMsgToMain("closeTab", args.suppressReopening);
   },
   setFileKey(args: any) {
-    console.log("setFileKey, args: ", args);
     sendMsgToMain("updateFileKey", args.fileKey);
   },
   setLoading(args: any) {
-    console.log("setLoading, args: ", args);
     sendMsgToMain("updateLoadingStatus", args.loading);
   },
   setSaved(args: any) {
-    console.log("setSaved, args: ", args);
     sendMsgToMain("updateSaveStatus", args.saved);
   },
   updateActionState(args: any) {
-    console.log("updateActionState, args: ", args);
     sendMsgToMain("updateActionState", args.state);
   },
   showFileBrowser() {
-    console.log("showFileBrowser");
     sendMsgToMain("showFileBrowser");
   },
   setIsPreloaded() {
-    console.log("setIsPreloaded");
     sendMsgToMain("setIsPreloaded");
   },
   setPluginMenuData(args: WepApi.SetPluginMenuDataProps) {
@@ -357,7 +342,7 @@ const publicAPI: any = {
       if (isMenuItem(item)) {
         pluginMenuData.push(item);
       } else {
-        console.error("[desktop] invalid plugin menu item", args);
+        sendMsgToMain("log-error", "[desktop] invalid plugin menu item", args);
       }
     }
 
@@ -365,7 +350,7 @@ const publicAPI: any = {
   },
 
   openPrototype(args: any) {
-    console.log("openPrototype, args: ", args);
+    sendMsgToMain("log-debug", "openPrototype, args: ", args);
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, "?node-id=" + args.pageId, args.target);
   },
   setFeatureFlags(args: any) {
@@ -447,12 +432,14 @@ const publicAPI: any = {
       const fontPath = args.path;
 
       if (!fontMap) {
+        sendMsgToMain("log-error", "No fonts");
         reject(new Error("No fonts"));
         return;
       }
 
       const faces = fontMap[fontPath];
       if (!faces || faces.length === 0) {
+        sendMsgToMain("log-error", "Invalid path: ", fontPath);
         reject(new Error("Invalid path"));
         return;
       }
@@ -481,6 +468,7 @@ const publicAPI: any = {
   getClipboardData(args: any) {
     return new Promise((resolve, reject) => {
       if (E.clipboard.has("org.nspasteboard.ConcealedType")) {
+        sendMsgToMain("log-error", "Clipboard unavailable");
         reject(new Error("Clipboard unavailable"));
         return;
       }
@@ -496,7 +484,7 @@ const publicAPI: any = {
           const unsafeHTML = E.clipboard.readHTML().trim();
 
           if (unsafeHTML.includes("<!--(figma)") && unsafeHTML.includes("(/figma)-->")) {
-            data = new Buffer(unsafeHTML);
+            data = Buffer.from(unsafeHTML);
           }
         } else if (format === "image/svg+xml") {
           data = E.clipboard.readBuffer(format);
@@ -506,7 +494,7 @@ const publicAPI: any = {
           if (data.byteLength === 0) {
             const unsafeText = E.clipboard.readText().trim();
             if (unsafeText.startsWith("<svg") && unsafeText.endsWith("</svg>")) {
-              data = new Buffer(unsafeText);
+              data = Buffer.from(unsafeText);
             }
           }
         } else if (format === "image/jpeg" || format === "image/png") {
@@ -525,6 +513,8 @@ const publicAPI: any = {
           return;
         }
       }
+
+      sendMsgToMain("log-error", "Formats not found. Formats: ", formats);
       reject(new Error("Formats not found"));
     });
   },

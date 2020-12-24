@@ -38,27 +38,33 @@ declare namespace Electron {
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
-    on(channel: string, listener: (event: IpcMainEvent, args: any) => void): this;
-    on(channel: "setTitle", listener: (event: IpcMainEvent, title: string) => void): this;
-    on(channel: "setPluginMenuData", listener: (event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) => void): this;
-    on(channel: "receiveTabs", listener: (event: IpcMainEvent, tabs: Tab[]) => void): this;
-    on(channel: "updateActionState", listener: (event: IpcMainEvent, state: MenuState.State) => void): this;
-    on(channel: "updateFileKey", listener: (event: IpcMainEvent, key: string) => void): this;
-    on(channel: "setTabUrl", listener: (event: IpcMainEvent, url: string) => void): this;
-    on(channel: "closeAllTab", listener: (event: IpcMainEvent) => void): this;
-    on(channel: "setFocusToMainTab", listener: (event: IpcMainEvent) => void): this;
-    on(channel: "setTabFocus", listener: (event: IpcMainEvent, id: number) => void): this;
-    on(channel: "closeTab", listener: (event: IpcMainEvent, id: number) => void): this;
-    on(channel: "newTab", listener: (event: IpcMainEvent, id: number) => void): this;
-    on(channel: "openSettingsView", listener: (event: IpcMainEvent) => void): this;
-    on(channel: "closeSettingsView", listener: (event: IpcMainEvent) => void): this;
-    on(channel: "updateFigmaUiScale", listener: (event: IpcMainEvent, scale: number) => void): this;
-    on(channel: "updatePanelScale", listener: (event: IpcMainEvent, scale: number) => void): this;
-    on(channel: "setVisibleMainMenu", listener: (event: IpcMainEvent, visible: boolean) => void): this;
-    on(channel: "setDisableMainMenu", listener: (event: IpcMainEvent, disable: boolean) => void): this;
-    on(channel: "startAppAuth", listener: (event: IpcMainEvent, auth: { grantPath: string }) => void): this;
-    on(channel: "finishAppAuth", listener: (event: IpcMainEvent, auth: { redirectURL: string }) => void): this;
-    on(channel: "setFeatureFlags", listener: (event: IpcMainEvent, auth: { featureFlags: FeatureFlags }) => void): this;
+    on(channel: string, listener: (event: IpcMainInvokeEvent, args: any) => void): this;
+    on(channel: "setTitle", listener: (event: IpcMainInvokeEvent, title: string) => void): this;
+    on(channel: "setPluginMenuData", listener: (event: IpcMainInvokeEvent, pluginMenu: Menu.MenuItem[]) => void): this;
+    on(channel: "receiveTabs", listener: (event: IpcMainInvokeEvent, tabs: Tab[]) => void): this;
+    on(channel: "updateActionState", listener: (event: IpcMainInvokeEvent, state: MenuState.State) => void): this;
+    on(channel: "updateFileKey", listener: (event: IpcMainInvokeEvent, key: string) => void): this;
+    on(channel: "setTabUrl", listener: (event: IpcMainInvokeEvent, url: string) => void): this;
+    on(channel: "closeAllTab", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "setFocusToMainTab", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "setTabFocus", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
+    on(channel: "closeTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
+    on(channel: "newTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
+    on(channel: "openSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "closeSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "updateFigmaUiScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
+    on(channel: "updatePanelScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
+    on(channel: "setVisibleMainMenu", listener: (event: IpcMainInvokeEvent, visible: boolean) => void): this;
+    on(channel: "setDisableMainMenu", listener: (event: IpcMainInvokeEvent, disable: boolean) => void): this;
+    on(channel: "startAppAuth", listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void): this;
+    on(channel: "finishAppAuth", listener: (event: IpcMainInvokeEvent, auth: { redirectURL: string }) => void): this;
+    on(
+      channel: "setFeatureFlags",
+      listener: (event: IpcMainInvokeEvent, auth: { featureFlags: FeatureFlags }) => void,
+    ): this;
+    on(channel: "log-debug", listener: (event: IpcMainInvokeEvent, ...args: ValidObject[]) => void): this;
+    on(channel: "log-info", listener: (event: IpcMainInvokeEvent, ...args: ValidObject[]) => void): this;
+    on(channel: "log-error", listener: (event: IpcMainInvokeEvent, ...args: ValidObject[]) => void): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -97,6 +103,9 @@ declare namespace Electron {
     send(channel: "updatePanelScale", scale: number): this;
     send(channel: "setVisibleMainMenu", visible: boolean): this;
     send(channel: "setDisableMainMenu", disable: boolean): this;
+    send(channel: "log-debug", ...args: ValidObject[]): this;
+    send(channel: "log-info", ...args: ValidObject[]): this;
+    send(channel: "log-error", ...args: ValidObject[]): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

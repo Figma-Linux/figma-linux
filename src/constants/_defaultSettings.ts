@@ -1,5 +1,8 @@
+import { LogLevel } from "Enums";
+
 export const DEFAULT_SETTINGS: SettingsInterface = {
   app: {
+    logLevel: LogLevel.INFO,
     panelHeight: 40,
     showMainMenu: true,
     disabledMainMenu: false,

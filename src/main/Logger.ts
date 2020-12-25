@@ -5,10 +5,11 @@ import { LOGLEVEL } from "Const";
 import { LogLevel } from "Enums";
 
 export class Logger {
-  private logLevel: LogLevel = LogLevel.INFO;
+  private levels = ["DEBUG", "INFO", "ERROR"];
+  private logLevel = 1;
   constructor() {
     if (LOGLEVEL) {
-      this.logLevel = LOGLEVEL;
+      this.logLevel = this.levels.indexOf(LOGLEVEL);
     } else {
       // TODO: to move in separate storage module
       this.logLevel = (Settings.getSync() as SettingsInterface).app.logLevel as LogLevel;
@@ -29,21 +30,21 @@ export class Logger {
     return currentDate.toLocaleString();
   };
 
-  private print = (level: string, ...argv: ValidObject[]) => {
+  private print = (level: number, ...argv: ValidObject[]) => {
+    if (level < this.logLevel) {
+      return;
+    }
+
     const dateTime = this.getDateTime();
 
-    console.log(`[${dateTime}]:[${level}] -`, ...argv);
+    console.log(`[${dateTime}]:[${this.levels[level]}] -`, ...argv);
   };
 
   public debug = (...argv: ValidObject[]): void => {
-    if (this.logLevel === LogLevel.DEBUG) {
-      this.print(LogLevel.DEBUG, ...argv);
-    }
+    this.print(LogLevel.DEBUG, ...argv);
   };
   public info = (...argv: ValidObject[]): void => {
-    if (this.logLevel !== LogLevel.ERROR) {
-      this.print(LogLevel.INFO, ...argv);
-    }
+    this.print(LogLevel.INFO, ...argv);
   };
   public error = (...argv: ValidObject[]): void => {
     this.print(LogLevel.ERROR, ...argv);

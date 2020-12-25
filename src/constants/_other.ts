@@ -1,7 +1,6 @@
 import { parse } from "url";
-import { LogLevel } from "Enums";
 
-export const LOGLEVEL = process.env.FIGMA_LOGLEVEL as LogLevel | undefined;
+export const LOGLEVEL = process.env.FIGMA_LOGLEVEL as string | undefined;
 
 export const HOMEPAGE = "https://www.figma.com";
 export const RECENT_FILES = "https://www.figma.com/files/recent";

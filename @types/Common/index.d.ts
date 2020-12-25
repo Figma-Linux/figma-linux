@@ -149,7 +149,7 @@ interface FeatureFlags {
 
 interface SettingsInterface {
   app: {
-    logLevel: string;
+    logLevel: number;
     panelHeight: number;
     showMainMenu: boolean;
     disabledMainMenu: boolean;

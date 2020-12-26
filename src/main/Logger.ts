@@ -1,8 +1,8 @@
-import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import { LOGLEVEL } from "Const";
 import { LogLevel } from "Enums";
+import { storage } from "./Storage";
 
 export class Logger {
   private levels = ["DEBUG", "INFO", "ERROR"];
@@ -11,8 +11,7 @@ export class Logger {
     if (LOGLEVEL) {
       this.logLevel = this.levels.indexOf(LOGLEVEL);
     } else {
-      // TODO: to move in separate storage module
-      this.logLevel = (Settings.getSync() as SettingsInterface).app.logLevel as LogLevel;
+      this.logLevel = storage.getLogLevel();
     }
 
     this.initLoggerEvent();
@@ -30,7 +29,7 @@ export class Logger {
     return currentDate.toLocaleString();
   };
 
-  private print = (level: number, ...argv: ValidObject[]) => {
+  private print = (level: number, ...argv: any[]) => {
     if (level < this.logLevel) {
       return;
     }
@@ -40,13 +39,13 @@ export class Logger {
     console.log(`[${dateTime}]:[${this.levels[level]}] -`, ...argv);
   };
 
-  public debug = (...argv: ValidObject[]): void => {
+  public debug = (...argv: any[]): void => {
     this.print(LogLevel.DEBUG, ...argv);
   };
-  public info = (...argv: ValidObject[]): void => {
+  public info = (...argv: any[]): void => {
     this.print(LogLevel.INFO, ...argv);
   };
-  public error = (...argv: ValidObject[]): void => {
+  public error = (...argv: any[]): void => {
     this.print(LogLevel.ERROR, ...argv);
   };
 }

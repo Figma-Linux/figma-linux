@@ -1,4 +1,3 @@
-import * as Settings from "electron-settings";
 import * as E from "electron";
 import * as path from "path";
 
@@ -6,6 +5,7 @@ import { DEFAULT_SETTINGS } from "Const";
 import { isDev } from "Utils/Common";
 // import { getThemeById } from "Utils/Main";
 import Fonts from "../Fonts";
+import { storage } from "../Storage";
 import { logger } from "../Logger";
 
 export default class Tabs {
@@ -43,7 +43,7 @@ export default class Tabs {
     tab.setBounds(rect);
     tab.webContents.loadURL(url);
     tab.webContents.on("dom-ready", () => {
-      let dirs = Settings.getSync("app.fontDirs") as string[];
+      let dirs = storage.get().app.fontDirs;
 
       // const currentThemeId = Settings.getSync("theme.currentTheme") as string;
       // if (currentThemeId !== "0") {

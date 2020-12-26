@@ -1,6 +1,4 @@
-import * as Settings from "electron-settings";
 import * as E from "electron";
-import * as _ from "lodash";
 
 import * as Const from "Const";
 import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
@@ -57,16 +55,6 @@ class App {
     }
 
     this.appEvent();
-
-    // TODO: to move in separate storage module
-    const settings = Settings.getSync();
-    const mergedSettings = _.mergeWith(Const.DEFAULT_SETTINGS, settings, (oldValue, newValue, key) => {
-      if (key === "version") {
-        return oldValue;
-      }
-    });
-
-    Settings.setSync(mergedSettings);
   }
 
   private appEvent = (): void => {
@@ -103,9 +91,7 @@ class App {
   };
 
   private onWindowAllClosed = (): void => {
-    if (process.platform !== "darwin") {
-      E.app.quit();
-    }
+    E.app.quit();
   };
 }
 

@@ -1,10 +1,10 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
-import * as Settings from "electron-settings";
 import * as E from "electron";
 import { exec } from "child_process";
 import * as url from "url";
 
 import Tabs from "./Tabs";
+import { storage } from "../Storage";
 import { logger } from "../Logger";
 import initMainMenu from "./menu";
 import Commander from "../Commander";
@@ -33,18 +33,18 @@ class WindowManager {
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
   private tabs: Tab[];
-  private panelHeight = Settings.getSync("app.panelHeight") as number;
+  private panelHeight = storage.get().app.panelHeight;
 
   constructor() {
     this.home = Const.HOMEPAGE;
-    this.figmaUiScale = Settings.getSync("ui.scaleFigmaUI") as number;
-    this.panelScale = Settings.getSync("ui.scalePanel") as number;
+    this.figmaUiScale = storage.get().ui.scaleFigmaUI;
+    this.panelScale = storage.get().ui.scalePanel;
 
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
       height: 900,
-      frame: !(Settings.getSync("app.disabledMainMenu") as boolean),
-      autoHideMenuBar: Settings.getSync("app.showMainMenu") as boolean,
+      frame: !storage.get().app.disabledMainMenu,
+      autoHideMenuBar: storage.get().app.showMainMenu,
       webPreferences: {
         sandbox: false,
         zoomFactor: 1,
@@ -61,7 +61,7 @@ class WindowManager {
     this.mainWindow = new E.BrowserWindow(options);
     this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
-    if (!Settings.getSync("app.disabledMainMenu")) {
+    if (!storage.get().app.disabledMainMenu) {
       initMainMenu();
     } else {
       E.Menu.setApplicationMenu(null);
@@ -83,7 +83,7 @@ class WindowManager {
 
     E.app.on("will-quit", this.onWillQuit);
 
-    if (Settings.getSync("app.saveLastOpenedTabs")) {
+    if (storage.get().app.saveLastOpenedTabs) {
       setTimeout(() => this.restoreTabs(), 1000);
     }
 
@@ -116,7 +116,7 @@ class WindowManager {
   };
 
   private restoreTabs = () => {
-    const tabs = Settings.getSync("app.lastOpenedTabs") as SavedTab[];
+    const tabs = storage.get().app.lastOpenedTabs;
 
     if (Array.isArray(tabs)) {
       tabs.forEach((tab, i) => {
@@ -145,7 +145,7 @@ class WindowManager {
       }
     });
 
-    Settings.set("app.lastOpenedTabs", lastOpenedTabs as any);
+    storage.setOpenedTabs(lastOpenedTabs);
   };
 
   private addIpc = (): void => {
@@ -229,17 +229,7 @@ class WindowManager {
       logger.debug("event: openFile, args: ", args);
     });
     E.ipcMain.on("setFeatureFlags", (event, args) => {
-      Settings.get().then(settings => {
-        Settings.set({
-          ...settings,
-          app: {
-            ...(settings.app as any),
-            featureFlags: {
-              ...args.featureFlags,
-            },
-          },
-        });
-      });
+      storage.setFeatureFlags(args.featureFlags);
     });
     E.ipcMain.on("startAppAuth", (event, args) => {
       if (isAppAuthGrandLink(args.grantPath)) {
@@ -595,7 +585,7 @@ class WindowManager {
     this.panelHeight = panelHeight;
     this.mainWindow.webContents.send("updatePanelHeight", panelHeight);
 
-    Settings.set("app.panelHeight", panelHeight);
+    storage.setPanelHeight(panelHeight);
 
     this.mainWindow.webContents.send("updatePanelScale", this.panelScale);
     this.mainWindow.webContents.send("updateUiScale", this.figmaUiScale);
@@ -625,7 +615,7 @@ class WindowManager {
     this.panelHeight = panelHeight;
     this.mainWindow.webContents.send("updatePanelHeight", panelHeight);
 
-    Settings.set("app.panelHeight", panelHeight);
+    storage.setPanelHeight(panelHeight);
 
     this.mainWindow.webContents.send("updatePanelScale", this.panelScale);
     this.updateBounds();

@@ -22,12 +22,6 @@ interface ShortcutsMap {
 type View = "TopPanel" | "Settings";
 type SettingsView = "General" | "Shortcuts" | "Themes";
 
-type ValidObject = null | undefined | number | boolean | string | ObjectKeys | ValidObject[] | Error;
-
-interface ObjectKeys {
-  [key: string]: ValidObject;
-}
-
 // TODO: don't uses?
 interface SectionState {
   [state: string]: boolean;

@@ -44,6 +44,7 @@
       "Utils": ["src/utils"],
       "Utils/*": ["src/utils/*"],
       "Enums": ["@types/enums.ts"],
+      "Storage": ["src/main/Storage.ts"],
       "*": ["node_modules/@types/*"]
     },
   },

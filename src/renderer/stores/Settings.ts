@@ -1,12 +1,12 @@
 import * as E from "electron";
-import * as S from "electron-settings";
+import { storage } from "Storage";
 import { observable, action, toJS } from "mobx";
 
 export class Settings {
   @observable settings?: SettingsInterface;
 
   constructor() {
-    this.settings = S.getSync() as SettingsInterface;
+    this.settings = storage.get();
 
     this.events();
   }
@@ -104,7 +104,7 @@ export class Settings {
   public setSettings = () => {
     const settings = toJS(this.settings);
 
-    S.set(settings);
+    storage.set(settings);
   };
 
   private events = (): void => {

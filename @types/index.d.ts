@@ -62,9 +62,9 @@ declare namespace Electron {
       channel: "setFeatureFlags",
       listener: (event: IpcMainInvokeEvent, auth: { featureFlags: FeatureFlags }) => void,
     ): this;
-    on(channel: "log-debug", listener: (event: IpcMainInvokeEvent, ...args: ValidObject[]) => void): this;
-    on(channel: "log-info", listener: (event: IpcMainInvokeEvent, ...args: ValidObject[]) => void): this;
-    on(channel: "log-error", listener: (event: IpcMainInvokeEvent, ...args: ValidObject[]) => void): this;
+    on(channel: "log-debug", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
+    on(channel: "log-info", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
+    on(channel: "log-error", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -103,9 +103,9 @@ declare namespace Electron {
     send(channel: "updatePanelScale", scale: number): this;
     send(channel: "setVisibleMainMenu", visible: boolean): this;
     send(channel: "setDisableMainMenu", disable: boolean): this;
-    send(channel: "log-debug", ...args: ValidObject[]): this;
-    send(channel: "log-info", ...args: ValidObject[]): this;
-    send(channel: "log-error", ...args: ValidObject[]): this;
+    send(channel: "log-debug", ...args: any[]): this;
+    send(channel: "log-info", ...args: any[]): this;
+    send(channel: "log-error", ...args: any[]): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

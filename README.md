@@ -45,6 +45,12 @@ sudo snap install figma-linux
 ```
 in your terminal.
 
+To use local fonts when using the snapd version create a symbolic link:
+
+```
+sudo ln -s $HOME/.local/share/fonts $HOME/snap/figma-linux/current/.local/share/
+```
+
 There is also an AppImage available.
 Get it on our [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, then make it executable and install using these terminal commands:
 ```bash

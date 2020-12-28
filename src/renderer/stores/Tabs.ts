@@ -10,7 +10,7 @@ export class Tabs implements TabsStore {
   }
 
   @action
-  addTab = (data: { id: number; url: string; showBackBtn: boolean; title?: string }): void => {
+  addTab = (data: { id: number; url: string; showBackBtn: boolean; title?: string; focused?: boolean }): void => {
     this.tabs.push({
       id: data.id,
       title: data.title ? data.title : "Figma",
@@ -18,6 +18,7 @@ export class Tabs implements TabsStore {
       moves: false,
       showBackBtn: data.showBackBtn,
       order: this.tabs.length === 0 ? 1 : this.tabs.length + 1,
+      focused: data.focused,
     });
   };
 
@@ -70,9 +71,12 @@ export class Tabs implements TabsStore {
         url: data.url,
         title: data.title ? data.title : "Recent Files",
         showBackBtn: data.showBackBtn,
+        focused: data.focused,
       });
 
-      this.setFocus(data.id);
+      if (data.focused) {
+        this.setFocus(data.id);
+      }
     });
 
     E.ipcRenderer.on("closeAllTabs", () => {

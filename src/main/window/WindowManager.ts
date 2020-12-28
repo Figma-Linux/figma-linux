@@ -222,11 +222,14 @@ class WindowManager {
     E.ipcMain.on("updateActionState", (event, state) => {
       MenuState.updateActionState(state);
     });
-    E.ipcMain.on("log", (event, log) => {
-      logger.debug("event, log: ", log);
-    });
-    E.ipcMain.on("openFile", (event, args) => {
-      logger.debug("event: openFile, args: ", args);
+    E.ipcMain.on("openFile", (event, ...args) => {
+      let url = `${this.home}${args[0]}`;
+
+      if (args[2]) {
+        url = `${url}${args[2]}`;
+      }
+
+      this.addTab("loadContent.js", url, undefined, false);
     });
     E.ipcMain.on("setFeatureFlags", (event, args) => {
       storage.setFeatureFlags(args.featureFlags);
@@ -382,18 +385,24 @@ class WindowManager {
     return false;
   };
 
-  public addTab = (scriptPreload = "loadMainContent.js", url = `${this.home}/login`, title?: string): E.BrowserView => {
+  public addTab = (
+    scriptPreload = "loadMainContent.js",
+    url = `${this.home}/login`,
+    title?: string,
+    focused = true,
+  ): E.BrowserView => {
     const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
 
-    this.mainWindow.setBrowserView(tab);
     tab.webContents.on("will-navigate", this.onMainWindowWillNavigate);
     tab.webContents.on("new-window", this.onNewWindow);
 
     MenuState.updateActionState(Const.ACTIONTABSTATE);
 
-    this.mainWindow.webContents.send("didTabAdd", { id: tab.webContents.id, url, showBackBtn: true, title });
+    this.mainWindow.webContents.send("didTabAdd", { id: tab.webContents.id, url, showBackBtn: true, title, focused });
 
-    this.mainWindow.setBrowserView(tab);
+    if (focused) {
+      this.mainWindow.setBrowserView(tab);
+    }
 
     return tab;
   };

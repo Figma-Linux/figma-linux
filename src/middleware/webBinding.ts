@@ -315,6 +315,9 @@ const publicAPI: any = {
   openFile(args: any) {
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
+  openPrototype(args: any) {
+    sendMsgToMain("openFile", "/proto/" + args.fileKey, args.title, "?node-id=" + args.pageId, args.target);
+  },
   close(args: any) {
     sendMsgToMain("closeTab", args.suppressReopening);
   },
@@ -349,10 +352,6 @@ const publicAPI: any = {
     sendMsgToMain("setPluginMenuData", pluginMenuData);
   },
 
-  openPrototype(args: any) {
-    sendMsgToMain("log-debug", "openPrototype, args: ", args);
-    sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, "?node-id=" + args.pageId, args.target);
-  },
   setFeatureFlags(args: any) {
     sendMsgToMain("setFeatureFlags", args);
   },

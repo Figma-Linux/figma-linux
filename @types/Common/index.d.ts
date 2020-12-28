@@ -6,6 +6,7 @@ interface Tab {
   moves?: boolean;
   fileKey?: string;
   order?: number;
+  focused?: boolean;
 }
 
 interface SavedTab {

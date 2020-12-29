@@ -50,6 +50,11 @@ export class Storage {
 
     this.set(this.settings);
   };
+  public clearLastOpenedTabs = (): void => {
+    this.settings.app.lastOpenedTabs = [];
+
+    this.set(this.settings);
+  };
 }
 
 export const storage = new Storage();

@@ -121,13 +121,11 @@ class WindowManager {
     if (Array.isArray(tabs)) {
       tabs.forEach((tab, i) => {
         setTimeout(() => {
-          if (isFileBrowser(tab.url)) {
-            this.addTab("loadMainContent.js", tab.url, tab.title);
-          } else {
-            this.addTab("loadContent.js", tab.url, tab.title);
-          }
-        }, 1500 * i);
+          this.addTab("loadContent.js", tab.url, tab.title, false);
+        }, 500 * i);
       });
+
+      storage.clearLastOpenedTabs();
     }
   };
 

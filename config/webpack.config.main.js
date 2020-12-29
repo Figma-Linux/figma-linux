@@ -32,16 +32,18 @@ const main = {
     devtool: 'source-map',
 
     plugins: [
-        new CopyWebpackPlugin([
-            {
-                from: path.join(rootFolder, 'src/package.json'),
-                to: path.join(rootFolder, 'dist/')
-            },
-            {
-                from: path.join(rootFolder, 'resources'),
-                to: path.join(rootFolder, 'dist/resources/')
-            }
-        ])
+        new CopyWebpackPlugin({
+            patterns: [
+                {
+                    from: path.join(rootFolder, 'src/package.json'),
+                    to: path.join(rootFolder, 'dist/')
+                },
+                {
+                    from: path.join(rootFolder, 'resources'),
+                    to: path.join(rootFolder, 'dist/resources/')
+                }
+            ]
+        })
     ]
 };
 

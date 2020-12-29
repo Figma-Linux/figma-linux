@@ -109,7 +109,7 @@ export default (args: IntiApiOptions): void => {
 
     if (!msg) return;
 
-    console.log("channel.port1.onmessage, event: ", event);
+    console.log("webApi channel.port1.onmessage, event, event.data: ", event, event.data);
 
     if (msg.promiseID != null) {
       const pendingPromise = pendingPromises.get(msg.promiseID);

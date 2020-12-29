@@ -91,8 +91,11 @@ const onWebMessage = (event: MessageEvent) => {
   let resultPromise = undefined;
 
   try {
-    console.log("onWebMessage, msg: ", msg);
+    if (msg.name != "setPluginMenuData") console.log("onWebMessage, msg: ", msg.name, msg.args);
     resultPromise = msg.name && publicAPI && publicAPI[msg.name](msg.args);
+  } catch (e) {
+    console.error("onWebMessage, err: ", e);
+    throw e;
   } finally {
     if (msg.promiseID != null) {
       if (resultPromise instanceof Promise) {
@@ -105,15 +108,15 @@ const onWebMessage = (event: MessageEvent) => {
             webPort.postMessage({ error: errorString, promiseID: msg.promiseID });
           });
       } else {
-        webPort.postMessage({ error: "No result", promiseID: msg.promiseID });
+        webPort.postMessage({ error: "No result" + resultPromise, promiseID: msg.promiseID });
       }
     }
   }
 };
 
-// TODO: Вынести кусок кода в отдельные скрипты,
-// чтобы потом из собрать вебпаком в 1 js файл
-// и передать его функции executeJavaScript
+// TODO: (translated) Move a piece of code into separate scripts,
+// then to collect from webpack in 1 js file
+// and pass it to the executeJavaScript function
 const initWebApi = (props: IntiApiOptions) => {
   const channel = new MessageChannel();
   const pendingPromises = new Map();
@@ -153,10 +156,11 @@ const initWebApi = (props: IntiApiOptions) => {
     version: props.version,
     fileBrowser: props.fileBrowser,
     postMessage: function(name, args, transferList) {
-      console.log("postMessage, name, args, transferList: ", name, args, transferList);
+      // console.log("postMessage, name, args, transferList: ", name, args, transferList);
 
       // FIXME: ugly hack
       if (!/recent/.test(window.location.href) && name === "updateActionState") {
+        console.log("postMessage ugly hack: ", name, args);
         const state = {
           "save-as": true,
           "export-selected-exportables": true,
@@ -182,9 +186,7 @@ const initWebApi = (props: IntiApiOptions) => {
           "previous-artboard": true,
         };
 
-        channel.port1.postMessage({ name, args: { state: { ...args.state, ...state } } }, transferList);
-
-        return;
+        args = { state: { ...args.state, ...state } };
       }
 
       channel.port1.postMessage({ name, args }, transferList);
@@ -194,11 +196,11 @@ const initWebApi = (props: IntiApiOptions) => {
       registeredCallbacks.set(id, callback);
       channel.port1.postMessage({ name, args, callbackID: id });
       return () => {
+        registeredCallbacks.delete(id); // TODO: is it okay to delete this? will it ever be needed after cancelled?
         channel.port1.postMessage({ cancelCallbackID: id });
       };
     },
     promiseMessage: function(name, args, transferList) {
-      console.log("promiseMessage, name, args, transferList: ", name, args, transferList);
       return new Promise((resolve, reject) => {
         const id = nextPromiseID++;
         pendingPromises.set(id, { resolve, reject });
@@ -206,7 +208,6 @@ const initWebApi = (props: IntiApiOptions) => {
       });
     },
     setMessageHandler: function(handler) {
-      console.log("setMessageHandler: handler", handler);
       messageHandler = handler;
       tryFlushMessages();
     },
@@ -217,7 +218,7 @@ const initWebApi = (props: IntiApiOptions) => {
 
     if (!msg) return;
 
-    console.log("channel.port1.onmessage, event: ", event.data);
+    console.log("webBinding channel.port1.onmessage, event.data: ", event.data);
 
     if (msg.promiseID != null) {
       const pendingPromise = pendingPromises.get(msg.promiseID);
@@ -234,6 +235,8 @@ const initWebApi = (props: IntiApiOptions) => {
       const registeredCallback = registeredCallbacks.get(msg.callbackID);
       if (registeredCallback) {
         registeredCallback(msg.args);
+      } else {
+        console.log("callback missing? ", msg);
       }
     } else if (msg.name != null) {
       messageQueue.push(msg);
@@ -302,47 +305,38 @@ const publicAPI: any = {
   },
 
   setUser(args: any) {
-    console.log("setUser, args: ", args);
+    console.log("unimplemented setUser, args: ", args);
   },
 
-  getFonts() {
-    return new Promise(resolve => fontMapPromise.then(() => resolve({ data: fontMap })));
+  async getFonts() {
+    return { data: await fontMapPromise };
   },
 
   newFile(args: any) {
-    console.log("newFile, args: ", args);
     sendMsgToMain("newFile", args.info);
   },
   openFile(args: any) {
-    console.log("openFile, args: ", args);
     sendMsgToMain("openTab", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
   close(args: any) {
-    console.log("close, args: ", args);
     sendMsgToMain("closeTab", args.suppressReopening);
   },
   setFileKey(args: any) {
-    console.log("setFileKey, args: ", args);
     sendMsgToMain("updateFileKey", args.fileKey);
   },
   setLoading(args: any) {
-    console.log("setLoading, args: ", args);
     sendMsgToMain("updateLoadingStatus", args.loading);
   },
   setSaved(args: any) {
-    console.log("setSaved, args: ", args);
     sendMsgToMain("updateSaveStatus", args.saved);
   },
   updateActionState(args: any) {
-    console.log("updateActionState, args: ", args);
     sendMsgToMain("updateActionState", args.state);
   },
   showFileBrowser() {
-    console.log("showFileBrowser");
     sendMsgToMain("showFileBrowser");
   },
   setIsPreloaded() {
-    console.log("setIsPreloaded");
     sendMsgToMain("setIsPreloaded");
   },
   setPluginMenuData(args: WepApi.SetPluginMenuDataProps) {
@@ -358,68 +352,47 @@ const publicAPI: any = {
     sendMsgToMain("setPluginMenuData", pluginMenuData);
   },
 
-  createMultipleNewLocalFileExtensions(args: any) {
-    console.log("log", { name: "createMultipleNewLocalFileExtensions", args });
-    return async () => {
-      const result = await postPromiseMessageToMainProcess(
-        "createMultipleNewLocalFileExtensions",
-        args.options,
-        args.depth,
-      );
-      console.log("await createMultipleNewLocalFileExtensions, result: ", result);
-      return { data: result };
-    };
+  async createMultipleNewLocalFileExtensions(args: any) {
+    const result = await postPromiseMessageToMainProcess(
+      "createMultipleNewLocalFileExtensions",
+      args.options,
+      args.depth,
+    );
+    return { data: result };
   },
-  getAllLocalFileExtensionIds(...args: any[]) {
-    console.log("log", { name: "getAllLocalFileExtensionIds", args });
-    return async () => {
-      const list = await postPromiseMessageToMainProcess("getAllLocalFileExtensionIds");
-      console.log("await getAllLocalFileExtensionIds, result: ", list);
-      return { data: list };
-    };
+  async getAllLocalFileExtensionIds() {
+    const list = await postPromiseMessageToMainProcess("getAllLocalFileExtensionIds");
+    return { data: list };
   },
-  getLocalFileExtensionManifest(args: any) {
-    console.log("log", { name: "getLocalFileExtensionManifest", args });
-    return async () => {
-      const manifest = await postPromiseMessageToMainProcess("getLocalFileExtensionManifest", args.id);
-      console.log("await getLocalFileExtensionManifest, result: ", manifest);
-      return { data: manifest };
-    };
+  async getLocalFileExtensionManifest(args: any) {
+    const manifest = await postPromiseMessageToMainProcess("getLocalFileExtensionManifest", args.id);
+    return { data: manifest };
   },
-  getLocalFileExtensionSource(args: any) {
-    console.log("log", { name: "getLocalFileExtensionSource", args });
-    return new Promise((resolve, reject) => {
-      resolve({ data: "ok" });
-    });
-    // return __awaiter(this, void 0, void 0, function* () {
-    //     const code = yield postPromiseMessageToMainProcess('getLocalFileExtensionSource', args.getNumber('id'));
-    //     return { data: code };
-    // });
+  async getLocalFileExtensionSource(args: any) {
+    const source = await postPromiseMessageToMainProcess("getLocalFileExtensionSource", args.id);
+    return { data: source };
   },
   removeLocalFileExtension(args: any) {
-    console.log("log", { name: "removeLocalFileExtension", args });
-    // postMessageToMainProcess('removeLocalFileExtension', args.getNumber('id'));
+    console.log("unimplemented removeLocalFileExtension", args);
+    sendMsgToMain("removeLocalFileExtension", args.id);
   },
   openExtensionDirectory(args: any) {
-    console.log("log", { name: "openExtensionDirectory", args });
-    // postMessageToMainProcess('openExtensionDirectory', args.getNumber('id'));
+    console.log("unimplemented openExtensionDirectory", args);
+    sendMsgToMain("openExtensionDirectory", args.id);
   },
-  writeNewExtensionToDisk(args: any) {
-    console.log("log", { name: "writeNewExtensionToDisk", args });
-    return new Promise((resolve, reject) => {
-      resolve({ data: "ok" });
-    });
-    // return __awaiter(this, void 0, void 0, function* () {
-    //     let id = yield postPromiseMessageToMainProcess('writeNewExtensionToDisk', args.getString('dirName'), args.getArray('files'));
-    //     return { data: id };
-    // });
+  async writeNewExtensionToDisk(args: any) {
+    // args looks like {dirName: "user-typed plugin name", files: [
+    //   {name: "filename.js", content: "filecontents"}
+    // ]}
+    // TODO: data is supposed to be the extensionId of the new extension!
+    console.log("unimplemented writeNewExtensionToDisk", args);
+    const extId = await postPromiseMessageToMainProcess("writeNewExtensionToDisk", args);
+    return { data: extId };
   },
 
-  isDevToolsOpened(...args: any[]) {
-    console.log("isDevToolsOpened, args: ", args);
-    return new Promise((res, rej) => {
-      res({ data: true });
-    });
+  async isDevToolsOpened(...args: any[]) {
+    console.log("unimplemented isDevToolsOpened, args: ", args);
+    return { data: true };
   },
 
   getFontFile(args: any) {
@@ -659,10 +632,10 @@ const init = (fileBrowser: boolean) => {
 
   console.log("init(): window.parent.document: ", window.parent.document.body);
 
+  initWebBindings();
+
   // console.log('api: ', api.toString());
   E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
-
-  initWebBindings();
 
   shortcuts();
 };

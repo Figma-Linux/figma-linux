@@ -12,31 +12,28 @@ export function listenToWebBinding(channel: string, listener: Function): void {
 }
 
 export function listenToWebBindingPromise(channel: string, listener: Function): void {
-  E.ipcMain.on(
-    `web-promise:${channel}`,
-    (event: E.IpcMainEvent, promiseID: number, ...args: any[]) => async (): Promise<void> => {
-      isDev && console.log(`[ipc] from web: ${channel} (promise ${promiseID})`);
+  E.ipcMain.on(`web-promise:${channel}`, async (event: E.IpcMainEvent, promiseID: number, ...args: any[]) => {
+    isDev && console.log(`[ipc] from web: ${channel} (promise ${promiseID})`);
 
-      let result;
-      let method;
+    let result;
+    let method;
 
-      try {
-        result = await listener(event.sender, ...args);
-        method = "handlePromiseResolve";
-      } catch (error) {
-        result = error + "";
-        method = "handlePromiseReject";
-      }
+    try {
+      result = await listener(event.sender, ...args);
+      method = "handlePromiseResolve";
+    } catch (error) {
+      result = error + "";
+      method = "handlePromiseReject";
+    }
 
-      const view = Tab.getByWebContentId(event.sender.id);
+    const view = Tab.getByWebContentId(event.sender.id);
 
-      if (!view) {
-        return;
-      }
+    if (!view) {
+      return;
+    }
 
-      view.webContents.send(method, promiseID, result);
-    },
-  );
+    view.webContents.send(method, promiseID, result);
+  });
 }
 
 export function listenToWebRegisterCallback(channel: string, listener: Function): void {

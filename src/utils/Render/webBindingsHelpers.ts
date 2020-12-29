@@ -26,13 +26,23 @@ export const postPromiseMessageToMainProcess = (function() {
   return function(channel: string, ...args: any[]) {
     return new Promise(function(resolve, reject) {
       const promiseID = nextPromiseID++;
-      pendingPromises.set(promiseID, { resolve, reject });
+      const noResp = setTimeout(() => console.log("pPMTMP no response:", promiseID, channel), 1000);
+      pendingPromises.set(promiseID, {
+        resolve: (r: any) => {
+          clearTimeout(noResp);
+          resolve(r);
+        },
+        reject: (r: any) => {
+          clearTimeout(noResp);
+          reject(r);
+        },
+      });
       E.ipcRenderer.send("web-promise:" + channel, promiseID, ...args);
     });
   };
 })();
 
-export const postCallbackMessageToMainProcess = async (channel: string, ...args: any[]) => {
+export const postCallbackMessageToMainProcess = (channel: string, ...args: any[]) => {
   E.ipcRenderer.send(`web-callback:${channel}`, ...args);
 };
 
@@ -60,6 +70,7 @@ export const registerCallbackWithMainProcess = (() => {
     E.ipcRenderer.send(`web-callback:${channel}`, args, callbackID);
 
     return () => {
+      // TODO: this message is not handled anywhere
       E.ipcRenderer.send("web-cancel-callback", callbackID);
       registeredCallbacks.delete(callbackID);
     };

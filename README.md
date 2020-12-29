@@ -27,8 +27,7 @@ Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](
 </p>
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade)
-[![figma-linux](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
-[![Snap Status](https://build.snapcraft.io/badge/ChugunovRoman/figma-linux.svg)](https://build.snapcraft.io/user/ChugunovRoman/figma-linux)
+[![Snap](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
 
 <p>
 	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
@@ -41,14 +40,20 @@ You can install Figma-linux from Snap [here.](https://snapcraft.io/figma-linux)
 
 Alternatively, type
 ```bash
-sudo snap install figma-linux 
+sudo snap install figma-linux
 ```
 in your terminal.
+
+To use local fonts when using the snapd version create a symbolic link:
+
+```
+sudo ln -s $HOME/.local/share/fonts $HOME/snap/figma-linux/current/.local/share/
+```
 
 There is also an AppImage available.
 Get it on our [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, then make it executable and install using these terminal commands:
 ```bash
-chmod +x figma-linux-*.AppImage 
+chmod +x figma-linux-*.AppImage
 sudo ./figma-linux-*.AppImage -i
 ```
 This is not a portable AppImage - it will install figma-linux on your system, after which you can run it from terminal or from your app list.
@@ -95,7 +100,6 @@ sudo dnf install figma-linux-*.x86_64.rpm
 ```
 
 
-
 ## Building from source
 
 1. Clone the repository:
@@ -108,7 +112,7 @@ cd linux
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 3. Install prerequisites from npm:
-```bash 
+```bash
 npm i
 ```
 To run Figma-linux from npm in dev mode execute this:
@@ -119,14 +123,14 @@ Aside from that, you can also run:
 
 - ```npm run build``` to built the app for production
 - ```npm run start``` to run the built version
-- ```npm run builder``` to package the app for distribution. 
+- ```npm run builder``` to package the app for distribution.
 - * The build targets are listed in ```./config/builder.json```. You can remove the ones you don't need or don't have dependencies for.
 - ```npm run pack``` to remove old packages from the installer directory, then pack the app.
 - * This depends on [AppImageTool](https://appimage.github.io/appimagetool/) being installed.
 
 
-Please note - when making changes in the middleware, you need to rebuild the app for them to take effect.
-
+ATTENTION:
+When you do changes in middleware component, You need to rebuild (`npm run build`) and restart the app each time, because the middleware execute only on run the app, Hot Reload won't work.
 
 
 

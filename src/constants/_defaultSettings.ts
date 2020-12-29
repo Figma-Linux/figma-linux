@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
     fontDirs: ["/usr/share/fonts", "/usr/local/share/fonts", `${process.env.HOME}/.local/share/fonts`],
     lastOpenedTabs: [],
     featureFlags: {},
+    savedExtensions: [],
   },
   theme: {
     currentTheme: "0",

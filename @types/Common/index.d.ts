@@ -155,6 +155,7 @@ interface SettingsInterface {
     fontDirs: string[];
     lastOpenedTabs: SavedTab[];
     featureFlags: FeatureFlags;
+    savedExtensions: Extensions.ExtensionJson[];
   };
   ui: {
     scalePanel: number;

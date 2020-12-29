@@ -1,7 +1,8 @@
+import { promises } from "fs";
+import { dirname, join } from "path";
 import * as Chokidar from "chokidar";
-
+import { storage } from "Storage";
 import { logger } from "./Logger";
-import { loadExtensionManifest } from "Utils/Main";
 
 class ExtensionManager {
   private extensionMap: Map<number, Extensions.Extension>;
@@ -10,6 +11,7 @@ class ExtensionManager {
   constructor() {
     this.extensionMap = new Map();
     this.manifestObservers = [];
+    this.reload();
   }
 
   public addPath(path: string): { id: number; existed: boolean } {
@@ -28,14 +30,14 @@ class ExtensionManager {
       const watcher = Chokidar.watch(path, undefined);
       watcher.on("all", () => this.fileWatcher(id));
       this.extensionMap.set(id, { path, watcher });
-      loadExtensionManifest(id).then(result => {
+      this.loadExtensionManifest(id).then(result => {
         this.notifyObservers({ type: "added", id, localLoadResult: result });
       });
     } else {
       this.extensionMap.set(id, { path });
     }
 
-    // storage_1.scheduleSaveSoon();
+    this.save();
 
     return { id, existed: false };
   }
@@ -58,7 +60,7 @@ class ExtensionManager {
     }
 
     this.extensionMap.delete(id);
-    // storage_1.scheduleSaveSoon();
+    this.save();
     this.notifyObservers({ id, type: "removed" });
   }
 
@@ -122,6 +124,16 @@ class ExtensionManager {
     }
   }
 
+  save() {
+    storage.saveExtension(this.saveToJson());
+  }
+
+  reload() {
+    const extensions = storage.get().app.savedExtensions;
+
+    this.loadFromJson(extensions);
+  }
+
   public saveToJson(): Extensions.ExtensionJson[] {
     return Array.from(this.extensionMap.entries()).map(([id, { path, lastKnownName }]) => {
       return { id, manifestPath: path, lastKnownName };
@@ -145,6 +157,38 @@ class ExtensionManager {
     }
   }
 
+  public async loadExtensionManifest(
+    id: number,
+  ): Promise<Extensions.ExtensionWithManifest | Extensions.ExtensionWithError> {
+    const extensionPath = this.getPath(id);
+
+    try {
+      const manifest = await promises.readFile(extensionPath, { encoding: "utf8" });
+      const lastKnownName = this.getOrUpdateKnownNameFromManifest(id, manifest);
+
+      return { path: extensionPath, lastKnownName, manifest };
+    } catch (ex) {
+      return { path: extensionPath, lastKnownName: this.getLastKnownName(id), error: ex + "" };
+    }
+  }
+
+  public async getLocalFileExtensionSource(
+    id: number,
+  ): Promise<{ source: string; html: string } | { buildErrCode: boolean; stderr: string; path: string }> {
+    const extensionPath = this.getPath(id);
+
+    const manifest = await promises.readFile(extensionPath, { encoding: "utf8" });
+    const parsed = JSON.parse(manifest);
+    if (parsed && parsed.main && parsed.ui) {
+      const [main, ui] = await Promise.all([
+        promises.readFile(join(dirname(extensionPath), parsed.main), { encoding: "utf8" }),
+        promises.readFile(join(dirname(extensionPath), parsed.ui), { encoding: "utf8" }),
+      ]);
+      return { source: main, html: ui };
+    }
+    throw new Error("manifest is invalid: " + JSON.stringify(manifest));
+  }
+
   private notifyObservers(args: Extensions.NotifyObserverParams): void {
     this.manifestObservers.forEach(callback => {
       try {
@@ -156,7 +200,7 @@ class ExtensionManager {
   }
 
   private fileWatcher(id: number): void {
-    loadExtensionManifest(id).then(result => {
+    this.loadExtensionManifest(id).then(result => {
       this.notifyObservers({ type: "changed", id, localLoadResult: result });
     });
   }

@@ -120,15 +120,13 @@ class WindowManager {
 
     if (Array.isArray(tabs)) {
       tabs.forEach((tab, i) => {
-        (t => {
-          setTimeout(() => {
-            if (isFileBrowser(t.url)) {
-              this.addTab("loadMainContent.js", t.url, t.title);
-            } else {
-              this.addTab("loadContent.js", t.url, t.title);
-            }
-          }, 1500 * i);
-        })(tab);
+        setTimeout(() => {
+          if (isFileBrowser(tab.url)) {
+            this.addTab("loadMainContent.js", tab.url, tab.title);
+          } else {
+            this.addTab("loadContent.js", tab.url, tab.title);
+          }
+        }, 1500 * i);
       });
     }
   };

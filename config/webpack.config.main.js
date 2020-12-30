@@ -40,16 +40,18 @@ module.exports = config => {
 
   config.plugins = [
     ...config.plugins,
-    new CopyWebpackPlugin([
-      {
-        from: path.join(rootFolder, "src/package.json"),
-        to: path.join(rootFolder, "dist/"),
-      },
-      {
-        from: path.join(rootFolder, "resources"),
-        to: path.join(rootFolder, "dist/resources/"),
-      },
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(rootFolder, "src/package.json"),
+          to: path.join(rootFolder, "dist/"),
+        },
+        {
+          from: path.join(rootFolder, "resources"),
+          to: path.join(rootFolder, "dist/resources/"),
+        },
+      ],
+    }),
   ];
 
   return config;

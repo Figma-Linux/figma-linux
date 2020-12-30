@@ -30,7 +30,7 @@
 
 interface Sequence {
   sequence: string;
-  callback: Function;
+  callback: () => void;
 }
 
 /**
@@ -106,7 +106,7 @@ export class ShortcutMan {
    * Adding the sequence and the callback
    * to the sequence collection
    */
-  public bind = (sequence: string, cb: Function) => {
+  public bind = (sequence: string, cb: () => void) => {
     if (sequence === "") return;
 
     this.sequenceMap.push({

@@ -6,7 +6,7 @@ import { logger } from "./Logger";
 
 class ExtensionManager {
   private extensionMap: Map<number, Extensions.Extension>;
-  private manifestObservers: Function[];
+  private manifestObservers: Array<(args: Extensions.NotifyObserverParams) => void>;
 
   constructor() {
     this.extensionMap = new Map();
@@ -95,7 +95,7 @@ class ExtensionManager {
     return Array.from(this.extensionMap.keys());
   }
 
-  public addObserver(callback: Function): void {
+  public addObserver(callback: () => void): void {
     this.manifestObservers.push(callback);
 
     if (this.manifestObservers.length === 1) {
@@ -107,7 +107,7 @@ class ExtensionManager {
       });
     }
   }
-  public removeObserver(callback: Function): void {
+  public removeObserver(callback: () => void): void {
     const index = this.manifestObservers.indexOf(callback);
 
     if (index !== -1) {

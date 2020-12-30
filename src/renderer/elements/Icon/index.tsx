@@ -47,7 +47,7 @@ export interface ContainerProps extends IconProps {
   className?: string;
 }
 
-export class Icon extends React.Component<ContainerProps, {}> {
+export class Icon extends React.Component<ContainerProps, unknown> {
   private iconsMap = {
     Close,
     Corner,

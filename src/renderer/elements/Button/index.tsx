@@ -11,7 +11,7 @@ export interface ButtonProps {
   contentAfter?: JSX.Element;
 }
 
-export class Button extends React.Component<ButtonProps, {}> {
+export class Button extends React.Component<ButtonProps, unknown> {
   constructor(props: ButtonProps) {
     super(props);
   }

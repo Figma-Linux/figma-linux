@@ -11,7 +11,7 @@ export interface CheckBoxProps {
   className?: string; // custom style classes
 }
 
-export class CheckBox extends React.Component<CheckBoxProps, {}> {
+export class CheckBox extends React.Component<CheckBoxProps, unknown> {
   constructor(props: CheckBoxProps) {
     super(props);
   }

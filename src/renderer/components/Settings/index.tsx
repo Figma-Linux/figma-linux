@@ -19,7 +19,7 @@ interface SettingsProps {
 @inject("settings")
 @inject("views")
 @observer
-class Settings extends React.Component<SettingsProps, {}> {
+class Settings extends React.Component<SettingsProps, unknown> {
   props: SettingsProps;
   viewMap = {
     General,

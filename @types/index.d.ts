@@ -8,7 +8,7 @@ declare namespace Electron {
   }
 
   interface MenuItem {
-    click: (item: MenuItemConstructorOptions, window: BrowserWindow, event: Event) => void | Function;
+    click: (item: MenuItemConstructorOptions, window: BrowserWindow, event: Event) => void;
   }
 
   interface App extends NodeJS.EventEmitter {
@@ -22,7 +22,7 @@ declare namespace Electron {
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
-    on(event: "settings-ready", listener: (settings: SettingsInterface) => void): this;
+    on(event: "handleUrl", listener: (senderId: number, url: string) => void): this;
 
     emit(event: "handle-command", command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
@@ -34,7 +34,7 @@ declare namespace Electron {
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggle-settings-developer-tools"): boolean;
-    emit(event: "settings-ready", settings: SettingsInterface): boolean;
+    emit(event: "handleUrl", senderId: number, url: string): boolean;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -84,6 +84,7 @@ declare namespace Electron {
     on(channel: "closeTab", listener: (event: IpcRendererEvent, data: { id: number }) => void): this;
     on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
     on(channel: "getUploadedThemes", listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void): this;
+    on(channel: "mainTabFocused", listener: (event: IpcRendererEvent) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -122,6 +123,8 @@ declare namespace Electron {
     send(channel: "setTitle", data: { id: number; title: string }): void;
     send(channel: "closeTab", data: { id: number }): this;
     send(channel: "didTabAdd", data: Tab): this;
+    send(channel: "handleUrl", url: string): this;
+    send(channel: "mainTabFocused"): this;
   }
 
   interface RequestHeaders {

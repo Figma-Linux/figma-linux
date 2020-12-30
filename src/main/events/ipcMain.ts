@@ -79,7 +79,7 @@ export const registerIpcMainHandlers = () => {
   });
   listenToWebRegisterCallback(
     "registerManifestChangeObserver",
-    (webContents: E.WebContents, args: any, callback: Function) => {
+    (webContents: E.WebContents, args: any, callback: () => void) => {
       Ext.addObserver(callback);
 
       return () => {

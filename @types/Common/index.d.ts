@@ -143,6 +143,7 @@ interface FeatureFlags {
 }
 
 interface SettingsInterface {
+  clientId: string;
   app: {
     logLevel: number;
     panelHeight: number;

@@ -10,7 +10,7 @@ export interface ListProps {
   items?: string[];
 }
 
-export class List extends React.Component<ListProps, {}> {
+export class List extends React.Component<ListProps, unknown> {
   constructor(props: ListProps) {
     super(props);
   }

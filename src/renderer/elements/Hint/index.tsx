@@ -7,7 +7,7 @@ export interface HintProps {
   hint: JSX.Element;
 }
 
-export class Hint extends React.Component<HintProps, {}> {
+export class Hint extends React.Component<HintProps, unknown> {
   constructor(props: HintProps) {
     super(props);
   }

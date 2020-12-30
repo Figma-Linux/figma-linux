@@ -63,7 +63,7 @@ export const registerCallbackWithMainProcess = (() => {
     }
   });
 
-  return function(channel: string, args: any, callback: Function) {
+  return function(channel: string, args: any, callback: (result: any) => void) {
     const callbackID = nextCallbackID++;
     registeredCallbacks.set(callbackID, callback);
 

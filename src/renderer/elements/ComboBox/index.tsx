@@ -7,7 +7,7 @@ export interface ComboBoxProps {
   items?: string[];
 }
 
-export class ComboBox extends React.Component<ComboBoxProps, {}> {
+export class ComboBox extends React.Component<ComboBoxProps, unknown> {
   constructor(props: ComboBoxProps) {
     super(props);
   }

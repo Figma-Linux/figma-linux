@@ -17,7 +17,7 @@ const viewMap = {
 
 @inject("views")
 @observer
-class App extends React.Component<AppProps, {}> {
+class App extends React.Component<AppProps, unknown> {
   props: AppProps;
 
   constructor(props: AppProps) {

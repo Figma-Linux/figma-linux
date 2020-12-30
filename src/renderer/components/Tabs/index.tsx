@@ -14,7 +14,7 @@ interface TabsProps {
 
 @inject("tabs")
 @observer
-class Tabs extends React.Component<TabsProps, {}> {
+class Tabs extends React.Component<TabsProps, unknown> {
   props: TabsProps;
 
   constructor(props: TabsProps) {

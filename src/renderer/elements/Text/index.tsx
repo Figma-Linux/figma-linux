@@ -9,7 +9,7 @@ export interface TextProps {
   children: string;
 }
 
-export class Text extends React.Component<TextProps, {}> {
+export class Text extends React.Component<TextProps, unknown> {
   constructor(props: TextProps) {
     super(props);
   }

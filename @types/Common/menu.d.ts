@@ -26,7 +26,9 @@ declare namespace Menu {
       type: string;
       key: string;
       string: string;
-      plugin: string;
+      plugin?: string;
+      visible?: boolean;
+      click?: (menuItem: Menu.PluginMenuItem, browserWindow: _BrowserWindow | undefined, event: KeyboardEvent) => void;
     }
 
     interface Separator {
@@ -38,8 +40,8 @@ declare namespace Menu {
       submenu: [MenuName & Separator & Submenu & Menu & PluginItem & StringKey];
     }
     interface Menu {
-      disabled?: boolean;
       type: "run-menu-action";
+      disabled?: boolean;
       menuAction: MenuAction;
       name: MenuName;
     }

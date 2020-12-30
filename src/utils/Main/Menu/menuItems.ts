@@ -1,7 +1,7 @@
 import * as E from "electron";
 
 import Commander from "Main/Commander";
-import { item, commandToMainProcess, handleCommandItemClick, handleItemAction } from "Utils/Main";
+import { item, commandToMainProcess, handleCommandItemClick, handleItemAction, handleUrl } from "Utils/Main";
 
 const SEPARATOR = { type: "separator" };
 const FILE_MENU = {
@@ -210,6 +210,22 @@ const ARRANGE_MENU = {
   ],
 } as E.MenuItemConstructorOptions;
 
+const PLUGINS_MENU = {
+  label: "Plugins",
+  submenu: [
+    {
+      label: "Manage plugins...",
+      click(item, window): void {
+        if (!window) {
+          return;
+        }
+
+        handleUrl(window, "/my_plugins");
+      },
+    },
+  ],
+} as E.MenuItemConstructorOptions;
+
 const HELP_MENU = {
   role: "help",
   submenu: [
@@ -291,6 +307,8 @@ export const getMenuTemplate = (pluginMenuItems?: any[]): E.MenuItemConstructorO
       label: "Plugins",
       submenu: pluginMenuItems,
     });
+  } else {
+    menu.push(PLUGINS_MENU);
   }
 
   menu.push(HELP_MENU);

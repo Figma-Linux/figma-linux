@@ -1,6 +1,8 @@
+import { v4 } from "uuid";
 import { LogLevel } from "Enums";
 
 export const DEFAULT_SETTINGS: SettingsInterface = {
+  clientId: v4(),
   app: {
     logLevel: LogLevel.INFO,
     panelHeight: 40,

@@ -118,7 +118,7 @@ class WindowManager {
   private restoreTabs = () => {
     const tabs = storage.get().app.lastOpenedTabs;
 
-    if (Array.isArray(tabs)) {
+    if (Array.isArray(tabs) && tabs.length) {
       tabs.forEach((tab, i) => {
         setTimeout(() => {
           this.addTab("loadContent.js", tab.url, tab.title, false);
@@ -126,6 +126,8 @@ class WindowManager {
       });
 
       storage.clearLastOpenedTabs();
+
+      MenuState.updateInFileBrowserActionState();
     }
   };
 
@@ -167,16 +169,10 @@ class WindowManager {
       const view = Tabs.focus(id);
       this.mainWindow.setBrowserView(view);
 
-      if (isFileBrowser(view.webContents.getURL())) {
-        MenuState.updateInFileBrowserActionState();
-      } else {
-        MenuState.updateInProjectActionState();
-      }
+      MenuState.updateInProjectActionState();
     });
     E.ipcMain.on("setFocusToMainTab", () => {
-      this.mainWindow.setBrowserView(this.mainTab);
-
-      MenuState.updateInFileBrowserActionState();
+      this.focusMainTab();
     });
     E.ipcMain.on("closeAllTab", () => {
       logger.debug("Close all tab");
@@ -191,7 +187,13 @@ class WindowManager {
       this.mainWindow.webContents.send("setTitle", { id: tab.webContents.id, title });
     });
     E.ipcMain.on("setPluginMenuData", (event, pluginMenu) => {
-      MenuState.updatePluginState(pluginMenu);
+      const currentView = this.mainWindow.getBrowserView();
+
+      if (currentView.webContents.id !== this.mainTab.webContents.id) {
+        MenuState.updatePluginState(pluginMenu);
+      } else {
+        MenuState.updateInFileBrowserActionState();
+      }
     });
     E.ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
       logger.debug("registerManifestChangeObserver, callbackId: ", callbackId);
@@ -287,6 +289,13 @@ class WindowManager {
       if (this.settingsView) {
         toggleDetachedDevTools(this.settingsView.webContents);
       }
+    });
+    E.app.on("handleUrl", (senderId, url) => {
+      if (senderId !== this.mainTab.webContents.id) {
+        this.focusMainTab();
+      }
+
+      this.mainTab.webContents.send("handleUrl", url);
     });
     E.app.on("handle-command", (id: string) => {
       switch (id) {
@@ -502,6 +511,14 @@ class WindowManager {
     E.shell.openExternal(url);
   };
 
+  private focusMainTab = (): void => {
+    this.mainWindow.setBrowserView(this.mainTab);
+
+    MenuState.updateInFileBrowserActionState();
+
+    this.mainWindow.webContents.send("mainTabFocused");
+  };
+
   private onMainTabWillNavigate = (event: E.Event, url: string): void => {
     if (isValidProjectLink(url) || isPrototypeUrl(url)) {
       this.addTab("loadContent.js", url);
@@ -569,6 +586,7 @@ class WindowManager {
       this.mainWindow.setBrowserView(nextTab);
     } else {
       this.mainWindow.setBrowserView(this.mainTab);
+      MenuState.updateInFileBrowserActionState();
     }
 
     this.closedTabsHistory.push(currentTabUrl);

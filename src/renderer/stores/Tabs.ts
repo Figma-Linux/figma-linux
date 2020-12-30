@@ -94,6 +94,9 @@ export class Tabs implements TabsStore {
     E.ipcRenderer.on("updateFileKey", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, fileKey: data.fileKey } : t));
     });
+    E.ipcRenderer.on("mainTabFocused", sender => {
+      this.setFocus();
+    });
 
     E.ipcRenderer.on("closeTab", (sender, data) => {
       const index: number = this.tabs.findIndex(t => t.id === data.id);

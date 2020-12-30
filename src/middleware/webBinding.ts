@@ -25,7 +25,7 @@ const API_VERSION = 28;
 let webPort: MessagePort;
 let fontMap: any = null;
 let resolveFontMapPromise: any = null;
-const mainProcessCancelCallbacks: Map<number, Function> = new Map();
+const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 const fontMapPromise = new Promise(resolve => {
   resolveFontMapPromise = resolve;
 });
@@ -123,7 +123,7 @@ const initWebApi = (props: IntiApiOptions) => {
   const pendingPromises = new Map();
   const registeredCallbacks = new Map();
 
-  let messageHandler: Function;
+  let messageHandler: (name: string, args: any) => void;
   let nextPromiseID = 0;
   let nextCallbackID = 0;
   const messageQueue: any[] = [];
@@ -206,7 +206,7 @@ const initWebApi = (props: IntiApiOptions) => {
         channel.port1.postMessage({ name, args, promiseID: id }, transferList);
       });
     },
-    setMessageHandler: function(handler): void {
+    setMessageHandler: function(handler: () => void): void {
       messageHandler = handler;
       tryFlushMessages();
     },
@@ -259,6 +259,9 @@ const initWebBindings = (): void => {
   });
   E.ipcRenderer.on("handleAction", (event: Event, action: string, source: string) => {
     webPort.postMessage({ name: "handleAction", args: { action, source } });
+  });
+  E.ipcRenderer.on("handleUrl", (event: Event, path: string, params: string) => {
+    webPort.postMessage({ name: "handleUrl", args: { path, params } });
   });
   E.ipcRenderer.on("handlePageCommand", (event: Event, command: string) => {
     const fullscreenFocusTargetFocused =

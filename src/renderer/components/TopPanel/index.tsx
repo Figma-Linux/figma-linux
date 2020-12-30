@@ -17,7 +17,7 @@ interface TopPanelProps {
 @inject("settings")
 @inject("views")
 @observer
-class TopPanel extends React.Component<TopPanelProps, {}> {
+class TopPanel extends React.Component<TopPanelProps, unknown> {
   props: TopPanelProps;
 
   constructor(props: TopPanelProps) {

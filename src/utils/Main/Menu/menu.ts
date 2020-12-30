@@ -8,6 +8,11 @@ export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.Brow
   const currentView = window.getBrowserView();
 
   if (item && item.pluginMenuAction && currentView) {
+    if (item.pluginMenuAction.type === "manage") {
+      handleUrl(window, "/my_plugins");
+      return;
+    }
+
     currentView.webContents.send("handlePluginMenuAction", item.pluginMenuAction);
   }
 };
@@ -15,14 +20,14 @@ export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.Brow
 export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuItem | undefined => {
   switch (input.type) {
     case "run-menu-action": {
-      const item = input as Menu.Items.Menu;
-      const label = stringOfActionMenuItemName(item.name);
+      const label = stringOfActionMenuItemName(input.name);
       return {
         type: "normal",
         label,
         click: handlePluginMenuAction,
-        enabled: !item.disabled,
-        pluginMenuAction: item.menuAction,
+        enabled: !input.disabled,
+        visible: input.visible,
+        pluginMenuAction: input.menuAction,
       };
     }
     case "separator": {
@@ -31,11 +36,10 @@ export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuI
       };
     }
     case "submenu": {
-      const item = input as Menu.Items.Submenu;
       return {
         type: "submenu",
-        label: item.name,
-        submenu: item.submenu.map(electronOfPluginMenuItem),
+        label: input.name,
+        submenu: input.submenu.map(electronOfPluginMenuItem),
       };
     }
     default: {
@@ -123,4 +127,9 @@ export const handleItemAction = (item: Menu.PluginMenuItem, window: E.BrowserWin
   const currentView = window.getBrowserView();
 
   currentView.webContents.send("handleAction", item.id, "os-menu");
+};
+
+export const handleUrl = (window: E.BrowserWindow, url: string) => {
+  E.app.emit("handleUrl", window.webContents.id, url);
+  // currentView.webContents.send("handleUrl", url);
 };

@@ -9,7 +9,7 @@ import { storage } from "../Storage";
 import { logger } from "../Logger";
 
 export default class Tabs {
-  public static registeredCancelCallbackMap: Map<number, Function> = new Map();
+  public static registeredCancelCallbackMap: Map<number, () => void> = new Map();
 
   private static tabs: Array<E.BrowserView> = [];
 

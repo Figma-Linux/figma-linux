@@ -2,8 +2,8 @@ import * as E from "electron";
 
 import { toggleDetachedDevTools } from "Utils/Main";
 
-export const commands = (): Map<string, Function> => {
-  const map = new Map<string, Function>();
+export const commands = (): Map<string, (...args: any[]) => void> => {
+  const map = new Map<string, (...args: any[]) => void>();
 
   map.set("toggle-developer-tools", (item: E.MenuItemConstructorOptions, window: E.BrowserWindow) => {
     const browserView = window.getBrowserView();

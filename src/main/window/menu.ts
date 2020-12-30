@@ -10,7 +10,7 @@ const init = (template?: E.MenuItemConstructorOptions[]) => {
   resetMenu(pluginMenuData, template);
 
   E.app.on("os-menu-invalidated", state => {
-    if (state.pluginMenuData && state.pluginMenuData.length > 0) {
+    if (Array.isArray(state.pluginMenuData)) {
       pluginMenuData = state.pluginMenuData;
 
       resetMenu(pluginMenuData, template);

@@ -18,7 +18,7 @@ interface ThemeViewProps {
 @inject("settings")
 @inject("themes")
 @observer
-class ThemesBody extends React.Component<ThemeViewProps, {}> {
+class ThemesBody extends React.Component<ThemeViewProps, unknown> {
   props: ThemeViewProps;
 
   constructor(props: ThemeViewProps) {

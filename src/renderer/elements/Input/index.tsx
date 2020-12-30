@@ -28,7 +28,7 @@ export interface RangeInputProps extends InputRangeProps {
 
 type InputsProps = (TextInputProps | RangeInputProps) & InputBaseProps;
 
-export class Input extends React.Component<InputsProps, {}> {
+export class Input extends React.Component<InputsProps, unknown> {
   private inputMap = {
     Text: InputText,
     Range: InputRange,

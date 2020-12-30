@@ -11,7 +11,7 @@ export default (args: IntiApiOptions): void => {
   const pendingPromises = new Map();
   const registeredCallbacks = new Map();
 
-  let messageHandler: Function;
+  let messageHandler: (name: string, args: any) => void;
   let nextPromiseID = 0;
   let nextCallbackID = 0;
   const messageQueue: any[] = [];
@@ -97,8 +97,7 @@ export default (args: IntiApiOptions): void => {
         channel.port1.postMessage({ name, args, promiseID: id }, transferList);
       });
     },
-    setMessageHandler: function(handler) {
-      console.log("setMessageHandler: handler", handler);
+    setMessageHandler: function(handler: () => void) {
       messageHandler = handler;
       tryFlushMessages();
     },

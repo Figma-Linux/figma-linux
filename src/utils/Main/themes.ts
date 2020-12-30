@@ -1,7 +1,7 @@
 import { app } from "electron";
 import * as fs from "fs";
 import * as path from "path";
-import { uuid } from "uuidv4";
+import { v4 } from "uuid";
 
 export const themesDirectory = path.resolve(app.getPath("userData"), "Themes");
 
@@ -37,7 +37,7 @@ export async function isValidThemeFile(filePath: string, theme: Themes.Theme): P
   }
 
   if (!theme.id) {
-    const id = uuid();
+    const id = v4();
 
     await writeThemeFile(filePath, { ...theme, id });
   }

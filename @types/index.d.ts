@@ -65,6 +65,10 @@ declare namespace Electron {
     on(channel: "log-debug", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
     on(channel: "log-info", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
     on(channel: "log-error", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
+    on(
+      channel: "openDevTools",
+      listener: (event: IpcMainInvokeEvent, mode: "right" | "bottom" | "undocked" | "detach") => void,
+    ): this;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {

@@ -232,6 +232,11 @@ class WindowManager {
     E.ipcMain.on("setFeatureFlags", (event, args) => {
       storage.setFeatureFlags(args.featureFlags);
     });
+    E.ipcMain.on("openDevTools", (event, mode) => {
+      if (event.sender) {
+        event.sender.openDevTools({ mode });
+      }
+    });
     E.ipcMain.on("startAppAuth", (event, args) => {
       if (isAppAuthGrandLink(args.grantPath)) {
         const url = `${this.home}${args.grantPath}?desktop_protocol=figma`;

@@ -369,6 +369,9 @@ const publicAPI: any = {
   finishAppAuth(args: any) {
     sendMsgToMain("finishAppAuth", args);
   },
+  openDevTools(args: { mode: string }) {
+    sendMsgToMain("openDevTools", args.mode);
+  },
 
   async createMultipleNewLocalFileExtensions(args: any) {
     const result = await postPromiseMessageToMainProcess(

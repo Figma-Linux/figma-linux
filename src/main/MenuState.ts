@@ -45,6 +45,7 @@ class MenuState {
       if (item.visible === false) {
         return {
           ...item,
+          disabled: item.disabled || false,
           visible: true,
         };
       }

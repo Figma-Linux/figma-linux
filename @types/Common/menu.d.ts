@@ -28,6 +28,7 @@ declare namespace Menu {
       string: string;
       plugin?: string;
       visible?: boolean;
+      disabled?: boolean;
       click?: (menuItem: Menu.PluginMenuItem, browserWindow: _BrowserWindow | undefined, event: KeyboardEvent) => void;
     }
 

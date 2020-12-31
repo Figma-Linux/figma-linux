@@ -17,6 +17,10 @@ declare namespace WebApi {
     title: string;
   }
 
+  interface ExtensionId {
+    id: number;
+  }
+
   interface CreateMultipleExtension {
     depth: number;
     options: Electron.OpenDialogOptions;

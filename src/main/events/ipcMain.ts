@@ -73,6 +73,10 @@ export const registerIpcMainHandlers = () => {
     return Ext.getLocalFileExtensionSource(id);
   });
 
+  E.ipcMain.handle("isDevToolsOpened", async view => {
+    return view.sender.isDevToolsOpened();
+  });
+
   listenToWebBindingPromise("openExtensionDirectory", async (webContents: E.WebContents, id: number) => {
     console.error("TODO");
   });

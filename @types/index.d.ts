@@ -95,6 +95,7 @@ declare namespace Electron {
       channel: "createMultipleNewLocalFileExtensions",
       listener: (event: IpcMainInvokeEvent, data: WebApi.CreateMultipleExtension) => Promise<void> | any,
     ): void;
+    handle(channel: "isDevToolsOpened", listener: (event: IpcMainInvokeEvent) => Promise<void> | any): void;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -148,6 +149,7 @@ declare namespace Electron {
       id: number,
     ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError>;
     invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
+    invoke(channel: "isDevToolsOpened"): Promise<boolean>;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

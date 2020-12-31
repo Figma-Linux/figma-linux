@@ -373,10 +373,8 @@ const publicAPI: any = {
     sendMsgToMain("openDevTools", args.mode);
   },
 
-  async createMultipleNewLocalFileExtensions(args: any) {
-    console.log("createMultipleNewLocalFileExtensions, args: ", args);
+  async createMultipleNewLocalFileExtensions(args: WebApi.CreateMultipleExtension) {
     const result = await E.ipcRenderer.invoke("createMultipleNewLocalFileExtensions", args);
-    console.log("createMultipleNewLocalFileExtensions, result: ", result);
 
     return { data: result };
   },
@@ -384,29 +382,29 @@ const publicAPI: any = {
     const list = await E.ipcRenderer.invoke("getAllLocalFileExtensionIds");
     return { data: list };
   },
-  async getLocalFileExtensionManifest(args: any) {
+  async getLocalFileExtensionManifest(args: WebApi.ExtensionId) {
     const manifest = await E.ipcRenderer.invoke("getLocalFileExtensionManifest", args.id);
     return { data: manifest };
   },
-  async getLocalFileExtensionSource(args: any) {
+  async getLocalFileExtensionSource(args: WebApi.ExtensionId) {
     const source = await E.ipcRenderer.invoke("getLocalFileExtensionSource", args.id);
     return { data: source };
   },
-  removeLocalFileExtension(args: any) {
+  removeLocalFileExtension(args: WebApi.ExtensionId) {
     E.ipcRenderer.send("removeLocalFileExtension", args.id);
   },
-  openExtensionDirectory(args: any) {
-    console.log("unimplemented openExtensionDirectory", args);
-    sendMsgToMain("openExtensionDirectory", args.id);
+  openExtensionDirectory(args: WebApi.ExtensionId) {
+    E.ipcRenderer.send("openExtensionDirectory", args.id);
   },
   async writeNewExtensionToDisk(args: WebApi.WriteNewExtensionToDiskArgs) {
     const extId = await E.ipcRenderer.invoke("writeNewExtensionToDisk", args);
     return { data: extId };
   },
 
-  async isDevToolsOpened(...args: any[]) {
-    console.log("unimplemented isDevToolsOpened, args: ", args);
-    return { data: true };
+  async isDevToolsOpened() {
+    const isOpened = await E.ipcRenderer.invoke("isDevToolsOpened");
+
+    return { data: isOpened };
   },
 
   getFontFile(args: any) {

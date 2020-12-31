@@ -55,6 +55,11 @@ export class Storage {
 
     this.set(this.settings);
   };
+  public setLastPluginDirectory = (path: string): void => {
+    this.settings.app.lastSavedPluginDir = path;
+
+    this.set(this.settings);
+  };
 }
 
 export const storage = new Storage();

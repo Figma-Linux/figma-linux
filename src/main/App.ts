@@ -69,7 +69,7 @@ class App {
   private ready = (): void => {
     const { figmaUrl } = Args();
 
-    this.windowManager = new WindowManager();
+    this.windowManager = WindowManager.instance;
     this.session.handleAppReady();
 
     setTimeout(() => {

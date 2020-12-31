@@ -6,7 +6,7 @@ import { logger } from "./Logger";
 
 class ExtensionManager {
   private extensionMap: Map<number, Extensions.Extension>;
-  private manifestObservers: Array<(args: Extensions.NotifyObserverParams) => void>;
+  private manifestObservers: Array<Extensions.ManifestObserver>;
 
   constructor() {
     this.extensionMap = new Map();
@@ -14,7 +14,7 @@ class ExtensionManager {
     this.reload();
   }
 
-  public addPath(path: string): { id: number; existed: boolean } {
+  public addPath(path: string): Extensions.AddPathReturnValue {
     for (const [id, entry] of this.extensionMap.entries()) {
       if (entry.path === path) {
         return { id, existed: true };

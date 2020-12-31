@@ -33,9 +33,10 @@ class WindowManager {
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
   private tabs: Tab[];
+  private static _instance: WindowManager;
   private panelHeight = storage.get().app.panelHeight;
 
-  constructor() {
+  private constructor() {
     this.home = Const.HOMEPAGE;
     this.figmaUiScale = storage.get().ui.scaleFigmaUI;
     this.panelScale = storage.get().ui.scalePanel;
@@ -96,6 +97,16 @@ class WindowManager {
       });
 
     this.updatePanelScale(this.panelScale);
+  }
+
+  static get instance(): WindowManager {
+    if (WindowManager._instance) {
+      return WindowManager._instance;
+    }
+
+    WindowManager._instance = new WindowManager();
+
+    return WindowManager._instance;
   }
 
   openUrl = (url: string) => {

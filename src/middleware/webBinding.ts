@@ -304,7 +304,7 @@ const initWebBindings = (): void => {
 };
 
 const publicAPI: any = {
-  setTitle(args: any) {
+  setTitle(args: WebAPI.SetTitleArgs) {
     sendMsgToMain("setTabUrl", window.location.href);
     sendMsgToMain("setTitle", args.title);
   },
@@ -401,12 +401,7 @@ const publicAPI: any = {
     console.log("unimplemented openExtensionDirectory", args);
     sendMsgToMain("openExtensionDirectory", args.id);
   },
-  async writeNewExtensionToDisk(args: any) {
-    // args looks like {dirName: "user-typed plugin name", files: [
-    //   {name: "filename.js", content: "filecontents"}
-    // ]}
-    // TODO: data is supposed to be the extensionId of the new extension!
-    console.log("unimplemented writeNewExtensionToDisk", args);
+  async writeNewExtensionToDisk(args: WebAPI.WriteNewExtensionToDiskArgs) {
     const extId = await postPromiseMessageToMainProcess("writeNewExtensionToDisk", args);
     return { data: extId };
   },

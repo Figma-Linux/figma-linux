@@ -70,6 +70,7 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, mode: "right" | "bottom" | "undocked" | "detach") => void,
     ): this;
     on(channel: "removeLocalFileExtension", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
+    on(channel: "openExtensionDirectory", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -133,6 +134,7 @@ declare namespace Electron {
     send(channel: "log-info", ...args: any[]): this;
     send(channel: "log-error", ...args: any[]): this;
     send(channel: "removeLocalFileExtension", id: number): this;
+    send(channel: "openExtensionDirectory", id: number): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebAPI.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;

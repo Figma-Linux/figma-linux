@@ -65,6 +65,12 @@ export const registerIpcMainHandlers = () => {
     Ext.removePath(id);
   });
 
+  E.ipcMain.on("openExtensionDirectory", async (sender, id) => {
+    const extensionDirectory = path.parse(Ext.getPath(id)).dir;
+
+    E.shell.openPath(extensionDirectory);
+  });
+
   E.ipcMain.handle("getLocalFileExtensionSource", async (sender, id) => {
     return Ext.getLocalFileExtensionSource(id);
   });

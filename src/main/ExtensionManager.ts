@@ -174,7 +174,7 @@ class ExtensionManager {
 
   public async getLocalFileExtensionSource(
     id: number,
-  ): Promise<{ source: string; html: string } | { buildErrCode: boolean; stderr: string; path: string }> {
+  ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError> {
     const extensionPath = this.getPath(id);
 
     const manifest = await promises.readFile(extensionPath, { encoding: "utf8" });

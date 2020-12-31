@@ -48,4 +48,14 @@ declare namespace Extensions {
     main: string;
     build?: string;
   }
+
+  interface ExtensionSource {
+    source: string;
+    html: string;
+  }
+  interface ExtensionSourceError {
+    buildErrCode: boolean;
+    stderr: string;
+    path: string;
+  }
 }

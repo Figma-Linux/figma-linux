@@ -69,6 +69,27 @@ declare namespace Electron {
       channel: "openDevTools",
       listener: (event: IpcMainInvokeEvent, mode: "right" | "bottom" | "undocked" | "detach") => void,
     ): this;
+    on(channel: "removeLocalFileExtension", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
+
+    handle(
+      channel: "writeNewExtensionToDisk",
+      listener: (event: IpcMainInvokeEvent, data: WebAPI.WriteNewExtensionToDiskArgs) => Promise<number> | number,
+    ): void;
+    handle(channel: "getAllLocalFileExtensionIds", listener: (event: IpcMainInvokeEvent) => Promise<void> | any): void;
+    handle(
+      channel: "getLocalFileExtensionManifest",
+      listener: (
+        event: IpcMainInvokeEvent,
+        id: number,
+      ) => Promise<void> | Extensions.ExtensionWithManifest | Extensions.ExtensionWithError,
+    ): void;
+    handle(
+      channel: "getLocalFileExtensionSource",
+      listener: (
+        event: IpcMainInvokeEvent,
+        id: number,
+      ) => Promise<void> | Extensions.ExtensionSource | Extensions.ExtensionSourceError,
+    ): void;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -111,6 +132,15 @@ declare namespace Electron {
     send(channel: "log-debug", ...args: any[]): this;
     send(channel: "log-info", ...args: any[]): this;
     send(channel: "log-error", ...args: any[]): this;
+    send(channel: "removeLocalFileExtension", id: number): this;
+
+    invoke(channel: "writeNewExtensionToDisk", data: WebAPI.WriteNewExtensionToDiskArgs): Promise<number>;
+    invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
+    invoke(channel: "getLocalFileExtensionManifest", id: number): Promise<number[]>;
+    invoke(
+      channel: "getLocalFileExtensionSource",
+      id: number,
+    ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError>;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

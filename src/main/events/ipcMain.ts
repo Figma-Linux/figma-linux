@@ -53,114 +53,112 @@ export const registerIpcMainHandlers = () => {
     },
   );
 
-  listenToWebBindingPromise("getAllLocalFileExtensionIds", (webContents: E.WebContents) => {
+  E.ipcMain.handle("getAllLocalFileExtensionIds", async () => {
     return Ext.getAllIds();
   });
 
-  listenToWebBindingPromise("getLocalFileExtensionManifest", (webContents: E.WebContents, id: number) => {
+  E.ipcMain.handle("getLocalFileExtensionManifest", async (sender, id) => {
     return Ext.loadExtensionManifest(id);
   });
 
-  listenToWebBindingPromise("getLocalFileExtensionSource", (webContents: E.WebContents, id: number) => {
-    return Ext.getLocalFileExtensionSource(id);
+  E.ipcMain.on("removeLocalFileExtension", async (sender, id) => {
+    Ext.removePath(id);
   });
 
-  listenToWebBindingPromise("removeLocalFileExtension", async (webContents: E.WebContents, id: number) => {
-    Ext.removePath(id);
+  E.ipcMain.handle("getLocalFileExtensionSource", async (sender, id) => {
+    return Ext.getLocalFileExtensionSource(id);
   });
 
   listenToWebBindingPromise("openExtensionDirectory", async (webContents: E.WebContents, id: number) => {
     console.error("TODO");
   });
 
-  listenToWebBindingPromise(
-    "writeNewExtensionToDisk",
-    async (webContents: E.WebContents, data: WebAPI.WriteNewExtensionToDiskArgs) => {
-      let manifest: Extensions.ManifestFile | null = null;
-      let manifestFile = null;
+  E.ipcMain.handle("writeNewExtensionToDisk", async (sender, data) => {
+    let manifest: Extensions.ManifestFile | null = null;
+    let manifestFile = null;
 
-      for (const file of data.files) {
-        if (
-          !FILE_EXTENSION_WHITE_LIST.includes(path.extname(file.name)) ||
-          !/^\w+(?:\.\w+)*\.\w+/.test(file.name) ||
-          file.name !== sanitizeFileName(file.name)
-        ) {
-          throw new Error(`Filename "${file.name}" not allowed`);
+    for (const file of data.files) {
+      if (
+        !FILE_EXTENSION_WHITE_LIST.includes(path.extname(file.name)) ||
+        !/^\w+(?:\.\w+)*\.\w+/.test(file.name) ||
+        file.name !== sanitizeFileName(file.name)
+      ) {
+        throw new Error(`Filename "${file.name}" not allowed`);
+      }
+      if (file.name === MANIFEST_FILE_NAME) {
+        if (typeof file.content !== "string") {
+          throw new Error("Manifest must be a string");
         }
-        if (file.name === MANIFEST_FILE_NAME) {
-          if (typeof file.content !== "string") {
-            throw new Error("Manifest must be a string");
-          }
 
-          manifest = JSON.parse(file.content);
-          manifestFile = file;
+        manifest = JSON.parse(file.content);
+        manifestFile = file;
 
-          if (typeof manifest !== "object" || manifest === null) {
-            throw new Error("Manifest must be a JSON object");
-          }
-          if (manifest.build) {
-            throw new Error(`Manifest 'build' value "${manifest.build}" not allowed`);
-          }
+        if (typeof manifest !== "object" || manifest === null) {
+          throw new Error("Manifest must be a JSON object");
+        }
+        if (manifest.build) {
+          throw new Error(`Manifest 'build' value "${manifest.build}" not allowed`);
         }
       }
+    }
 
-      if (manifest == null || manifestFile == null) {
-        throw new Error("No manifest found");
-      }
+    if (manifest == null || manifestFile == null) {
+      throw new Error("No manifest found");
+    }
 
-      const dirName = sanitizeFileName(data.dirName);
-      const windowManager = WindowManager.instance;
-      const lastDir = storage.get().app.lastSavedPluginDir;
-      const dir = lastDir ? `${lastDir}/${dirName}` : dirName;
+    const dirName = sanitizeFileName(data.dirName);
+    const windowManager = WindowManager.instance;
+    const lastDir = storage.get().app.lastSavedPluginDir;
+    const dir = lastDir ? `${lastDir}/${dirName}` : dirName;
 
-      const saveDir = await showSaveDialog(windowManager.mainWindow, {
-        title: manifest.name ? "Choose plugin directory location" : "Choose plugin name and directory location",
-        defaultPath: dir,
+    const saveDir = await showSaveDialog(windowManager.mainWindow, {
+      title: manifest.name ? "Choose plugin directory location" : "Choose plugin name and directory location",
+      defaultPath: dir,
+    });
+
+    if (!saveDir) {
+      return undefined;
+    }
+
+    const basename = path.basename(saveDir);
+
+    storage.setLastPluginDirectory(path.parse(saveDir).dir);
+
+    if (!basename) {
+      throw new Error("Invalid directory name");
+    }
+    if (!manifest.name) {
+      manifest.name = basename;
+      manifestFile.content = JSON.stringify(manifest, undefined, 2);
+    }
+    const accessDir = await access(saveDir);
+
+    if (accessDir) {
+      throw new Error("Overwriting existing files or directories not supported");
+    }
+
+    await mkPath(saveDir);
+
+    const saveFilesPromises = [];
+    for (const file of data.files) {
+      const filePath = path.join(saveDir, file.name);
+      const promise = fs.promises.writeFile(filePath, file.content, { encoding: "utf8" }).catch(error => {
+        logger.error(`Cannot save file: ${filePath} for extension: "${manifest.name}", error:\n`, error);
       });
+      saveFilesPromises.push(promise);
+    }
 
-      if (!saveDir) {
-        return undefined;
-      }
+    await Promise.all(saveFilesPromises);
 
-      const basename = path.basename(saveDir);
+    const res = Ext.addPath(path.join(saveDir, MANIFEST_FILE_NAME));
 
-      storage.setLastPluginDirectory(path.parse(saveDir).dir);
+    if (res.existed) {
+      throw new Error("Extension unexpectedly already added");
+    }
 
-      if (!basename) {
-        throw new Error("Invalid directory name");
-      }
-      if (!manifest.name) {
-        manifest.name = basename;
-        manifestFile.content = JSON.stringify(manifest, undefined, 2);
-      }
-      const accessDir = await access(saveDir);
+    return res.id;
+  });
 
-      if (accessDir) {
-        throw new Error("Overwriting existing files or directories not supported");
-      }
-
-      await mkPath(saveDir);
-
-      const saveFilesPromises = [];
-      for (const file of data.files) {
-        const filePath = path.join(saveDir, file.name);
-        const promise = fs.promises.writeFile(filePath, file.content, { encoding: "utf8" }).catch(error => {
-          logger.error(`Cannot save file: ${filePath} for extension: "${manifest.name}", error:\n`, error);
-        });
-        saveFilesPromises.push(promise);
-      }
-
-      await Promise.all(saveFilesPromises);
-
-      const res = Ext.addPath(path.join(saveDir, MANIFEST_FILE_NAME));
-
-      if (res.existed) {
-        throw new Error("Extension unexpectedly already added");
-      }
-
-      return res.id;
-    },
-  );
   listenToWebRegisterCallback(
     "registerManifestChangeObserver",
     (webContents: E.WebContents, args: any, callback: () => void) => {

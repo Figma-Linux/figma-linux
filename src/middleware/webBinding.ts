@@ -382,27 +382,26 @@ const publicAPI: any = {
     return { data: result };
   },
   async getAllLocalFileExtensionIds() {
-    const list = await postPromiseMessageToMainProcess("getAllLocalFileExtensionIds");
+    const list = await E.ipcRenderer.invoke("getAllLocalFileExtensionIds");
     return { data: list };
   },
   async getLocalFileExtensionManifest(args: any) {
-    const manifest = await postPromiseMessageToMainProcess("getLocalFileExtensionManifest", args.id);
+    const manifest = await E.ipcRenderer.invoke("getLocalFileExtensionManifest", args.id);
     return { data: manifest };
   },
   async getLocalFileExtensionSource(args: any) {
-    const source = await postPromiseMessageToMainProcess("getLocalFileExtensionSource", args.id);
+    const source = await E.ipcRenderer.invoke("getLocalFileExtensionSource", args.id);
     return { data: source };
   },
   removeLocalFileExtension(args: any) {
-    console.log("unimplemented removeLocalFileExtension", args);
-    sendMsgToMain("removeLocalFileExtension", args.id);
+    E.ipcRenderer.send("removeLocalFileExtension", args.id);
   },
   openExtensionDirectory(args: any) {
     console.log("unimplemented openExtensionDirectory", args);
     sendMsgToMain("openExtensionDirectory", args.id);
   },
   async writeNewExtensionToDisk(args: WebAPI.WriteNewExtensionToDiskArgs) {
-    const extId = await postPromiseMessageToMainProcess("writeNewExtensionToDisk", args);
+    const extId = await E.ipcRenderer.invoke("writeNewExtensionToDisk", args);
     return { data: extId };
   },
 

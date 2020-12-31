@@ -49,3 +49,5 @@ export const isRecentFilesLink = (url: string) =>
 export const isValidProjectLink = (url: string) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com\/file\/)/.test(url);
 
 export const isProtoLink = (url: string) => /^https:\/\/w{0,3}?.figma.com\/proto/.test(url);
+
+export const isFigmaDocLink = (url: string) => /^https:\/\/w{0,3}?.figma.com\/plugin-docs/.test(url);

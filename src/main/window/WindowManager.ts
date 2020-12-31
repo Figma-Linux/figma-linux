@@ -19,8 +19,9 @@ import {
   isAppAuthGrandLink,
   isAppAuthRedeem,
   parseURL,
+  isFigmaDocLink,
 } from "Utils/Common";
-import { winUrlDev, winUrlProd, isFileBrowser, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
+import { winUrlDev, winUrlProd, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
@@ -551,6 +552,13 @@ class WindowManager {
     }
 
     if (newUrl === currentUrl) {
+      event.preventDefault();
+      return;
+    }
+
+    if (isFigmaDocLink(newUrl)) {
+      E.shell.openExternal(newUrl);
+
       event.preventDefault();
       return;
     }

@@ -12,46 +12,44 @@ import { storage } from "Main/Storage";
 import Ext from "Main/ExtensionManager";
 
 export const registerIpcMainHandlers = () => {
-  listenToWebBindingPromise(
-    "createMultipleNewLocalFileExtensions",
-    async (webContents: E.WebContents, options: any, depth: number) => {
-      const added: any[] = [];
-      const existed: any[] = [];
+  E.ipcMain.handle("createMultipleNewLocalFileExtensions", async (sender, data) => {
+    const added: any[] = [];
+    const existed: any[] = [];
 
-      const dialogResult = await E.dialog.showOpenDialog(options);
+    const windowManager = WindowManager.instance;
+    const dialogResult = await E.dialog.showOpenDialog(windowManager.mainWindow, data.options);
 
-      if (!dialogResult || dialogResult.canceled) {
-        return { added, existed };
-      }
-
-      const pickedPaths = dialogResult.filePaths;
-
-      async function processEntry(entryPath: string, depth: number, topLevel: any) {
-        const stats = await fs.promises.stat(entryPath);
-
-        if (stats.isDirectory() && depth > 0) {
-          let fileNames = await fs.promises.readdir(entryPath);
-          fileNames = fileNames.filter(name => name[0] !== ".");
-
-          await Promise.all(fileNames.map(name => processEntry(path.resolve(entryPath, name), depth - 1, false)));
-        } else if (path.basename(entryPath) === MANIFEST_FILE_NAME) {
-          const res = Ext.addPath(entryPath);
-
-          if (res.existed) {
-            existed.push(res.id);
-          } else {
-            added.push(res.id);
-          }
-        } else if (topLevel) {
-          throw new Error("Manifest must be named 'manifest.json'");
-        }
-      }
-
-      await Promise.all(pickedPaths.map(name => processEntry(name, depth, true)));
-
+    if (!dialogResult || dialogResult.canceled) {
       return { added, existed };
-    },
-  );
+    }
+
+    const pickedPaths = dialogResult.filePaths;
+
+    async function processEntry(entryPath: string, depth: number, topLevel: any) {
+      const stats = await fs.promises.stat(entryPath);
+
+      if (stats.isDirectory() && depth > 0) {
+        let fileNames = await fs.promises.readdir(entryPath);
+        fileNames = fileNames.filter(name => name[0] !== ".");
+
+        await Promise.all(fileNames.map(name => processEntry(path.resolve(entryPath, name), depth - 1, false)));
+      } else if (path.basename(entryPath) === MANIFEST_FILE_NAME) {
+        const res = Ext.addPath(entryPath);
+
+        if (res.existed) {
+          existed.push(res.id);
+        } else {
+          added.push(res.id);
+        }
+      } else if (topLevel) {
+        throw new Error("Manifest must be named 'manifest.json'");
+      }
+    }
+
+    await Promise.all(pickedPaths.map(name => processEntry(name, data.depth, true)));
+
+    return { added, existed };
+  });
 
   E.ipcMain.handle("getAllLocalFileExtensionIds", async () => {
     return Ext.getAllIds();

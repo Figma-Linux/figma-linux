@@ -304,7 +304,7 @@ const initWebBindings = (): void => {
 };
 
 const publicAPI: any = {
-  setTitle(args: WebAPI.SetTitleArgs) {
+  setTitle(args: WebApi.SetTitleArgs) {
     sendMsgToMain("setTabUrl", window.location.href);
     sendMsgToMain("setTitle", args.title);
   },
@@ -347,7 +347,7 @@ const publicAPI: any = {
   setIsPreloaded() {
     sendMsgToMain("setIsPreloaded");
   },
-  setPluginMenuData(args: WepApi.SetPluginMenuDataProps) {
+  setPluginMenuData(args: WebApi.SetPluginMenuDataProps) {
     const pluginMenuData = [];
     for (const item of args.data) {
       if (isMenuItem(item)) {
@@ -374,11 +374,10 @@ const publicAPI: any = {
   },
 
   async createMultipleNewLocalFileExtensions(args: any) {
-    const result = await postPromiseMessageToMainProcess(
-      "createMultipleNewLocalFileExtensions",
-      args.options,
-      args.depth,
-    );
+    console.log("createMultipleNewLocalFileExtensions, args: ", args);
+    const result = await E.ipcRenderer.invoke("createMultipleNewLocalFileExtensions", args);
+    console.log("createMultipleNewLocalFileExtensions, result: ", result);
+
     return { data: result };
   },
   async getAllLocalFileExtensionIds() {
@@ -400,7 +399,7 @@ const publicAPI: any = {
     console.log("unimplemented openExtensionDirectory", args);
     sendMsgToMain("openExtensionDirectory", args.id);
   },
-  async writeNewExtensionToDisk(args: WebAPI.WriteNewExtensionToDiskArgs) {
+  async writeNewExtensionToDisk(args: WebApi.WriteNewExtensionToDiskArgs) {
     const extId = await E.ipcRenderer.invoke("writeNewExtensionToDisk", args);
     return { data: extId };
   },

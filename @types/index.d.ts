@@ -74,7 +74,7 @@ declare namespace Electron {
 
     handle(
       channel: "writeNewExtensionToDisk",
-      listener: (event: IpcMainInvokeEvent, data: WebAPI.WriteNewExtensionToDiskArgs) => Promise<number> | number,
+      listener: (event: IpcMainInvokeEvent, data: WebApi.WriteNewExtensionToDiskArgs) => Promise<number> | number,
     ): void;
     handle(channel: "getAllLocalFileExtensionIds", listener: (event: IpcMainInvokeEvent) => Promise<void> | any): void;
     handle(
@@ -90,6 +90,10 @@ declare namespace Electron {
         event: IpcMainInvokeEvent,
         id: number,
       ) => Promise<void> | Extensions.ExtensionSource | Extensions.ExtensionSourceError,
+    ): void;
+    handle(
+      channel: "createMultipleNewLocalFileExtensions",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.CreateMultipleExtension) => Promise<void> | any,
     ): void;
   }
 
@@ -136,13 +140,14 @@ declare namespace Electron {
     send(channel: "removeLocalFileExtension", id: number): this;
     send(channel: "openExtensionDirectory", id: number): this;
 
-    invoke(channel: "writeNewExtensionToDisk", data: WebAPI.WriteNewExtensionToDiskArgs): Promise<number>;
+    invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
     invoke(channel: "getLocalFileExtensionManifest", id: number): Promise<number[]>;
     invoke(
       channel: "getLocalFileExtensionSource",
       id: number,
     ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError>;
+    invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

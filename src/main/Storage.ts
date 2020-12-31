@@ -46,7 +46,7 @@ export class Storage {
     this.set(this.settings);
   };
   public saveExtension = (extensions: Extensions.ExtensionJson[]): void => {
-    this.settings.app.savedExtensions = _.merge(this.settings.app.savedExtensions, extensions);
+    this.settings.app.savedExtensions = extensions;
 
     this.set(this.settings);
   };

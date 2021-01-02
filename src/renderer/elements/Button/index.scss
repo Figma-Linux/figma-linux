@@ -48,4 +48,25 @@
     border: 0px;
     box-shadow: none;
   }
+
+  &_title {
+    padding: 12px;
+    &:hover {
+      background-color: $gray_2;
+      cursor: pointer;
+    }
+  }
+  &_control {
+    padding: 12px 18px;
+    &:hover {
+      background-color: $gray_2;
+      cursor: pointer;
+    }
+  }
+  &_close {
+    &:hover {
+      background: $red_1;
+      cursor: pointer;
+    }
+  }
 }

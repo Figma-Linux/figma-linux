@@ -14,11 +14,6 @@
     &>.button {
       display: flex;
       align-items: center;
-      padding: 12px;
-      &:hover {
-        background-color: $gray_2;
-        cursor: pointer;
-      }
     }
   }
 }

@@ -23,11 +23,11 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
   return (
     <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
       <div className="panelButtons">
-        <Button className={`button_clear${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
+        <Button className={`button_clear button_title${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
           <Icon color="#7A7A7A" type="Main" size="18" />
         </Button>
         {props.visibleNewProjectBtn ? (
-          <Button className="button_clear" onClick={props.onNewProject}>
+          <Button className="button_clear button_title" onClick={props.onNewProject}>
             <Icon color="#7A7A7A" type="Plus" size="18" />
           </Button>
         ) : (
@@ -36,17 +36,17 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
       </div>
       <Tabs />
       <div className="panelButtons">
-        <Button className="button_clear" onClick={props.openMenu}>
+        <Button className="button_clear button_title" onClick={props.openMenu}>
           <Icon color="#7A7A7A" type="MenuCorner" size="18" />
         </Button>
-        <Button className="button_clear" onClick={props.miniw}>
-          <Icon color="#7A7A7A" type="Minimize" size="18" />
+        <Button className="button_clear button_control" onClick={props.miniw}>
+          <Icon color="#FFFFFF" type="Minimize" size="18" />
         </Button>
-        <Button className="button_clear" onClick={props.maxiw}>
-          <Icon color="#7A7A7A" type="Maximize" size="18" />
+        <Button className="button_clear button_control" onClick={props.maxiw}>
+          <Icon color="#FFFFFF" type="Maximize" size="18" />
         </Button>
-        <Button className="button_clear" onClick={props.closew}>
-          <Icon color="#7A7A7A" type="Close" size="18" />
+        <Button className="button_clear button_control button_close" onClick={props.closew}>
+          <Icon color="#FFFFFF" type="Close" size="18" />
         </Button>
       </div>
     </div>

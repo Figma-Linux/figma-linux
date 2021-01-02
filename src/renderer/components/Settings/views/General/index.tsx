@@ -62,8 +62,13 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
           />
           <CheckBox
             value={props.settings.settings.app.enableColorSpaceSrgb}
-            text="Enable Color Space sRGB"
+            text="Enable color space sRGB"
             onChange={props.settings.enableColorSpaceSrgb}
+          />
+          <CheckBox
+            value={props.settings.settings.app.visibleNewProjectBtn}
+            text="Show new project button"
+            onChange={props.settings.visibleNewProjectBtn}
           />
         </div>
         <div></div>

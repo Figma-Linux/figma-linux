@@ -75,6 +75,9 @@ declare namespace Electron {
     on(channel: "removeLocalFileExtension", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "openExtensionDirectory", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "openMenu", listener: (event: IpcMainInvokeEvent, x: number) => void): this;
+    on(channel: "appExit", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "newProject", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "updateVisibleNewProjectBtn", listener: (event: IpcMainInvokeEvent, visible: boolean) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -110,6 +113,7 @@ declare namespace Electron {
     on(channel: "renderView", listener: (event: IpcRendererEvent, view: View) => void): this;
     on(channel: "renderSettingsView", listener: (event: IpcRendererEvent, view: SettingsView) => void): this;
     on(channel: "updatePanelHeight", listener: (event: IpcRendererEvent, height: number) => void): this;
+    on(channel: "updateVisibleNewProjectBtn", listener: (event: IpcRendererEvent, visible: boolean) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
     on(channel: "updateUiScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
     on(
@@ -146,6 +150,9 @@ declare namespace Electron {
     send(channel: "removeLocalFileExtension", id: number): this;
     send(channel: "openExtensionDirectory", id: number): this;
     send(channel: "openMenu", x: number): this;
+    send(channel: "newProject"): this;
+    send(channel: "appExit"): this;
+    send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
@@ -164,6 +171,7 @@ declare namespace Electron {
     send(channel: "getUploadedThemes", themes: Themes.Theme[]): void;
     send(channel: "renderSettingsView", view: SettingsView): void;
     send(channel: "updatePanelHeight", height: number): void;
+    send(channel: "updateVisibleNewProjectBtn", visible: boolean): void;
     send(channel: "updatePanelScale", scale: number): void;
     send(channel: "updateUiScale", scale: number): void;
     send(channel: "closeAllTab"): void;

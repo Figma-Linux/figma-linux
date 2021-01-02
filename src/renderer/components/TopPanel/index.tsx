@@ -34,6 +34,13 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
     this.props.tabs.setFocus();
   };
 
+  private onNewProject = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
+    e.nativeEvent.stopImmediatePropagation();
+    e.stopPropagation();
+
+    E.ipcRenderer.send("newProject");
+  };
+
   private onOpenMenu = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
@@ -42,7 +49,7 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
   };
 
   private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {
-    E.ipcRenderer.send("app-exit");
+    E.ipcRenderer.send("appExit");
   };
   private maxiw = (event: React.MouseEvent<HTMLDivElement> & Event) => {
     E.ipcRenderer.send("window-maximize");
@@ -62,7 +69,9 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
         maxiw={this.maxiw}
         closew={this.closew}
         scalePanel={this.props.settings.settings.ui.scalePanel}
+        visibleNewProjectBtn={this.props.settings.settings.app.visibleNewProjectBtn}
         current={this.props.tabs.current}
+        onNewProject={this.onNewProject}
         onMainTab={this.onMainTab}
         openMenu={this.onOpenMenu}
         newTab={this.newTab}

@@ -169,6 +169,16 @@ class WindowManager {
     });
   };
 
+  private newProject = (): void => {
+    const currentView = this.addTab();
+    const onDidFinishLoad = (): void => {
+      currentView.webContents.send("newFile");
+      currentView.webContents.removeListener("did-finish-load", onDidFinishLoad);
+    };
+
+    currentView.webContents.on("did-finish-load", onDidFinishLoad);
+  };
+
   private onWillQuit = (): void => {
     const lastOpenedTabs: SavedTab[] = [];
 
@@ -186,8 +196,10 @@ class WindowManager {
 
   private addIpc = (): void => {
     E.ipcMain.on("newTab", () => this.addTab());
-
-    E.ipcMain.on("app-exit", () => {
+    E.ipcMain.on("newProject", () => {
+      this.newProject();
+    });
+    E.ipcMain.on("appExit", () => {
       E.app.quit();
     });
     E.ipcMain.on("window-minimize", () => {
@@ -339,6 +351,9 @@ class WindowManager {
     E.ipcMain.on("updatePanelScale", (event, scale) => {
       this.updatePanelScale(scale);
     });
+    E.ipcMain.on("updateVisibleNewProjectBtn", (event, visible) => {
+      this.mainWindow.webContents.send("updateVisibleNewProjectBtn", visible);
+    });
 
     E.app.on("openSettingsView", () => {
       this.enableColorSpaceSrgbWasChanged = false;
@@ -413,13 +428,7 @@ class WindowManager {
           break;
         case "newFile":
           {
-            const currentView = this.addTab();
-            const onDidFinishLoad = (): void => {
-              currentView.webContents.send("newFile");
-              currentView.webContents.removeListener("did-finish-load", onDidFinishLoad);
-            };
-
-            currentView.webContents.on("did-finish-load", onDidFinishLoad);
+            this.newProject();
           }
           break;
         case "chrome://gpu":

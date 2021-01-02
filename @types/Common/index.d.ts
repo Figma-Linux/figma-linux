@@ -147,6 +147,7 @@ interface SettingsInterface {
   app: {
     logLevel: number;
     enableColorSpaceSrgb: boolean;
+    visibleNewProjectBtn: boolean;
     panelHeight: number;
     saveLastOpenedTabs: boolean;
     exportDir: string;

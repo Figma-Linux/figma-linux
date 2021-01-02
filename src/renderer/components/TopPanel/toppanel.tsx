@@ -6,9 +6,11 @@ import Tabs from "Components/Tabs";
 interface TopPanelProps {
   current: number;
   scalePanel: number;
+  visibleNewProjectBtn: boolean;
 
   newTab(): void;
   onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
+  onNewProject(e: React.MouseEvent<HTMLDivElement>): void;
   openMenu(e: React.MouseEvent<HTMLDivElement>): void;
   closew(e: React.MouseEvent<HTMLDivElement>): void;
   maxiw(e: React.MouseEvent<HTMLDivElement>): void;
@@ -16,13 +18,21 @@ interface TopPanelProps {
 }
 
 const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
+  console.log("props.visibleNewProjectBtn: ", props.visibleNewProjectBtn);
+
   return (
     <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
       <div className="panelButtons">
         <Button className={`button_clear${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
           <Icon color="#7A7A7A" type="Main" size="18" />
         </Button>
-        {/* // TODO: Add the new project button */}
+        {props.visibleNewProjectBtn ? (
+          <Button className="button_clear" onClick={props.onNewProject}>
+            <Icon color="#7A7A7A" type="Plus" size="18" />
+          </Button>
+        ) : (
+          ""
+        )}
       </div>
       <Tabs />
       <div className="panelButtons">

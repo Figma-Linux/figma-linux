@@ -49,6 +49,11 @@ export class Settings {
   };
 
   @action
+  public visibleNewProjectBtn = (visible: boolean): void => {
+    this.settings.app.visibleNewProjectBtn = visible;
+  };
+
+  @action
   public selectExportDir = (): void => {
     const dirs = E.remote.dialog.showOpenDialogSync({ properties: ["openDirectory"] });
 
@@ -89,6 +94,8 @@ export class Settings {
     const settings = toJS(this.settings);
 
     storage.set(settings);
+
+    E.ipcRenderer.send("updateVisibleNewProjectBtn", settings.app.visibleNewProjectBtn);
   };
 
   private events = (): void => {
@@ -100,6 +107,9 @@ export class Settings {
     });
     E.ipcRenderer.on("updatePanelHeight", (sender, height) => {
       this.settings.app.panelHeight = height;
+    });
+    E.ipcRenderer.on("updateVisibleNewProjectBtn", (sender, height) => {
+      this.settings.app.visibleNewProjectBtn = height;
     });
   };
 }

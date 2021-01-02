@@ -4,6 +4,10 @@ export async function showMessageBox(view: E.BrowserWindow, options: E.MessageBo
   const result = await E.dialog.showMessageBox(view, options);
   return result.response;
 }
+export function showMessageBoxSync(view: E.BrowserWindow, options: E.MessageBoxOptions) {
+  const result = E.dialog.showMessageBoxSync(view, options);
+  return result;
+}
 
 export async function showOpenDialog(view: E.BrowserWindow, options: E.OpenDialogOptions) {
   const result = await E.dialog.showOpenDialog(view, options);

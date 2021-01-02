@@ -5,6 +5,7 @@ import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
 import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
 import { logger } from "./Logger";
+import { storage } from "./Storage";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
 import "./events/app";
@@ -48,11 +49,19 @@ class App {
       });
 
       this.session = new Session();
-
-      mkdirIfNotExists(themesDirectory).catch(error => {
-        logger.error("mkdirIfNotExists error: ", error);
-      });
     }
+
+    const colorSpace = storage.get().app.enableColorSpaceSrgb;
+
+    if (colorSpace) {
+      E.app.commandLine.appendSwitch("force-color-profile", "srgb");
+    } else {
+      E.app.commandLine.appendSwitch("disable-color-correct-rendering");
+    }
+
+    mkdirIfNotExists(themesDirectory).catch(error => {
+      logger.error("mkdirIfNotExists error: ", error);
+    });
 
     this.appEvent();
   }

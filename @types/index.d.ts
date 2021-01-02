@@ -53,6 +53,10 @@ declare namespace Electron {
     on(channel: "closeTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "newTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "closeSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(
+      channel: "enableColorSpaceSrgbWasChanged",
+      listener: (event: IpcMainInvokeEvent, enabled: boolean) => void,
+    ): this;
     on(channel: "updateFigmaUiScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
     on(channel: "startAppAuth", listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void): this;
@@ -133,6 +137,7 @@ declare namespace Electron {
     send(channel: "closeTab", id: number): this;
     send(channel: "newTab"): this;
     send(channel: "closeSettingsView"): this;
+    send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
     send(channel: "updatePanelScale", scale: number): this;
     send(channel: "log-debug", ...args: any[]): this;

@@ -1,6 +1,5 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
 import * as E from "electron";
-import { exec } from "child_process";
 import * as url from "url";
 
 import Tabs from "./Tabs";
@@ -28,6 +27,7 @@ import {
   setMenuFromTemplate,
   buildActionToMenuItemMap,
   resetMenu,
+  showMessageBoxSync,
 } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -44,6 +44,7 @@ class WindowManager {
   private menu: E.Menu;
   private static _instance: WindowManager;
   private panelHeight = storage.get().app.panelHeight;
+  private enableColorSpaceSrgbWasChanged = false;
 
   private constructor() {
     this.home = Const.HOMEPAGE;
@@ -296,6 +297,15 @@ class WindowManager {
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
     });
+    E.ipcMain.on("enableColorSpaceSrgbWasChanged", (event, enabled) => {
+      const previousValue = storage.get().app.enableColorSpaceSrgb;
+
+      if (enabled === previousValue) {
+        return;
+      }
+
+      this.enableColorSpaceSrgbWasChanged = true;
+    });
     E.ipcMain.on("closeSettingsView", () => {
       if (!this.settingsView) {
         return;
@@ -306,6 +316,22 @@ class WindowManager {
       }
 
       this.mainWindow.removeBrowserView(this.settingsView);
+
+      if (this.enableColorSpaceSrgbWasChanged) {
+        const id = showMessageBoxSync(this.mainWindow, {
+          type: "none",
+          title: "Figma",
+          message: "Restart to Change Color Space?",
+          detail: `Figma needs to be restarted to change the color space.`,
+          buttons: ["Cancel", "Restart"],
+          defaultId: 1,
+        });
+
+        if (id) {
+          E.app.relaunch();
+          E.app.quit();
+        }
+      }
     });
     E.ipcMain.on("updateFigmaUiScale", (event, scale) => {
       this.updateFigmaUiScale(scale);
@@ -315,6 +341,7 @@ class WindowManager {
     });
 
     E.app.on("openSettingsView", () => {
+      this.enableColorSpaceSrgbWasChanged = false;
       this.initSettingsView();
     });
     E.app.on("sign-out", () => {

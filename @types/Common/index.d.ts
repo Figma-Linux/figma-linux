@@ -146,6 +146,7 @@ interface SettingsInterface {
   clientId: string;
   app: {
     logLevel: number;
+    enableColorSpaceSrgb: boolean;
     panelHeight: number;
     saveLastOpenedTabs: boolean;
     exportDir: string;

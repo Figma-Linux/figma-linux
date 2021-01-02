@@ -60,6 +60,11 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
             text="Save the last opened tabs"
             onChange={props.settings.saveLastOpenedTabs}
           />
+          <CheckBox
+            value={props.settings.settings.app.enableColorSpaceSrgb}
+            text="Enable Color Space sRGB"
+            onChange={props.settings.enableColorSpaceSrgb}
+          />
         </div>
         <div></div>
         <div className="flex flex_column">

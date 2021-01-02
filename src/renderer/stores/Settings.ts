@@ -42,6 +42,13 @@ export class Settings {
   };
 
   @action
+  public enableColorSpaceSrgb = (enabled: boolean): void => {
+    this.settings.app.enableColorSpaceSrgb = enabled;
+
+    E.ipcRenderer.send("enableColorSpaceSrgbWasChanged", enabled);
+  };
+
+  @action
   public selectExportDir = (): void => {
     const dirs = E.remote.dialog.showOpenDialogSync({ properties: ["openDirectory"] });
 

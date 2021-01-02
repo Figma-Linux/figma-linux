@@ -5,6 +5,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
   clientId: v4(),
   app: {
     logLevel: LogLevel.INFO,
+    enableColorSpaceSrgb: false,
     panelHeight: 40,
     saveLastOpenedTabs: true,
     exportDir: `${process.env.HOME}/Pictures/Figma`,

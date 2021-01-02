@@ -56,31 +56,9 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
             Main settings
           </Text>
           <CheckBox
-            value={props.settings.settings.app.showMainMenu}
-            text="Hide main menu"
-            onChange={props.settings.updateShowMainMenu}
-          />
-          <CheckBox
-            value={props.settings.settings.app.disabledMainMenu}
-            text="Disable menu (The app will be reload)"
-            onChange={props.settings.updateDisableMainMenu}
-          />
-          <CheckBox
             value={props.settings.settings.app.saveLastOpenedTabs}
             text="Save the last opened tabs"
             onChange={props.settings.saveLastOpenedTabs}
-          />
-          <CheckBox
-            value={props.settings.settings.app.disabledFonts}
-            text="Disable local fonts"
-            onChange={props.settings.updateDisabledFonts}
-          />
-          <CheckBox
-            hidden
-            disabled
-            value={props.settings.settings.app.windowFrame}
-            text="Window frame"
-            onChange={props.settings.updateWindowFrame}
           />
         </div>
         <div></div>

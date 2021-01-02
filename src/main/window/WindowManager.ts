@@ -6,7 +6,6 @@ import * as url from "url";
 import Tabs from "./Tabs";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
-import initMainMenu from "./menu";
 import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
@@ -21,7 +20,15 @@ import {
   parseURL,
   isFigmaDocLink,
 } from "Utils/Common";
-import { winUrlDev, winUrlProd, toggleDetachedDevTools, getThemesFromDirectory } from "Utils/Main";
+import {
+  winUrlDev,
+  winUrlProd,
+  toggleDetachedDevTools,
+  getThemesFromDirectory,
+  setMenuFromTemplate,
+  buildActionToMenuItemMap,
+  resetMenu,
+} from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
@@ -34,6 +41,7 @@ class WindowManager {
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
   private tabs: Tab[];
+  private menu: E.Menu;
   private static _instance: WindowManager;
   private panelHeight = storage.get().app.panelHeight;
 
@@ -45,8 +53,7 @@ class WindowManager {
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
       height: 900,
-      frame: !storage.get().app.disabledMainMenu,
-      autoHideMenuBar: storage.get().app.showMainMenu,
+      frame: false,
       webPreferences: {
         sandbox: false,
         zoomFactor: 1,
@@ -63,12 +70,7 @@ class WindowManager {
     this.mainWindow = new E.BrowserWindow(options);
     this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
-    if (!storage.get().app.disabledMainMenu) {
-      initMainMenu();
-    } else {
-      E.Menu.setApplicationMenu(null);
-      this.mainWindow.setMenuBarVisibility(false);
-    }
+    this.initMenu();
 
     this.mainTab = this.addMainTab();
 
@@ -143,6 +145,29 @@ class WindowManager {
     }
   };
 
+  private initMenu = (template?: E.MenuItemConstructorOptions[]) => {
+    let pluginMenuData: Menu.MenuItem[] = [];
+    this.menu = setMenuFromTemplate(pluginMenuData, template);
+    const menuItemMap = buildActionToMenuItemMap(this.menu);
+
+    this.menu = resetMenu(pluginMenuData, template);
+
+    E.app.on("os-menu-invalidated", state => {
+      if (Array.isArray(state.pluginMenuData)) {
+        pluginMenuData = state.pluginMenuData;
+
+        this.menu = resetMenu(pluginMenuData, template);
+      }
+
+      if (!state.actionState) return;
+
+      for (const action of Object.keys(menuItemMap)) {
+        const menuItem: E.MenuItem = menuItemMap[action];
+        menuItem.enabled = state.actionState ? !!state.actionState[action] : false;
+      }
+    });
+  };
+
   private onWillQuit = (): void => {
     const lastOpenedTabs: SavedTab[] = [];
 
@@ -197,6 +222,13 @@ class WindowManager {
       }
 
       this.mainWindow.webContents.send("setTitle", { id: tab.webContents.id, title });
+    });
+    E.ipcMain.on("openMenu", (sender, x) => {
+      this.menu.popup({
+        window: this.mainWindow,
+        x,
+        y: this.panelHeight,
+      });
     });
     E.ipcMain.on("setPluginMenuData", (event, pluginMenu) => {
       const currentView = this.mainWindow.getBrowserView();
@@ -264,9 +296,6 @@ class WindowManager {
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
     });
-    E.ipcMain.on("openSettingsView", () => {
-      this.initSettingsView();
-    });
     E.ipcMain.on("closeSettingsView", () => {
       if (!this.settingsView) {
         return;
@@ -284,21 +313,10 @@ class WindowManager {
     E.ipcMain.on("updatePanelScale", (event, scale) => {
       this.updatePanelScale(scale);
     });
-    E.ipcMain.on("setVisibleMainMenu", (event, visible) => {
-      this.mainWindow.setAutoHideMenuBar(!visible);
 
-      if (visible) {
-        this.mainWindow.setMenuBarVisibility(true);
-      }
+    E.app.on("openSettingsView", () => {
+      this.initSettingsView();
     });
-    E.ipcMain.on("setDisableMainMenu", (event, disable) => {
-      // TODO: Fix disabling main menu
-      setTimeout(() => {
-        exec(process.argv.join(" "));
-        E.app.quit();
-      }, 1000);
-    });
-
     E.app.on("sign-out", () => {
       this.logoutAndRestart();
     });
@@ -343,7 +361,7 @@ class WindowManager {
           break;
         case "openFileBrowser":
           {
-            this.openFileBrowser();
+            this.focusMainTab();
           }
           break;
         case "reopenClosedTab":
@@ -414,6 +432,10 @@ class WindowManager {
     focused = true,
   ): E.BrowserView => {
     const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
+
+    if (focused) {
+      this.mainWindow.setBrowserView(tab);
+    }
 
     tab.webContents.on("will-navigate", this.onMainWindowWillNavigate);
     tab.webContents.on("new-window", this.onNewWindow);
@@ -581,16 +603,6 @@ class WindowManager {
       event.preventDefault();
       return;
     }
-  };
-
-  private openFileBrowser = (): void => {
-    const currentView = this.mainWindow.getBrowserView();
-    const currentUrl = (currentView && currentView.webContents.getURL()) || "";
-    const go: boolean = url.parse(currentUrl).pathname !== "/files/recent";
-
-    MenuState.updateActionState(Const.INITACTIONINITSTATE);
-
-    currentView && go && currentView.webContents.loadURL(`${this.home}`);
   };
 
   private closeTab = (id: number): void => {

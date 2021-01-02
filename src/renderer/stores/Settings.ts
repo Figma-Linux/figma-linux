@@ -37,31 +37,8 @@ export class Settings {
   };
 
   @action
-  public updateShowMainMenu = (show: boolean): void => {
-    this.settings.app.showMainMenu = show;
-
-    E.ipcRenderer.send("setVisibleMainMenu", show);
-  };
-  @action
-  public updateDisableMainMenu = (disabled: boolean): void => {
-    this.settings.app.disabledMainMenu = disabled;
-
-    E.ipcRenderer.send("setDisableMainMenu", disabled);
-  };
-  @action
   public saveLastOpenedTabs = (save: boolean): void => {
     this.settings.app.saveLastOpenedTabs = save;
-  };
-  @action
-  public updateWindowFrame = (show: boolean): void => {
-    this.settings.app.windowFrame = show;
-  };
-  @action
-  public updateDisabledFonts = (disabled: boolean): void => {
-    this.settings.app.disabledFonts = disabled;
-
-    // TODO: fix disabling read local fonts
-    // E.ipcRenderer.send("set-disable-fonts", disabled);
   };
 
   @action
@@ -116,9 +93,6 @@ export class Settings {
     });
     E.ipcRenderer.on("updatePanelHeight", (sender, height) => {
       this.settings.app.panelHeight = height;
-    });
-    E.ipcRenderer.on("updateMainMenuVisibility", (sender, show) => {
-      this.settings.app.showMainMenu = show;
     });
   };
 }

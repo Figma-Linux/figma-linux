@@ -34,11 +34,11 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
     this.props.tabs.setFocus();
   };
 
-  private onOpenSettings = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
+  private onOpenMenu = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.ipcRenderer.send("openSettingsView");
+    E.ipcRenderer.send("openMenu", e.pageX);
   };
 
   private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {
@@ -64,7 +64,7 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
         scalePanel={this.props.settings.settings.ui.scalePanel}
         current={this.props.tabs.current}
         onMainTab={this.onMainTab}
-        openSettings={this.onOpenSettings}
+        openMenu={this.onOpenMenu}
         newTab={this.newTab}
       />
     );

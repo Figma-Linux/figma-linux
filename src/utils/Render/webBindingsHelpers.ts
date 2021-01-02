@@ -1,47 +1,5 @@
 import * as E from "electron";
 
-export const postPromiseMessageToMainProcess = (function() {
-  let nextPromiseID = 0;
-  const pendingPromises = new Map();
-
-  E.ipcRenderer.on("handlePromiseResolve", (event: E.Event, promiseID: number, result: any) => {
-    const pendingPromise = pendingPromises.get(promiseID);
-    if (pendingPromise) {
-      pendingPromises.delete(promiseID);
-      pendingPromise.resolve(result);
-    } else {
-      console.error("[desktop] unexpected resolve for promise", promiseID);
-    }
-  });
-  E.ipcRenderer.on("handlePromiseReject", (event: E.Event, promiseID: number, error: any) => {
-    const pendingPromise = pendingPromises.get(promiseID);
-    if (pendingPromise) {
-      pendingPromises.delete(promiseID);
-      pendingPromise.reject(error);
-    } else {
-      console.error("[desktop] unexpected reject for promise", promiseID);
-    }
-  });
-
-  return function(channel: string, ...args: any[]) {
-    return new Promise(function(resolve, reject) {
-      const promiseID = nextPromiseID++;
-      const noResp = setTimeout(() => console.log("pPMTMP no response:", promiseID, channel), 1000);
-      pendingPromises.set(promiseID, {
-        resolve: (r: any) => {
-          clearTimeout(noResp);
-          resolve(r);
-        },
-        reject: (r: any) => {
-          clearTimeout(noResp);
-          reject(r);
-        },
-      });
-      E.ipcRenderer.send("web-promise:" + channel, promiseID, ...args);
-    });
-  };
-})();
-
 export const postCallbackMessageToMainProcess = (channel: string, ...args: any[]) => {
   E.ipcRenderer.send(`web-callback:${channel}`, ...args);
 };

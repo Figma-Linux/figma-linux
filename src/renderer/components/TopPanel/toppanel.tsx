@@ -7,9 +7,9 @@ interface TopPanelProps {
   current: number;
   scalePanel: number;
 
-  onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
-  openSettings(e: React.MouseEvent<HTMLDivElement>): void;
   newTab(): void;
+  onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
+  openMenu(e: React.MouseEvent<HTMLDivElement>): void;
   closew(e: React.MouseEvent<HTMLDivElement>): void;
   maxiw(e: React.MouseEvent<HTMLDivElement>): void;
   miniw(e: React.MouseEvent<HTMLDivElement>): void;
@@ -26,8 +26,8 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
       </div>
       <Tabs />
       <div className="panelButtons">
-        <Button className="button_clear" onClick={props.openSettings}>
-          <Icon color="#7A7A7A" type="Settings" size="18" />
+        <Button className="button_clear" onClick={props.openMenu}>
+          <Icon color="#7A7A7A" type="MenuCorner" size="18" />
         </Button>
         <Button className="button_clear" onClick={props.miniw}>
           <Icon color="#7A7A7A" type="Minimize" size="18" />

@@ -23,6 +23,7 @@ declare namespace Electron {
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
     on(event: "handleUrl", listener: (senderId: number, url: string) => void): this;
+    on(event: "openSettingsView", listener: () => void): this;
 
     emit(event: "handle-command", command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
@@ -35,6 +36,7 @@ declare namespace Electron {
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggle-settings-developer-tools"): boolean;
     emit(event: "handleUrl", senderId: number, url: string): boolean;
+    emit(event: "openSettingsView"): boolean;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -50,12 +52,9 @@ declare namespace Electron {
     on(channel: "setTabFocus", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "closeTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "newTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
-    on(channel: "openSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "closeSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "updateFigmaUiScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
-    on(channel: "setVisibleMainMenu", listener: (event: IpcMainInvokeEvent, visible: boolean) => void): this;
-    on(channel: "setDisableMainMenu", listener: (event: IpcMainInvokeEvent, disable: boolean) => void): this;
     on(channel: "startAppAuth", listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void): this;
     on(channel: "finishAppAuth", listener: (event: IpcMainInvokeEvent, auth: { redirectURL: string }) => void): this;
     on(
@@ -71,6 +70,7 @@ declare namespace Electron {
     ): this;
     on(channel: "removeLocalFileExtension", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "openExtensionDirectory", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
+    on(channel: "openMenu", listener: (event: IpcMainInvokeEvent, x: number) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -105,7 +105,6 @@ declare namespace Electron {
   interface IpcRenderer extends NodeJS.EventEmitter {
     on(channel: "renderView", listener: (event: IpcRendererEvent, view: View) => void): this;
     on(channel: "renderSettingsView", listener: (event: IpcRendererEvent, view: SettingsView) => void): this;
-    on(channel: "updateMainMenuVisibility", listener: (event: IpcRendererEvent, show: boolean) => void): this;
     on(channel: "updatePanelHeight", listener: (event: IpcRendererEvent, height: number) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
     on(channel: "updateUiScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
@@ -133,17 +132,15 @@ declare namespace Electron {
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
     send(channel: "newTab"): this;
-    send(channel: "openSettingsView"): this;
     send(channel: "closeSettingsView"): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
     send(channel: "updatePanelScale", scale: number): this;
-    send(channel: "setVisibleMainMenu", visible: boolean): this;
-    send(channel: "setDisableMainMenu", disable: boolean): this;
     send(channel: "log-debug", ...args: any[]): this;
     send(channel: "log-info", ...args: any[]): this;
     send(channel: "log-error", ...args: any[]): this;
     send(channel: "removeLocalFileExtension", id: number): this;
     send(channel: "openExtensionDirectory", id: number): this;
+    send(channel: "openMenu", x: number): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
@@ -161,7 +158,6 @@ declare namespace Electron {
     send(channel: "renderView", view: View): void;
     send(channel: "getUploadedThemes", themes: Themes.Theme[]): void;
     send(channel: "renderSettingsView", view: SettingsView): void;
-    send(channel: "updateMainMenuVisibility", show: boolean): void;
     send(channel: "updatePanelHeight", height: number): void;
     send(channel: "updatePanelScale", scale: number): void;
     send(channel: "updateUiScale", scale: number): void;

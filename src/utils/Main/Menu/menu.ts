@@ -94,6 +94,8 @@ export const resetMenu = (pluginMenuData: Menu.MenuItem[], template?: E.MenuItem
     const menuItem: E.MenuItem = menuItemMap[action];
     menuItem.enabled = MenuState.actionState ? !!MenuState.actionState[action] : false;
   }
+
+  return mainMenu;
 };
 
 export const item = (label: string, accelerator: string, params: E.MenuItemConstructorOptions) => {
@@ -120,16 +122,6 @@ export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: E.Brow
   currentView.webContents.send("handlePageCommand", item.id);
 };
 
-export const handleItemAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
-  // FIXME: ugly hack
-  if (item.accelerator && !/ctrl|alt|shift|meta/i.test(item.accelerator as string)) return;
-
-  const currentView = window.getBrowserView();
-
-  currentView.webContents.send("handleAction", item.id, "os-menu");
-};
-
 export const handleUrl = (window: E.BrowserWindow, url: string) => {
   E.app.emit("handleUrl", window.webContents.id, url);
-  // currentView.webContents.send("handleUrl", url);
 };

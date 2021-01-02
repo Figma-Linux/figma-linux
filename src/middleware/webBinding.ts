@@ -1,24 +1,13 @@
 import * as E from "electron";
-import * as path from "path";
 import * as fs from "fs";
 
 import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
 import { isMenuItem } from "Utils/Common";
-import { postPromiseMessageToMainProcess } from "Utils/Render";
-import { shortcutsMap } from "Utils/Render/ShortcutsMap";
-import shortcutBinding from "./shortcutBinding";
-import { ShortcutMan } from "./ShortcutMan";
 import { themes } from "./ThemesManager";
-import shortcuts from "Utils/Render/shortcuts";
-
-// import api from "./webApi";
 
 interface IntiApiOptions {
   version: number;
   fileBrowser: boolean;
-  shortcutBinding?: any;
-  shortcutsMap?: ShortcutsMap[];
-  shortcutMan?: any;
 }
 
 const API_VERSION = 28;
@@ -115,9 +104,6 @@ const onWebMessage = (event: MessageEvent) => {
   }
 };
 
-// TODO: (translated) Move a piece of code into separate scripts,
-// then to collect from webpack in 1 js file
-// and pass it to the executeJavaScript function
 const initWebApi = (props: IntiApiOptions) => {
   const channel = new MessageChannel();
   const pendingPromises = new Map();
@@ -127,11 +113,6 @@ const initWebApi = (props: IntiApiOptions) => {
   let nextPromiseID = 0;
   let nextCallbackID = 0;
   const messageQueue: any[] = [];
-
-  // console.log('args: ', args, args.shortcutMan);
-  // const shortcutBinding = new Function(`return ${args.shortcutBinding}`);
-  // console.log('args.shortcutBinding: ', `return ${args.shortcutBinding}`);
-  // console.log('shortcutBinding(args.shortcutsMap): ', shortcutBinding()(args.shortcutsMap, args.shortcutMan));
 
   const tryFlushMessages = () => {
     if (messageHandler) {
@@ -523,12 +504,9 @@ const init = (fileBrowser: boolean): void => {
   window.addEventListener(
     "message",
     event => {
-      // console.log(`window message, ${event.origin} === ${location.origin}, data, ports: `, event.data, event.ports);
       webPort = event.ports[0];
       console.log(`window message, webPort: `, webPort);
       webPort && (webPort.onmessage = onWebMessage);
-      // console.log('window.__figmaDesktop.fileBrowser: ', window.__figmaDesktop.fileBrowser);
-      // window.__figmaDesktop.fileBrowser = false;
     },
     { once: true },
   );
@@ -536,19 +514,13 @@ const init = (fileBrowser: boolean): void => {
   const initWebOptions: IntiApiOptions = {
     version: API_VERSION,
     fileBrowser: fileBrowser,
-    shortcutBinding: shortcutBinding.toString(),
-    shortcutsMap,
-    shortcutMan: ShortcutMan.toString(),
   };
 
   console.log("init(): window.parent.document: ", window.parent.document.body);
 
   initWebBindings();
 
-  // console.log('api: ', api.toString());
   E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
-
-  shortcuts();
 
   document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {

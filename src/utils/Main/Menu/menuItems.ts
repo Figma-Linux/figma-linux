@@ -1,6 +1,7 @@
 import * as E from "electron";
 
 import Commander from "Main/Commander";
+import { LINKS } from "Const";
 import { item, commandToMainProcess, handleCommandItemClick, handleItemAction, handleUrl } from "Utils/Main";
 
 const SEPARATOR = { type: "separator" };
@@ -232,31 +233,53 @@ const HELP_MENU = {
     {
       label: "Help Page",
       click(): void {
-        E.shell.openExternal("https://help.figma.com");
+        E.shell.openExternal(LINKS.HELP_PAGE);
+      },
+    },
+    {
+      label: "Plugins documentation",
+      click(item, window): void {
+        if (!window) {
+          return;
+        }
+
+        E.shell.openExternal(LINKS.PLUGINS_DOCS);
       },
     },
     {
       label: "Community Forum",
       click(): void {
-        E.shell.openExternal("https://spectrum.chat/figma");
+        E.shell.openExternal(LINKS.FIGMA_COMMUNITY_FORUM);
+      },
+    },
+    {
+      label: "Figma Linux Community Forum",
+      click(): void {
+        E.shell.openExternal(LINKS.FIGMA_LINUX_COMMUNITY_FORUM);
+      },
+    },
+    {
+      label: "Figma Linux in Telegram",
+      click(): void {
+        E.shell.openExternal(LINKS.FIGMA_LINUX_TELEGRAM);
       },
     },
     {
       label: "Video Tutorials",
       click(): void {
-        E.shell.openExternal("https://www.youtube.com/playlist?list=PLXDU_eVOJTx4HJKh8tQkQRtIe5YlP5smB");
+        E.shell.openExternal(LINKS.VIDEO_TUTORIALS);
       },
     },
     {
       label: "Release Notes",
       click(): void {
-        E.shell.openExternal("http://releases.figma.com");
+        E.shell.openExternal(LINKS.RELEASE_NOTES);
       },
     },
     {
       label: "Legal Summary",
       click(): void {
-        E.shell.openExternal("https://www.figma.com/summary-of-policy");
+        E.shell.openExternal(LINKS.LEGAL_SUMMARY);
       },
     },
     SEPARATOR,

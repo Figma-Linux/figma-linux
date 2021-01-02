@@ -19,3 +19,14 @@ export const REGEXP_APP_AUTH_GRANT = /^\/{0,2}app_auth\/[^\/]+\/grant/;
 export const FIGMA_SESSION_COOKIE_NAME = "figma.st";
 
 export const FILE_EXTENSION_WHITE_LIST = [".css", ".html", ".js", ".json", ".jsx", ".md", ".ts", ".tsx"];
+
+export const LINKS = {
+  HELP_PAGE: "https://help.figma.com",
+  PLUGINS_DOCS: "https://www.figma.com/plugin-docs/intro",
+  FIGMA_COMMUNITY_FORUM: "https://spectrum.chat/figma",
+  FIGMA_LINUX_COMMUNITY_FORUM: "https://spectrum.chat/figma-linux",
+  FIGMA_LINUX_TELEGRAM: "https://t.me/figma_linux",
+  VIDEO_TUTORIALS: "https://www.youtube.com/figmadesign",
+  RELEASE_NOTES: "https://github.com/Figma-Linux/figma-linux/releases/latest",
+  LEGAL_SUMMARY: "https://www.figma.com/summary-of-policy",
+};

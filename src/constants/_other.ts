@@ -7,6 +7,7 @@ export const RECENT_FILES = "https://www.figma.com/files/recent";
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
 export const TOPPANELHEIGHT = 40;
+export const MENU_WIDTH = 330;
 
 export const PROTOCOL = "figma";
 

@@ -236,10 +236,12 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setTitle", { id: tab.webContents.id, title });
     });
-    E.ipcMain.on("openMenu", (sender, x) => {
+    E.ipcMain.on("openMenu", () => {
+      const windowWidth = this.mainWindow.getBounds().width;
+
       this.menu.popup({
         window: this.mainWindow,
-        x,
+        x: windowWidth - Const.MENU_WIDTH,
         y: this.panelHeight,
       });
     });

@@ -45,7 +45,7 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.ipcRenderer.send("openMenu", e.pageX);
+    E.ipcRenderer.send("openMenu");
   };
 
   private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {

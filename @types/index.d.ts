@@ -74,7 +74,7 @@ declare namespace Electron {
     ): this;
     on(channel: "removeLocalFileExtension", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "openExtensionDirectory", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
-    on(channel: "openMenu", listener: (event: IpcMainInvokeEvent, x: number) => void): this;
+    on(channel: "openMenu", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "appExit", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "newProject", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "updateVisibleNewProjectBtn", listener: (event: IpcMainInvokeEvent, visible: boolean) => void): this;
@@ -149,7 +149,7 @@ declare namespace Electron {
     send(channel: "log-error", ...args: any[]): this;
     send(channel: "removeLocalFileExtension", id: number): this;
     send(channel: "openExtensionDirectory", id: number): this;
-    send(channel: "openMenu", x: number): this;
+    send(channel: "openMenu"): this;
     send(channel: "newProject"): this;
     send(channel: "appExit"): this;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;

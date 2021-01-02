@@ -25,4 +25,13 @@ declare namespace WebApi {
     depth: number;
     options: Electron.OpenDialogOptions;
   }
+
+  interface WriteFiles {
+    files: [
+      {
+        name: string;
+        buffer: Uint8Array;
+      },
+    ];
+  }
 }

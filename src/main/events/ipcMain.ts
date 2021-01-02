@@ -3,8 +3,16 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { MANIFEST_FILE_NAME, FILE_EXTENSION_WHITE_LIST } from "Const";
-import { listenToWebBindingPromise, listenToWebRegisterCallback, showSaveDialog, access, mkPath } from "Utils/Main";
-import { sanitizeFileName } from "Utils/Common";
+import {
+  listenToWebBindingPromise,
+  listenToWebRegisterCallback,
+  showSaveDialog,
+  access,
+  mkPath,
+  showOpenDialog,
+  showMessageBox,
+} from "Utils/Main";
+import { sanitizeFileName, wait } from "Utils/Common";
 
 import WindowManager from "Main/window/WindowManager";
 import { logger } from "Main/Logger";
@@ -177,4 +185,111 @@ export const registerIpcMainHandlers = () => {
       };
     },
   );
+
+  E.ipcMain.handle("writeFiles", async (sender, data) => {
+    const files = data.files;
+
+    if (!files.length) {
+      return;
+    }
+
+    const view = WindowManager.instance.mainWindow;
+    let skipReplaceConfirmation = false;
+    let directoryPath = null;
+    const lastDir = storage.get().app.lastExportDir || storage.get().app.exportDir;
+
+    if (files.length === 1 && !files[0].name.includes(path.sep)) {
+      const originalFileName = files[0].name;
+      const savePath = await showSaveDialog(view, {
+        defaultPath: `${lastDir}/${path.basename(originalFileName)}`,
+        showsTagField: false,
+      });
+
+      if (savePath) {
+        directoryPath = path.dirname(savePath);
+        files[0].name = path.basename(savePath);
+        if (path.extname(files[0].name) === "") {
+          files[0].name += path.extname(originalFileName);
+        } else {
+          skipReplaceConfirmation = true;
+        }
+
+        storage.setExportDirectory(path.parse(savePath).dir);
+      }
+    } else {
+      const directories = await showOpenDialog(view, {
+        properties: ["openDirectory", "createDirectory"],
+        buttonLabel: "Save",
+        defaultPath: lastDir,
+      });
+      await wait(1);
+      if (!directories || directories.length !== 1) {
+        return;
+      }
+      directoryPath = directories[0];
+      storage.setExportDirectory(directoryPath);
+    }
+    if (!directoryPath) {
+      return;
+    }
+    directoryPath = path.resolve(directoryPath);
+    let filesToBeReplaced = 0;
+    for (const file of files) {
+      const outputPath = path.join(directoryPath, file.name);
+      const validExtensions = [".fig", ".jpg", ".pdf", ".png", ".svg"];
+      if (
+        path.relative(directoryPath, outputPath).startsWith("..") ||
+        !validExtensions.includes(path.extname(outputPath))
+      ) {
+        await showMessageBox(view, {
+          type: "error",
+          title: "Export Failed",
+          message: "Export failed",
+          detail: `"${outputPath}" is not a valid path. No files were saved.`,
+          buttons: ["OK"],
+          defaultId: 0,
+        });
+        return;
+      }
+      try {
+        fs.accessSync(outputPath, fs.constants.R_OK);
+        ++filesToBeReplaced;
+      } catch (ex) {}
+    }
+    if (filesToBeReplaced > 0 && !skipReplaceConfirmation) {
+      const single = filesToBeReplaced === 1;
+      const selectedID = await showMessageBox(view, {
+        type: "warning",
+        title: "Replace Existing Files",
+        message: `Replace existing file${single ? "" : `s`}?`,
+        detail: `${
+          single
+            ? `"${files[0].name}" already exists`
+            : `${filesToBeReplaced} files including "${files[0].name}" already exist`
+        }. Replacing ${single ? "it" : "them"} will overwrite ${single ? "its" : "their"} existing contents.`,
+        buttons: ["Replace", "Cancel"],
+        defaultId: 0,
+      });
+      if (selectedID !== 0) {
+        return;
+      }
+    }
+    for (const file of files) {
+      const outputPath = path.join(directoryPath, file.name);
+      mkPath(path.dirname(outputPath));
+
+      try {
+        fs.writeFileSync(outputPath, Buffer.from(file.buffer), { encoding: "binary" });
+      } catch (ex) {
+        await showMessageBox(view, {
+          type: "error",
+          title: "Export Failed",
+          message: "Saving file failed",
+          detail: `"${file.name}" could not be saved. Remaining files will not be saved.`,
+          buttons: ["OK"],
+          defaultId: 0,
+        });
+      }
+    }
+  });
 };

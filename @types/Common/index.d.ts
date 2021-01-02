@@ -158,6 +158,7 @@ interface SettingsInterface {
     featureFlags: FeatureFlags;
     savedExtensions: Extensions.ExtensionJson[];
     lastSavedPluginDir?: string;
+    lastExportDir?: string;
   };
   ui: {
     scalePanel: number;

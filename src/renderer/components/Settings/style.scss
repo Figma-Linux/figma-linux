@@ -16,9 +16,21 @@
   }
 
   &__body {
+    overflow: scroll;
+    overflow-x: hidden;
+    overflow-y: overlay;
     background: $white_1;
     padding: 20px 30px;
-    height: 700px;
+    height: 80%;
+
+    &::-webkit-scrollbar {
+      width: 0px;
+      background: transparent;
+  }
+    &::-webkit-scrollbar-thumb {
+      width: 0;
+      background: transparent;
+    }
   }
 
   &__tab {

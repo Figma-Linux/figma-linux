@@ -4,6 +4,7 @@
   position: relative;
   overflow-x: hidden;
   display: flex;
+  align-content: stretch;
 }
 
 .tab {
@@ -13,13 +14,13 @@
   padding: 0 10px;
   user-select: none;
   -webkit-app-region: no-drag;
+  overflow: hidden;
 
   &:hover {
     background-color: $gray_2;
   }
 
   &__text {
-    width: 100px;
     overflow: hidden;
     text-align: center;
     white-space: nowrap;

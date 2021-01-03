@@ -10,7 +10,6 @@ import MenuState from "../MenuState";
 import * as Const from "Const";
 import {
   isDev,
-  isProtoLink,
   normalizeUrl,
   isValidProjectLink,
   isPrototypeUrl,
@@ -378,66 +377,64 @@ class WindowManager {
     });
     E.app.on("handle-command", (id: string) => {
       switch (id) {
-        case "scale-normal":
-          {
-            this.updateAllScale();
-          }
+        case "scale-normal": {
+          this.updateAllScale();
           break;
-        case "scale-inc0.1":
-          {
-            this.updateAllScale(0.1);
-          }
+        }
+        case "scale-inc0.1": {
+          this.updateAllScale(0.1);
           break;
-        case "scale-dic0.1":
-          {
-            this.updateAllScale(-0.1);
-          }
+        }
+        case "scale-dic0.1": {
+          this.updateAllScale(-0.1);
           break;
-        case "scale-inc0.05":
-          {
-            this.updateAllScale(0.05);
-          }
+        }
+        case "scale-inc0.05": {
+          this.updateAllScale(0.05);
           break;
-        case "scale-dic0.05":
-          {
-            this.updateAllScale(-0.05);
-          }
+        }
+        case "scale-dic0.05": {
+          this.updateAllScale(-0.05);
           break;
-        case "openFileBrowser":
-          {
-            this.focusMainTab();
-          }
+        }
+        case "openFileBrowser": {
+          this.focusMainTab();
           break;
-        case "reopenClosedTab":
-          {
-            if (this.closedTabsHistory.length <= 0) return;
+        }
+        case "reopenClosedTab": {
+          if (this.closedTabsHistory.length <= 0) return;
 
-            const url = this.closedTabsHistory.pop();
-            const script = isValidProjectLink(url) ? "loadContent.js" : "loadMainContent.js";
+          const url = this.closedTabsHistory.pop();
+          const script = isValidProjectLink(url) ? "loadContent.js" : "loadMainContent.js";
 
-            this.addTab(script, url);
-          }
+          this.addTab(script, url);
           break;
-        case "closeTab":
-          {
-            const currentView = this.mainWindow.getBrowserView();
+        }
+        case "closeTab": {
+          const currentView = this.mainWindow.getBrowserView();
 
-            if (currentView.webContents.id === 1) return;
+          if (currentView.webContents.id === 1) return;
 
-            this.mainWindow.webContents.send("closeTab", { id: currentView.webContents.id });
-            this.closeTab(currentView.webContents.id);
+          this.mainWindow.webContents.send("closeTab", { id: currentView.webContents.id });
+          this.closeTab(currentView.webContents.id);
+          break;
+        }
+        case "newFile": {
+          this.newProject();
+          break;
+        }
+        case "chrome://gpu": {
+          this.addTab("", `chrome://gpu`, "chrome://gpu/");
+          break;
+        }
+        case "openFileUrlClipboard": {
+          const url = E.clipboard.readText();
+
+          if (isValidProjectLink(url) || isPrototypeUrl(url)) {
+            this.addTab("loadContent.js", normalizeUrl(url));
           }
           break;
-        case "newFile":
-          {
-            this.newProject();
-          }
-          break;
-        case "chrome://gpu":
-          {
-            this.addTab("", `chrome://gpu`, "chrome://gpu/");
-          }
-          break;
+        }
 
         default: {
           Commander.exec(id);
@@ -580,7 +577,7 @@ class WindowManager {
 
     if (/start_google_sso/.test(url)) return;
 
-    if (isProtoLink(url)) {
+    if (isPrototypeUrl(url)) {
       this.addTab("loadContent.js", url);
       return;
     }

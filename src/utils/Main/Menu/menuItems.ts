@@ -112,7 +112,7 @@ export const getMenuTemplate = (pluginMenuItems?: any[]): E.MenuItemConstructorO
   const menu: E.MenuItemConstructorOptions[] = [
     item("New File", "Ctrl+N", { id: "newFile", click: commandToMainProcess }),
     item("Open File Browser", "Ctrl+O", { id: "openFileBrowser", click: commandToMainProcess }),
-    item("Open File URL from Clipboard", "Ctrl+O", { id: "openFileUrlClipboard", click: commandToMainProcess }),
+    item("Open File URL from Clipboard", "Ctrl+Shift+O", { id: "openFileUrlClipboard", click: commandToMainProcess }),
     { type: "separator" },
     item("Close Tab", "Ctrl+W", { id: "closeTab", click: commandToMainProcess }),
     item("Reopen Closed Tab", "Ctrl+Shift+T", { id: "reopenClosedTab", click: commandToMainProcess }),

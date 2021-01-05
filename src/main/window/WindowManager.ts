@@ -94,10 +94,15 @@ class WindowManager {
     getThemesFromDirectory()
       .then(themes => {
         this.themes = themes;
+        this.mainWindow.webContents.send("getUploadedThemes", themes);
       })
       .catch(error => {
         throw new Error(error);
       });
+
+    this.mainWindow.webContents.on("dom-ready", () => {
+      this.mainWindow.webContents.send("getUploadedThemes", this.themes);
+    });
 
     this.updatePanelScale(this.panelScale);
   }
@@ -355,6 +360,12 @@ class WindowManager {
     E.ipcMain.on("updateVisibleNewProjectBtn", (event, visible) => {
       this.mainWindow.webContents.send("updateVisibleNewProjectBtn", visible);
     });
+    E.ipcMain.on("themes-change", (event, theme) => {
+      this.changeTheme(theme);
+    });
+    E.ipcMain.on("set-default-theme", event => {
+      this.changeTheme(Const.DEFAULT_THEME);
+    });
 
     E.app.on("openSettingsView", () => {
       this.enableColorSpaceSrgbWasChanged = false;
@@ -569,6 +580,23 @@ class WindowManager {
 
     event && event.preventDefault();
     return;
+  };
+
+  private changeTheme = (theme: Themes.Theme) => {
+    this.mainTab.webContents.send("themes-change", theme);
+    this.mainWindow.webContents.send("themes-change", theme);
+
+    if (this.settingsView && !this.settingsView.webContents.isDestroyed()) {
+      this.settingsView.webContents.send("themes-change", theme);
+    }
+
+    const tabs = Tabs.getAll();
+
+    for (const tab of tabs) {
+      tab.webContents.send("themes-change", theme);
+    }
+
+    storage.setTheme(theme.id);
   };
 
   private onNewWindow = (event: Event, url: string) => {

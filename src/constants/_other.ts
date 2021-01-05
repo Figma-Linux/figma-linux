@@ -6,6 +6,9 @@ export const HOMEPAGE = "https://www.figma.com";
 export const RECENT_FILES = "https://www.figma.com/files/recent";
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
+// TODO: create repository and paste link
+export const THEMES_REPO_URL = "";
+
 export const TOPPANELHEIGHT = 40;
 export const MENU_WIDTH = 330;
 

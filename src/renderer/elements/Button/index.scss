@@ -18,14 +18,35 @@
   --buttonHeightXxl: 20px;
 
   transition: all .1s ease;
+  user-select: none;
 
 
-  &_default {
+  &_primary {
     padding: var(--buttonHeightS) var(--buttonWidthM);
+    border: 1px solid var(--text);
+    border-radius: 5px;
+    color: var(--text);
+
+    &:active {
+      border-color: var(--titleBorder);
+    }
+    &:hover {
+      cursor: pointer;
+    }
   }
-  &_default:hover {
-    cursor: pointer;
-    box-shadow: 0 0 1px 0px $black_2;
+  &_secondary {
+    padding: var(--buttonHeightS) var(--buttonWidthM);
+    border: 1px solid var(--bg-primary-btn);
+    background-color:  var(--bg-primary-btn);
+    border-radius: 5px;
+    color: var(--text);
+
+    &:active {
+      border-color: var(--titleBorder);
+    }
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &_thin {
@@ -42,6 +63,7 @@
   &_clear {
     background: transparent;
     border: 0px;
+    border-radius: 0px;
     padding: 0px;
   }
   &_clear:hover {
@@ -51,21 +73,30 @@
 
   &_title {
     padding: 12px;
+    color: var(--bg-header-text);
+    background-color: var(--bg-header-control);
+
     &:hover {
-      background-color: $gray_2;
+      background-color: var(--bg-header-control-hover);
+      color: var(--bg-header-hover);
       cursor: pointer;
     }
   }
   &_control {
     padding: 12px 18px;
+    background-color: var(--bg-header-control);
+    color: var(--bg-header-control-text);
+
     &:hover {
-      background-color: $gray_2;
+      background-color: var(--bg-header-control-hover);
+      color: var(--bg-header-control-hover);
       cursor: pointer;
     }
   }
   &_close {
+    color: var(--bg-header-control-text);
     &:hover {
-      background: $red_1;
+      background: var(--windowClose);
       cursor: pointer;
     }
   }

@@ -21,7 +21,7 @@ interface ShortcutsMap {
 }
 
 type View = "TopPanel" | "Settings";
-type SettingsView = "General" | "Shortcuts" | "Themes";
+type SettingsView = "General" | "Themes";
 
 // TODO: don't uses?
 interface SectionState {

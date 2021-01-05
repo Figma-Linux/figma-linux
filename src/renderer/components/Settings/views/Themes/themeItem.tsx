@@ -1,33 +1,35 @@
 import * as React from "react";
 
 import { Button, Text, Icon } from "Elements";
+import { getColorPallet } from "Utils/Render";
 
 import "./index.scss";
 
 interface ThemeViewItemProps {
+  currentTheme: string;
   theme: Themes.Theme;
 
-  onClickDelete?(e: React.MouseEvent<HTMLDivElement, MouseEvent>, id: string): void;
   onClickApply(e: React.MouseEvent<HTMLDivElement, MouseEvent>, theme: Themes.Theme): void;
 }
 
 const ThemeItem: React.FunctionComponent<ThemeViewItemProps> = props => {
   const theme = props.theme;
+  const pallet = getColorPallet(theme);
 
   return (
     <div className="themeview_item">
-      <div className="themeview_item_tumbl">
+      <div className="themeview_item_tumbl" style={pallet}>
         <div className="themeview_item_tumbl_top"></div>
         <div className="themeview_item_tumbl_toolpanel">
           <div>
-            <Icon type="Burger" color="black" />
-            <Icon type="Hand" color="black" />
+            <Icon type="Burger" color="var(--text)" />
+            <Icon type="Hand" color="var(--text)" />
           </div>
           <div>
-            <Icon type="Component" color="black" />
+            <Icon type="Component" color="var(--textComponent)" />
           </div>
           <div>
-            <Button className="template_button"></Button>
+            <Button className="template_button button_clear"></Button>
           </div>
         </div>
         <div className="themeview_item_tumbl_body">
@@ -38,18 +40,18 @@ const ThemeItem: React.FunctionComponent<ThemeViewItemProps> = props => {
           <div className="themeview_item_tumbl_body_center"></div>
           <div className="themeview_item_tumbl_body_right"></div>
         </div>
-        <div className="themeview_item_tumbl_panel">
-          <div>
-            <Text className="themeview_item_tumbl_panel_name">{theme.name}</Text>
-            <Text className="themeview_item_tumbl_panel_author">{theme.author}</Text>
-          </div>
-          <div>{props.onClickDelete ? <Icon type="Delete" size="24" color="black" /> : ""}</div>
-        </div>
       </div>
-      <div className="themeview_item_control flex">
-        <Button className="button_default border_gray button_rounded" onClick={e => props.onClickApply(e, theme)}>
-          Apply
-        </Button>
+      <div className="themeview_item_tumbl_panel">
+        <div>
+          <Text className="themeview_item_tumbl_panel_name">{theme.name}</Text>
+          <Text className="themeview_item_tumbl_panel_author">{theme.author}</Text>
+        </div>
+        <Button
+          text={props.currentTheme === theme.id ? "Applied" : "Apply"}
+          type={props.currentTheme === theme.id ? "secondary" : "primary"}
+          className="width_60px justify__content_center"
+          onClick={(e): void => props.onClickApply(e, theme)}
+        />
       </div>
     </div>
   );

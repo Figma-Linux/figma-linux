@@ -5,7 +5,7 @@
   position: relative;
   overflow-y: scroll;
   padding-left: 10px;
-  background-color: $white_1;
+  background-color: var(--panel);
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -22,7 +22,7 @@
 
   &__item {
     display: flex;
-    color: $black_2;
+    color: var(--text);
     align-items: center;
     padding: 10px 0px 10px 0px;
 

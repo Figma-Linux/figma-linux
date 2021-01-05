@@ -6,22 +6,33 @@
   margin: auto;
   height: -webkit-fill-available;
 
+  &__header {
+    border-top: 1px solid var(--inputFocus);
+    border-left: 1px solid var(--inputFocus);
+    border-right: 1px solid var(--inputFocus);
+  }
+
   &__panel {
     display: flex;
     justify-content: left;
     align-items: center;
-    background: $gray_1;
-    color: $white_1;
+    background: var(--toolbarBg);
+    color: var(--panel);
     padding: 14px 10px 14px 30px;
+    border-left: 1px solid var(--inputFocus);
+    border-right: 1px solid var(--inputFocus);
   }
 
   &__body {
     overflow: scroll;
     overflow-x: hidden;
     overflow-y: overlay;
-    background: $white_1;
+    background: var(--panel);
     padding: 20px 30px;
     height: 80%;
+    border-bottom: 1px solid var(--inputFocus);
+    border-left: 1px solid var(--inputFocus);
+    border-right: 1px solid var(--inputFocus);
 
     &::-webkit-scrollbar {
       width: 0px;
@@ -36,60 +47,11 @@
   &__tab {
     padding: 10px 0px;
     margin-right: 36px;
+    background: var(--toolbarBg);
 
     &:hover {
       cursor: pointer;
-      background: none;
-    }
-  }
-
-  &>.settings-panel {
-    border-right: 2px solid $lgray_1;
-
-    .item {
-      display: flex;
-      padding: 0 20px;
-      align-items: center;
-      justify-content: left;
-      transition: background-color .1s ease;
-
-      &:hover {
-        background-color: $blue_1;
-        cursor: pointer;
-      }
-
-      &.active {
-        background-color: $blue_1;
-
-        & .label {
-          color: $white_1;
-        }
-      }
-
-      &>.icon {
-        width: 38px;
-      }
-
-      &>.label {
-        font: {
-          size: 18px;
-          weight: 500;
-        }
-
-        margin: 12px 0px;
-        color: $black_2;
-      }
-    }
-  }
-
-  &>.body {
-    padding: 10px 30px 10px 20px;
-    background-color: $llgray_1;
-
-    & h1,
-    h2 {
-      text-align: center;
-      color: $black_2
+      background: var(--toolbarBg);
     }
   }
 }

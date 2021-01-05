@@ -6,41 +6,27 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-column-gap: 3%;
-  overflow-y: scroll;
-  height: 490px;
-  margin-right: -28px;
-  padding-right: 20px;
-
-  &::-webkit-scrollbar {
-    position: absolute;
-    width: 8px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: $gray_2;
-    border-radius: 4px;
-  }
+  grid-row-gap: 3%;
 
   &_item {
     &_tumbl {
       flex-direction: column;
-      height: 222px;
-
-      border: 1px solid #828282;
-      border-radius: 2px;
+      height: 159px;
+      border: 1px solid var(--inputFocus);
+      border-radius: 6px 6px 0 0;
 
       &_top {
         height: 8px;
+        background-color: var(--bg-header);
+        border-radius: 6px 6px 0 0;
       }
 
       &_toolpanel {
         display: grid;
         grid-template-columns: 60px 1fr 60px;
         height: 24px;
+        align-items: center;
+        background-color: var(--toolbarBg);
 
         &>div {
           display: flex;
@@ -64,29 +50,42 @@
 
         &_left {
           padding-left: 8px;
+          padding-top: 10px;
+          background-color: var(--panel);
+          border-right: 1px solid var(--inputFocus);
 
           &_text1 {
             width: 40px;
             height: 4px;
+            background-color: var(--text);
           }
 
           &_text2 {
             margin-top: 6px;
             width: 28px;
             height: 4px;
+            background-color: var(--text);
           }
         }
 
-        &_center {}
+        &_center {
+          background-color: var(--panelDivider);
+        }
 
-        &_right {}
+        &_right {
+          border-left: 1px solid var(--inputFocus);
+          background-color: var(--panel);
+        }
       }
 
       &_panel {
         display: flex;
         justify-content: space-between;
-        background: $black_2;
         padding: 14px;
+        border-radius: 0 0 6px 6px;
+        border-left: 1px solid var(--inputFocus);
+        border-right: 1px solid var(--inputFocus);
+        border-bottom: 1px solid var(--inputFocus);
 
         &_name {
           width: 11vw;
@@ -102,7 +101,7 @@
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          color: $second_text_color;
+          color: var(--textDisabled);
         }
 
         &>div {
@@ -119,10 +118,6 @@
 
       }
     }
-
-    &_control {
-      padding: 10px 0;
-    }
   }
 }
 
@@ -130,6 +125,6 @@
   height: 14px;
   width: 30px;
   border-radius: 2px;
-  background: aqua;
+  background: var(--titleBorder);
   margin: 1px;
 }

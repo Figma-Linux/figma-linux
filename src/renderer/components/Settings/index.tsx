@@ -6,7 +6,6 @@ import "./style.scss";
 import { Text } from "Elements";
 import Header from "../Header";
 import General from "./views/General";
-import Shortcuts from "./views/Shortcuts";
 import Themes from "./views/Themes";
 import { Views } from "Store/Views";
 import { Settings as SettingsStore } from "Store/Settings";
@@ -23,7 +22,6 @@ class Settings extends React.Component<SettingsProps, unknown> {
   props: SettingsProps;
   viewMap = {
     General,
-    Shortcuts,
     Themes,
   };
 
@@ -48,7 +46,12 @@ class Settings extends React.Component<SettingsProps, unknown> {
 
     return (
       <div className="settings">
-        <Header text="Settings" displayCloseButton={true} onCloseClick={this.onCloseClick} />
+        <Header
+          className="settings__header"
+          text="Settings"
+          displayCloseButton={true}
+          onCloseClick={this.onCloseClick}
+        />
         <div className="settings__panel">
           <div className="tab settings__tab" onClick={(): void => this.props.views.setSettingsView("General")}>
             <Text color={viewName === "General" ? "light" : "inactive"}>General</Text>

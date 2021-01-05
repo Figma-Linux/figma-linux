@@ -65,6 +65,11 @@ export class Storage {
 
     this.set(this.settings);
   };
+  public setTheme = (id: string): void => {
+    this.settings.theme.currentTheme = id;
+
+    this.set(this.settings);
+  };
 }
 
 export const storage = new Storage();

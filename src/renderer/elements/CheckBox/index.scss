@@ -4,6 +4,7 @@
   --checkSize: 12px;
   --checkWidth: 28px;
   --checkBorder: 1px;
+  color: var(--text);
 
   position: relative;
   padding: 6px 0;
@@ -28,7 +29,7 @@
 			width: var(--checkWidth);
 			height: var(--checkSize);
 			background-color: $white_1;
-			border: var(--checkBorder) solid $black_2;
+			border: var(--checkBorder) solid var(--inputFocus);
 			border-radius: var(--checkSize);
 			transition: all .1s ease;
 		}
@@ -42,8 +43,8 @@
 			left: 1px;
 			width: var(--checkSize);
 			height: var(--checkSize);
-			background-color: $white_1;
-			border: var(--checkBorder) solid $black_2;
+			background-color: var(--bg-header);;
+			border: var(--checkBorder) solid var(--inputFocus);
 			border-radius: var(--checkSize);
 			transition: all .2s ease;
 		}
@@ -54,8 +55,8 @@
 			left: 0px;
 			width: var(--checkWidth);
 			height: var(--checkSize);
-			background-color: $black_2;
-			border: var(--checkBorder) solid $black_2;
+			background-color: var(--bg-header);
+			border: var(--checkBorder) solid var(--inputFocus);
 			border-radius: var(--checkSize);
 			transition: all .1s ease;
 		}
@@ -99,8 +100,8 @@
 			left: 0px;
 			width: 45px;
 			height: 20px;
-			background-color: $llgray_1;
-			border: 1px solid $gray_2;
+			background-color: var(--inputFocus);
+			border: 1px solid var(--inputFocus);
 			border-radius: 20px;
 			transition: all .1s ease;
 		}
@@ -111,8 +112,8 @@
 			left: 3px;
 			width: 16px;
 			height: 16px;
-			background-color: $llgray_1;
-			border: 1px solid $gray_2;
+			background-color: var(--inputFocus);
+			border: 1px solid var(--inputFocus);
 			border-radius: 20px;
 			transition: all .2s ease;
 		}

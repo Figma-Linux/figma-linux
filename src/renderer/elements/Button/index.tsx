@@ -5,6 +5,7 @@ import "./index.scss";
 
 export interface ButtonProps {
   onClick?(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;
+  type?: "primary" | "secondary";
   className?: string;
   text?: string;
   contentBefore?: JSX.Element;
@@ -17,7 +18,12 @@ export class Button extends React.Component<ButtonProps, unknown> {
   }
 
   render(): JSX.Element {
-    const classNames: string[] = ["button"];
+    let type = this.props.type;
+    if (!type) {
+      type = "primary";
+    }
+
+    const classNames: string[] = ["button", `button_${type}`];
     const onClick = this.props.onClick || ((): void => {});
 
     if (this.props.className) {

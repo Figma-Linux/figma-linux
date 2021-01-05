@@ -1,4 +1,5 @@
-import { DEFAULT_THEME, DEFAULT_PALETTE, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, SVG_MAP } from "Const";
+import * as E from "electron";
+import { DEFAULT_THEME, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, SVG_MAP } from "Const";
 import { getColorsMap, variablesColorsMap } from "Utils/Common";
 
 export class ThemesManager {
@@ -7,9 +8,16 @@ export class ThemesManager {
   constructor() {
     this.currentTheme = DEFAULT_THEME;
 
-    // TODO: rewrite events
-    // app.on("themes-change", theme => this.changePalette(theme));
-    // app.on("set-default-theme", () => this.changePalette(DEFAULT_THEME));
+    this.themeEvents();
+  }
+
+  private themeEvents() {
+    E.ipcRenderer.on("themes-change", (_, theme) => {
+      this.changePalette(theme);
+    });
+    E.ipcRenderer.on("set-default-theme", () => {
+      this.changePalette(DEFAULT_THEME);
+    });
   }
 
   private changePalette(theme: Themes.Theme) {

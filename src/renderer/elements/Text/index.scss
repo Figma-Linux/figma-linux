@@ -12,6 +12,7 @@
     font-weight: 600;
   }
   &_subtitle {
+    color: var(--text);
     display: block;
     padding-bottom: 20px;
     font-size: var(--fontSubtitleSize);
@@ -19,13 +20,13 @@
   }
 
   &_light {
-    color: var(--fontColorLight);
+    color: var(--bg-tab-text-active);
   }
   &_dark {
     color: var(--fontColorDark);
   }
   &_inactive {
-    color: var(--fontColorInactive);
+    color: var(--textDisabled);
   }
 
   &_nopadding {

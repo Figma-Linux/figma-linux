@@ -15,9 +15,7 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
     <div className="general">
       <div className="section grid grid_1x3">
         <div>
-          <Text color="dark" type="subtitle">
-            Scale UI
-          </Text>
+          <Text type="subtitle">Scale UI</Text>
           <Input
             readonlyInput
             value={Math.round(props.settings.settings.ui.scaleFigmaUI * 100)}
@@ -33,9 +31,7 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
         </div>
         <div></div>
         <div>
-          <Text color="dark" type="subtitle">
-            Scale Tabs
-          </Text>
+          <Text type="subtitle">Scale Tabs</Text>
           <Input
             readonlyInput
             value={Math.round(props.settings.settings.ui.scalePanel * 100)}
@@ -52,9 +48,7 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
       </div>
       <div className="section grid grid_1x3">
         <div>
-          <Text color="dark" type="subtitle">
-            Main settings
-          </Text>
+          <Text type="subtitle">Main settings</Text>
           <CheckBox
             value={props.settings.settings.app.saveLastOpenedTabs}
             text="Save the last opened tabs"
@@ -73,16 +67,14 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
         </div>
         <div></div>
         <div className="flex flex_column">
-          <Text color="dark" type="subtitle">
-            Export files to
-          </Text>
+          <Text type="subtitle">Export files to</Text>
           <div className="flex align_items_center">
             <Input
               type={InputTypes.Text}
               className="justify__content_left flex_grow_1 input_inline border_light input_w_70per marg_right_10px"
               contentBefore={
                 <Button className="button_clear" onClick={(): void => props.settings.selectExportDir()}>
-                  <Icon size="22" type="Folder" />
+                  <Icon color="var(--text)" size="22" type="Folder" />
                 </Button>
               }
               value={props.settings.settings.app.exportDir}
@@ -90,7 +82,8 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
             />
             <Button
               text="Change"
-              className="button_default border_gray button_rounded width_60px"
+              type="primary"
+              className="width_60px"
               onClick={(): void => props.settings.selectExportDir()}
             />
           </div>
@@ -98,13 +91,12 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
       </div>
       <div className="section section_end grid grid_1x3">
         <div>
-          <Text color="dark" type="subtitle">
-            Font directories
-          </Text>
+          <Text type="subtitle">Font directories</Text>
           <div className="flex flex_column border_light pad_left_10px pad_top_10px">
             <Button
+              type="primary"
               text="+ Add directory"
-              className="button_default border_gray button_rounded width_120px"
+              className="width_120px"
               onClick={(): void => props.settings.addDir()}
             />
             <List items={props.settings.settings.app.fontDirs} onRemove={props.settings.removeDir} />
@@ -112,7 +104,7 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
         </div>
         <div></div>
         <div>
-          {/* <Text color="dark" type="subtitle">
+          {/* <Text type="subtitle">
             UI font
           </Text>
           <ComboBox className="border_light" items={["Inter", "Huinter", "Times New Roman", "Font Hueta"]} /> */}

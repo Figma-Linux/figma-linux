@@ -49,92 +49,7 @@ class Tabs extends React.Component<TabsProps, unknown> {
       // Handle left click, set focus on the target tab
       case 0:
         {
-          // const tabEl = e.target as any;
-
           this.focus(e, tab.id);
-
-          // TODO: implement moving of tabs
-          // if (/tab/.test(tabEl.className)) {
-          //     const currentTab: Tab = this.props.tabs.tabs.find(t => t.id === tab.id )
-          //     const TabContainer = tabEl.parentNode as any;
-          //     const TabContainerRect = TabContainer.getBoundingClientRect();
-          //     const TabBox = tabEl.getBoundingClientRect();
-          //     const BoxXShift = event.pageX - TabBox.left;
-          //     let fakeTab: any;
-          //     let fakeTabBox: ClientRect | DOMRect;
-          //     let fakeTabClassName: string;
-          //     let shift = 1;
-          //     let isMove = false;
-
-          //     const onMouseMove = (e: MouseEvent) => {
-          //         const TabBoxUpdated = tabEl.getBoundingClientRect();
-          //         const left = Math.abs(e.pageX - (BoxXShift + TabBox.width));
-
-          //         tabEl.style.position = 'absolute';
-          //         tabEl.style.zIndex = '1000';
-          //         tabEl.style.height = '28px';
-
-          //         if (!isMove) {
-          //             this.props.tabs.updateTab({ ...currentTab, moves: true });
-          //             fakeTab = document.getElementsByClassName('fakeTab')[0] as any;
-          //             fakeTabBox = fakeTab.getBoundingClientRect();
-          //             fakeTabClassName = fakeTab.className;
-          //             isMove = true;
-          //         }
-
-          //         // left side restriction
-          //         if ((e.pageX + (TabBox.left - BoxXShift)) > TabContainerRect.right) {
-          //             return;
-          //         }
-
-          //         // right side restriction
-          //         if ((e.pageX - BoxXShift) < TabContainerRect.left) {
-          //             shift += 3;
-
-          //             if (Math.floor((left / shift) < 0 ? 0 : (left / shift)) !== 0) {
-          //                 tabEl.style.left = `-${left / shift}px`;
-          //             } else {
-          //                 tabEl.style.left = `0px`;
-          //             }
-
-          //             return;
-          //         }
-
-          //         if (TabBoxUpdated.left > fakeTabBox.right - 30) {
-          //             console.log('Move tab to right ', TabBoxUpdated.left, fakeTabBox.right - 30);
-          //             // fakeTab.className = fakeTabClassName.replace(/order(\d)/, match => {
-          //             //     let order = parseInt(match.replace(/\D/g, ''));
-          //             //     return 'order' + (order + 2);
-          //             // });
-          //             this.props.tabs.updateTab({ ...currentTab, order: currentTab.order + 2 });
-          //         }
-
-          //         if (TabBoxUpdated.right < fakeTabBox.left + 30) {
-          //             console.log('Move tab to left ', TabBoxUpdated.right, fakeTabBox.left + 30);
-          //             // fakeTab.className = fakeTabClassName.replace(/order(\d)/, match => {
-          //             //     let order = parseInt(match.replace(/\D/g, ''));
-          //             //     return 'order' + (order - 2);
-          //             // });
-          //             this.props.tabs.updateTab({ ...currentTab, order: currentTab.order - 2 });
-          //         }
-
-          //         tabEl.style.left = `${left}px`;
-          //         shift = 0;
-          //     };
-          //     const onMouseUp = (e: MouseEvent) => {
-          //         tabEl.style.position = 'relative';
-          //         tabEl.style.left = `0px`;
-          //         tabEl.style.zIndex = '0';
-
-          //         this.props.tabs.updateTab({ id: currentTab.id, moves: false });
-
-          //         document.removeEventListener('mousemove', onMouseMove);
-          //         document.removeEventListener('mouseup', onMouseUp);
-          //     };
-
-          //     document.addEventListener('mousemove', onMouseMove)
-          //     document.addEventListener('mouseup', onMouseUp);
-          // }
         }
         break;
       // Handle middle click, close tab
@@ -169,8 +84,6 @@ class Tabs extends React.Component<TabsProps, unknown> {
         click: (): void => {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
-          console.log("Copy App url, tab.url: ", tab.url);
-
           let url = `figma://file/${tab.fileKey}/${tab.title}`;
 
           if (!isValidProjectLink(tab.url)) {
@@ -187,8 +100,6 @@ class Tabs extends React.Component<TabsProps, unknown> {
           const tab: Tab | undefined = this.props.tabs.getTab(id);
 
           let url = `${Const.HOMEPAGE}/file/${tab.fileKey}`;
-
-          console.log("Copy url, tab.url: ", tab.url);
 
           if (!isValidProjectLink(tab.url)) {
             url = tab.url;

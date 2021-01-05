@@ -17,7 +17,6 @@ declare namespace Electron {
     on(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     on(event: "log", listener: (data: any) => void): this;
     on(event: "sign-out", listener: () => void): this;
-    on(event: "themes-change", listener: (theme: Themes.Theme) => void): this;
     on(event: "set-default-theme", listener: () => void): this;
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
@@ -30,7 +29,6 @@ declare namespace Electron {
     emit(event: "os-menu-invalidated", dependencies: MenuState.MenuStateParams): boolean;
     emit(event: "log", data: any): boolean;
     emit(event: "sign-out"): boolean;
-    emit(event: "themes-change", theme: Themes.Theme): boolean;
     emit(event: "set-default-theme"): boolean;
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
@@ -78,6 +76,8 @@ declare namespace Electron {
     on(channel: "appExit", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "newProject", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "updateVisibleNewProjectBtn", listener: (event: IpcMainInvokeEvent, visible: boolean) => void): this;
+    on(channel: "themes-change", listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void): this;
+    on(channel: "set-default-theme", listener: (event: IpcMainInvokeEvent) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -127,6 +127,8 @@ declare namespace Electron {
     on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
     on(channel: "getUploadedThemes", listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void): this;
     on(channel: "mainTabFocused", listener: (event: IpcRendererEvent) => void): this;
+    on(channel: "themes-change", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
+    on(channel: "set-default-theme", listener: (event: IpcRendererEvent) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -153,6 +155,8 @@ declare namespace Electron {
     send(channel: "newProject"): this;
     send(channel: "appExit"): this;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;
+    send(channel: "themes-change", theme: Themes.Theme): this;
+    send(channel: "set-default-theme"): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
@@ -182,6 +186,7 @@ declare namespace Electron {
     send(channel: "didTabAdd", data: Tab): this;
     send(channel: "handleUrl", url: string): this;
     send(channel: "mainTabFocused"): this;
+    send(channel: "themes-change", theme: Themes.Theme): this;
   }
 
   interface RequestHeaders {

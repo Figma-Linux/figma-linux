@@ -29,7 +29,7 @@ export class List extends React.Component<ListProps, unknown> {
           <div key={i} className="list__item">
             {this.props.onRemove ? (
               <div className="list__delete hover" onClick={() => this.props.onRemove(i)}>
-                <Icon type="Close" />
+                <Icon color="var(--text)" type="Close" />
               </div>
             ) : (
               ""

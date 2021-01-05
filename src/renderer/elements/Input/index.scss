@@ -11,6 +11,10 @@
     outline: none;
   }
 
+  &__label {
+    color: var(--text);
+  }
+
   &__content_before {
     display: flex;
     justify-self: center;
@@ -32,7 +36,7 @@
   &__range {
     --thumbSize: 16px;
     --trackSize: 2px;
-
+    background-color: var(--panel);
     -webkit-appearance: none;
     appearance: none;
     height: var(--thumbSize);
@@ -43,7 +47,7 @@
   }
 
   &__range::-webkit-slider-runnable-track {
-    background: $gray_1;
+    background: var(--text);
     height: var(--trackSize);
     border-radius: calc(var(--trackSize) / 2);
   }
@@ -51,8 +55,8 @@
   &__range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    border: 1 solid $gray_1;
-    background: $gray_1;
+    border: 1 solid var(--text);
+    background: var(--text);
     width: var(--thumbSize);
     height: var(--thumbSize);
     border-radius: calc(var(--thumbSize));
@@ -70,6 +74,8 @@
   &__text {
     margin: 8px 10px;
     border: 0;
+    background-color: var(--panel);
+    color: var(--text);
     font: {
       family: 'Inter', sans-serif;
       size: 14px;

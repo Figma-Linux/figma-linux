@@ -111,6 +111,9 @@ export class Settings {
     E.ipcRenderer.on("updateVisibleNewProjectBtn", (sender, height) => {
       this.settings.app.visibleNewProjectBtn = height;
     });
+    E.ipcRenderer.on("themes-change", (sender, theme) => {
+      this.settings.theme.currentTheme = theme.id;
+    });
   };
 }
 

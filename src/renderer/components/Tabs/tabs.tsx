@@ -19,11 +19,13 @@ const Tabs: React.FunctionComponent<Props> = props => {
           onClick={e => props.clickTab(e, t)}
           onAuxClick={e => props.clickTab(e, t)}
         >
-          <Text color="light" className="tab__text pointer_events_none">
-            {t.title}
-          </Text>
+          <Text className="tab__text pointer_events_none">{t.title}</Text>
           <Button className="tab__close button_clear" onClick={(e): void => props.close(e, t.id)}>
-            <Icon color="#FFFFFF" type="Close" size="16" />
+            <Icon
+              color={`${props.tabs.current === t.id ? "var(--bg-tab-text-active)" : "var(--bg-tab-text)"}`}
+              type="Close"
+              size="16"
+            />
           </Button>
         </div>
       ))}

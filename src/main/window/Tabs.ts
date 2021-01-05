@@ -3,7 +3,7 @@ import * as path from "path";
 
 import { DEFAULT_SETTINGS } from "Const";
 import { isDev } from "Utils/Common";
-// import { getThemeById } from "Utils/Main";
+import { getThemeById } from "Utils/Main";
 import Fonts from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
@@ -45,12 +45,12 @@ export default class Tabs {
     tab.webContents.on("dom-ready", () => {
       let dirs = storage.get().app.fontDirs;
 
-      // const currentThemeId = Settings.getSync("theme.currentTheme") as string;
-      // if (currentThemeId !== "0") {
-      //   getThemeById(currentThemeId).then(theme => {
-      //     E.app.emit("themes-change", theme);
-      //   });
-      // }
+      const currentThemeId = storage.get().theme.currentTheme;
+      if (currentThemeId !== "0") {
+        getThemeById(currentThemeId).then(theme => {
+          tab.webContents.send("themes-change", theme);
+        });
+      }
 
       if (!dirs) {
         dirs = DEFAULT_SETTINGS.app.fontDirs;

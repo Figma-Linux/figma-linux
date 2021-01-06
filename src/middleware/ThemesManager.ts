@@ -127,7 +127,7 @@ export class ThemesManager {
         if (/searchIcon/.test(cssRule.selectorText)) {
           cssRule.style["fill"] = `var(--text-active)`;
         }
-        if (/tool_bar--toolBarRightSide/.test(cssRule.selectorText)) {
+        if (/tool_bar--toolBarRightSide|pages_panel--pageRowSelected/.test(cssRule.selectorText)) {
           cssRule.style["fill"] = `var(--text-active)`;
         }
         if (/upgrade_section--icon/.test(cssRule.selectorText)) {
@@ -145,6 +145,9 @@ export class ThemesManager {
         }
         if (/step_breadcrumb--stepTitle/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--text-active)`;
+        }
+        if (/toolbar_view--shareButton|basic_form--primaryBtn/.test(cssRule.selectorText)) {
+          cssRule.style["color"] = `var(--fg-toolbar-active)`;
         }
       }
     }

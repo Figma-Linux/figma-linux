@@ -279,7 +279,6 @@ export const SELECTORS_TO_IGNORE = [
   ".action--enabled",
   ".action_option",
   ".avatar--root--2kH_E",
-  ".basic_form--primaryBtn",
   ".basic_form--greenBtn",
   ".dropdown--dropdown",
   ".dropdown_menu",

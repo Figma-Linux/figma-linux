@@ -39,7 +39,7 @@
     border: 1px solid var(--bg-toolbar-active);
     background-color:  var(--bg-toolbar-active);
     border-radius: 5px;
-    color: var(--text);
+    color: var(--fg-toolbar-active);
 
     &:active {
       border-color: var(--bg-toolbar-active);

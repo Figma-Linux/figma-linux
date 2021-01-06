@@ -18,7 +18,7 @@ const Header: React.FunctionComponent<HeaderProps> = props => {
       <Text className="header__text">{props.text}</Text>
       {props.displayCloseButton ? (
         <Button className="button_clear" onClick={props.onCloseClick}>
-          <Icon color="var(--bg-header-control-text)" type="Close" size="16" />
+          <Icon color="var(--fg-header-control)" type="Close" size="16" />
         </Button>
       ) : (
         ""

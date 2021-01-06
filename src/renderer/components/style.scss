@@ -1,8 +1,13 @@
 @import '../colors.scss';
 
 html {
+  --text: #333333;
+  --text-active: #050505;
+  --text-disabled: #b3b3b3;
+  --panel-divider: #e5e5e5;
+  --borders: #00000019;
+  --bg-panel: #ffffff;
   --bg-toolbar: #2c2c2c;
-  --bg-primary-btn: #18a0fb;
   --bg-toolbar-hover: #000000;
   --bg-toolbar-active: #18a0fb;
   --fg-toolbar: #FFFFFF;
@@ -18,68 +23,27 @@ html {
   --fg-toolbar-login-button-active: #ffffff66;
   --fg-toolbar-placeholder: #ffffff66;
   --bg-overlay: #222222;
-  --bg-overlay-active: #18a0fb;
   --bg-overlay-outline: #00000019;
   --bg-overlay-inner-outline: #000000;
-  --fg-overlay: #ffffff;
-  --fg-overlay-active: #ffffff;
-  --fg-overlay-secondary: #ffffff66;
-  --fg-overlay-sep: #ffffff33;
-  --fg-overlay-right: #ffffff;
   --bg-tab: #222222;
   --bg-tab-hover: #2c2c2c;
   --bg-tab-active: #2c2c2c;
-  --bg-tab-text: #7A7A7A;
-  --bg-tab-text-hover: #7A7A7A;
-  --bg-tab-text-active: #ffffff;
+  --fg-tab: #7A7A7A;
+  --fg-tab-hover: #ffffff;
+  --fg-tab-active: #ffffff;
   --bg-header: #222222;
-  --bg-header-text: #ffffff;
+  --fg-header: #ffffff;
   --bg-header-control: #222222;
   --bg-header-control-hover: #2c2c2c;
   --bg-header-control-active: #2c2c2c;
-  --bg-header-control-text: #7A7A7A;
-  --bg-header-control-text-hover: #7A7A7A;
-  --bg-header-control-text-active: #ffffff;
-
-  --panel: rgb(255, 255, 255);
-  --panelRowOnHover: rgb(248, 248, 248);
-  --panelRowActive: rgb(218, 235, 247);
-  --panelRowChildActive: rgb(241, 249, 255);
-  --panelDivider: rgb(229, 229, 229);
-  --panelDividerBoxShadowTop: rgb(229, 229, 229) 1px 0px 0px 0px;
-  --panelDividerBoxShadowRight: rgb(229, 229, 229) 0px 1px 0px 0px;
-  --text: rgb(51, 51, 51);
-  --textCode: rgb(68, 68, 68);
-  --textActive: rgb(5, 5, 5);
-  --textDisabled: rgb(179, 179, 179);
-  --textDisabledRowActive: rgb(166, 172, 175);
-  --textComponent: rgb(123, 97, 255);
-  --textComponentDisabled: rgba(123, 97, 255, 0.4);
-  --textComponentDisabledRowActive: rgb(191, 186, 252);
-  --toolbarBg: rgba(44, 44, 44, 1);
-  --inputFocus: rgba(0, 0, 0, 0.1);
-  --iconButtonHover: rgba(0, 0, 0, 0.06);
-  --titleBorder: rgb(24, 160, 251);
-  --titleBorderBoxShadow: rgb(24, 160, 251) 0px 0px 0px 1px inset;
-  --black1: rgba(0, 0, 0, 0.15);
-  --black2: rgba(0, 0, 0, 0.2);
-  --black3: rgba(0, 0, 0, 0.3);
-  --black4: rgba(0, 0, 0, 0.4);
-  --black5: rgba(0, 0, 0, 0.6);
-  --black6: rgba(0, 0, 0, 0.5);
-  --black7: rgba(0, 0, 0, 0.75);
-  --black8: rgba(0, 0, 0, 0.9);
-  --black9: rgba(0, 0, 0, 0.95);
-  --white1: rgba(255, 255, 255, 0);
-  --white2: rgba(255, 255, 255, 0.2);
-  --white3: rgba(255, 255, 255, 0.4);
-  --white4: rgba(255, 255, 255, 0.05);
-  --white5: rgba(255, 255, 255, 0.5);
-  --white6: rgba(255, 255, 255, 0.8);
-  --white7: rgba(255, 255, 255, 0.95);
-  --windowClose: #e81123;
-  --header: #222222;
-  --betaLabel: #1bc47d;
+  --fg-header-control: #7A7A7A;
+  --fg-header-control-hover: #7A7A7A;
+  --fg-header-control-active: #ffffff;
+  --fg-component: #7b61ff;
+  --fg-component-disabled: #7b61ff66;
+  --fg-component-disabled-row-active: #bfbafc;
+  --bg-window-close: #e81123;
+  --bg-beta-label: #1bc47d;
 }
 
 html,
@@ -90,9 +54,6 @@ body,
   --fontSize: 16px;
   --fontSubtitleSize: 18px;
   --fontTitleSize: 22px;
-  --fontColorDark: #333333;
-  --fontColorLight: #FFFFFF;
-  --fontColorInactive: rgba(255,255,255,0.5);
 
   margin: 0;
   padding: 0;
@@ -132,7 +93,7 @@ h6 {
 
 .section {
   padding: 30px 0px;
-  border-bottom: 1px solid var(--inputFocus);
+  border-bottom: 1px solid var(--borders);
 
   &_end {
     border-bottom: 0px;
@@ -207,7 +168,7 @@ h6 {
 }
 
 .border_light {
-  border: 1px solid var(--inputFocus);
+  border: 1px solid var(--borders);
 }
 
 .pad {

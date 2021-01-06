@@ -36,7 +36,7 @@
   &__range {
     --thumbSize: 16px;
     --trackSize: 2px;
-    background-color: var(--panel);
+    background-color: var(--bg-panel);
     -webkit-appearance: none;
     appearance: none;
     height: var(--thumbSize);
@@ -74,7 +74,7 @@
   &__text {
     margin: 8px 10px;
     border: 0;
-    background-color: var(--panel);
+    background-color: var(--bg-panel);
     color: var(--text);
     font: {
       family: 'Inter', sans-serif;

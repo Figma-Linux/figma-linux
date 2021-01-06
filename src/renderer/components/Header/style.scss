@@ -11,11 +11,11 @@
   &__text {
     padding: 0;
     margin: 0;
-    color: var(--bg-header-text);
-    fill: var(--bg-header-text);
+    color: var(--fg-header);
+    fill: var(--fg-header);
   }
   &__close {
-    color: var(--bg-header-control-text);
-    fill: var(--bg-header-control-text);
+    color: var(--fg-header-control);
+    fill: var(--fg-header-control);
   }
 }

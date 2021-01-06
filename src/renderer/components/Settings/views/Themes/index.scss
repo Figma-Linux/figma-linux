@@ -12,7 +12,7 @@
     &_tumbl {
       flex-direction: column;
       height: 159px;
-      border: 1px solid var(--inputFocus);
+      border: 1px solid var(--borders);
       border-radius: 6px 6px 0 0;
 
       &_top {
@@ -26,7 +26,7 @@
         grid-template-columns: 60px 1fr 60px;
         height: 24px;
         align-items: center;
-        background-color: var(--toolbarBg);
+        background-color: var(--bg-toolbar);
 
         &>div {
           display: flex;
@@ -51,8 +51,8 @@
         &_left {
           padding-left: 8px;
           padding-top: 10px;
-          background-color: var(--panel);
-          border-right: 1px solid var(--inputFocus);
+          background-color: var(--bg-panel);
+          border-right: 1px solid var(--borders);
 
           &_text1 {
             width: 40px;
@@ -69,12 +69,12 @@
         }
 
         &_center {
-          background-color: var(--panelDivider);
+          background-color: var(--panel-divider);
         }
 
         &_right {
-          border-left: 1px solid var(--inputFocus);
-          background-color: var(--panel);
+          border-left: 1px solid var(--borders);
+          background-color: var(--bg-panel);
         }
       }
 
@@ -83,9 +83,9 @@
         justify-content: space-between;
         padding: 14px;
         border-radius: 0 0 6px 6px;
-        border-left: 1px solid var(--inputFocus);
-        border-right: 1px solid var(--inputFocus);
-        border-bottom: 1px solid var(--inputFocus);
+        border-left: 1px solid var(--borders);
+        border-right: 1px solid var(--borders);
+        border-bottom: 1px solid var(--borders);
 
         &_name {
           width: 11vw;
@@ -93,6 +93,7 @@
           white-space: nowrap;
           text-overflow: ellipsis;
           font-size: 16px;
+          color: var(--text-active);
         }
 
         &_author {
@@ -101,7 +102,7 @@
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          color: var(--textDisabled);
+          color: var(--text-disabled);
         }
 
         &>div {
@@ -125,6 +126,6 @@
   height: 14px;
   width: 30px;
   border-radius: 2px;
-  background: var(--titleBorder);
+  background: var(--bg-toolbar-active);
   margin: 1px;
 }

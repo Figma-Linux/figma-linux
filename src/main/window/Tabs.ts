@@ -3,10 +3,10 @@ import * as path from "path";
 
 import { DEFAULT_SETTINGS } from "Const";
 import { isDev } from "Utils/Common";
-import { getThemeById } from "Utils/Main";
 import Fonts from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
+import WindowManager from "./WindowManager";
 
 export default class Tabs {
   public static registeredCancelCallbackMap: Map<number, () => void> = new Map();
@@ -47,9 +47,12 @@ export default class Tabs {
 
       const currentThemeId = storage.get().theme.currentTheme;
       if (currentThemeId !== "0") {
-        getThemeById(currentThemeId).then(theme => {
-          tab.webContents.send("themes-change", theme);
-        });
+        const wm = WindowManager.instance;
+        const foundTheme = wm.themes.find(theme => theme.id === currentThemeId);
+
+        if (foundTheme) {
+          tab.webContents.send("themes-change", foundTheme);
+        }
       }
 
       if (!dirs) {

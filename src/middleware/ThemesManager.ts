@@ -1,5 +1,5 @@
 import * as E from "electron";
-import { DEFAULT_THEME, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, SVG_MAP } from "Const";
+import { DEFAULT_THEME, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR } from "Const";
 import { getColorsMap, variablesColorsMap } from "Utils/Common";
 
 export class ThemesManager {
@@ -56,7 +56,29 @@ export class ThemesManager {
     const keys = Object.keys(this.currentTheme.palette);
 
     for (const key of keys) {
-      document.documentElement.style.setProperty(`--${key}`, (this.currentTheme.palette as any)[key]);
+      const value = this.currentTheme.palette[key];
+      document.documentElement.style.setProperty(`--${key}`, value);
+
+      if (key === "bg-toolbar-active") {
+        document.documentElement.style.setProperty("--bg-primary-btn", value);
+        document.documentElement.style.setProperty("--bg-overlay-active", value);
+      }
+      if (key === "fg-overlay") {
+        document.documentElement.style.setProperty("--fg-overlay", value);
+        document.documentElement.style.setProperty("--fg-overlay-right", value);
+      }
+      if (key === "fg-toolbar-active") {
+        document.documentElement.style.setProperty("--fg-overlay-active", value);
+      }
+      if (key === "fg-toolbar-active") {
+        document.documentElement.style.setProperty("--fg-overlay-active", value);
+      }
+      if (key === "text-disabled") {
+        document.documentElement.style.setProperty("--fg-overlay-secondary", value);
+      }
+      if (key === "borders") {
+        document.documentElement.style.setProperty("--fg-overlay-sep", value);
+      }
     }
   }
 
@@ -68,6 +90,10 @@ export class ThemesManager {
     }
 
     const colorsMap = getColorsMap(this.currentTheme.palette);
+    const additionStyleRules: string[] = [
+      "#react-page { background-color: var(--bg-panel); }",
+      `span[class*="action_option--shortcut"] { color: var(--fg-overlay); }`,
+    ];
 
     this.setThemeVariables();
 
@@ -88,26 +114,47 @@ export class ThemesManager {
             const colorValue = cssRule.style[colorProp];
 
             if (colorValue != "" && colorsMap.hasOwnProperty(colorValue)) {
-              cssRule.style[colorProp] = `var(--${variablesColorsMap[colorValue]})`;
+              cssRule.style[colorProp] = `${variablesColorsMap[colorValue]}`;
             }
           });
+        }
+
+        if (/search--searchInput/.test(cssRule.selectorText)) {
+          cssRule.style["backgroundColor"] = `var(--bg-panel)`;
+          cssRule.style["color"] = `var(--text-active)`;
+        }
+
+        if (/searchIcon/.test(cssRule.selectorText)) {
+          cssRule.style["fill"] = `var(--text-active)`;
+        }
+        if (/tool_bar--toolBarRightSide/.test(cssRule.selectorText)) {
+          cssRule.style["fill"] = `var(--text-active)`;
+        }
+        if (/upgrade_section--icon/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`span[class*="upgrade_section--icon"] > svg > path { fill: var(--text); }`);
+        }
+        if (
+          /user_view--devTokenNew|community_hub_banner--bannerIcon|full_width_page--closeMenu/.test(
+            cssRule.selectorText,
+          )
+        ) {
+          additionStyleRules.push(`${cssRule.selectorText} svg path { fill: var(--text) !important; }`);
+        }
+        if (/basic_form--textInput/.test(cssRule.selectorText)) {
+          cssRule.style["backgroundColor"] = `var(--bg-panel)`;
+        }
+        if (/step_breadcrumb--stepTitle/.test(cssRule.selectorText)) {
+          cssRule.style["color"] = `var(--text-active)`;
         }
       }
     }
 
-    setTimeout(() => {
-      const svgs = Array.from(document.getElementsByTagName("svg"));
+    if (additionStyleRules.length) {
+      const newStyles = document.createElement("style");
+      newStyles.innerText = additionStyleRules.join("\n");
 
-      for (const svg of svgs) {
-        for (const svgColor of Object.keys(SVG_MAP)) {
-          const regexp = new RegExp(svgColor, "gi");
-
-          if (regexp.test(svg.innerHTML)) {
-            svg.innerHTML = svg.innerHTML.replace(regexp, SVG_MAP[svgColor]);
-          }
-        }
-      }
-    }, 300);
+      document.head.appendChild(newStyles);
+    }
   }
 }
 

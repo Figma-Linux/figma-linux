@@ -29,7 +29,7 @@
 			width: var(--checkWidth);
 			height: var(--checkSize);
 			background-color: $white_1;
-			border: var(--checkBorder) solid var(--inputFocus);
+			border: var(--checkBorder) solid var(--borders);
 			border-radius: var(--checkSize);
 			transition: all .1s ease;
 		}
@@ -44,7 +44,7 @@
 			width: var(--checkSize);
 			height: var(--checkSize);
 			background-color: var(--bg-header);;
-			border: var(--checkBorder) solid var(--inputFocus);
+			border: var(--checkBorder) solid var(--borders);
 			border-radius: var(--checkSize);
 			transition: all .2s ease;
 		}
@@ -56,7 +56,7 @@
 			width: var(--checkWidth);
 			height: var(--checkSize);
 			background-color: var(--bg-header);
-			border: var(--checkBorder) solid var(--inputFocus);
+			border: var(--checkBorder) solid var(--borders);
 			border-radius: var(--checkSize);
 			transition: all .1s ease;
 		}
@@ -100,8 +100,8 @@
 			left: 0px;
 			width: 45px;
 			height: 20px;
-			background-color: var(--inputFocus);
-			border: 1px solid var(--inputFocus);
+			background-color: var(--borders);
+			border: 1px solid var(--borders);
 			border-radius: 20px;
 			transition: all .1s ease;
 		}
@@ -112,8 +112,8 @@
 			left: 3px;
 			width: 16px;
 			height: 16px;
-			background-color: var(--inputFocus);
-			border: 1px solid var(--inputFocus);
+			background-color: var(--borders);
+			border: 1px solid var(--borders);
 			border-radius: 20px;
 			transition: all .2s ease;
 		}

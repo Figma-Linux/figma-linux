@@ -14,84 +14,115 @@ declare namespace Themes {
   }
 
   interface Palette {
+    /**
+     * text color
+     */
+    text: string;
+    /**
+     * active text color
+     */
+    "text-active": string;
+    /**
+     * disabled text color
+     */
+    "text-disabled": string;
+    /**
+     * bg color of panels and a page bg
+     */
+    "bg-panel": string;
+    /**
+     * tool bar bg color
+     */
     "bg-toolbar": string;
-    "bg-primary-btn": string;
+    /**
+     * tool bar item bg color on hover
+     */
     "bg-toolbar-hover": string;
+    /**
+     * share button, selected tool bar item, other selections color
+     */
     "bg-toolbar-active": string;
+    /**
+     * tool bar icons color
+     */
     "fg-toolbar": string;
+    /**
+     * tool bar icons color on hover
+     */
     "fg-toolbar-hover": string;
+    /**
+     * tool bar active icon color
+     */
     "fg-toolbar-active": string;
+    /**
+     * tool bar disabled icon color
+     */
     "fg-toolbar-disabled": string;
+    /**
+     * tool bar name of project text color
+     */
     "fg-toolbar-filename": string;
+    /**
+     * tool bar name of folder project text color
+     */
     "fg-toolbar-foldername": string;
+    /**
+     * tool bar chevron color
+     */
     "fg-toolbar-chevron": string;
+    /**
+     * unsaved icon color
+     */
     "fg-toolbar-unsavedicon": string;
+    /**
+     * tool bar login button color
+     */
     "fg-toolbar-login-button": string;
+    /**
+     * tool bar login button border color
+     */
     "fg-toolbar-login-button-border": string;
+    /**
+     * tool bar active login button color
+     */
     "fg-toolbar-login-button-active": string;
+    /**
+     * tool bar search input placeholder color
+     */
     "fg-toolbar-placeholder": string;
+    /**
+     * tool bar item dropdown menu bg color
+     */
     "bg-overlay": string;
-    "bg-overlay-active": string;
+    /**
+     * tool bar item dropdown menu outline shadow color
+     */
     "bg-overlay-outline": string;
+    /**
+     * tool bar item dropdown menu border color
+     */
     "bg-overlay-inner-outline": string;
-    "fg-overlay": string;
-    "fg-overlay-active": string;
-    "fg-overlay-secondary": string;
-    "fg-overlay-sep": string;
-    "fg-overlay-right": string;
     "bg-tab": string;
     "bg-tab-hover": string;
     "bg-tab-active": string;
-    "bg-tab-text": string;
-    "bg-tab-text-hover": string;
-    "bg-tab-text-active": string;
+    "fg-tab": string;
+    "fg-tab-hover": string;
+    "fg-tab-active": string;
     "bg-header": string;
-    "bg-header-text": string;
+    "fg-header": string;
     "bg-header-control": string;
     "bg-header-control-hover": string;
     "bg-header-control-active": string;
-    "bg-header-control-text": string;
-    "bg-header-control-text-hover": string;
-    "bg-header-control-text-active": string;
-
-    panel: string;
-    panelRowOnHover: string;
-    panelRowActive: string;
-    panelRowChildActive: string;
-    panelDivider: string;
-    panelDividerBoxShadowTop: string;
-    panelDividerBoxShadowRight: string;
-    text: string;
-    textCode: string;
-    textActive: string;
-    textDisabled: string;
-    textDisabledRowActive: string;
-    textComponent: string;
-    textComponentDisabled: string;
-    textComponentDisabledRowActive: string;
-    toolbarBg: string;
-    inputFocus: string;
-    iconButtonHover: string;
-    titleBorder: string;
-    titleBorderBoxShadow: string;
-    black1: string;
-    black2: string;
-    black3: string;
-    black4: string;
-    black5: string;
-    black6: string;
-    black7: string;
-    black8: string;
-    black9: string;
-    white1: string;
-    white2: string;
-    white3: string;
-    white4: string;
-    white5: string;
-    white6: string;
-    white7: string;
-    windowClose: string;
-    betaLabel: string;
+    "fg-header-control": string;
+    "fg-header-control-hover": string;
+    "fg-header-control-active": string;
+    "panel-divider": string;
+    "fg-component": string;
+    "fg-component-disabled": string;
+    "fg-component-disabled-row-active": string;
+    borders: string;
+    "bg-window-close": string;
+    "bg-beta-label": string;
     [index: string]: string;
   }
 }

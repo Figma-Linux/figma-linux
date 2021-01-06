@@ -28,7 +28,7 @@
     color: var(--text);
 
     &:active {
-      border-color: var(--titleBorder);
+      border-color: var(--bg-toolbar-active);
     }
     &:hover {
       cursor: pointer;
@@ -36,13 +36,13 @@
   }
   &_secondary {
     padding: var(--buttonHeightS) var(--buttonWidthM);
-    border: 1px solid var(--bg-primary-btn);
-    background-color:  var(--bg-primary-btn);
+    border: 1px solid var(--bg-toolbar-active);
+    background-color:  var(--bg-toolbar-active);
     border-radius: 5px;
     color: var(--text);
 
     &:active {
-      border-color: var(--titleBorder);
+      border-color: var(--bg-toolbar-active);
     }
     &:hover {
       cursor: pointer;
@@ -73,7 +73,7 @@
 
   &_title {
     padding: 12px;
-    color: var(--bg-header-text);
+    color: var(--fg-header);
     background-color: var(--bg-header-control);
 
     &:hover {
@@ -85,7 +85,7 @@
   &_control {
     padding: 12px 18px;
     background-color: var(--bg-header-control);
-    color: var(--bg-header-control-text);
+    color: var(--fg-header-control);
 
     &:hover {
       background-color: var(--bg-header-control-hover);
@@ -94,9 +94,9 @@
     }
   }
   &_close {
-    color: var(--bg-header-control-text);
+    color: var(--fg-header-control);
     &:hover {
-      background: var(--windowClose);
+      background: var(--bg-window-close);
       cursor: pointer;
     }
   }

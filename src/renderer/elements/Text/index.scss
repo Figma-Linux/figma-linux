@@ -20,13 +20,13 @@
   }
 
   &_light {
-    color: var(--bg-tab-text-active);
+    color: var(--fg-tab-active);
   }
   &_dark {
-    color: var(--fontColorDark);
+    color: var(--text-active);
   }
   &_inactive {
-    color: var(--textDisabled);
+    color: var(--text-disabled);
   }
 
   &_nopadding {

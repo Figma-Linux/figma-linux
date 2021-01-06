@@ -22,11 +22,11 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
     <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
       <div className="panelButtons">
         <Button className={`button_clear button_title${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
-          <Icon color="var(--bg-header-control-text)" type="Main" size="18" />
+          <Icon color="var(--fg-tab)" type="Main" size="18" />
         </Button>
         {props.visibleNewProjectBtn ? (
           <Button className="button_clear button_title" onClick={props.onNewProject}>
-            <Icon color="var(--bg-header-control-text)" type="Plus" size="18" />
+            <Icon color="var(--fg-tab)" type="Plus" size="18" />
           </Button>
         ) : (
           ""
@@ -35,16 +35,16 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
       <Tabs />
       <div className="panelButtons">
         <Button className="button_clear button_title" onClick={props.openMenu}>
-          <Icon color="var(--bg-header-control-text)" type="MenuCorner" size="18" />
+          <Icon color="var(--fg-tab)" type="MenuCorner" size="18" />
         </Button>
         <Button className="button_clear button_control" onClick={props.miniw}>
-          <Icon color="var(--bg-header-control-text)" type="Minimize" size="18" />
+          <Icon color="var(--fg-header-control)" type="Minimize" size="18" />
         </Button>
         <Button className="button_clear button_control" onClick={props.maxiw}>
-          <Icon color="var(--bg-header-control-text)" type="Maximize" size="18" />
+          <Icon color="var(--fg-header-control)" type="Maximize" size="18" />
         </Button>
         <Button className="button_clear button_control button_close" onClick={props.closew}>
-          <Icon color="var(--bg-header-control-text)" type="Close" size="18" />
+          <Icon color="var(--fg-header-control)" type="Close" size="18" />
         </Button>
       </div>
     </div>

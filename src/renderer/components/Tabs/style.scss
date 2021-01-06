@@ -15,13 +15,13 @@
   user-select: none;
   overflow: hidden;
   background-color: var(--bg-tab);
-  color: var(--bg-tab-text);
-  fill: var(--bg-tab-text);
+  color: var(--fg-tab);
+  fill: var(--fg-tab);
 
   &:hover {
     background-color: var(--bg-tab-hover);
-    color: var(--bg-tab-text-hover);
-    fill: var(--bg-tab-text-hover);
+    color: var(--fg-tab-hover);
+    fill: var(--fg-tab-hover);
     cursor: pointer;
   }
 
@@ -36,19 +36,19 @@
 
   &__close {
     height: 16px;
-    color: var(--bg-tab-text);
-    fill: var(--bg-tab-text);
+    color: var(--fg-tab);
+    fill: var(--fg-tab);
 
     &:hover {
-      color: var(--bg-tab-text-hover);
-      fill: var(--bg-tab-text-hover);
+      color: var(--fg-tab-hover);
+      fill: var(--fg-tab-hover);
       cursor: pointer;
     }
   }
 
   &_active {
     background-color: var(--bg-tab-active);
-    color: var(--bg-tab-text-active);
-    fill: var(--bg-tab-text-active);
+    color: var(--fg-tab-active);
+    fill: var(--fg-tab-active);
   }
 }

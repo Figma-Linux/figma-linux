@@ -22,7 +22,7 @@ const Tabs: React.FunctionComponent<Props> = props => {
           <Text className="tab__text pointer_events_none">{t.title}</Text>
           <Button className="tab__close button_clear" onClick={(e): void => props.close(e, t.id)}>
             <Icon
-              color={`${props.tabs.current === t.id ? "var(--bg-tab-text-active)" : "var(--bg-tab-text)"}`}
+              color={`${props.tabs.current === t.id ? "var(--fg-tab-active)" : "var(--fg-tab)"}`}
               type="Close"
               size="16"
             />

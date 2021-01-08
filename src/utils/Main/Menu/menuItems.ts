@@ -1,8 +1,7 @@
 import * as E from "electron";
 
-import Commander from "Main/Commander";
 import { LINKS } from "Const";
-import { item, commandToMainProcess, handleUrl } from "Utils/Main";
+import { item, commandToMainProcess, handleUrl, toggleDetachedDevTools } from "Utils/Main";
 
 const PLUGINS_MENU = {
   label: "Plugins",
@@ -79,29 +78,33 @@ const HELP_MENU = {
     {
       label: "Sign Out",
       click(): void {
-        Commander.exec("sign-out");
+        E.app.emit("sign-out");
       },
     },
     { type: "separator" },
     {
       label: "Toggle Developer Tools",
       accelerator: "Ctrl+Alt+I",
-      click(item, window): void {
-        Commander.exec("toggle-developer-tools", item, window);
+      click(): void {
+        E.app.emit("toggle-current-tab-devtools");
       },
     },
     {
       label: "Toggle Window Developer Tools",
       accelerator: "Shift+Ctrl+Alt+I",
-      click(item, window): void {
-        Commander.exec("toggle-window-developer-tools", item, window);
+      click(_, window): void {
+        if (!window) {
+          return;
+        }
+
+        toggleDetachedDevTools(window.webContents);
       },
     },
     {
       label: "Toggle Additional Developer Tools",
       accelerator: "Shift+Ctrl+Alt+S",
-      click(item, window): void {
-        Commander.exec("toggle-settings-developer-tools", item, window);
+      click(): void {
+        E.app.emit("toggle-settings-developer-tools");
       },
     },
     item("GPU", "", { id: "chrome://gpu", click: commandToMainProcess }),

@@ -5,7 +5,6 @@ import * as url from "url";
 import Tabs from "./Tabs";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
-import Commander from "../Commander";
 import MenuState from "../MenuState";
 import * as Const from "Const";
 import {
@@ -45,6 +44,7 @@ class WindowManager {
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
   creatorTheme: Themes.Theme;
+  private lastFocusedTabId: E.WebContents;
   private tabs: Tab[];
   private menu: E.Menu;
   private static _instance: WindowManager;
@@ -70,6 +70,7 @@ class WindowManager {
         webgl: true,
         experimentalFeatures: true,
         enableRemoteModule: true,
+        contextIsolation: false,
       },
     };
 
@@ -209,16 +210,6 @@ class WindowManager {
       }
     });
 
-    const views = this.mainWindow.getBrowserViews();
-
-    for (const view of views) {
-      if (view && view.webContents && !view.webContents.isDestroyed()) {
-        view.webContents.destroy();
-      }
-    }
-
-    this.mainWindow.destroy();
-
     storage.setOpenedTabs(lastOpenedTabs);
   };
 
@@ -244,8 +235,7 @@ class WindowManager {
       this.closeTab(id);
     });
     E.ipcMain.on("setTabFocus", (event, id) => {
-      const view = Tabs.focus(id);
-      this.mainWindow.setBrowserView(view);
+      this.focusTab(id);
 
       MenuState.updateInProjectActionState();
     });
@@ -274,9 +264,13 @@ class WindowManager {
       });
     });
     E.ipcMain.on("setPluginMenuData", (event, pluginMenu) => {
-      const currentView = this.mainWindow.getBrowserView();
+      const view = Tabs.getByWebContentId(event.sender.id);
 
-      if (currentView.webContents.id !== this.mainTab.webContents.id) {
+      if (!view) {
+        return;
+      }
+
+      if (view.webContents.id !== this.mainTab.webContents.id) {
         MenuState.updatePluginState(pluginMenu);
       } else {
         MenuState.updateInFileBrowserActionState();
@@ -290,17 +284,21 @@ class WindowManager {
         return;
       }
     });
-    E.ipcMain.on("setTabUrl", (event: Event, url: string) => {
-      const view = this.mainWindow.getBrowserView();
+    E.ipcMain.on("setTabUrl", (event, url: string) => {
+      const view = Tabs.getByWebContentId(event.sender.id);
 
-      if (!view) return;
+      if (!view) {
+        return;
+      }
 
       this.mainWindow.webContents.send("setTabUrl", { id: view.webContents.id, url });
     });
     E.ipcMain.on("updateFileKey", (event, key) => {
-      const view = this.mainWindow.getBrowserView();
+      const view = Tabs.getByWebContentId(event.sender.id);
 
-      if (!view) return;
+      if (!view) {
+        return;
+      }
 
       this.mainWindow.webContents.send("updateFileKey", { id: view.webContents.id, fileKey: key });
     });
@@ -429,6 +427,9 @@ class WindowManager {
       exportCreatorTheme(theme);
     });
 
+    E.app.on("toggle-current-tab-devtools", () => {
+      toggleDetachedDevTools(this.lastFocusedTabId);
+    });
     E.app.on("openSettingsView", () => {
       this.enableColorSpaceSrgbWasChanged = false;
       this.initSettingsView();
@@ -453,7 +454,7 @@ class WindowManager {
 
       this.mainTab.webContents.send("handleUrl", url);
     });
-    E.app.on("handle-command", (id: string) => {
+    E.app.on("handle-command", (sender, id) => {
       switch (id) {
         case "scale-normal": {
           this.updateAllScale();
@@ -489,12 +490,14 @@ class WindowManager {
           break;
         }
         case "closeTab": {
-          const currentView = this.mainWindow.getBrowserView();
+          const view = Tabs.getByWebContentId(sender.id);
 
-          if (currentView.webContents.id === 1) return;
+          if (!view) {
+            return;
+          }
 
-          this.mainWindow.webContents.send("closeTab", { id: currentView.webContents.id });
-          this.closeTab(currentView.webContents.id);
+          this.mainWindow.webContents.send("closeTab", { id: view.webContents.id });
+          this.closeTab(view.webContents.id);
           break;
         }
         case "newFile": {
@@ -516,7 +519,7 @@ class WindowManager {
         }
 
         default: {
-          Commander.exec(id);
+          logger.error("unavailable command id: ", id);
         }
       }
     });
@@ -548,7 +551,7 @@ class WindowManager {
     const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
 
     if (focused) {
-      this.mainWindow.setBrowserView(tab);
+      this.focusTab(tab.webContents.id);
     }
 
     tab.webContents.on("will-navigate", this.onMainWindowWillNavigate);
@@ -559,7 +562,7 @@ class WindowManager {
     this.mainWindow.webContents.send("didTabAdd", { id: tab.webContents.id, url, showBackBtn: true, title, focused });
 
     if (focused) {
-      this.mainWindow.setBrowserView(tab);
+      this.focusTab(tab.webContents.id);
     }
 
     return tab;
@@ -579,6 +582,45 @@ class WindowManager {
 
     return tab;
   };
+
+  public focusTab = (webContentsId: number): void => {
+    const tabs = Tabs.getAll();
+    let foundView = false;
+
+    for (const tab of tabs) {
+      if (tab.webContents.id === webContentsId) {
+        this.mainWindow.setBrowserView(tab);
+        this.lastFocusedTabId = tab.webContents;
+        foundView = true;
+      }
+    }
+
+    if (!foundView) {
+      this.mainWindow.setBrowserView(this.mainTab);
+      this.lastFocusedTabId = this.mainTab.webContents;
+    }
+  };
+
+  // For multiply BrowserView
+  // public focusTab = (webContentsId: number): void => {
+  //   const tabs = Tabs.getAll();
+  //   let foundView = false;
+
+  //   for (const tab of tabs) {
+  //     if (tab.webContents.id !== webContentsId) {
+  //       this.mainWindow.removeBrowserView(tab);
+  //     } else {
+  //       foundView = true;
+  //       this.mainWindow.addBrowserView(tab);
+  //       this.lastFocusedTabId = tab.webContents;
+  //     }
+  //   }
+
+  //   if (!foundView) {
+  //     this.mainWindow.addBrowserView(this.mainTab);
+  //     this.lastFocusedTabId = this.mainTab.webContents;
+  //   }
+  // };
 
   private initSettingsView = () => {
     this.settingsView = new E.BrowserView({
@@ -665,9 +707,8 @@ class WindowManager {
         response.on("end", () => {
           if (response.statusCode >= 200 && response.statusCode <= 299) {
             E.session.defaultSession.cookies.flushStore().then(() => {
-              const view = Tabs.focus(1);
-              this.mainWindow.setBrowserView(view);
-              view.webContents.reload();
+              this.mainWindow.setBrowserView(this.mainTab);
+              this.mainTab.webContents.reload();
 
               Tabs.closeAll();
 
@@ -722,7 +763,7 @@ class WindowManager {
   };
 
   private focusMainTab = (): void => {
-    this.mainWindow.setBrowserView(this.mainTab);
+    this.focusTab(this.mainTab.webContents.id);
 
     MenuState.updateInFileBrowserActionState();
 
@@ -777,11 +818,9 @@ class WindowManager {
   };
 
   private closeTab = (id: number): void => {
-    const currentTab = Tabs.getTab(id);
+    const currentTab = Tabs.getByWebContentId(id);
     const currentTabUrl = currentTab.webContents.getURL();
     const currentTabIndex = Tabs.getTabIndex(id);
-    const currentView = this.mainWindow.getBrowserView();
-    const currentViewId = currentView.webContents.id;
 
     this.mainWindow.removeBrowserView(currentTab);
     Tabs.close(id);
@@ -789,10 +828,10 @@ class WindowManager {
     const index = currentTabIndex > 0 ? currentTabIndex - 1 : currentTabIndex;
     const nextTab = Tabs.getTabByIndex(index);
 
-    if (nextTab && currentViewId !== this.mainTab.webContents.id) {
-      this.mainWindow.setBrowserView(nextTab);
+    if (nextTab) {
+      this.focusTab(nextTab.webContents.id);
     } else {
-      this.mainWindow.setBrowserView(this.mainTab);
+      this.focusTab(this.mainTab.webContents.id);
       MenuState.updateInFileBrowserActionState();
     }
 

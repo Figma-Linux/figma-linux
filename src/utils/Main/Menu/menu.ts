@@ -5,15 +5,13 @@ import { stringOfActionMenuItemName, assertNever } from "Utils/Common";
 import MenuState from "Main/MenuState";
 
 export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow): void => {
-  const currentView = window.getBrowserView();
-
-  if (item && item.pluginMenuAction && currentView) {
+  if (item && item.pluginMenuAction && window) {
     if (item.pluginMenuAction.type === "manage") {
       handleUrl(window, "/my_plugins");
       return;
     }
 
-    currentView.webContents.send("handlePluginMenuAction", item.pluginMenuAction);
+    window.webContents.send("handlePluginMenuAction", item.pluginMenuAction);
   }
 };
 
@@ -112,14 +110,12 @@ export const item = (label: string, accelerator: string, params: E.MenuItemConst
   return props;
 };
 
-export const commandToMainProcess = (item: Menu.PluginMenuItem) => {
-  E.app.emit("handle-command", item.id);
+export const commandToMainProcess = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
+  E.app.emit("handle-command", window.webContents, item.id);
 };
 
 export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
-  const currentView = window.getBrowserView();
-
-  currentView.webContents.send("handlePageCommand", item.id);
+  window.webContents.send("handlePageCommand", item.id);
 };
 
 export const handleUrl = (window: E.BrowserWindow, url: string) => {

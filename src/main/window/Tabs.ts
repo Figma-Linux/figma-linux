@@ -101,22 +101,6 @@ export default class Tabs {
 
   public static reloadAll = () => Tabs.tabs.forEach(t => (!t.webContents.isDestroyed() ? t.webContents.reload() : ""));
 
-  public static focus = (id: number): E.BrowserView => {
-    return Tabs.tabs.find(t => t.webContents.id === id) as E.BrowserView;
-  };
-
-  public static getTab = (webContentsId: number): E.BrowserView | undefined => {
-    let tab: E.BrowserView | undefined;
-
-    Tabs.tabs.forEach(t => {
-      if (t.webContents.id === webContentsId) {
-        tab = t;
-      }
-    });
-
-    return tab;
-  };
-
   public static getTabByIndex = (index: number): E.BrowserView | undefined => {
     return Tabs.tabs[index];
   };

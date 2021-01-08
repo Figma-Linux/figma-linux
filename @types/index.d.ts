@@ -12,7 +12,7 @@ declare namespace Electron {
   }
 
   interface App extends NodeJS.EventEmitter {
-    on(event: "handle-command", listener: (command: string) => void): this;
+    on(event: "handle-command", listener: (sender: Electron.WebContents, command: string) => void): this;
     on(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
     on(event: "os-menu-invalidated", listener: (dependencies: MenuState.MenuStateParams) => void): this;
     on(event: "log", listener: (data: any) => void): this;
@@ -21,11 +21,12 @@ declare namespace Electron {
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
+    on(event: "toggle-current-tab-devtools", listener: () => void): this;
     on(event: "handleUrl", listener: (senderId: number, url: string) => void): this;
     on(event: "openSettingsView", listener: () => void): this;
     on(event: "openThemeCreatorView", listener: () => void): this;
 
-    emit(event: "handle-command", command: string): boolean;
+    emit(event: "handle-command", sender: Electron.WebContents, command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
     emit(event: "os-menu-invalidated", dependencies: MenuState.MenuStateParams): boolean;
     emit(event: "log", data: any): boolean;
@@ -34,6 +35,7 @@ declare namespace Electron {
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggle-settings-developer-tools"): boolean;
+    emit(event: "toggle-current-tab-devtools"): boolean;
     emit(event: "handleUrl", senderId: number, url: string): boolean;
     emit(event: "openSettingsView"): boolean;
     emit(event: "openThemeCreatorView"): boolean;

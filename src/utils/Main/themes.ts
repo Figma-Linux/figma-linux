@@ -142,22 +142,26 @@ export async function loadCreatorTheme(): Promise<Themes.Theme> {
   await mkPath(creatorThemeDirectory);
 
   const filePath = path.resolve(creatorThemeDirectory, creatorThemeFileName);
+  const defaultTheme: Themes.Theme = {
+    ...DEFAULT_THEME,
+    id: TEST_THEME_ID,
+  };
 
   if (!(await access(filePath))) {
-    return DEFAULT_THEME;
+    return defaultTheme;
   }
 
   const themeFile = await fs.promises.readFile(filePath).catch(error => {
     logger.error("Cannot read theme creator file: '${filePath}', error: ", error);
 
-    return DEFAULT_THEME;
+    return defaultTheme;
   });
 
   const theme = JSON.parse(themeFile.toString()) as Themes.Theme;
   const data = translatePaletteToCamelCase(theme);
 
   if (!isValidThemePalette(data, filePath)) {
-    return DEFAULT_THEME;
+    return defaultTheme;
   }
 
   return {
@@ -195,7 +199,7 @@ export async function exportCreatorTheme(theme: Themes.Theme): Promise<void> {
     return;
   }
 
-  return writeThemeFile(filePath, theme);
+  return writeThemeFile(filePath, themeData);
 }
 
 export async function getThemesFromDirectory(): Promise<Themes.Theme[]> {

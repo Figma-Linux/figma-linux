@@ -22,9 +22,6 @@ export class Views {
     E.ipcRenderer.on("renderView", (sender, view) => {
       this.setView(view);
     });
-    E.ipcRenderer.on("renderSettingsView", (sender, view) => {
-      this.setSettingsView(view);
-    });
   };
 }
 

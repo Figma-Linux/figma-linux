@@ -75,6 +75,7 @@ export class ThemesManager {
       }
       if (key === "text-disabled") {
         document.documentElement.style.setProperty("--fg-overlay-secondary", value);
+        document.documentElement.style.setProperty("--fg-toolbar-placeholder", value);
       }
       if (key === "borders") {
         document.documentElement.style.setProperty("--fg-overlay-sep", value);

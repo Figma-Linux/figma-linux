@@ -1,7 +1,3 @@
-@import '../../../../colors.scss';
-
-.themes {}
-
 .themeview {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -69,7 +65,7 @@
         }
 
         &_center {
-          background-color: var(--panel-divider);
+          background-color: var(--borders);
         }
 
         &_right {
@@ -88,7 +84,7 @@
         border-bottom: 1px solid var(--borders);
 
         &_name {
-          width: 11vw;
+          max-width: 10vw;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
@@ -98,7 +94,7 @@
 
         &_author {
           font-size: 12px;
-          width: 11vw;
+          max-width: 10vw;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;

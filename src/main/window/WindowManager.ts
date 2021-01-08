@@ -27,18 +27,24 @@ import {
   buildActionToMenuItemMap,
   resetMenu,
   showMessageBoxSync,
+  loadCreatorTheme,
+  saveCreatorTheme,
+  exportCreatorTheme,
 } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
+import { TEST_THEME_ID } from "Const";
 
 class WindowManager {
   home: string;
   mainWindow: E.BrowserWindow;
   settingsView: E.BrowserView | null = null;
+  themeCreatorView: E.BrowserView | null = null;
   mainTab: E.BrowserView;
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
+  creatorTheme: Themes.Theme;
   private tabs: Tab[];
   private menu: E.Menu;
   private static _instance: WindowManager;
@@ -95,6 +101,14 @@ class WindowManager {
       .then(themes => {
         this.themes = themes;
         this.mainWindow.webContents.send("getUploadedThemes", themes);
+      })
+      .catch(error => {
+        throw new Error(error);
+      });
+
+    loadCreatorTheme()
+      .then(theme => {
+        this.creatorTheme = theme;
       })
       .catch(error => {
         throw new Error(error);
@@ -194,6 +208,16 @@ class WindowManager {
         });
       }
     });
+
+    const views = this.mainWindow.getBrowserViews();
+
+    for (const view of views) {
+      if (view && view.webContents && !view.webContents.isDestroyed()) {
+        view.webContents.destroy();
+      }
+    }
+
+    this.mainWindow.destroy();
 
     storage.setOpenedTabs(lastOpenedTabs);
   };
@@ -350,6 +374,21 @@ class WindowManager {
           E.app.quit();
         }
       }
+
+      this.destroyView(this.settingsView);
+    });
+    E.ipcMain.on("closeThemeCreatorView", () => {
+      if (!this.themeCreatorView) {
+        return;
+      }
+
+      if (this.themeCreatorView.webContents.isDevToolsOpened()) {
+        this.themeCreatorView.webContents.closeDevTools();
+      }
+
+      this.mainWindow.removeBrowserView(this.themeCreatorView);
+
+      this.destroyView(this.themeCreatorView);
     });
     E.ipcMain.on("updateFigmaUiScale", (event, scale) => {
       this.updateFigmaUiScale(scale);
@@ -361,22 +400,50 @@ class WindowManager {
       this.mainWindow.webContents.send("updateVisibleNewProjectBtn", visible);
     });
     E.ipcMain.on("themes-change", (event, theme) => {
+      if (theme.id === Const.TEST_THEME_ID) {
+        const testTheme = this.themes.find(t => t.id === theme.id);
+
+        if (testTheme) {
+          testTheme.palette = theme.palette;
+        }
+      }
+
       this.changeTheme(theme);
     });
     E.ipcMain.on("set-default-theme", event => {
       this.changeTheme(Const.DEFAULT_THEME);
+    });
+    E.ipcMain.on("saveCreatorTheme", (event, theme) => {
+      saveCreatorTheme(theme);
+      if (theme.id === Const.TEST_THEME_ID) {
+        const testTheme = this.themes.find(t => t.id === theme.id);
+
+        if (testTheme) {
+          testTheme.palette = theme.palette;
+        }
+      }
+
+      this.creatorTheme = theme;
+    });
+    E.ipcMain.on("themeCreatorExportTheme", (event, theme) => {
+      exportCreatorTheme(theme);
     });
 
     E.app.on("openSettingsView", () => {
       this.enableColorSpaceSrgbWasChanged = false;
       this.initSettingsView();
     });
+    E.app.on("openThemeCreatorView", () => {
+      this.initThemeCreatorView();
+    });
     E.app.on("sign-out", () => {
       this.logoutAndRestart();
     });
     E.app.on("toggle-settings-developer-tools", () => {
-      if (this.settingsView) {
+      if (this.settingsView && this.isActive(this.settingsView)) {
         toggleDetachedDevTools(this.settingsView.webContents);
+      } else if (this.themeCreatorView && this.isActive(this.themeCreatorView)) {
+        toggleDetachedDevTools(this.themeCreatorView.webContents);
       }
     });
     E.app.on("handleUrl", (senderId, url) => {
@@ -444,6 +511,7 @@ class WindowManager {
           if (isValidProjectLink(url) || isPrototypeUrl(url)) {
             this.addTab("loadContent.js", normalizeUrl(url));
           }
+          // TODO: handle community links
           break;
         }
 
@@ -550,6 +618,43 @@ class WindowManager {
     });
   };
 
+  private initThemeCreatorView = () => {
+    this.themeCreatorView = new E.BrowserView({
+      webPreferences: {
+        nodeIntegration: true,
+        contextIsolation: false,
+        experimentalFeatures: false,
+        enableRemoteModule: true,
+      },
+    });
+
+    this.mainWindow.addBrowserView(this.themeCreatorView);
+
+    const windowBounds = this.mainWindow.getBounds();
+
+    this.themeCreatorView.setBounds({
+      height: windowBounds.height,
+      width: windowBounds.width,
+      y: 0,
+      x: 0,
+    });
+
+    this.themeCreatorView.setAutoResize({
+      width: true,
+      height: true,
+      horizontal: true,
+      vertical: true,
+    });
+
+    this.themeCreatorView.webContents.loadURL(isDev ? winUrlDev : winUrlProd);
+
+    this.themeCreatorView.webContents.on("did-finish-load", () => {
+      this.themeCreatorView.webContents.send("renderView", "ThemeCreator");
+      this.themeCreatorView.webContents.send("getUploadedThemes", this.themes);
+      this.themeCreatorView.webContents.send("loadCreatorTheme", this.creatorTheme);
+    });
+  };
+
   private logoutAndRestart = (event?: E.Event): void => {
     E.net
       .request(`${this.home}/logout`)
@@ -586,8 +691,11 @@ class WindowManager {
     this.mainTab.webContents.send("themes-change", theme);
     this.mainWindow.webContents.send("themes-change", theme);
 
-    if (this.settingsView && !this.settingsView.webContents.isDestroyed()) {
+    if (this.settingsView && this.isActive(this.settingsView)) {
       this.settingsView.webContents.send("themes-change", theme);
+    }
+    if (this.themeCreatorView && this.isActive(this.themeCreatorView)) {
+      this.themeCreatorView.webContents.send("themes-change", theme);
     }
 
     const tabs = Tabs.getAll();
@@ -605,7 +713,7 @@ class WindowManager {
 
     if (/start_google_sso/.test(url)) return;
 
-    if (isPrototypeUrl(url)) {
+    if (isPrototypeUrl(url) || isValidProjectLink(url)) {
       this.addTab("loadContent.js", url);
       return;
     }
@@ -760,6 +868,18 @@ class WindowManager {
     views.forEach((bw: E.BrowserView) => {
       bw.setBounds(bounds);
     });
+  };
+
+  private isActive = (view: E.BrowserView): boolean => {
+    if (!view || !view.webContents) {
+      return false;
+    }
+
+    return !view.webContents.isDestroyed();
+  };
+
+  private destroyView = (view: E.BrowserView): void => {
+    view.webContents.destroy();
   };
 
   private installReactDevTools = (): void => {

@@ -20,6 +20,32 @@
     border-radius: 5px;
   }
 
+  &_hidden_tracks {
+    &::-webkit-scrollbar {
+      width: 0px;
+      border: none;
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-track {
+      width: 0px;
+      border: none;
+      background-color: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      width: 0px;
+      border: none;
+      background-color: transparent;
+    }
+  }
+
+  &_grab {
+    cursor: grab;
+    overflow: auto;
+    user-select: none;
+  }
+
   &__item {
     display: flex;
     color: var(--text);

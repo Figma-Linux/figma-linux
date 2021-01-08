@@ -23,6 +23,7 @@ declare namespace Electron {
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
     on(event: "handleUrl", listener: (senderId: number, url: string) => void): this;
     on(event: "openSettingsView", listener: () => void): this;
+    on(event: "openThemeCreatorView", listener: () => void): this;
 
     emit(event: "handle-command", command: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
@@ -35,6 +36,7 @@ declare namespace Electron {
     emit(event: "toggle-settings-developer-tools"): boolean;
     emit(event: "handleUrl", senderId: number, url: string): boolean;
     emit(event: "openSettingsView"): boolean;
+    emit(event: "openThemeCreatorView"): boolean;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -51,6 +53,8 @@ declare namespace Electron {
     on(channel: "closeTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "newTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "closeSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "closeThemeCreatorView", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "themeCreatorExportTheme", listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void): this;
     on(
       channel: "enableColorSpaceSrgbWasChanged",
       listener: (event: IpcMainInvokeEvent, enabled: boolean) => void,
@@ -78,6 +82,7 @@ declare namespace Electron {
     on(channel: "updateVisibleNewProjectBtn", listener: (event: IpcMainInvokeEvent, visible: boolean) => void): this;
     on(channel: "themes-change", listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void): this;
     on(channel: "set-default-theme", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "saveCreatorTheme", listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -111,7 +116,6 @@ declare namespace Electron {
 
   interface IpcRenderer extends NodeJS.EventEmitter {
     on(channel: "renderView", listener: (event: IpcRendererEvent, view: View) => void): this;
-    on(channel: "renderSettingsView", listener: (event: IpcRendererEvent, view: SettingsView) => void): this;
     on(channel: "updatePanelHeight", listener: (event: IpcRendererEvent, height: number) => void): this;
     on(channel: "updateVisibleNewProjectBtn", listener: (event: IpcRendererEvent, visible: boolean) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
@@ -129,6 +133,7 @@ declare namespace Electron {
     on(channel: "mainTabFocused", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "themes-change", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
     on(channel: "set-default-theme", listener: (event: IpcRendererEvent) => void): this;
+    on(channel: "loadCreatorTheme", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -143,6 +148,8 @@ declare namespace Electron {
     send(channel: "closeTab", id: number): this;
     send(channel: "newTab"): this;
     send(channel: "closeSettingsView"): this;
+    send(channel: "closeThemeCreatorView"): this;
+    send(channel: "themeCreatorExportTheme", theme: Themes.Theme): this;
     send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
     send(channel: "updatePanelScale", scale: number): this;
@@ -157,6 +164,7 @@ declare namespace Electron {
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;
     send(channel: "themes-change", theme: Themes.Theme): this;
     send(channel: "set-default-theme"): this;
+    send(channel: "saveCreatorTheme", theme: Themes.Theme): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
@@ -173,7 +181,6 @@ declare namespace Electron {
   interface WebContents extends NodeJS.EventEmitter {
     send(channel: "renderView", view: View): void;
     send(channel: "getUploadedThemes", themes: Themes.Theme[]): void;
-    send(channel: "renderSettingsView", view: SettingsView): void;
     send(channel: "updatePanelHeight", height: number): void;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): void;
     send(channel: "updatePanelScale", scale: number): void;
@@ -187,6 +194,9 @@ declare namespace Electron {
     send(channel: "handleUrl", url: string): this;
     send(channel: "mainTabFocused"): this;
     send(channel: "themes-change", theme: Themes.Theme): this;
+    send(channel: "loadCreatorTheme", theme: Themes.Theme): this;
+
+    destroy(): void;
   }
 
   interface RequestHeaders {

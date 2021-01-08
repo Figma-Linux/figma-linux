@@ -87,10 +87,6 @@ declare namespace Themes {
      */
     "fg-toolbar-login-button-active": string;
     /**
-     * tool bar search input placeholder color
-     */
-    "fg-toolbar-placeholder": string;
-    /**
      * tool bar item dropdown menu bg color
      */
     "bg-overlay": string;
@@ -116,7 +112,6 @@ declare namespace Themes {
     "fg-header-control": string;
     "fg-header-control-hover": string;
     "fg-header-control-active": string;
-    "panel-divider": string;
     "fg-component": string;
     "fg-component-disabled": string;
     "fg-component-disabled-row-active": string;

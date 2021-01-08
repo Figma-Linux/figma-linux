@@ -98,7 +98,7 @@ const HELP_MENU = {
       },
     },
     {
-      label: "Toggle Settings Developer Tools",
+      label: "Toggle Additional Developer Tools",
       accelerator: "Shift+Ctrl+Alt+S",
       click(item, window): void {
         Commander.exec("toggle-settings-developer-tools", item, window);
@@ -129,6 +129,12 @@ export const getMenuTemplate = (pluginMenuItems?: any[]): E.MenuItemConstructorO
     menu.push({ type: "separator" });
   }
 
+  menu.push({
+    label: "Theme Creator",
+    click: () => {
+      E.app.emit("openThemeCreatorView");
+    },
+  });
   menu.push({
     label: "Settings",
     click: () => {

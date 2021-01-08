@@ -91,8 +91,8 @@ export default class Tabs {
       } else {
         // FIXME: https://github.com/electron/electron/pull/23578#issuecomment-703736447
         t.webContents.loadURL("about:blank");
-        if (!t.webContents.isDestroyed()) {
-          (t.webContents as any).destroy();
+        if (t.webContents && !t.webContents.isDestroyed()) {
+          t.webContents.destroy();
         }
         return false;
       }

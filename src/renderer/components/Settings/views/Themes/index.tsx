@@ -1,9 +1,8 @@
 import * as React from "react";
-import { app } from "electron";
 import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
-import { DEFAULT_THEME } from "Const";
+import { DEFAULT_THEME, TEST_THEME_ID } from "Const";
 
 import ThemeItem from "./themeItem";
 import { Themes as ThemesStore } from "Store/Themes";
@@ -42,9 +41,11 @@ class ThemesBody extends React.Component<ThemeViewProps, unknown> {
       <div className="themes">
         <div className="themeview">
           <ThemeItem theme={DEFAULT_THEME} currentTheme={currentTheme} onClickApply={this.onClickDefaultThemeApply} />
-          {themes.map(theme => (
-            <ThemeItem key={theme.id} currentTheme={currentTheme} theme={theme} onClickApply={this.onClickApply} />
-          ))}
+          {themes.map(theme =>
+            theme.id !== TEST_THEME_ID ? (
+              <ThemeItem key={theme.id} currentTheme={currentTheme} theme={theme} onClickApply={this.onClickApply} />
+            ) : null,
+          )}
         </div>
       </div>
     );

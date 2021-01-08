@@ -1,5 +1,3 @@
-@import '../../colors.scss';
-
 .text {
   font: {
     size: var(--fontSize);
@@ -12,7 +10,7 @@
     font-weight: 600;
   }
   &_subtitle {
-    color: var(--text);
+    color: var(--text-active);
     display: block;
     padding-bottom: 20px;
     font-size: var(--fontSubtitleSize);

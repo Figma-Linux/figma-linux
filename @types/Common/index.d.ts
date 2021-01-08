@@ -20,7 +20,7 @@ interface ShortcutsMap {
   type: "action" | "command" | "id";
 }
 
-type View = "TopPanel" | "Settings";
+type View = "TopPanel" | "Settings" | "ThemeCreator";
 type SettingsView = "General" | "Themes";
 
 // TODO: don't uses?

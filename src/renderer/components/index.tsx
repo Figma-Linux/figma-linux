@@ -6,6 +6,7 @@ import { Views } from "Store/Views";
 import { Themes } from "Store/Themes";
 import TopPanel from "./TopPanel";
 import Settings from "./Settings";
+import ThemeCreator from "./ThemeCreator";
 import "./style.scss";
 
 interface AppProps {
@@ -16,6 +17,7 @@ interface AppProps {
 const viewMap = {
   TopPanel,
   Settings,
+  ThemeCreator,
 };
 
 @inject("views")

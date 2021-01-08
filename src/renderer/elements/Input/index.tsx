@@ -1,37 +1,32 @@
 import * as React from "react";
 
-// import { InputNumber, InputNumberProps } from "./types/Number";
+import { InputColor, InputColorProps } from "./types/Color";
 import { InputRange, InputRangeProps } from "./types/Range";
 import { InputText, InputTextProps } from "./types/Text";
 
 import "./index.scss";
-
-export enum InputTypes {
-  Text = "Text",
-  // Number = "Number", // Not used
-  Range = "Range",
-}
 
 export interface InputBaseProps {
   className?: string;
 }
 
 export interface TextInputProps extends InputTextProps {
-  type: InputTypes.Text;
+  type: "text";
 }
-// export interface NumberProps extends InputNumberProps {
-//   type: InputTypes.Number;
-// }
+export interface ColorProps extends InputColorProps {
+  type: "color";
+}
 export interface RangeInputProps extends InputRangeProps {
-  type: InputTypes.Range;
+  type: "range";
 }
 
-type InputsProps = (TextInputProps | RangeInputProps) & InputBaseProps;
+type InputsProps = (TextInputProps | RangeInputProps | ColorProps) & InputBaseProps;
 
 export class Input extends React.Component<InputsProps, unknown> {
   private inputMap = {
-    Text: InputText,
-    Range: InputRange,
+    text: InputText,
+    range: InputRange,
+    color: InputColor,
   };
 
   constructor(props: InputsProps) {
@@ -43,7 +38,7 @@ export class Input extends React.Component<InputsProps, unknown> {
 
     return (
       <div className={`input${this.props.className ? " " + this.props.className : ""}`}>
-        <Input {...this.props} />
+        <Input {...(this.props as any)} />
       </div>
     );
   }

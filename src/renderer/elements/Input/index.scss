@@ -15,6 +15,24 @@
     color: var(--text);
   }
 
+  &__color {
+    background-color: var(--bg-panel);
+    width: 30px;
+    height: 30px;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0 10px 0 0;
+
+    &:focus, &:active {
+      background-color: var(--bg-panel);
+      border: none;
+      outline: none;
+      margin: 0;
+      padding: 0 10px 0 0;
+    }
+  }
+
   &__content_before {
     display: flex;
     justify-self: center;

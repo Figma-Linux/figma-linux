@@ -14,6 +14,8 @@ export const MENU_WIDTH = 330;
 
 export const PROTOCOL = "figma";
 
+export const TEST_THEME_ID = "test-creator-theme";
+
 export const MANIFEST_FILE_NAME = "manifest.json";
 
 export const CONFIGDIR = `${process.env.HOME}/.config/figma-linux`;

@@ -129,12 +129,6 @@ export async function isValidThemeFile(filePath: string, theme: Themes.Theme): P
     return false;
   }
 
-  if (!theme.id) {
-    const id = v4();
-
-    await writeThemeFile(filePath, { ...theme, id });
-  }
-
   return true;
 }
 
@@ -213,6 +207,13 @@ export async function getThemesFromDirectory(): Promise<Themes.Theme[]> {
 
     if (await isValidThemeFile(fullFilePath, themeFile)) {
       const theme: Themes.Theme = translatePaletteToKebabCase(themeFile);
+
+      if (!theme.id) {
+        theme.id = v4();
+
+        await writeThemeFile(fullFilePath, theme);
+      }
+
       themes.push(theme);
     }
   }

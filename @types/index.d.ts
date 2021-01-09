@@ -137,6 +137,8 @@ declare namespace Electron {
     on(channel: "themes-change", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
     on(channel: "set-default-theme", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "loadCreatorTheme", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
+    on(channel: "sync-themes-start", listener: (event: IpcRendererEvent) => void): this;
+    on(channel: "sync-themes-end", listener: (event: IpcRendererEvent) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -199,6 +201,8 @@ declare namespace Electron {
     send(channel: "mainTabFocused"): this;
     send(channel: "themes-change", theme: Themes.Theme): this;
     send(channel: "loadCreatorTheme", theme: Themes.Theme): this;
+    send(channel: "sync-themes-start", theme: Themes.Theme): this;
+    send(channel: "sync-themes-end", theme: Themes.Theme): this;
 
     destroy(): void;
   }

@@ -47,6 +47,7 @@ class Settings extends React.Component<SettingsProps, unknown> {
   render(): JSX.Element {
     const View = this.viewMap[this.props.views.settingsView];
     const viewName = this.props.views.settingsView;
+    const isSyncDisabled = this.props.settings!.isSyncDisabled;
 
     return (
       <div className="settings">
@@ -56,8 +57,8 @@ class Settings extends React.Component<SettingsProps, unknown> {
           displayCloseButton={true}
           additionalContent={
             viewName === "Themes" ? (
-              <Button className="button_clear" onClick={() => this.onSyncThemes()}>
-                <Icon color="var(--fg-header-control)" size="22" type="Sync" />
+              <Button className="button_clear" onClick={() => this.onSyncThemes()} disabled={isSyncDisabled}>
+                <Icon color="var(--fg-header-control)" size="22" type="Sync" isSpinner={isSyncDisabled} />
               </Button>
             ) : null
           }

@@ -10,6 +10,7 @@ export interface ButtonProps {
   text?: string;
   contentBefore?: JSX.Element;
   contentAfter?: JSX.Element;
+  disabled?: boolean;
 }
 
 export class Button extends React.Component<ButtonProps, unknown> {
@@ -29,9 +30,12 @@ export class Button extends React.Component<ButtonProps, unknown> {
     if (this.props.className) {
       classNames.push(this.props.className);
     }
+    if (this.props.disabled) {
+      classNames.push("button_disabled");
+    }
 
     return (
-      <div className={classNames.join(" ")} onClick={onClick}>
+      <div className={classNames.join(" ")} onClick={this.props.disabled ? null : onClick}>
         {this.props.contentBefore ? <div className="button__content_before">{this.props.contentBefore}</div> : ""}
         {this.props.text ? <Text>{this.props.text}</Text> : ""}
         {this.props.children ? this.props.children : ""}

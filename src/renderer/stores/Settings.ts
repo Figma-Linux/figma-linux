@@ -5,8 +5,12 @@ import { observable, action, toJS } from "mobx";
 export class Settings {
   @observable settings?: SettingsInterface;
 
+  @observable isSyncDisabled: boolean;
+
   constructor() {
     this.settings = storage.get();
+
+    this.isSyncDisabled = false;
 
     this.events();
   }
@@ -113,6 +117,12 @@ export class Settings {
     });
     E.ipcRenderer.on("themes-change", (sender, theme) => {
       this.settings.theme.currentTheme = theme.id;
+    });
+    E.ipcRenderer.on("sync-themes-start", () => {
+      this.isSyncDisabled = true;
+    });
+    E.ipcRenderer.on("sync-themes-end", () => {
+      this.isSyncDisabled = false;
     });
   };
 }

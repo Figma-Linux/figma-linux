@@ -19,6 +19,7 @@ import { Delete } from "./icons/Delete";
 import { MenuCorner } from "./icons/MenuCorner";
 import { Sync } from "./icons/Sync";
 
+import "../../animations.scss";
 import "./index.scss";
 
 type Icons =
@@ -48,6 +49,7 @@ export interface IconProps {
 
 export interface ContainerProps extends IconProps {
   type: Icons;
+  isSpinner?: boolean;
   className?: string;
 }
 
@@ -84,6 +86,9 @@ export class Icon extends React.Component<ContainerProps, unknown> {
 
     if (this.props.className) {
       classNames.push(this.props.className);
+    }
+    if (this.props.isSpinner) {
+      classNames.push("spin");
     }
 
     return (

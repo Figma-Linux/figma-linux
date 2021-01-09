@@ -98,4 +98,14 @@
       cursor: pointer;
     }
   }
+
+  &_disabled {
+    color: var(--text-disabled);
+    border-color: var(--text-disabled);
+    cursor: default;
+
+    &:hover {
+      cursor: default;
+    }
+  }
 }

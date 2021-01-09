@@ -408,8 +408,18 @@ class WindowManager {
     E.ipcMain.on("themeCreatorExportTheme", (event, theme) => {
       exportCreatorTheme(theme);
     });
-    E.ipcMain.on("sync-themes", () => {
-      updateThemesFromRepository();
+    E.ipcMain.on("sync-themes", async () => {
+      logger.debug("Sync themes start");
+      if (this.isActive(this.settingsView)) {
+        this.settingsView.webContents.send("sync-themes-start");
+      }
+
+      await updateThemesFromRepository();
+
+      if (this.isActive(this.settingsView)) {
+        this.settingsView.webContents.send("sync-themes-end");
+      }
+      logger.debug("Sync themes end");
     });
 
     E.app.on("toggle-current-tab-devtools", () => {

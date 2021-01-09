@@ -1,4 +1,5 @@
-import { app } from "electron";
+import { app, net } from "electron";
+import * as Azip from "adm-zip";
 import * as fs from "fs";
 import * as path from "path";
 import { v4 } from "uuid";
@@ -9,6 +10,8 @@ import {
   AVAILABLE_THEME_COLOR_VALUE,
   DEFAULT_THEME,
   TEST_THEME_ID,
+  THEMES_REPO_URL,
+  DOWNLOAD_ZIP_PATH,
 } from "Const";
 import { storage } from "Main/Storage";
 import WindowManager from "Main/window/WindowManager";
@@ -109,7 +112,7 @@ export function isValidThemePalette(theme: Themes.Theme, fileName?: string): boo
 }
 
 export async function writeThemeFile(filePath: string, theme: Themes.Theme): Promise<void> {
-  return fs.promises.writeFile(filePath, JSON.stringify(theme));
+  return fs.promises.writeFile(filePath, JSON.stringify(translatePaletteToCamelCase(theme)));
 }
 
 export async function isValidThemeFile(filePath: string, theme: Themes.Theme): Promise<boolean> {
@@ -219,4 +222,57 @@ export async function getThemesFromDirectory(): Promise<Themes.Theme[]> {
   }
 
   return themes;
+}
+
+export async function getThemesCount(): Promise<number> {
+  const files = await fs.promises.readdir(themesDirectory);
+
+  return files.length;
+}
+
+export function updateThemesFromRepository(): Promise<void> {
+  return new Promise((res, rej) => {
+    net
+      .request(THEMES_REPO_URL)
+      .on("response", response => {
+        const buffers: Uint8Array[] = [];
+        let length = 0;
+
+        response.on("error", (error: Error) => {
+          logger.error("Cannot download themes, error: ", error);
+          rej(error);
+        });
+        response.on("data", data => {
+          buffers.push(data);
+          length += data.length;
+        });
+        response.on("end", async () => {
+          const buffer = Buffer.concat(buffers);
+
+          await fs.promises.writeFile(DOWNLOAD_ZIP_PATH, buffer).catch(error => {
+            rej(error);
+          });
+
+          const zip = new Azip(DOWNLOAD_ZIP_PATH);
+
+          for (const entry of zip.getEntries()) {
+            if (/\.json/.test(entry.entryName) && !entry.isDirectory) {
+              const themeData = entry.getData().toString("utf8");
+              const themeFileName = path.parse(entry.entryName).base;
+              const filePath = path.resolve(themesDirectory, themeFileName);
+
+              try {
+                const theme = JSON.parse(themeData) as Themes.Theme;
+                await writeThemeFile(filePath, theme);
+              } catch (error) {
+                logger.error("Cannot parse JSON file: ", filePath, error);
+              }
+            }
+          }
+
+          res();
+        });
+      })
+      .end();
+  });
 }

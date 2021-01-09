@@ -8,6 +8,7 @@
   "author": "ChugunovRoman <Zebs-BMK@yandex.ru>",
   "license": "MIT",
   "dependencies": {
+    "adm-zip": "^0.5.1",
     "chokidar": "^3.0.2",
     "electron-devtools-installer": "^2.2.4",
     "figma-linux-rust-binding": "=0.1.4",

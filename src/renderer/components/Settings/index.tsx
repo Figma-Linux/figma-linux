@@ -3,7 +3,7 @@ import * as React from "react";
 import { observer, inject } from "mobx-react";
 
 import "./style.scss";
-import { Text } from "Elements";
+import { Text, Button, Icon } from "Elements";
 import Header from "../Header";
 import General from "./views/General";
 import Themes from "./views/Themes";
@@ -40,6 +40,10 @@ class Settings extends React.Component<SettingsProps, unknown> {
     E.ipcRenderer.send("closeSettingsView");
   };
 
+  onSyncThemes = () => {
+    E.ipcRenderer.send("sync-themes");
+  };
+
   render(): JSX.Element {
     const View = this.viewMap[this.props.views.settingsView];
     const viewName = this.props.views.settingsView;
@@ -50,6 +54,13 @@ class Settings extends React.Component<SettingsProps, unknown> {
           className="settings__header"
           text="Settings"
           displayCloseButton={true}
+          additionalContent={
+            viewName === "Themes" ? (
+              <Button className="button_clear" onClick={() => this.onSyncThemes()}>
+                <Icon color="var(--fg-header-control)" size="22" type="Sync" />
+              </Button>
+            ) : null
+          }
           onCloseClick={this.onCloseClick}
         />
         <div className="settings__panel">

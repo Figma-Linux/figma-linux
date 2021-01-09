@@ -17,6 +17,7 @@ import { Component } from "./icons/Component";
 import { Burger } from "./icons/Burger";
 import { Delete } from "./icons/Delete";
 import { MenuCorner } from "./icons/MenuCorner";
+import { Sync } from "./icons/Sync";
 
 import "./index.scss";
 
@@ -36,6 +37,7 @@ type Icons =
   | "Component"
   | "Burger"
   | "Delete"
+  | "Sync"
   | "MenuCorner"
   | "Settings";
 
@@ -67,6 +69,7 @@ export class Icon extends React.Component<ContainerProps, unknown> {
     Burger,
     Delete,
     Settings,
+    Sync,
     MenuCorner,
   };
 

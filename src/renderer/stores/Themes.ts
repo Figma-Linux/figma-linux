@@ -27,11 +27,6 @@ export class Themes {
   };
 
   @action
-  uploadGitTheme = (theme: string): void => {
-    this.currentTheme = theme;
-  };
-
-  @action
   changeTheme = (id: string): void => {
     this.currentTheme = id;
 

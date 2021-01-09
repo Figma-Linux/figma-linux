@@ -34,6 +34,7 @@
     }
   },
   "dependencies": {
+    "adm-zip": "^0.5.1",
     "chokidar": "^3.0.2",
     "css-vars": "^2.2.0",
     "electron-build-env": "^0.2",
@@ -49,6 +50,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.4.33",
     "@types/electron-devtools-installer": "^2.0.3",
     "@types/lodash": "^4.14.166",
     "@types/node": "^12.12.13",

@@ -29,6 +29,8 @@ import {
   loadCreatorTheme,
   saveCreatorTheme,
   exportCreatorTheme,
+  updateThemesFromRepository,
+  getThemesCount,
 } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 import { TEST_THEME_ID } from "Const";
@@ -98,27 +100,7 @@ class WindowManager {
       setTimeout(() => this.restoreTabs(), 1000);
     }
 
-    getThemesFromDirectory()
-      .then(themes => {
-        this.themes = themes;
-        this.mainWindow.webContents.send("getUploadedThemes", themes);
-      })
-      .catch(error => {
-        throw new Error(error);
-      });
-
-    loadCreatorTheme()
-      .then(theme => {
-        this.creatorTheme = theme;
-      })
-      .catch(error => {
-        throw new Error(error);
-      });
-
-    this.mainWindow.webContents.on("dom-ready", () => {
-      this.mainWindow.webContents.send("getUploadedThemes", this.themes);
-    });
-
+    this.updateThemes();
     this.updatePanelScale(this.panelScale);
   }
 
@@ -425,6 +407,9 @@ class WindowManager {
     });
     E.ipcMain.on("themeCreatorExportTheme", (event, theme) => {
       exportCreatorTheme(theme);
+    });
+    E.ipcMain.on("sync-themes", () => {
+      updateThemesFromRepository();
     });
 
     E.app.on("toggle-current-tab-devtools", () => {
@@ -907,6 +892,30 @@ class WindowManager {
     views.forEach((bw: E.BrowserView) => {
       bw.setBounds(bounds);
     });
+  };
+
+  private updateThemes = async (): Promise<void> => {
+    this.mainWindow.webContents.on("dom-ready", () => {
+      this.mainWindow.webContents.send("getUploadedThemes", this.themes);
+    });
+
+    this.creatorTheme = await loadCreatorTheme();
+    const themesCount = await getThemesCount();
+
+    logger.debug("themes count: ", themesCount);
+
+    if (themesCount === 0) {
+      logger.debug("Download themes from repository...");
+      await updateThemesFromRepository();
+      logger.debug("Download themes successful");
+    }
+
+    this.themes = await getThemesFromDirectory();
+    this.mainWindow.webContents.send("getUploadedThemes", this.themes);
+
+    if (this.isActive(this.settingsView)) {
+      this.settingsView.webContents.send("getUploadedThemes", this.themes);
+    }
   };
 
   private isActive = (view: E.BrowserView): boolean => {

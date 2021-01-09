@@ -6,8 +6,8 @@ export const HOMEPAGE = "https://www.figma.com";
 export const RECENT_FILES = "https://www.figma.com/files/recent";
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
-// TODO: create repository and paste link
-export const THEMES_REPO_URL = "";
+export const THEMES_REPO_URL = "https://github.com/Figma-Linux/figma-linux-themes/archive/master.zip";
+export const DOWNLOAD_ZIP_PATH = "/tmp/master.zip";
 
 export const TOPPANELHEIGHT = 40;
 export const MENU_WIDTH = 330;

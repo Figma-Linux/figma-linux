@@ -124,7 +124,6 @@ class Tabs extends React.Component<TabsProps, unknown> {
         label: "Close",
         visible: true,
         click: (): void => {
-          console.log("close tab id: ", id);
           this.close(event, id);
         },
       },

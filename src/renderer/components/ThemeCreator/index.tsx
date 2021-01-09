@@ -6,6 +6,7 @@ import { toJS } from "mobx";
 import "./style.scss";
 import View from "./view";
 import { Themes } from "Store/Themes";
+import { AVAILABLE_THEME_COLOR_VALUE } from "Const";
 
 interface CreatorProps {
   themes?: Themes;
@@ -49,6 +50,43 @@ class ThemeCreator extends React.Component<CreatorProps, unknown> {
     E.ipcRenderer.send("closeThemeCreatorView");
   };
 
+  onColorClick = (e: React.MouseEvent<HTMLInputElement>, key: string): void => {
+    const target = e.target as HTMLInputElement;
+
+    switch (e.button) {
+      case 2: {
+        const context: E.MenuItemConstructorOptions[] = [
+          {
+            id: "copy_color",
+            label: "Copy color",
+            visible: true,
+            click: (): void => {
+              E.clipboard.writeText(target.value);
+            },
+          },
+          {
+            id: "paste_color",
+            label: "Paste color",
+            visible: true,
+            click: (): void => {
+              const text = E.clipboard.readText();
+
+              if (AVAILABLE_THEME_COLOR_VALUE.test(text)) {
+                this.props.themes!.changeCreatorThemePalette(key, text);
+              }
+            },
+          },
+        ];
+
+        const menu = E.remote.Menu.buildFromTemplate(context);
+
+        menu.popup({
+          window: E.remote.getCurrentWindow(),
+        });
+      }
+    }
+  };
+
   onExportClick = (): void => {
     E.ipcRenderer.send("themeCreatorExportTheme", toJS(this.props.themes!.creatorTheme));
   };
@@ -60,6 +98,7 @@ class ThemeCreator extends React.Component<CreatorProps, unknown> {
   render(): JSX.Element {
     return (
       <View
+        onColorClick={this.onColorClick}
         onCloseClick={this.onCloseClick}
         onExportClick={this.onExportClick}
         onApplyThemeClick={this.onApplyThemeClick}

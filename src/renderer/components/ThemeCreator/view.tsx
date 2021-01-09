@@ -13,6 +13,7 @@ interface TopPanelProps {
   themes?: Themes;
 
   onCloseClick(e: React.MouseEvent<HTMLSpanElement, MouseEvent>): void;
+  onColorClick(e: React.MouseEvent<HTMLInputElement, MouseEvent>, key: string): void;
   onExportClick(): void;
   onApplyThemeClick(): void;
 }
@@ -65,6 +66,7 @@ const ThemeCreator: React.FunctionComponent<TopPanelProps> = props => {
                 onChange={e => {
                   props.themes!.changeCreatorThemePalette(key, e.target.value);
                 }}
+                onClick={e => props.onColorClick(e, key)}
               />
             ))}
           </List>

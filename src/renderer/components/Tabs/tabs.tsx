@@ -7,11 +7,12 @@ interface Props {
 
   close(e: React.MouseEvent<any>, id: number): void;
   clickTab(e: React.MouseEvent<any>, tab: Tab): void;
+  mouseDownHandler(e: React.MouseEvent<any>): void;
 }
 
 const Tabs: React.FunctionComponent<Props> = props => {
   return (
-    <div className="tabBar">
+    <div className="tabBar" onMouseDown={props.mouseDownHandler}>
       {props.tabs.tabs.map((t: Tab, i) => (
         <div
           key={i}

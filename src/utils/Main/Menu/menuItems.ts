@@ -57,6 +57,12 @@ const HELP_MENU = {
       },
     },
     {
+      label: "Figma Linux Themes",
+      click(): void {
+        E.shell.openExternal(LINKS.THEMES_REPO);
+      },
+    },
+    {
       label: "Video Tutorials",
       click(): void {
         E.shell.openExternal(LINKS.VIDEO_TUTORIALS);

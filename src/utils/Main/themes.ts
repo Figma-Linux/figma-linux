@@ -10,7 +10,7 @@ import {
   AVAILABLE_THEME_COLOR_VALUE,
   DEFAULT_THEME,
   TEST_THEME_ID,
-  THEMES_REPO_URL,
+  DOWNLOAD_ZIP_URI,
   DOWNLOAD_ZIP_PATH,
 } from "Const";
 import { storage } from "Main/Storage";
@@ -233,7 +233,7 @@ export async function getThemesCount(): Promise<number> {
 export function updateThemesFromRepository(): Promise<void> {
   return new Promise((res, rej) => {
     net
-      .request(THEMES_REPO_URL)
+      .request(DOWNLOAD_ZIP_URI)
       .on("response", response => {
         const buffers: Uint8Array[] = [];
         let length = 0;

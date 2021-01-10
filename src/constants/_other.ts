@@ -6,7 +6,7 @@ export const HOMEPAGE = "https://www.figma.com";
 export const RECENT_FILES = "https://www.figma.com/files/recent";
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
-export const THEMES_REPO_URL = "https://github.com/Figma-Linux/figma-linux-themes/archive/master.zip";
+export const DOWNLOAD_ZIP_URI = "https://github.com/Figma-Linux/figma-linux-themes/archive/master.zip";
 export const DOWNLOAD_ZIP_PATH = "/tmp/master.zip";
 
 export const TOPPANELHEIGHT = 40;
@@ -35,4 +35,5 @@ export const LINKS = {
   VIDEO_TUTORIALS: "https://www.youtube.com/figmadesign",
   RELEASE_NOTES: "https://github.com/Figma-Linux/figma-linux/releases/latest",
   LEGAL_SUMMARY: "https://www.figma.com/summary-of-policy",
+  THEMES_REPO: "https://github.com/Figma-Linux/figma-linux-themes",
 };

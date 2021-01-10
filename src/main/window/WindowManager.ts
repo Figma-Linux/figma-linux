@@ -415,6 +415,7 @@ class WindowManager {
       }
 
       await updateThemesFromRepository();
+      await this.updateThemes();
 
       if (this.isActive(this.settingsView)) {
         this.settingsView.webContents.send("sync-themes-end");

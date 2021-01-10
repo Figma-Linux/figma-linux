@@ -39,4 +39,8 @@ declare namespace WebApi {
     format: string;
     data: Uint8Array;
   }
+
+  interface GetFonts {
+    useAgent: boolean;
+  }
 }

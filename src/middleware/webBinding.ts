@@ -295,8 +295,9 @@ const publicAPI: any = {
     console.log("unimplemented setUser, args: ", args);
   },
 
-  async getFonts() {
-    return { data: await fontMapPromise };
+  async getFonts(args: WebApi.GetFonts) {
+    const fonts = await E.ipcRenderer.invoke("get-fonts");
+    return { data: fonts };
   },
 
   newFile(args: any) {

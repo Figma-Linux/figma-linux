@@ -13,7 +13,7 @@ interface Props {
 const Tabs: React.FunctionComponent<Props> = props => {
   return (
     <div className="tabBar" onMouseDown={props.mouseDownHandler}>
-      {props.tabs.tabs.map((t: Tab, i) => (
+      {props.tabs.tabs.map((t, i) => (
         <div
           key={i}
           className={`tab ${props.tabs.current === t.id ? "tab_active" : ""}`}

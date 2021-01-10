@@ -3,6 +3,7 @@ import * as E from "electron";
 import * as url from "url";
 
 import Tabs from "./Tabs";
+import Fonts from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
 import MenuState from "../MenuState";
@@ -435,6 +436,15 @@ class WindowManager {
       } else {
         E.clipboard.writeBuffer(format, buffer);
       }
+    });
+    E.ipcMain.handle("get-fonts", async () => {
+      let dirs = storage.get().app.fontDirs;
+
+      if (!dirs) {
+        dirs = Const.DEFAULT_SETTINGS.app.fontDirs;
+      }
+
+      return Fonts.getFonts(dirs);
     });
 
     E.app.on("toggle-current-tab-devtools", () => {

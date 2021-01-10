@@ -1,3 +1,5 @@
+type FontsMap = import("figma-linux-rust-binding").Fonts.IFonts;
+
 declare namespace Electron {
   interface RemoteMainInterface {
     app: App;
@@ -119,6 +121,7 @@ declare namespace Electron {
       channel: "writeFiles",
       listener: (event: IpcMainInvokeEvent, data: WebApi.WriteFiles) => Promise<void> | void,
     ): void;
+    handle(channel: "get-fonts", listener: (event: IpcMainInvokeEvent) => Promise<void> | FontsMap): void;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -187,6 +190,7 @@ declare namespace Electron {
     invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
+    invoke(channel: "get-fonts"): Promise<FontsMap>;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

@@ -1,95 +1,51 @@
 import * as React from "react";
+
+import { Icon, Button } from "Elements";
 import Tabs from "Components/Tabs";
 
 interface TopPanelProps {
   current: number;
   scalePanel: number;
+  visibleNewProjectBtn: boolean;
 
-  onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
-  openSettings(e: React.MouseEvent<HTMLDivElement>): void;
-  onHomeClick(e: React.MouseEvent<HTMLDivElement>): void;
-  getTab(id: number): Tab | undefined;
   newTab(): void;
+  onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
+  onNewProject(e: React.MouseEvent<HTMLDivElement>): void;
+  openMenu(e: React.MouseEvent<HTMLDivElement>): void;
   closew(e: React.MouseEvent<HTMLDivElement>): void;
   maxiw(e: React.MouseEvent<HTMLDivElement>): void;
   miniw(e: React.MouseEvent<HTMLDivElement>): void;
 }
 
-const TopPanel: React.SFC<TopPanelProps> = props => {
-  const currentTab: Tab | undefined = props.getTab(props.current);
-
+const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
   return (
-    <div className="panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
-      <div className="panelButtons gridArea-a">
-        <div className={`button main ${props.current === 1 ? "active" : ""}`} onClick={props.onMainTab}>
-          <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M7 1H1v6h6V1zM6 2H2v4h4V2zm9-1H9v6h6V1zm-1 1h-4v4h4V2zm1 7H9v6h6V9zm-1 1h-4v4h4v-4zM7 9H1v6h6V9zm-1 1H2v4h4v-4z"
-              fillRule="evenodd"
-              fill="#fff"
-            />
-          </svg>
-        </div>
-        {!currentTab || (!!currentTab && currentTab.showBackBtn) ? (
-          <div className="button home" onClick={props.onHomeClick}>
-            <svg x="0px" y="0px" viewBox="0 0 489 489" width="16px" height="16px">
-              <g>
-                <path
-                  d="M429.4,255.033c-35.4-43.1-102.1-94.4-219.7-98.8v-79.8c0-4.7-2.7-9.1-7-11.1s-9.4-1.4-13,1.6L4.5,219.633   c-2.8,2.3-4.5,5.8-4.5,9.4c0,3.7,1.6,7.1,4.4,9.4l185.2,153.3c3.7,3,8.7,3.7,13,1.6c4.3-2,7-6.3,7-11.1v-79.5   c76.8,0.3,194.2,6,256.5,115.9c2.2,3.9,6.3,6.2,10.7,6.2c1,0,2.1-0.1,3.1-0.4c5.4-1.4,9.1-6.3,9.1-11.8   C489.1,371.533,473.4,308.633,429.4,255.033z M197.4,278.233L197.4,278.233c-3.3,0-6.4,1.3-8.7,3.6s-3.6,5.4-3.6,8.7v65.7   l-153.5-127.1l153.6-126.7v65.7c0,6.7,5.4,12.2,12.1,12.3c176,1.7,241.6,109,260.7,184.4   C382.2,278.333,268.7,278.233,197.4,278.233z"
-                  fill="#FFFFFF"
-                />
-              </g>
-            </svg>
-          </div>
-        ) : null}
-        <div className="button newTab" onClick={props.newTab}>
-          <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2.5 6.5v1h4v4h1v-4h4v-1h-4v-4h-1v4h-4z" fill="#fff" />
-          </svg>
-        </div>
+    <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
+      <div className="panelButtons">
+        <Button className={`button_clear button_title${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
+          <Icon color="var(--fg-tab)" type="Main" size="18" />
+        </Button>
+        {props.visibleNewProjectBtn ? (
+          <Button className="button_clear button_title" onClick={props.onNewProject}>
+            <Icon color="var(--fg-tab)" type="Plus" size="18" />
+          </Button>
+        ) : (
+          ""
+        )}
       </div>
       <Tabs />
-      <div className="panelButtons gridArea-c">
-        <div className={`button`} onClick={props.openSettings} title="settings">
-          <svg width="16" height="16" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clipPath="url(#clip0)">
-              <path
-                d="M12.3346 5.13631L11.4221 4.98152C11.3271 4.67465 11.2049 4.37864 11.0555 4.09621L11.5932 3.34397C11.8213 3.02352 11.786 2.5863 11.5063 2.3093L10.697 1.50003C10.545 1.34795 10.344 1.26376 10.1295 1.26376C9.96108 1.26376 9.80086 1.31536 9.66508 1.41313L8.91012 1.95083C8.61683 1.79604 8.30995 1.6684 7.99222 1.57335L7.84014 0.671747C7.77497 0.283406 7.44094 0.000976562 7.04717 0.000976562H5.90387C5.5101 0.000976562 5.17607 0.283406 5.11089 0.671747L4.95338 1.59508C4.64923 1.69012 4.35322 1.81504 4.07079 1.96712L3.32398 1.42942C3.1882 1.33166 3.02526 1.28006 2.85689 1.28006C2.64235 1.28006 2.43867 1.36424 2.28931 1.51632L1.47733 2.32559C1.20033 2.60259 1.16231 3.03981 1.39042 3.36026L1.93356 4.12336C1.7842 4.40851 1.66471 4.70452 1.57237 5.01139L0.670771 5.16347C0.28243 5.22864 0 5.56267 0 5.95644V7.09974C0 7.49351 0.28243 7.82754 0.670771 7.89272L1.5941 8.05023C1.68915 8.35438 1.81407 8.65039 1.96615 8.93282L1.43116 9.67691C1.20304 9.99736 1.23835 10.4346 1.51806 10.7116L2.32733 11.5209C2.47941 11.6729 2.68037 11.7571 2.89491 11.7571C3.06328 11.7571 3.2235 11.7055 3.35929 11.6078L4.12239 11.0646C4.39667 11.2086 4.68453 11.3253 4.98054 11.4177L5.13262 12.3301C5.1978 12.7185 5.53182 13.0009 5.9256 13.0009H7.07161C7.46538 13.0009 7.79941 12.7185 7.86459 12.3301L8.01938 11.4177C8.32625 11.3226 8.62226 11.2004 8.90469 11.051L9.65693 11.5887C9.79271 11.6865 9.95565 11.7381 10.124 11.7381C10.3386 11.7381 10.5395 11.6539 10.6916 11.5018L11.5009 10.6926C11.7779 10.4156 11.8159 9.97835 11.5878 9.6579L11.0501 8.90295C11.1994 8.6178 11.3244 8.32179 11.4167 8.01764L12.3291 7.86556C12.7175 7.80038 12.9999 7.46636 12.9999 7.07258V5.92929C13.0054 5.53551 12.7229 5.20149 12.3346 5.13631ZM12.2721 7.07258C12.2721 7.10789 12.2477 7.13776 12.2124 7.14319L11.0718 7.33329C10.9279 7.35773 10.8138 7.46364 10.7785 7.60214C10.6753 8.00134 10.5178 8.38425 10.306 8.74001C10.2327 8.86493 10.2381 9.01972 10.3223 9.13921L10.993 10.0843C11.012 10.1114 11.0093 10.1522 10.9849 10.1766L10.1756 10.9859C10.1566 11.0049 10.1376 11.0076 10.124 11.0076C10.1077 11.0076 10.0942 11.0022 10.0833 10.994L9.14095 10.3232C9.02418 10.2391 8.86667 10.2336 8.74175 10.3069C8.38599 10.5188 8.00308 10.6763 7.60388 10.7795C7.46267 10.8148 7.35675 10.9316 7.33503 11.0728L7.14222 12.2133C7.13679 12.2487 7.10691 12.2731 7.07161 12.2731H5.92831C5.89301 12.2731 5.86313 12.2487 5.8577 12.2133L5.66761 11.0728C5.64317 10.9288 5.53725 10.8148 5.39876 10.7795C5.01041 10.679 4.63565 10.5242 4.28533 10.3232C4.2283 10.2907 4.16312 10.2744 4.10066 10.2744C4.02734 10.2744 3.9513 10.2961 3.88884 10.3423L2.93836 11.0185C2.92478 11.0266 2.9112 11.032 2.89762 11.032C2.88676 11.032 2.86503 11.0293 2.84602 11.0103L2.03675 10.201C2.01231 10.1766 2.0096 10.1386 2.02861 10.1087L2.69666 9.1718C2.78085 9.05231 2.78628 8.8948 2.71296 8.76988C2.50113 8.41684 2.33819 8.03393 2.235 7.63473C2.19698 7.49623 2.08292 7.39032 1.94171 7.36588L0.792976 7.17035C0.757672 7.16492 0.733231 7.13504 0.733231 7.09974V5.95644C0.733231 5.92114 0.757672 5.89127 0.792976 5.88584L1.92541 5.69574C2.06934 5.6713 2.18612 5.56539 2.22142 5.42417C2.3219 5.02497 2.47669 4.63934 2.6858 4.28359C2.75912 4.15867 2.75098 4.00388 2.66679 3.8871L1.99059 2.93662C1.97158 2.90946 1.97429 2.86873 1.99873 2.84428L2.808 2.03501C2.82701 2.016 2.84602 2.01329 2.8596 2.01329C2.8759 2.01329 2.88947 2.01872 2.90034 2.02687L3.83724 2.69492C3.95673 2.77911 4.11424 2.78454 4.23916 2.71122C4.5922 2.49939 4.97511 2.33645 5.37431 2.23326C5.51281 2.19524 5.61872 2.08118 5.64317 1.93997L5.83869 0.791237C5.84413 0.755933 5.874 0.731492 5.9093 0.731492H7.0526C7.0879 0.731492 7.11777 0.755933 7.12321 0.791237L7.3133 1.92367C7.33774 2.0676 7.44366 2.18438 7.58487 2.21968C7.99494 2.32288 8.38599 2.4831 8.74989 2.69764C8.87481 2.77096 9.02961 2.76553 9.1491 2.68134L10.086 2.00786C10.0996 1.99971 10.1132 1.99428 10.1267 1.99428C10.1376 1.99428 10.1593 1.99699 10.1783 2.016L10.9876 2.82527C11.012 2.84972 11.0148 2.88773 10.9958 2.91761L10.325 3.85994C10.2408 3.97672 10.2354 4.13423 10.3087 4.25915C10.5205 4.6149 10.678 4.99781 10.7812 5.39702C10.8165 5.53823 10.9333 5.64414 11.0745 5.66587L12.2151 5.85868C12.2504 5.86411 12.2748 5.89398 12.2748 5.92929V7.07258H12.2721Z"
-                fill="white"
-              />
-              <path
-                d="M6.50133 3.69336C4.9534 3.69336 3.69604 4.95072 3.69604 6.49865C3.69604 8.04658 4.9534 9.30394 6.50133 9.30394C8.04927 9.30394 9.30662 8.04658 9.30662 6.49865C9.30662 4.95072 8.04927 3.69336 6.50133 3.69336ZM6.50133 8.57071C5.35804 8.57071 4.42928 7.64195 4.42928 6.49865C4.42928 5.35535 5.35804 4.42659 6.50133 4.42659C7.64463 4.42659 8.57339 5.35535 8.57339 6.49865C8.57339 7.64195 7.64463 8.57071 6.50133 8.57071Z"
-                fill="white"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0">
-                <rect width="13" height="13" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-        </div>
-        <div className="button Minimize" onClick={props.miniw}>
-          <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-            <path d="M 11.457627,12.135593 H 1.9661017 v -1.222335 h 9.4915253" fill="#fff" />
-          </svg>
-        </div>
-        <div className="button Maximize" onClick={props.maxiw}>
-          <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="m 3,2.7627119 h 8.237288 V 11 H 3 V 2.7627119 M 3.9152542,3.6779661 V 10.084746 H 10.322034 V 3.6779661 Z"
-              fill="#fff"
-            />
-          </svg>
-        </div>
-        <div className="button Close" onClick={props.closew}>
-          <svg className="svg" width="14" height="14" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="m 11.521447,3.6402606 -0.874071,-0.874071 -3.46529,3.46529 -3.4652896,-3.46529 -0.8740713,0.874071 3.4652897,3.46529 -3.4652897,3.4652904 0.8740713,0.874071 3.4652896,-3.4652904 3.46529,3.4652904 0.874071,-0.874071 -3.4652899,-3.4652904 z"
-              fill="#fff"
-            />
-          </svg>
-        </div>
+      <div className="panelButtons">
+        <Button className="button_clear button_title" onClick={props.openMenu}>
+          <Icon color="var(--fg-tab)" type="MenuCorner" size="18" />
+        </Button>
+        <Button className="button_clear button_control" onClick={props.miniw}>
+          <Icon color="var(--fg-header-control)" type="Minimize" size="18" />
+        </Button>
+        <Button className="button_clear button_control" onClick={props.maxiw}>
+          <Icon color="var(--fg-header-control)" type="Maximize" size="18" />
+        </Button>
+        <Button className="button_clear button_control button_close" onClick={props.closew}>
+          <Icon color="var(--fg-header-control)" type="Close" size="18" />
+        </Button>
       </div>
     </div>
   );

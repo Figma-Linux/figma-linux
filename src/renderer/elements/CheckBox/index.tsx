@@ -7,18 +7,30 @@ export interface CheckBoxProps {
   text?: string; // text for label
   value?: boolean;
   disabled?: boolean;
-  title?: string;
-  s?: string; // custom style classes
+  hidden?: boolean;
+  className?: string; // custom style classes
 }
 
-export class CheckBox extends React.Component<CheckBoxProps, {}> {
+export class CheckBox extends React.Component<CheckBoxProps, unknown> {
   constructor(props: CheckBoxProps) {
     super(props);
   }
 
-  render() {
+  render(): JSX.Element {
+    const classNames: string[] = ["checkbox"];
+
+    if (this.props.className) {
+      classNames.push(this.props.className);
+    }
+    if (this.props.disabled) {
+      classNames.push("disabled");
+    }
+    if (this.props.hidden) {
+      classNames.push("hidden");
+    }
+
     return (
-      <div className={`checkbox ${this.props.s ? this.props.s : ""} ${this.props.disabled ? "disabled" : ""}`}>
+      <div className={classNames.join(" ")}>
         <label>
           <input
             type="checkbox"
@@ -27,7 +39,7 @@ export class CheckBox extends React.Component<CheckBoxProps, {}> {
             checked={this.props.value ? true : false}
             onChange={e => this.props.onChange(!this.props.value)}
           />
-          <span title={`${this.props.title ? this.props.title : ""}`}>{this.props.text ? this.props.text : ""}</span>
+          <span>{this.props.text || ""}</span>
         </label>
       </div>
     );

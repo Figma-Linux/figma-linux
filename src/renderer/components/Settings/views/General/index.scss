@@ -1,0 +1,17 @@
+.general {
+	padding-bottom: 20px;
+
+	.add {
+		align-self: center;
+
+		&:hover {
+			cursor: pointer;
+		}
+	}
+
+	.button {
+		&:hover {
+			cursor: pointer;
+		}
+	}
+}

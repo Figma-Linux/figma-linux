@@ -1,62 +1,64 @@
 {
-    "extends": "./node_modules/electron-webpack/tsconfig-base.json",
-    "compilerOptions": {
-        "jsx": "react",
-        "outDir": "./dist",
-        "baseUrl": "./",
-        "noImplicitAny": true,
-        "allowJs": false,
-        "target": "es6",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "sourceMap": true,
-        "preserveConstEnums": true,
-        "removeComments": true,
-        "emitDecoratorMetadata": true,
-        "experimentalDecorators": true,
-        "allowSyntheticDefaultImports": true,
-        "strictPropertyInitialization": false,
-        "noImplicitThis": false,
-        "allowUnusedLabels": true,
-        "noUnusedLocals": false,
-        "strictNullChecks": false,
-        "lib": [
-            "dom",
-            "es7",
-            "esnext"
-        ],
-        "typeRoots": [
-            "node_modules/@types",
-            "@types/**/*.d.ts"
-        ],
-        "paths": {
-            "Main": ["src/main"],
-            "Main/*": ["src/main/*"],
-            "Components": ["src/renderer/components"],
-            "Components/*": ["src/renderer/components/*"],
-            "Elements/*": ["src/renderer/elements/*"],
-            "Elements": ["src/renderer/elements"],
-            "Store": ["src/renderer/stores"],
-            "Store/*": ["src/renderer/stores/*"],
-            "Middleware": ["src/middleware"],
-            "Middleware/*": ["src/middleware/*"],
-            "Const": ["src/constants"],
-            "Utils": ["src/utils"],
-            "Utils/*": ["src/utils/*"],
-            "*": ["node_modules/@types/*"]
-        },
-    },
-    "include": [
-        "@types/**/*",
-        "src/main/index.ts",
-        "src/renderer/index.tsx",
-        "src/middleware/loadMainContent.ts",
-        "src/middleware/loadContent.ts",
-        "src/middleware/*.ts"
+  "extends": "./node_modules/electron-webpack/tsconfig-base.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "noImplicitAny": true,
+    "allowJs": false,
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
+    "allowUnusedLabels": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": false,
+    "lib": [
+      "dom",
+      "es7",
+      "esnext"
     ],
-    "exclude": [
-        "node_modules",
-        "biuld",
-        "*.sass"
-    ]
+    "typeRoots": [
+      "node_modules/@types",
+      "@types/**/*.d.ts"
+    ],
+    "paths": {
+      "Main": ["src/main"],
+      "Main/*": ["src/main/*"],
+      "Components": ["src/renderer/components"],
+      "Components/*": ["src/renderer/components/*"],
+      "Elements/*": ["src/renderer/elements/*"],
+      "Elements": ["src/renderer/elements"],
+      "Store": ["src/renderer/stores"],
+      "Store/*": ["src/renderer/stores/*"],
+      "Middleware": ["src/middleware"],
+      "Middleware/*": ["src/middleware/*"],
+      "Const": ["src/constants"],
+      "Utils": ["src/utils"],
+      "Utils/*": ["src/utils/*"],
+      "Enums": ["@types/enums.ts"],
+      "Storage": ["src/main/Storage.ts"],
+      "*": ["node_modules/@types/*"]
+    },
+  },
+  "include": [
+    "@types/**/*",
+    "src/main/index.ts",
+    "src/renderer/index.tsx",
+    "src/middleware/loadMainContent.ts",
+    "src/middleware/loadContent.ts",
+    "src/middleware/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "build",
+    "*.sass"
+  ]
 }

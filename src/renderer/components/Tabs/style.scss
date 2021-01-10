@@ -1,84 +1,52 @@
-@import '../../colors.scss';
-
 .tabBar {
-	position: relative;
-	display: flex;
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  align-content: stretch;
 }
 
 .tab {
-	display: inline-flex;
-	-webkit-app-region: no-drag;
-	align-items: center;
-	padding: 0px 10px;
-	&:hover {
-		background-color: $gray_1;
-	}
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  user-select: none;
+  overflow: hidden;
+  background-color: var(--bg-tab);
+  color: var(--fg-tab);
+  fill: var(--fg-tab);
 
-	& > span {
-		position: relative;
-		// pointer-events: none;
-		user-select: none;
-		cursor: default;
-		white-space: nowrap;
-		font: {
-			size: 10px;
-		}
-		color: $white_1;
+  &:hover {
+    background-color: var(--bg-tab-hover);
+    color: var(--fg-tab-hover);
+    fill: var(--fg-tab-hover);
+    cursor: pointer;
+  }
 
-		&:hover {
-			&::after {
-				cursor: pointer;
-			}
-		}
+  &__text {
+    overflow: hidden;
+    text-align: center;
+    white-space: nowrap;
+    text-overflow: clip;
+    font-size: var(--fontControlSize);
+    margin-right: 6px;
+  }
 
-		&::after {
-			content: '';
-			position: absolute;
-			top: -8px;
-			left: -10px;
-			height: 28px;
-			width: 115%;
-		}
-	}
-}
-.active {
-	-webkit-app-region: no-drag;
-	background-color: $gray_1;
-}
+  &__close {
+    height: 16px;
+    color: var(--fg-tab);
+    fill: var(--fg-tab);
 
-.fakeTab {
-	-webkit-app-region: no-drag;
-	position: relative;
-	display: inline;
-	align-items: center;
-	padding: 0px 10px;
-	pointer-events: none;
-	user-select: none;
-	background-color: transparent;
+    &:hover {
+      color: var(--fg-tab-hover);
+      fill: var(--fg-tab-hover);
+      cursor: pointer;
+    }
+  }
 
-	& > span {
-		opacity: 0;
-		white-space: nowrap;
-		font: {
-			size: 10px;
-		}
-	}
-}
-
-.tabClose {
-	-webkit-app-region: no-drag;
-	margin: 0px 0px 3px 10px;
-	&:hover {
-		cursor: pointer;
-	}
-}
-.newTab {
-	-webkit-app-region: no-drag;
-	display: flex;
-	align-items: center;
-	padding: 2px 6px;
-	&:hover {
-		background-color: $black_1;
-		cursor: pointer;
-	}
+  &_active {
+    background-color: var(--bg-tab-active);
+    color: var(--fg-tab-active);
+    fill: var(--fg-tab-active);
+  }
 }

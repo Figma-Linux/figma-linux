@@ -15,6 +15,14 @@
     "output": "build/installers"
   },
 
+  "fileAssociations": [
+    {
+      "ext": "fig",
+      "name": "Figma File",
+      "role": "Editor"
+    }
+  ],
+
   "protocols": [{
     "name": "figma",
     "role": "Viewer",
@@ -31,49 +39,19 @@
     "category": "Graphics"
   },
 
-  "snap": {
-    "plugs": [
-      {
-        "home": {
-          "interface": "personal-files",
-          "allow-auto-connection": true,
-          "read": [
-            "$HOME/.config",
-            "$HOME/.local",
-            "$HOME/Documents"
-          ],
-          "write": [
-            "$HOME/.config",
-            "$HOME/.local",
-            "$HOME/Documents"
-          ]
-        }
-      },
-      {
-        "removable-devices": {
-          "interface": "removable-media"
-        }
-      },
-      "desktop",
-      "desktop-legacy",
-      "home",
-      "x11",
-      "unity7",
-      "browser-support",
-      "network",
-      "gsettings",
-      "pulseaudio",
-      "opengl",
-      "gsettings"
-    ]
-  },
-
   "linux": {
     "description": "Unofficial desktop application for linux",
     "icon": "resources/icons",
     "category": "Graphic",
     "packageCategory": "Graphic",
     "maintainer": "Chugunov Roman <Zebs-BMK@yandex.ru>",
+    "fileAssociations": [
+      {
+        "ext": "fig",
+        "name": "Figma File",
+        "role": "Editor"
+      }
+    ],
     "target": [
       {
         "target": "deb",

@@ -12,3 +12,7 @@ export const winUrlProd = formatUrl({
 export const isFileBrowser = (url: string): boolean => {
   return !/file\/.+/.test(url);
 };
+
+export const isFigmaValidUrl = (url: string): boolean => {
+  return /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(url);
+};

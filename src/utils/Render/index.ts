@@ -1,4 +1,2 @@
-/**
- * Utils only for Renderer process
- */
+export * from "./themes";
 export * from "./webBindingsHelpers";

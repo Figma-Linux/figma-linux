@@ -1,38 +1,6 @@
 import * as E from "electron";
 
-export const postPromiseMessageToMainProcess = (function() {
-  let nextPromiseID = 0;
-  const pendingPromises = new Map();
-
-  E.ipcRenderer.on("handlePromiseResolve", (event: E.Event, promiseID: number, result: any) => {
-    const pendingPromise = pendingPromises.get(promiseID);
-    if (pendingPromise) {
-      pendingPromises.delete(promiseID);
-      pendingPromise.resolve(result);
-    } else {
-      console.error("[desktop] unexpected resolve for promise", promiseID);
-    }
-  });
-  E.ipcRenderer.on("handlePromiseReject", (event: E.Event, promiseID: number, error: any) => {
-    const pendingPromise = pendingPromises.get(promiseID);
-    if (pendingPromise) {
-      pendingPromises.delete(promiseID);
-      pendingPromise.reject(error);
-    } else {
-      console.error("[desktop] unexpected reject for promise", promiseID);
-    }
-  });
-
-  return function(channel: string, ...args: any[]) {
-    return new Promise(function(resolve, reject) {
-      const promiseID = nextPromiseID++;
-      pendingPromises.set(promiseID, { resolve, reject });
-      E.ipcRenderer.send("web-promise:" + channel, promiseID, ...args);
-    });
-  };
-})();
-
-export const postCallbackMessageToMainProcess = async (channel: string, ...args: any[]) => {
+export const postCallbackMessageToMainProcess = (channel: string, ...args: any[]) => {
   E.ipcRenderer.send(`web-callback:${channel}`, ...args);
 };
 
@@ -53,13 +21,14 @@ export const registerCallbackWithMainProcess = (() => {
     }
   });
 
-  return function(channel: string, args: any, callback: Function) {
+  return function(channel: string, args: any, callback: (result: any) => void) {
     const callbackID = nextCallbackID++;
     registeredCallbacks.set(callbackID, callback);
 
     E.ipcRenderer.send(`web-callback:${channel}`, args, callbackID);
 
     return () => {
+      // TODO: this message is not handled anywhere
       E.ipcRenderer.send("web-cancel-callback", callbackID);
       registeredCallbacks.delete(callbackID);
     };

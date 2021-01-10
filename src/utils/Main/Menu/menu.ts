@@ -1,14 +1,17 @@
 import * as E from "electron";
 
-import { getMenuTemlate } from "Utils/Main";
+import { getMenuTemplate } from "Utils/Main";
 import { stringOfActionMenuItemName, assertNever } from "Utils/Common";
 import MenuState from "Main/MenuState";
 
-export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
-  const currentView = window.getBrowserView();
+export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow): void => {
+  if (item && item.pluginMenuAction && window) {
+    if (item.pluginMenuAction.type === "manage") {
+      handleUrl(window, "/my_plugins");
+      return;
+    }
 
-  if (item && item.pluginMenuAction && currentView) {
-    currentView.webContents.send("handlePluginMenuAction", item.pluginMenuAction);
+    window.webContents.send("handlePluginMenuAction", item.pluginMenuAction);
   }
 };
 
@@ -21,6 +24,7 @@ export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuI
         label,
         click: handlePluginMenuAction,
         enabled: !input.disabled,
+        visible: input.visible,
         pluginMenuAction: input.menuAction,
       };
     }
@@ -55,7 +59,7 @@ export const setMenuFromTemplate = (
   if (template) {
     mainMenu = E.Menu.buildFromTemplate(template as E.MenuItemConstructorOptions[]);
   } else {
-    mainMenu = E.Menu.buildFromTemplate(getMenuTemlate(pluginMenuItems) as E.MenuItemConstructorOptions[]);
+    mainMenu = E.Menu.buildFromTemplate(getMenuTemplate(pluginMenuItems) as E.MenuItemConstructorOptions[]);
   }
 
   E.Menu.setApplicationMenu(mainMenu);
@@ -88,9 +92,11 @@ export const resetMenu = (pluginMenuData: Menu.MenuItem[], template?: E.MenuItem
     const menuItem: E.MenuItem = menuItemMap[action];
     menuItem.enabled = MenuState.actionState ? !!MenuState.actionState[action] : false;
   }
+
+  return mainMenu;
 };
 
-export const item = (label: string, accelerator: string, params: Menu.Params) => {
+export const item = (label: string, accelerator: string, params: E.MenuItemConstructorOptions) => {
   const props: E.MenuItemConstructorOptions = {
     label,
     enabled: true,
@@ -101,24 +107,17 @@ export const item = (label: string, accelerator: string, params: Menu.Params) =>
     props.accelerator = accelerator;
   }
 
-  return new E.MenuItem(props);
+  return props;
 };
 
-export const commandToMainProcess = (item: E.MenuItemConstructorOptions) => {
-  E.app.emit("handle-command", item.id);
+export const commandToMainProcess = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
+  E.app.emit("handle-command", window.webContents, item.id);
 };
 
-export const handleCommandItemClick = (item: any, window: E.BrowserWindow) => {
-  const currentView = window.getBrowserView();
-
-  currentView.webContents.send("handlePageCommand", item.command);
+export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
+  window.webContents.send("handlePageCommand", item.id);
 };
 
-export const handleItemAction = (item: any, window: E.BrowserWindow) => {
-  // FIXME: ugly hack
-  if (!item.accelerator && item.accelerator && !/ctrl|alt|shift|meta/i.test(item.accelerator)) return;
-
-  const currentView = window.getBrowserView();
-
-  currentView.webContents.send("handleAction", item.action, "os-menu");
+export const handleUrl = (window: E.BrowserWindow, url: string) => {
+  E.app.emit("handleUrl", window.webContents.id, url);
 };

@@ -4,17 +4,20 @@ import { observer, inject } from "mobx-react";
 
 import Panel from "./toppanel";
 import { Settings } from "Store/Settings";
+import { Views } from "Store/Views";
 import "./style.scss";
 
 interface TopPanelProps {
   tabs?: TabsStore;
   settings?: Settings;
+  views?: Views;
 }
 
 @inject("tabs")
 @inject("settings")
+@inject("views")
 @observer
-class TopPanel extends React.Component<TopPanelProps, {}> {
+class TopPanel extends React.Component<TopPanelProps, unknown> {
   props: TopPanelProps;
 
   constructor(props: TopPanelProps) {
@@ -23,26 +26,30 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     this.props = props;
   }
 
-  private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event) => {
+  private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.ipcRenderer.send("maintab");
-    this.props.tabs!.setFocus(1);
+    E.ipcRenderer.send("setFocusToMainTab");
+    this.props.tabs.setFocus();
   };
 
-  private onOpenSettings = (e: React.MouseEvent<HTMLDivElement> & Event) => {
+  private onNewProject = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
     e.nativeEvent.stopImmediatePropagation();
     e.stopPropagation();
 
-    E.remote.app.emit("handle-command", "openSettings");
+    E.ipcRenderer.send("newProject");
   };
 
-  private onHomeClick = (event: React.MouseEvent<HTMLDivElement> & Event) => {
-    E.ipcRenderer.send("toHome");
+  private onOpenMenu = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
+    e.nativeEvent.stopImmediatePropagation();
+    e.stopPropagation();
+
+    E.ipcRenderer.send("openMenu");
   };
+
   private closew = (event: React.MouseEvent<HTMLDivElement> & Event) => {
-    E.ipcRenderer.send("app-exit");
+    E.ipcRenderer.send("appExit");
   };
   private maxiw = (event: React.MouseEvent<HTMLDivElement> & Event) => {
     E.ipcRenderer.send("window-maximize");
@@ -51,23 +58,23 @@ class TopPanel extends React.Component<TopPanelProps, {}> {
     E.ipcRenderer.send("window-minimize");
   };
 
-  private newTab = () => {
-    E.ipcRenderer.send("newtab");
+  private newTab = (): void => {
+    E.ipcRenderer.send("newTab");
   };
 
-  render() {
+  render(): JSX.Element {
     return (
       <Panel
         miniw={this.miniw}
         maxiw={this.maxiw}
         closew={this.closew}
         scalePanel={this.props.settings.settings.ui.scalePanel}
-        current={this.props.tabs!.current}
+        visibleNewProjectBtn={this.props.settings.settings.app.visibleNewProjectBtn}
+        current={this.props.tabs.current}
+        onNewProject={this.onNewProject}
         onMainTab={this.onMainTab}
-        openSettings={this.onOpenSettings}
-        onHomeClick={this.onHomeClick}
+        openMenu={this.onOpenMenu}
         newTab={this.newTab}
-        getTab={this.props.tabs!.getTab}
       />
     );
   }

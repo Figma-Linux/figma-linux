@@ -5,13 +5,14 @@ import stores from "./stores";
 
 import App from "./components";
 import { isDev } from "Utils/Common";
-import shortcuts from "Utils/Render/shortcuts";
 
 onError((err: any) => {
   console.log("Mobx error: ", err);
 });
 
-shortcuts();
+if (module.hot) {
+  module.hot.accept();
+}
 
 const root: string = isDev ? "app" : "react-page";
 

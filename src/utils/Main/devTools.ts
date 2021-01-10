@@ -1,7 +1,7 @@
 import * as E from "electron";
 
 export const toggleDetachedDevTools = (webContents: E.WebContents) => {
-  if (webContents.isDevToolsOpened()) {
+  if (!webContents || webContents.isDevToolsOpened()) {
     webContents.closeDevTools();
 
     return;

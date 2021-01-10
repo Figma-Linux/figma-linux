@@ -1,0 +1,142 @@
+@import '../../colors.scss';
+
+.input {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-radius: 2px;
+
+  & input:focus {
+    border: 0;
+    outline: none;
+  }
+
+  &__label {
+    color: var(--text);
+  }
+
+  &__color {
+    background-color: var(--bg-panel);
+    width: 30px;
+    height: 30px;
+    border: none;
+    outline: none;
+    margin: 0;
+    padding: 0 10px 0 0;
+
+    &:focus, &:active {
+      background-color: var(--bg-panel);
+      border: none;
+      outline: none;
+      margin: 0;
+      padding: 0 10px 0 0;
+    }
+  }
+
+  &__content_before {
+    display: flex;
+    justify-self: center;
+  }
+  &__content_after {
+    display: flex;
+    justify-self: center;
+  }
+
+  &_inline {
+    display: inline-flex;
+  }
+
+  &_grid3 {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+  }
+
+  &__range {
+    --thumbSize: 16px;
+    --trackSize: 2px;
+    background-color: var(--bg-panel);
+    -webkit-appearance: none;
+    appearance: none;
+    height: var(--thumbSize);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+  }
+
+  &__range::-webkit-slider-runnable-track {
+    background: var(--text);
+    height: var(--trackSize);
+    border-radius: calc(var(--trackSize) / 2);
+  }
+
+  &__range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1 solid var(--text);
+    background: var(--text);
+    width: var(--thumbSize);
+    height: var(--thumbSize);
+    border-radius: calc(var(--thumbSize));
+    margin-top: calc(((var(--thumbSize) - var(--trackSize)) / 2) * -1);
+  }
+
+  &__range:hover::-webkit-slider-thumb {
+    cursor: pointer;
+  }
+
+  &__range:hover::-webkit-slider-runnable-track {
+    cursor: pointer;
+  }
+
+  &__text {
+    margin: 8px 10px;
+    border: 0;
+    background-color: var(--bg-panel);
+    color: var(--text);
+    font: {
+      family: 'Inter', sans-serif;
+      size: 14px;
+      weight: 300;
+    };
+  }
+
+  &__text:focus {
+    border: 0;
+    outline: none;
+  }
+
+  &__text::placeholder {
+    color: $gray_2;
+    flex-grow: 1;
+    user-select: none;
+  }
+
+  &__content_before {
+    padding-left: 12px;
+  }
+
+  &__content_after {
+    padding-right: 12px;
+  }
+
+
+  &_w_40per input {
+    width: 40%;
+  }
+
+  &_w_60per input {
+    width: 60%;
+  }
+  &_w_70per input {
+    width: 70%;
+  }
+
+  &_w_80per input {
+    width: 80%;
+  }
+
+  &_w_100per input {
+    width: 100%;
+  }
+}

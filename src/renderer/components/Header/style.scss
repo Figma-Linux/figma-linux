@@ -1,0 +1,23 @@
+.header {
+  display: grid;
+  grid-template-columns: 1fr 50px 20px;
+  justify-content: space-between;
+  background-color: var(--bg-header);
+  padding: 10px 14px 10px 30px;
+  align-items: center;
+  height: 30px;
+
+  &__text {
+    padding: 0;
+    margin: 0;
+    color: var(--fg-header);
+    fill: var(--fg-header);
+  }
+  &__additional {
+    display: flex;
+  }
+  &__close {
+    color: var(--fg-header-control);
+    fill: var(--fg-header-control);
+  }
+}

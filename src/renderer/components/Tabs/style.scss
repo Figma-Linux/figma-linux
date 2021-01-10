@@ -15,6 +15,7 @@
   background-color: var(--bg-tab);
   color: var(--fg-tab);
   fill: var(--fg-tab);
+  -webkit-app-region: no-drag;
 
   &:hover {
     background-color: var(--bg-tab-hover);

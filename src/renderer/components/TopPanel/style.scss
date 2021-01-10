@@ -3,8 +3,10 @@
   grid-template: "a b c";
   grid-template-columns: auto 1fr auto;
   background-color: var(--bg-header);
+  -webkit-app-region: drag;
 
   &>.panelButtons {
+    -webkit-app-region: no-drag;
     display: inline-flex;
     flex-direction: row;
     align-content: center;
@@ -15,5 +17,3 @@
     }
   }
 }
-
-

@@ -422,6 +422,20 @@ class WindowManager {
       }
       logger.debug("Sync themes end");
     });
+    E.ipcMain.on("set-clipboard-data", (event, data) => {
+      const format = data.format;
+      const buffer = Buffer.from(data.data);
+
+      if (["image/jpeg", "image/png"].indexOf(format) !== -1) {
+        E.clipboard.writeImage(E.nativeImage.createFromBuffer(buffer));
+      } else if (format === "image/svg+xml") {
+        E.clipboard.writeText(buffer.toString());
+      } else if (format === "application/pdf") {
+        E.clipboard.writeBuffer("Portable Document Format", buffer);
+      } else {
+        E.clipboard.writeBuffer(format, buffer);
+      }
+    });
 
     E.app.on("toggle-current-tab-devtools", () => {
       toggleDetachedDevTools(this.lastFocusedTab);

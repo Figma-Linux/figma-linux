@@ -34,4 +34,9 @@ declare namespace WebApi {
       },
     ];
   }
+
+  interface SetClipboardData {
+    format: string;
+    data: Uint8Array;
+  }
 }

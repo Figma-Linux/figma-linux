@@ -86,6 +86,10 @@ declare namespace Electron {
     on(channel: "set-default-theme", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "saveCreatorTheme", listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void): this;
     on(channel: "sync-themes", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(
+      channel: "set-clipboard-data",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.SetClipboardData) => void,
+    ): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -171,6 +175,7 @@ declare namespace Electron {
     send(channel: "set-default-theme"): this;
     send(channel: "saveCreatorTheme", theme: Themes.Theme): this;
     send(channel: "sync-themes"): this;
+    send(channel: "set-clipboard-data", data: WebApi.SetClipboardData): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;

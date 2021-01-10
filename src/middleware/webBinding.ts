@@ -481,19 +481,8 @@ const publicAPI: any = {
     });
   },
 
-  setClipboardData(args: any) {
-    const format = args.format;
-    const data = Buffer.from(args.data);
-
-    if (["image/jpeg", "image/png"].indexOf(format) !== -1) {
-      E.clipboard.writeImage(E.remote.nativeImage.createFromBuffer(data));
-    } else if (format === "image/svg+xml") {
-      E.clipboard.writeText(data.toString());
-    } else if (format === "application/pdf") {
-      E.clipboard.writeBuffer("Portable Document Format", data);
-    } else {
-      E.clipboard.writeBuffer(format, data);
-    }
+  setClipboardData(args: WebApi.SetClipboardData) {
+    E.ipcRenderer.send("set-clipboard-data", args);
   },
 
   async writeFiles(args: WebApi.WriteFiles) {

@@ -1,17 +1,20 @@
 import { tabs } from "./Tabs";
-import route, { Routes } from "./Routes";
+import { Views, views } from "./Views";
 import { Settings, settings } from "./Settings";
+import { Themes, themes } from "./Themes";
 
 export interface Stores {
   tabs: TabsStore;
   settings: Settings;
-  route: Routes;
+  themes: Themes;
+  views: Views;
 }
 
 const stores: Stores = {
   tabs,
   settings,
-  route,
+  themes,
+  views,
 };
 
 export default stores;

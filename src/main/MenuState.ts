@@ -8,7 +8,7 @@ import { INITACTIONINITSTATE, ACTIONTABSTATE, ACTIONFILEBROWSERSTATE } from "Con
  */
 class MenuState {
   public static actionState: MenuState.State = INITACTIONINITSTATE;
-  public static pluginMenuData: any[] = [];
+  public static pluginMenuData: Menu.MenuItem[] = [];
 
   private static update = (state: MenuState.MenuStateParams) => {
     const app = E.remote ? E.remote.app : E.app;
@@ -20,7 +20,7 @@ class MenuState {
       };
     }
 
-    if (state.pluginMenuData && state.pluginMenuData.length > 0) {
+    if (Array.isArray(state.pluginMenuData)) {
       MenuState.pluginMenuData = state.pluginMenuData;
     }
 
@@ -41,11 +41,38 @@ class MenuState {
   };
 
   public static updateInProjectActionState = () => {
-    MenuState.update({ actionState: ACTIONTABSTATE });
+    const newPluginMenuData = MenuState.pluginMenuData.map(item => {
+      if (item.visible === false) {
+        return {
+          ...item,
+          disabled: item.disabled || false,
+          visible: true,
+        };
+      }
+
+      return item;
+    });
+
+    MenuState.update({ actionState: ACTIONTABSTATE, pluginMenuData: newPluginMenuData });
   };
 
   public static updateInFileBrowserActionState = () => {
-    MenuState.update({ actionState: ACTIONFILEBROWSERSTATE });
+    const newPluginMenuData = MenuState.pluginMenuData.map(item => {
+      if (item.type === "run-menu-action" && item.name.key === "plugins-menu-manage") {
+        return {
+          ...item,
+          visible: true,
+          disabled: false,
+        };
+      }
+
+      return {
+        ...item,
+        visible: false,
+      };
+    });
+
+    MenuState.update({ actionState: ACTIONFILEBROWSERSTATE, pluginMenuData: newPluginMenuData });
   };
 }
 

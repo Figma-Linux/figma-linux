@@ -1,11 +1,12 @@
-import * as Chokidar from "chokidar";
 import { promises } from "fs";
 import { dirname, join } from "path";
-import * as Settings from "electron-settings";
+import * as Chokidar from "chokidar";
+import { storage } from "Storage";
+import { logger } from "./Logger";
 
 class ExtensionManager {
   private extensionMap: Map<number, Extensions.Extension>;
-  private manifestObservers: Function[];
+  private manifestObservers: Array<Extensions.ManifestObserver>;
 
   constructor() {
     this.extensionMap = new Map();
@@ -13,7 +14,7 @@ class ExtensionManager {
     this.reload();
   }
 
-  public addPath(path: string): { id: number; existed: boolean } {
+  public addPath(path: string): Extensions.AddPathReturnValue {
     for (const [id, entry] of this.extensionMap.entries()) {
       if (entry.path === path) {
         return { id, existed: true };
@@ -94,7 +95,7 @@ class ExtensionManager {
     return Array.from(this.extensionMap.keys());
   }
 
-  public addObserver(callback: Function): void {
+  public addObserver(callback: () => void): void {
     this.manifestObservers.push(callback);
 
     if (this.manifestObservers.length === 1) {
@@ -106,7 +107,7 @@ class ExtensionManager {
       });
     }
   }
-  public removeObserver(callback: Function): void {
+  public removeObserver(callback: () => void): void {
     const index = this.manifestObservers.indexOf(callback);
 
     if (index !== -1) {
@@ -124,11 +125,13 @@ class ExtensionManager {
   }
 
   save() {
-    Settings.set("app.savedExtensions", this.saveToJson() as any);
+    storage.saveExtension(this.saveToJson());
   }
 
   reload() {
-    this.loadFromJson(Settings.get("app.savedExtensions") as any);
+    const extensions = storage.get().app.savedExtensions;
+
+    this.loadFromJson(extensions);
   }
 
   public saveToJson(): Extensions.ExtensionJson[] {
@@ -171,7 +174,7 @@ class ExtensionManager {
 
   public async getLocalFileExtensionSource(
     id: number,
-  ): Promise<{ source: string; html: string } | { buildErrCode: boolean; stderr: string; path: string }> {
+  ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError> {
     const extensionPath = this.getPath(id);
 
     const manifest = await promises.readFile(extensionPath, { encoding: "utf8" });
@@ -191,7 +194,7 @@ class ExtensionManager {
       try {
         callback(args);
       } catch (ex) {
-        console.error(ex);
+        logger.error(ex);
       }
     });
   }

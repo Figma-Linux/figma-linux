@@ -1,14 +1,16 @@
 import * as E from "electron";
-import * as S from "electron-settings";
-import { observable, action, toJS, autorun } from "mobx";
-
-import * as Const from "Const";
+import { storage } from "Storage";
+import { observable, action, toJS } from "mobx";
 
 export class Settings {
-  @observable settings: ISettings;
+  @observable settings?: SettingsInterface;
+
+  @observable isSyncDisabled: boolean;
 
   constructor() {
-    this.settings = S.getAll() as any;
+    this.settings = storage.get();
+
+    this.isSyncDisabled = false;
 
     this.events();
   }
@@ -23,7 +25,7 @@ export class Settings {
       this.settings.ui.scaleFigmaUI = 1;
     }
 
-    E.remote.app.emit("update-figma-ui-scale", d);
+    E.ipcRenderer.send("updateFigmaUiScale", d);
   };
   @action
   public updatePanelScale = (delta: number): void => {
@@ -35,34 +37,24 @@ export class Settings {
       this.settings.ui.scalePanel = 1;
     }
 
-    E.remote.app.emit("update-panel-scale", d);
+    E.ipcRenderer.send("updatePanelScale", d);
   };
 
-  @action
-  public updateShowMainMenu = (show: boolean): void => {
-    this.settings.app.showMainMenu = show;
-
-    E.remote.app.emit("set-hide-main-menu", show);
-  };
-  @action
-  public updateDisableMainMenu = (disabled: boolean): void => {
-    this.settings.app.disabledMainMenu = disabled;
-
-    E.remote.app.emit("set-disable-main-menu", disabled);
-  };
   @action
   public saveLastOpenedTabs = (save: boolean): void => {
     this.settings.app.saveLastOpenedTabs = save;
   };
-  @action
-  public updateWindowFrame = (show: boolean): void => {
-    this.settings.app.windowFrame = show;
-  };
-  @action
-  public updateDisabledFonts = (disabled: boolean): void => {
-    this.settings.app.disabledFonts = disabled;
 
-    E.remote.app.emit("set-disable-fonts", disabled);
+  @action
+  public enableColorSpaceSrgb = (enabled: boolean): void => {
+    this.settings.app.enableColorSpaceSrgb = enabled;
+
+    E.ipcRenderer.send("enableColorSpaceSrgbWasChanged", enabled);
+  };
+
+  @action
+  public visibleNewProjectBtn = (visible: boolean): void => {
+    this.settings.app.visibleNewProjectBtn = visible;
   };
 
   @action
@@ -91,24 +83,48 @@ export class Settings {
     this.settings.app.fontDirs = this.settings.app.fontDirs.filter((e, i) => i !== index);
   };
 
+  @action
+  public changeTheme = (id: string): void => {
+    if (!this.settings.theme) {
+      this.settings.theme = {
+        currentTheme: "0",
+      };
+    }
+
+    this.settings.theme.currentTheme = id;
+  };
+
+  public setSettings = () => {
+    const settings = toJS(this.settings);
+
+    storage.set(settings);
+
+    E.ipcRenderer.send("updateVisibleNewProjectBtn", settings.app.visibleNewProjectBtn);
+  };
+
   private events = (): void => {
-    E.ipcRenderer.on(Const.UPDATEUISCALE, (sender: Event, scale: number) => {
+    E.ipcRenderer.on("updateUiScale", (sender, scale) => {
       this.settings.ui.scaleFigmaUI = scale;
     });
-    E.ipcRenderer.on(Const.UPDATEPANELSCALE, (sender: Event, scale: number) => {
+    E.ipcRenderer.on("updatePanelScale", (sender, scale) => {
       this.settings.ui.scalePanel = scale;
     });
-    E.ipcRenderer.on(Const.UPDATEPANELHEIGHT, (sender: Event, height: number) => {
+    E.ipcRenderer.on("updatePanelHeight", (sender, height) => {
       this.settings.app.panelHeight = height;
     });
-    E.ipcRenderer.on(Const.UPDATEMAINMENUVIS, (sender: Event, show: boolean) => {
-      this.settings.app.showMainMenu = show;
+    E.ipcRenderer.on("updateVisibleNewProjectBtn", (sender, height) => {
+      this.settings.app.visibleNewProjectBtn = height;
+    });
+    E.ipcRenderer.on("themes-change", (sender, theme) => {
+      this.settings.theme.currentTheme = theme.id;
+    });
+    E.ipcRenderer.on("sync-themes-start", () => {
+      this.isSyncDisabled = true;
+    });
+    E.ipcRenderer.on("sync-themes-end", () => {
+      this.isSyncDisabled = false;
     });
   };
 }
 
 export const settings = new Settings();
-
-autorun(() => {
-  S.setAll(toJS(settings.settings));
-});

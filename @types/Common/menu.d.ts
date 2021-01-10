@@ -10,7 +10,7 @@ declare namespace Menu {
    * Public types
    */
   type NativeClick = (item: _MenuItem, window: _BrowserWindow, event: Event) => void;
-  type CutsomClick = (item: _MenuItemConstructorOptions, window: _BrowserWindow, event: Event) => void;
+  type CustomClick = (item: _MenuItemConstructorOptions, window: _BrowserWindow, event: Event) => void;
 
   type Params = ParamsId | ParamsAction | ParamsCommand;
   type MenuItem = Items.MenuName & (Items.PluginItem | Items.Separator | Items.Submenu | Items.Menu | Items.StringKey);
@@ -26,7 +26,10 @@ declare namespace Menu {
       type: string;
       key: string;
       string: string;
-      plugin: string;
+      plugin?: string;
+      visible?: boolean;
+      disabled?: boolean;
+      click?: (menuItem: Menu.PluginMenuItem, browserWindow: _BrowserWindow | undefined, event: KeyboardEvent) => void;
     }
 
     interface Separator {
@@ -38,8 +41,8 @@ declare namespace Menu {
       submenu: [MenuName & Separator & Submenu & Menu & PluginItem & StringKey];
     }
     interface Menu {
-      disabled?: boolean;
       type: "run-menu-action";
+      disabled?: boolean;
       menuAction: MenuAction;
       name: MenuName;
     }
@@ -59,14 +62,14 @@ declare namespace Menu {
 
   interface ParamsId {
     id: string;
-    click?: NativeClick | CutsomClick;
+    click?: NativeClick | CustomClick;
   }
   interface ParamsAction {
     action: string;
-    click?: NativeClick | CutsomClick;
+    click?: NativeClick | CustomClick;
   }
   interface ParamsCommand {
     command: string;
-    click?: NativeClick | CutsomClick;
+    click?: NativeClick | CustomClick;
   }
 }

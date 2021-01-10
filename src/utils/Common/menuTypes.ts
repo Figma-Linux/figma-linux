@@ -71,19 +71,39 @@ export const isPluginName = (data: any): boolean => data.type === "plugin-name" 
 
 export const isActionMenuItemName = (data: Menu.Items.MenuName): boolean => isStringKeyName(data) || isPluginName(data);
 
-export const isActionMenuItem = (data: Menu.MenuItem): boolean =>
-  data.type === "run-menu-action" &&
-  isActionMenuItemName(data.name) &&
-  (data.menuAction === undefined || isMenuAction(data.menuAction)) &&
-  (data.disabled === undefined || typeof data.disabled === "boolean");
+export const isActionMenuItem = (data: Menu.MenuItem): boolean => {
+  if (data.type !== "run-menu-action") {
+    return false;
+  }
+
+  const item = data as Menu.Items.Menu;
+
+  if (
+    isActionMenuItemName(item.name) &&
+    (item.menuAction === undefined || isMenuAction(item.menuAction)) &&
+    (item.disabled === undefined || typeof item.disabled === "boolean")
+  ) {
+    return true;
+  }
+
+  return false;
+};
 
 export const isSeparatorMenuItem = (data: Menu.MenuItem): boolean => data.type === "separator";
 
-export const isSubmenuMenuItem = (data: Menu.MenuItem): boolean =>
-  data.type === "submenu" &&
-  typeof data.name === "string" &&
-  Array.isArray(data.submenu) &&
-  data.submenu.every(isMenuItem);
+export const isSubmenuMenuItem = (data: Menu.MenuItem): boolean => {
+  if (data.type !== "submenu") {
+    return false;
+  }
+
+  const item = data as Menu.Items.Submenu;
+
+  if (typeof item.name === "string" && Array.isArray(item.submenu) && item.submenu.every(isMenuItem)) {
+    return true;
+  }
+
+  return false;
+};
 
 export const isMenuItem = (data: Menu.MenuItem): boolean => {
   return isActionMenuItem(data) || isSeparatorMenuItem(data) || isSubmenuMenuItem(data);

@@ -1,19 +1,16 @@
 import * as E from "electron";
 import { observable, action, autorun, toJS } from "mobx";
 
-import * as Const from "Const";
-import { isComponentUrl } from "Utils/Common";
-
 export class Tabs implements TabsStore {
   @observable tabs: Tab[] = [];
-  @observable current = 1;
+  @observable current: number | undefined;
 
   constructor() {
     this.events();
   }
 
   @action
-  addTab = (data: { id: number; url: string; showBackBtn: boolean; title?: string }): void => {
+  addTab = (data: { id: number; url: string; showBackBtn: boolean; title?: string; focused?: boolean }): void => {
     this.tabs.push({
       id: data.id,
       title: data.title ? data.title : "Figma",
@@ -21,6 +18,7 @@ export class Tabs implements TabsStore {
       moves: false,
       showBackBtn: data.showBackBtn,
       order: this.tabs.length === 0 ? 1 : this.tabs.length + 1,
+      focused: data.focused,
     });
   };
 
@@ -30,7 +28,7 @@ export class Tabs implements TabsStore {
   };
 
   @action
-  setFocus = (id: number): void => {
+  setFocus = (id?: number): void => {
     this.current = id;
   };
 
@@ -67,47 +65,40 @@ export class Tabs implements TabsStore {
   };
 
   private events = (): void => {
-    E.ipcRenderer.on(Const.TABADDED, (sender: any, data: Tab) => {
-      if (isComponentUrl(data.url)) {
-        const collection: number[] = this.tabs.map(el => el.id);
+    E.ipcRenderer.on("didTabAdd", (sender, data) => {
+      this.addTab({
+        id: data.id,
+        url: data.url,
+        title: data.title ? data.title : "Recent Files",
+        showBackBtn: data.showBackBtn,
+        focused: data.focused,
+      });
 
-        data.id = this.generateUniqueId(collection);
-
-        this.addTab({
-          id: data.id,
-          url: data.url,
-          title: data.title,
-          showBackBtn: data.showBackBtn,
-        });
-      } else {
-        this.addTab({
-          id: data.id,
-          url: data.url,
-          title: data.title ? data.title : "Recent Files",
-          showBackBtn: data.showBackBtn,
-        });
+      if (data.focused) {
+        this.setFocus(data.id);
       }
-
-      this.setFocus(data.id);
     });
 
-    E.ipcRenderer.on(Const.CLOSEALLTAB, () => {
-      this.current = 1;
+    E.ipcRenderer.on("closeAllTabs", () => {
+      this.current = undefined;
       this.tabs = [];
     });
 
-    E.ipcRenderer.on(Const.SETTITLE, (sender: any, data: { id: number; title: string }) => {
+    E.ipcRenderer.on("setTitle", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, title: data.title } : t));
     });
-    E.ipcRenderer.on(Const.SETTABURL, (sender: any, data: { id: number; url: string }) => {
+    E.ipcRenderer.on("setTabUrl", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, url: data.url } : t));
     });
 
-    E.ipcRenderer.on(Const.UPDATEFILEKEY, (sender: any, data: { id: number; fileKey: string }) => {
+    E.ipcRenderer.on("updateFileKey", (sender, data) => {
       this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, fileKey: data.fileKey } : t));
     });
+    E.ipcRenderer.on("mainTabFocused", sender => {
+      this.setFocus();
+    });
 
-    E.ipcRenderer.on(Const.CLOSETAB, (sender: any, data: { id: number }) => {
+    E.ipcRenderer.on("closeTab", (sender, data) => {
       const index: number = this.tabs.findIndex(t => t.id === data.id);
       this.deleteTab(data.id);
 
@@ -119,5 +110,5 @@ export class Tabs implements TabsStore {
 export const tabs: Tabs = new Tabs();
 
 autorun(() => {
-  E.ipcRenderer.send(Const.RECIVETABS, toJS(tabs.tabs));
+  E.ipcRenderer.send("receiveTabs", toJS(tabs.tabs));
 });

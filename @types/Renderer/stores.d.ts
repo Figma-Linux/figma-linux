@@ -1,9 +1,9 @@
 interface TabsStore {
   tabs: Array<Tab>;
-  current: number;
+  current: number | undefined;
 
   addTab(options: { id: number; url: string; showBackBtn: boolean }): void;
-  setFocus(id: number): void;
+  setFocus(id?: number): void;
   deleteTab(id: number): void;
   updateTab(tab: Tab): void;
   changeTagOrder(tab: Tab): void;

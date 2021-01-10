@@ -1,10 +1,11 @@
-import * as Settings from "electron-settings";
 import * as E from "electron";
 
 import * as Const from "Const";
-import { cmd } from "Utils/Main";
 import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
+import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
+import { logger } from "./Logger";
+import { storage } from "./Storage";
 import WindowManager from "./window/WindowManager";
 import { Session } from "./Session";
 import "./events/app";
@@ -16,33 +17,19 @@ class App {
   constructor() {
     const isSingleInstance = E.app.requestSingleInstanceLock();
 
-    if (Settings.get("app.fontDirs")) {
-      cmd(`find ${(Settings.get("app.fontDirs") as string[]).join(" ")} -type f | wc -l`)
-        .then(output => {
-          console.info(`You've got a ${output.replace(/[\s\t\r]/, "")} fonts in your os.`);
-
-          if (parseInt(output) > 3000) {
-            console.warn(`You've too many fonts. It'll may call problem with run the app.`);
-          }
-        })
-        .catch(err => console.error(`exec command "find" error: `, err));
-    }
-
     if (!isSingleInstance) {
       E.app.quit();
       return;
     } else {
       E.app.on("second-instance", (event, argv) => {
         let projectLink = "";
-        console.log("second-instance, argv: ", argv);
+        logger.debug("second-instance, argv: ", argv);
 
         const paramIndex = argv.findIndex(i => isValidProjectLink(i));
         const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
 
-        if (hasAppAuthorization) {
-          setTimeout(() => {
-            this.windowManager.loadRecentFilesMainTab();
-          }, 2000);
+        if (this.windowManager.tryHandleAppAuthRedeemUrl(hasAppAuthorization)) {
+          return;
         }
 
         if (paramIndex !== -1) {
@@ -64,15 +51,24 @@ class App {
       this.session = new Session();
     }
 
-    this.appEvent();
+    const colorSpace = storage.get().app.enableColorSpaceSrgb;
 
-    if (Object.keys(Settings.getAll()).length === 0) {
-      Settings.setAll(Const.DEFAULT_SETTINGS);
+    if (colorSpace) {
+      E.app.commandLine.appendSwitch("force-color-profile", "srgb");
+    } else {
+      E.app.commandLine.appendSwitch("disable-color-correct-rendering");
     }
+
+    mkdirIfNotExists(themesDirectory).catch(error => {
+      logger.error("mkdirIfNotExists error: ", error);
+    });
+
+    this.appEvent();
   }
 
   private appEvent = (): void => {
     E.app.setAsDefaultProtocolClient(Const.PROTOCOL);
+    E.app.allowRendererProcessReuse = false;
 
     E.app.on("ready", this.ready);
     E.app.on("browser-window-created", (e, window) => window.setMenu(null));
@@ -89,24 +85,22 @@ class App {
       figmaUrl !== "" && this.windowManager.openUrl(figmaUrl);
     }, 1500);
 
-    E.protocol.registerHttpProtocol(
-      Const.PROTOCOL,
-      (req, cb) => {
-        this.windowManager.addTab("loadMainContent.js", req.url);
+    E.protocol.registerHttpProtocol(Const.PROTOCOL, (req: E.ProtocolRequest, cb: (req: E.ProtocolResponse) => void) => {
+      if (this.windowManager.tryHandleAppAuthRedeemUrl(req.url)) {
+        return;
+      }
 
-        cb({
-          url: req.url,
-          method: req.method,
-        });
-      },
-      err => err && console.log("failed to register http protocol, err: ", err),
-    );
+      this.windowManager.addTab("loadMainContent.js", req.url);
+
+      cb({
+        url: req.url,
+        method: req.method,
+      });
+    });
   };
 
   private onWindowAllClosed = (): void => {
-    if (process.platform !== "darwin") {
-      E.app.quit();
-    }
+    E.app.quit();
   };
 }
 

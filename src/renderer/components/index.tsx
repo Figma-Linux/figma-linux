@@ -1,20 +1,47 @@
 import * as React from "react";
+import { observer, inject } from "mobx-react";
 
-import Body from "./Body";
+import { getColorPallet } from "Utils/Render";
+import { Views } from "Store/Views";
+import { Themes } from "Store/Themes";
 import TopPanel from "./TopPanel";
+import Settings from "./Settings";
+import ThemeCreator from "./ThemeCreator";
 import "./style.scss";
 
-class App extends React.Component<{}, {}> {
-  props: {};
+interface AppProps {
+  views?: Views;
+  themes?: Themes;
+}
 
-  constructor(props: {}) {
+const viewMap = {
+  TopPanel,
+  Settings,
+  ThemeCreator,
+};
+
+@inject("views")
+@inject("themes")
+@observer
+class App extends React.Component<AppProps, unknown> {
+  props: AppProps;
+
+  constructor(props: AppProps) {
     super(props);
 
     this.props = props;
   }
 
-  render() {
-    return [<TopPanel key="1" />, <Body key="2" />];
+  render(): JSX.Element {
+    const theme = this.props.themes.getThemeById(this.props.themes.currentTheme);
+    const pallet = getColorPallet(theme);
+
+    const View = viewMap[this.props.views.view];
+    return (
+      <div id="body" style={pallet}>
+        <View />
+      </div>
+    );
   }
 }
 

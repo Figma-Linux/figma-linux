@@ -27,8 +27,7 @@ Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](
 </p>
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade)
-[![figma-linux](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
-[![Snap Status](https://build.snapcraft.io/badge/ChugunovRoman/figma-linux.svg)](https://build.snapcraft.io/user/ChugunovRoman/figma-linux)
+[![Snap](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
 
 <p>
 	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
@@ -99,7 +98,6 @@ Download the .rpm package from our [Releases](https://github.com/Figma-Linux/fig
 ```bash
 sudo dnf install figma-linux-*.x86_64.rpm
 ```
-
 
 
 ## Building from source

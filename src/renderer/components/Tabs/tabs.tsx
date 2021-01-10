@@ -1,33 +1,33 @@
 import * as React from "react";
 
+import { Text, Button, Icon } from "Elements";
+
 interface Props {
   tabs: TabsStore;
 
   close(e: React.MouseEvent<any>, id: number): void;
   clickTab(e: React.MouseEvent<any>, tab: Tab): void;
+  mouseDownHandler(e: React.MouseEvent<any>): void;
 }
 
-const Tabs: React.SFC<Props> = props => {
+const Tabs: React.FunctionComponent<Props> = props => {
   return (
-    <div className="tabBar gritArea-b">
+    <div className="tabBar" onMouseDown={props.mouseDownHandler}>
       {props.tabs.tabs.map((t: Tab, i) => (
-        <div key={i} className={`tab ${props.tabs.current === t.id ? "active" : ""} order${t.order}`}>
-          <span onMouseDown={e => props.clickTab(e, t)}>{t.title}</span>
-          <div className="tabClose" onClick={e => props.close(e, t.id)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              version="1.1"
-              viewBox="0 0 21.9 21.9"
-              enableBackground="new 0 0 21.9 21.9"
-              width="8px"
-              height="8px"
-            >
-              <path
-                d="M14.1,11.3c-0.2-0.2-0.2-0.5,0-0.7l7.5-7.5c0.2-0.2,0.3-0.5,0.3-0.7s-0.1-0.5-0.3-0.7l-1.4-1.4C20,0.1,19.7,0,19.5,0  c-0.3,0-0.5,0.1-0.7,0.3l-7.5,7.5c-0.2,0.2-0.5,0.2-0.7,0L3.1,0.3C2.9,0.1,2.6,0,2.4,0S1.9,0.1,1.7,0.3L0.3,1.7C0.1,1.9,0,2.2,0,2.4  s0.1,0.5,0.3,0.7l7.5,7.5c0.2,0.2,0.2,0.5,0,0.7l-7.5,7.5C0.1,19,0,19.3,0,19.5s0.1,0.5,0.3,0.7l1.4,1.4c0.2,0.2,0.5,0.3,0.7,0.3  s0.5-0.1,0.7-0.3l7.5-7.5c0.2-0.2,0.5-0.2,0.7,0l7.5,7.5c0.2,0.2,0.5,0.3,0.7,0.3s0.5-0.1,0.7-0.3l1.4-1.4c0.2-0.2,0.3-0.5,0.3-0.7  s-0.1-0.5-0.3-0.7L14.1,11.3z"
-                fill="#FFFFFF"
-              />
-            </svg>
-          </div>
+        <div
+          key={i}
+          className={`tab ${props.tabs.current === t.id ? "tab_active" : ""}`}
+          onClick={e => props.clickTab(e, t)}
+          onAuxClick={e => props.clickTab(e, t)}
+        >
+          <Text className="tab__text pointer_events_none">{t.title}</Text>
+          <Button className="tab__close button_clear" onClick={(e): void => props.close(e, t.id)}>
+            <Icon
+              color={`${props.tabs.current === t.id ? "var(--fg-tab-active)" : "var(--fg-tab)"}`}
+              type="Close"
+              size="16"
+            />
+          </Button>
         </div>
       ))}
     </div>

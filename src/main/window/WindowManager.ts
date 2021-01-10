@@ -16,6 +16,7 @@ import {
   isAppAuthRedeem,
   parseURL,
   isFigmaDocLink,
+  isCommunityUrl,
 } from "Utils/Common";
 import {
   winUrlDev,
@@ -33,7 +34,6 @@ import {
   getThemesCount,
 } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
-import { TEST_THEME_ID } from "Const";
 
 class WindowManager {
   home: string;
@@ -46,7 +46,7 @@ class WindowManager {
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
   creatorTheme: Themes.Theme;
-  private lastFocusedTabId: E.WebContents;
+  private lastFocusedTab: E.WebContents;
   private tabs: Tab[];
   private menu: E.Menu;
   private static _instance: WindowManager;
@@ -424,7 +424,7 @@ class WindowManager {
     });
 
     E.app.on("toggle-current-tab-devtools", () => {
-      toggleDetachedDevTools(this.lastFocusedTabId);
+      toggleDetachedDevTools(this.lastFocusedTab);
     });
     E.app.on("openSettingsView", () => {
       this.enableColorSpaceSrgbWasChanged = false;
@@ -443,12 +443,12 @@ class WindowManager {
         toggleDetachedDevTools(this.themeCreatorView.webContents);
       }
     });
-    E.app.on("handleUrl", (senderId, url) => {
+    E.app.on("handleUrl", (senderId, path) => {
       if (senderId !== this.mainTab.webContents.id) {
         this.focusMainTab();
       }
 
-      this.mainTab.webContents.send("handleUrl", url);
+      this.mainTab.webContents.send("handleUrl", path);
     });
     E.app.on("handle-command", (sender, id) => {
       switch (id) {
@@ -505,12 +505,17 @@ class WindowManager {
           break;
         }
         case "openFileUrlClipboard": {
-          const url = E.clipboard.readText();
+          const uri = E.clipboard.readText();
 
-          if (isValidProjectLink(url) || isPrototypeUrl(url)) {
-            this.addTab("loadContent.js", normalizeUrl(url));
+          if (isValidProjectLink(uri) || isPrototypeUrl(uri)) {
+            this.addTab("loadContent.js", normalizeUrl(uri));
           }
-          // TODO: handle community links
+
+          if (isCommunityUrl(uri)) {
+            const parsedUrl = url.parse(uri);
+            this.mainTab.webContents.send("handleUrl", parsedUrl.path);
+            this.focusMainTab();
+          }
           break;
         }
 
@@ -576,6 +581,8 @@ class WindowManager {
 
     MenuState.updateInFileBrowserActionState();
 
+    this.lastFocusedTab = tab.webContents;
+
     return tab;
   };
 
@@ -586,14 +593,14 @@ class WindowManager {
     for (const tab of tabs) {
       if (tab.webContents.id === webContentsId) {
         this.mainWindow.setBrowserView(tab);
-        this.lastFocusedTabId = tab.webContents;
+        this.lastFocusedTab = tab.webContents;
         foundView = true;
       }
     }
 
     if (!foundView) {
       this.mainWindow.setBrowserView(this.mainTab);
-      this.lastFocusedTabId = this.mainTab.webContents;
+      this.lastFocusedTab = this.mainTab.webContents;
     }
   };
 
@@ -608,13 +615,13 @@ class WindowManager {
   //     } else {
   //       foundView = true;
   //       this.mainWindow.addBrowserView(tab);
-  //       this.lastFocusedTabId = tab.webContents;
+  //       this.lastFocusedTab = tab.webContents;
   //     }
   //   }
 
   //   if (!foundView) {
   //     this.mainWindow.addBrowserView(this.mainTab);
-  //     this.lastFocusedTabId = this.mainTab.webContents;
+  //     this.lastFocusedTab = this.mainTab.webContents;
   //   }
   // };
 

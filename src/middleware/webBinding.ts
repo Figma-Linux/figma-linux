@@ -242,6 +242,7 @@ const initWebBindings = (): void => {
     webPort.postMessage({ name: "handleAction", args: { action, source } });
   });
   E.ipcRenderer.on("handleUrl", (event: Event, path: string, params: string) => {
+    console.log("handleUrl, url: ", path);
     webPort.postMessage({ name: "handleUrl", args: { path, params } });
   });
   E.ipcRenderer.on("handlePageCommand", (event: Event, command: string) => {

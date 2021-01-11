@@ -138,8 +138,51 @@ class Tabs extends React.Component<TabsProps, unknown> {
     });
   };
 
+  private mouseDownHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    (e.target as HTMLDivElement).style.cursor = "grabbing";
+
+    this.isMoving = true;
+    this.pos.x = e.pageX;
+    this.pos.y = e.pageY;
+
+    window.addEventListener("mousemove", this.mouseMoveHandler);
+    window.addEventListener("mouseup", this.mouseUpHandler);
+  };
+  private mouseUpHandler = (e: MouseEvent) => {
+    (e.target as HTMLDivElement).style.cursor = "grab";
+    this.isMoving = false;
+
+    window.removeEventListener("mousemove", this.mouseMoveHandler);
+    window.removeEventListener("mouseup", this.mouseUpHandler);
+  };
+  private mouseMoveHandler = (e: MouseEvent) => {
+    if (!this.isMoving) {
+      return;
+    }
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+
+    const w = E.remote.getCurrentWindow();
+    const windowBounds = w.getBounds();
+
+    w.setBounds({
+      ...windowBounds,
+      x: e.screenX - this.pos.x,
+      y: e.screenY - this.pos.y,
+    });
+  };
+
   render(): JSX.Element {
-    return <TabList tabs={toJS(this.props.tabs) as TabsStore} close={this.close} clickTab={this.clickTab} />;
+    return (
+      <TabList
+        tabs={toJS(this.props.tabs) as TabsStore}
+        close={this.close}
+        clickTab={this.clickTab}
+        mouseDownHandler={this.mouseDownHandler}
+      />
+    );
   }
 }
 

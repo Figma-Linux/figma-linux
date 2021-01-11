@@ -4,7 +4,7 @@
 Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](https://figma.com) desktop app for Linux.
 
 <p>
-	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.png">
+	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.jpg">
 </p>
 
 <p>

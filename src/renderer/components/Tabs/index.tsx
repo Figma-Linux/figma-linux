@@ -30,7 +30,7 @@ class Tabs extends React.Component<TabsProps, unknown> {
 
     const tabs = toJS(this.props.tabs.tabs);
     const currentTabId: number | undefined = toJS(this.props.tabs.current);
-    const currentTabIndex: number = tabs.findIndex(t => t.id === id);
+    const currentTabIndex: number = tabs.findIndex((t: any) => t.id === id);
 
     E.ipcRenderer.send("closeTab", id);
 
@@ -159,6 +159,10 @@ class Tabs extends React.Component<TabsProps, unknown> {
     if (!this.isMoving) {
       return;
     }
+
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
 
     const w = E.remote.getCurrentWindow();
     const windowBounds = w.getBounds();

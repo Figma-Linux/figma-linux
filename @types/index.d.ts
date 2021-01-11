@@ -1,3 +1,5 @@
+type FontsMap = import("figma-linux-rust-binding").Fonts.IFonts;
+
 declare namespace Electron {
   interface RemoteMainInterface {
     app: App;
@@ -86,6 +88,10 @@ declare namespace Electron {
     on(channel: "set-default-theme", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "saveCreatorTheme", listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void): this;
     on(channel: "sync-themes", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(
+      channel: "set-clipboard-data",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.SetClipboardData) => void,
+    ): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -114,6 +120,11 @@ declare namespace Electron {
     handle(
       channel: "writeFiles",
       listener: (event: IpcMainInvokeEvent, data: WebApi.WriteFiles) => Promise<void> | void,
+    ): void;
+    handle(channel: "get-fonts", listener: (event: IpcMainInvokeEvent) => Promise<void> | FontsMap): void;
+    handle(
+      channel: "get-font-file",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.GetFontFile) => Promise<void> | Buffer,
     ): void;
   }
 
@@ -171,6 +182,7 @@ declare namespace Electron {
     send(channel: "set-default-theme"): this;
     send(channel: "saveCreatorTheme", theme: Themes.Theme): this;
     send(channel: "sync-themes"): this;
+    send(channel: "set-clipboard-data", data: WebApi.SetClipboardData): this;
 
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
@@ -182,6 +194,8 @@ declare namespace Electron {
     invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
+    invoke(channel: "get-fonts"): Promise<FontsMap>;
+    invoke(channel: "get-font-file", data: WebApi.GetFontFile): Promise<Buffer>;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

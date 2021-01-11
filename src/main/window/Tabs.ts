@@ -1,11 +1,8 @@
 import * as E from "electron";
 import * as path from "path";
 
-import { DEFAULT_SETTINGS } from "Const";
 import { isDev } from "Utils/Common";
-import Fonts from "../Fonts";
 import { storage } from "../Storage";
-import { logger } from "../Logger";
 import WindowManager from "./WindowManager";
 
 export default class Tabs {
@@ -43,8 +40,6 @@ export default class Tabs {
     tab.setBounds(rect);
     tab.webContents.loadURL(url);
     tab.webContents.on("dom-ready", () => {
-      let dirs = storage.get().app.fontDirs;
-
       const currentThemeId = storage.get().theme.currentTheme;
       if (currentThemeId !== "0") {
         const wm = WindowManager.instance;
@@ -54,15 +49,6 @@ export default class Tabs {
           tab.webContents.send("themes-change", foundTheme);
         }
       }
-
-      if (!dirs) {
-        dirs = DEFAULT_SETTINGS.app.fontDirs;
-      }
-      Fonts.getFonts(dirs)
-        .catch(err => logger.error(`Failed to load local fonts, error: ${err}`))
-        .then(fonts => {
-          tab.webContents.send("updateFonts", fonts);
-        });
     });
 
     isDev && tab.webContents.toggleDevTools();

@@ -84,14 +84,14 @@ const onWebMessage = (event: MessageEvent) => {
   try {
     resultPromise = msg.name && publicAPI && publicAPI[msg.name](msg.args);
   } catch (e) {
-    console.error("onWebMessage, err: ", e);
+    console.error("onWebMessage, err: ", msg.name, e);
     throw e;
   } finally {
     if (msg.promiseID != null) {
       if (resultPromise instanceof Promise) {
         resultPromise
           .then(result => {
-            webPort.postMessage({ result: result.data, promiseID: msg.promiseID }, result.transferList);
+            webPort.postMessage({ result: result.data, promiseID: msg.promiseID });
           })
           .catch(error => {
             const errorString = (error && error.name) || "Promise error";
@@ -184,7 +184,7 @@ const initWebApi = (props: IntiApiOptions) => {
       return new Promise((resolve, reject) => {
         const id = nextPromiseID++;
         pendingPromises.set(id, { resolve, reject });
-        channel.port1.postMessage({ name, args, promiseID: id }, transferList);
+        channel.port1.postMessage({ name, args, promiseID: id });
       });
     },
     setMessageHandler: function(handler: () => void): void {
@@ -206,7 +206,7 @@ const initWebApi = (props: IntiApiOptions) => {
         if ("result" in msg) {
           pendingPromise.resolve(msg.result);
         } else {
-          sendMsgToMain("log-error", msg.error);
+          console.error(msg.error);
           pendingPromise.reject(msg.error);
         }
       }
@@ -293,10 +293,6 @@ const publicAPI: any = {
 
   setUser(args: any) {
     console.log("unimplemented setUser, args: ", args);
-  },
-
-  async getFonts() {
-    return { data: await fontMapPromise };
   },
 
   newFile(args: any) {
@@ -389,42 +385,15 @@ const publicAPI: any = {
     return { data: isOpened };
   },
 
-  getFontFile(args: any) {
-    return new Promise((resolve, reject) => {
-      const fontPath = args.path;
+  async getFonts(args: WebApi.GetFonts) {
+    const fonts = await E.ipcRenderer.invoke("get-fonts");
+    return { data: fonts };
+  },
 
-      if (!fontMap) {
-        sendMsgToMain("log-error", "No fonts");
-        reject(new Error("No fonts"));
-        return;
-      }
+  async getFontFile(args: WebApi.GetFontFile) {
+    const fontBuffer = await E.ipcRenderer.invoke("get-font-file", args);
 
-      const faces = fontMap[fontPath];
-      if (!faces || faces.length === 0) {
-        sendMsgToMain("log-error", "Invalid path: ", fontPath);
-        reject(new Error("Invalid path"));
-        return;
-      }
-
-      let postScriptName = faces[0].postscript;
-      try {
-        postScriptName = args.postscript;
-      } catch (ex) {}
-
-      fs.readFile(fontPath, (err, data) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-
-        if (data.byteLength > 0) {
-          resolve({ data: data.buffer, transferList: [data.buffer] });
-          return;
-        }
-
-        reject(new Error("No data"));
-      });
-    });
+    return { data: fontBuffer, transferList: [fontBuffer] };
   },
 
   getClipboardData(args: any) {
@@ -481,19 +450,8 @@ const publicAPI: any = {
     });
   },
 
-  setClipboardData(args: any) {
-    const format = args.format;
-    const data = Buffer.from(args.data);
-
-    if (["image/jpeg", "image/png"].indexOf(format) !== -1) {
-      E.clipboard.writeImage(E.remote.nativeImage.createFromBuffer(data));
-    } else if (format === "image/svg+xml") {
-      E.clipboard.writeText(data.toString());
-    } else if (format === "application/pdf") {
-      E.clipboard.writeBuffer("Portable Document Format", data);
-    } else {
-      E.clipboard.writeBuffer(format, data);
-    }
+  setClipboardData(args: WebApi.SetClipboardData) {
+    E.ipcRenderer.send("set-clipboard-data", args);
   },
 
   async writeFiles(args: WebApi.WriteFiles) {
@@ -506,7 +464,7 @@ const init = (fileBrowser: boolean): void => {
     "message",
     event => {
       webPort = event.ports[0];
-      console.log(`window message, webPort: `, webPort);
+      console.log(`window message, webPort: `, webPort, event.data);
       webPort && (webPort.onmessage = onWebMessage);
     },
     { once: true },
@@ -516,8 +474,6 @@ const init = (fileBrowser: boolean): void => {
     version: API_VERSION,
     fileBrowser: fileBrowser,
   };
-
-  console.log("init(): window.parent.document: ", window.parent.document.body);
 
   initWebBindings();
 

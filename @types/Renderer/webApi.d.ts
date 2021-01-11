@@ -34,4 +34,18 @@ declare namespace WebApi {
       },
     ];
   }
+
+  interface SetClipboardData {
+    format: string;
+    data: Uint8Array;
+  }
+
+  interface GetFonts {
+    useAgent: boolean;
+  }
+
+  interface GetFontFile {
+    path: string;
+    postscript: string;
+  }
 }

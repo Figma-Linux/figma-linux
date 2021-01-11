@@ -3,6 +3,7 @@ import * as E from "electron";
 import * as url from "url";
 
 import Tabs from "./Tabs";
+import Fonts from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
 import MenuState from "../MenuState";
@@ -421,6 +422,38 @@ class WindowManager {
         this.settingsView.webContents.send("sync-themes-end");
       }
       logger.debug("Sync themes end");
+    });
+    E.ipcMain.on("set-clipboard-data", (event, data) => {
+      const format = data.format;
+      const buffer = Buffer.from(data.data);
+
+      if (["image/jpeg", "image/png"].indexOf(format) !== -1) {
+        E.clipboard.writeImage(E.nativeImage.createFromBuffer(buffer));
+      } else if (format === "image/svg+xml") {
+        E.clipboard.writeText(buffer.toString());
+      } else if (format === "application/pdf") {
+        E.clipboard.writeBuffer("Portable Document Format", buffer);
+      } else {
+        E.clipboard.writeBuffer(format, buffer);
+      }
+    });
+    E.ipcMain.handle("get-fonts", async () => {
+      let dirs = storage.get().app.fontDirs;
+
+      if (!dirs) {
+        dirs = Const.DEFAULT_SETTINGS.app.fontDirs;
+      }
+
+      return Fonts.getFonts(dirs);
+    });
+    E.ipcMain.handle("get-font-file", async (event, data) => {
+      const file = await Fonts.getFontFile(data.path);
+
+      if (file && file.byteLength > 0) {
+        return file;
+      }
+
+      return null;
     });
 
     E.app.on("toggle-current-tab-devtools", () => {

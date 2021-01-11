@@ -122,6 +122,10 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, data: WebApi.WriteFiles) => Promise<void> | void,
     ): void;
     handle(channel: "get-fonts", listener: (event: IpcMainInvokeEvent) => Promise<void> | FontsMap): void;
+    handle(
+      channel: "get-font-file",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.GetFontFile) => Promise<void> | Buffer,
+    ): void;
   }
 
   interface IpcRenderer extends NodeJS.EventEmitter {
@@ -191,6 +195,7 @@ declare namespace Electron {
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
     invoke(channel: "get-fonts"): Promise<FontsMap>;
+    invoke(channel: "get-font-file", data: WebApi.GetFontFile): Promise<Buffer>;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

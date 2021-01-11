@@ -43,4 +43,9 @@ declare namespace WebApi {
   interface GetFonts {
     useAgent: boolean;
   }
+
+  interface GetFontFile {
+    path: string;
+    postscript: string;
+  }
 }

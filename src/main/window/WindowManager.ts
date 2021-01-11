@@ -446,6 +446,15 @@ class WindowManager {
 
       return Fonts.getFonts(dirs);
     });
+    E.ipcMain.handle("get-font-file", async (event, data) => {
+      const file = await Fonts.getFontFile(data.path);
+
+      if (file && file.byteLength > 0) {
+        return file;
+      }
+
+      return null;
+    });
 
     E.app.on("toggle-current-tab-devtools", () => {
       toggleDetachedDevTools(this.lastFocusedTab);

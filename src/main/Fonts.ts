@@ -1,3 +1,4 @@
+import * as fs from "fs";
 import { Fonts, getFonts } from "figma-linux-rust-binding";
 
 class Fonts {
@@ -9,6 +10,10 @@ class Fonts {
         resolve(fonts);
       });
     });
+
+  public static getFontFile = async (path: string): Promise<Buffer> => {
+    return fs.promises.readFile(path);
+  };
 }
 
 export default Fonts;

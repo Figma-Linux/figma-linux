@@ -1,8 +1,13 @@
+import * as E from "electron";
 import * as Settings from "electron-settings";
 import * as _ from "lodash";
 
 import * as Const from "Const";
 
+/**
+ * This class has dual initialization: in main process and renderer process
+ * For change the settings from renderer process the class use Ipc communication
+ */
 export class Storage {
   private settings: SettingsInterface;
 
@@ -13,14 +18,29 @@ export class Storage {
 
     this.settings = mergedSettings;
     Settings.setSync(mergedSettings);
+
+    if (process.type === "browser") {
+      this.initListeners();
+    }
   }
+
+  private initListeners = () => {
+    E.ipcMain.on("set-settings", (event, settings) => {
+      this.set(settings);
+    });
+  };
 
   public get = () => {
     return Settings.getSync() as SettingsInterface;
   };
 
   public set = (settings: SettingsInterface): void => {
-    Settings.setSync(settings);
+    if (process.type === "renderer") {
+      E.ipcRenderer.send("set-settings", settings);
+    } else {
+      this.settings = settings;
+      Settings.setSync(this.settings);
+    }
   };
 
   public getLogLevel = (): number => {

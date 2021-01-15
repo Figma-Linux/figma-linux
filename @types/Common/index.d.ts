@@ -148,6 +148,7 @@ interface SettingsInterface {
     logLevel: number;
     enableColorSpaceSrgb: boolean;
     visibleNewProjectBtn: boolean;
+    useZenity: boolean;
     panelHeight: number;
     saveLastOpenedTabs: boolean;
     exportDir: string;

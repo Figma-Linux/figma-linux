@@ -7,6 +7,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
     logLevel: LogLevel.INFO,
     enableColorSpaceSrgb: false,
     visibleNewProjectBtn: true,
+    useZenity: false,
     panelHeight: 40,
     saveLastOpenedTabs: true,
     exportDir: `${process.env.HOME}/Pictures/Figma`,

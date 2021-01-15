@@ -12,50 +12,7 @@ interface IntiApiOptions {
 
 const API_VERSION = 28;
 let webPort: MessagePort;
-let fontMap: any = null;
-let resolveFontMapPromise: any = null;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
-const fontMapPromise = new Promise(resolve => {
-  resolveFontMapPromise = resolve;
-});
-
-const onClickExportImage = (e: Event, link: HTMLLinkElement) => {
-  E.remote.net
-    .request(`${link.href}`)
-    .on("response", res => {
-      const filetype: string = res.headers["content-type"][0].replace(/^.+\//, "");
-      console.log("response file type: ", filetype);
-
-      // TODO: rewrite execute dialogs
-      const savePath = E.remote.dialog.showSaveDialogSync({
-        // defaultPath: `${Settings.getSync("app.exportDir")}/${link.textContent.replace(/\..+$/, "")}.${filetype}`,
-        defaultPath: "/tmp",
-        showsTagField: false,
-      });
-
-      if (!savePath) return;
-
-      let length = 0;
-      const stream = fs.createWriteStream(savePath);
-
-      res.on("data", chunk => {
-        stream.write(chunk);
-
-        if (chunk.length < length) {
-          stream.end();
-        }
-
-        length = chunk.length;
-      });
-      res.on("error", (err: Error) => {
-        sendMsgToMain("log-error", "Export image error: ", err);
-      });
-    })
-    .on("error", error => sendMsgToMain("log-error", "request error: ", error))
-    .end();
-
-  e.preventDefault();
-};
 
 const onWebMessage = (event: MessageEvent) => {
   const msg = event.data;
@@ -173,6 +130,7 @@ const initWebApi = (props: IntiApiOptions) => {
     },
     registerCallback: function(name, args, callback) {
       const id = nextCallbackID++;
+      console.log(`Register pending promise with id: "${id}", name: "${name}", args: `, args);
       registeredCallbacks.set(id, callback);
       channel.port1.postMessage({ name, args, callbackID: id });
       return (): void => {
@@ -206,7 +164,7 @@ const initWebApi = (props: IntiApiOptions) => {
         if ("result" in msg) {
           pendingPromise.resolve(msg.result);
         } else {
-          console.error(msg.error);
+          console.error(`Pending Promise (id: "${msg.promiseID}") reject via error: `, msg.error);
           pendingPromise.reject(msg.error);
         }
       }
@@ -227,14 +185,6 @@ const initWebApi = (props: IntiApiOptions) => {
 };
 
 const initWebBindings = (): void => {
-  setInterval(() => {
-    const link: HTMLLinkElement = document.querySelector('div[class^="code_inspection_panels--inspectorRow"] > a');
-    link &&
-      (link.onclick = (e: Event): void => {
-        onClickExportImage(e, link);
-      });
-  }, 500);
-
   E.ipcRenderer.on("newFile", () => {
     webPort.postMessage({ name: "newFile", args: {} });
   });
@@ -265,14 +215,6 @@ const initWebBindings = (): void => {
       }
     } else {
       document.execCommand(command);
-    }
-  });
-
-  E.ipcRenderer.on("updateFonts", (event: Event, fonts: any) => {
-    fontMap = fonts;
-    if (resolveFontMapPromise) {
-      resolveFontMapPromise();
-      resolveFontMapPromise = null;
     }
   });
 
@@ -455,6 +397,7 @@ const publicAPI: any = {
   },
 
   async writeFiles(args: WebApi.WriteFiles) {
+    console.log("writeFiles, args: ", args);
     await E.ipcRenderer.invoke("writeFiles", args);
   },
 };

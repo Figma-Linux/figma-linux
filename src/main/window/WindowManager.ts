@@ -6,6 +6,7 @@ import Tabs from "./Tabs";
 import Fonts from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
+import { dialogs } from "../Dialogs";
 import MenuState from "../MenuState";
 import * as Const from "Const";
 import {
@@ -27,7 +28,6 @@ import {
   setMenuFromTemplate,
   buildActionToMenuItemMap,
   resetMenu,
-  showMessageBoxSync,
   loadCreatorTheme,
   saveCreatorTheme,
   exportCreatorTheme,
@@ -341,16 +341,16 @@ class WindowManager {
       this.mainWindow.removeBrowserView(this.settingsView);
 
       if (this.enableColorSpaceSrgbWasChanged) {
-        const id = showMessageBoxSync(this.mainWindow, {
-          type: "none",
+        const id = dialogs.showMessageBoxSync({
+          type: "question",
           title: "Figma",
           message: "Restart to Change Color Space?",
           detail: `Figma needs to be restarted to change the color space.`,
-          buttons: ["Cancel", "Restart"],
-          defaultId: 1,
+          textOkButton: "Restart",
+          defaultFocusedButton: "Ok",
         });
 
-        if (id) {
+        if (!id) {
           E.app.relaunch();
           E.app.quit();
         }

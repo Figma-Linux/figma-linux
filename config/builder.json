@@ -45,6 +45,7 @@
     "category": "Graphic",
     "packageCategory": "Graphic",
     "maintainer": "Chugunov Roman <Zebs-BMK@yandex.ru>",
+    "artifactName": "${name}_${version}_${platform}_${arch}.${ext}",
     "fileAssociations": [
       {
         "ext": "fig",

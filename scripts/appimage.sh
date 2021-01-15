@@ -15,5 +15,5 @@ cp -rf "./resources/icons" "$APP_DIR/";
 
 cd "$APP_DIR";
 
-appimagetool ./ ../figma-linux-$1.AppImage
+appimagetool ./ ../figma-linux-$1.AppImage --appimage-extract-and-run
 

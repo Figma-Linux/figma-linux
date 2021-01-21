@@ -48,5 +48,17 @@
     background-color: var(--bg-tab-active);
     color: var(--fg-tab-active);
     fill: var(--fg-tab-active);
+    opacity: 1;
+  }
+
+  &_main_active {
+    background-color: #ffffff;
+    color: #000000;
+
+    &:hover {    
+      cursor: default;
+      background-color: #ffffff;
+      color: #000000;
+    }
   }
 }

@@ -22,7 +22,7 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
     <div className="top-panel" style={{ zoom: props.scalePanel ? props.scalePanel : 1 }}>
       <div className="panelButtons">
         <Button className={`button_clear button_title${!props.current ? " tab_active" : ""}`} onClick={props.onMainTab}>
-          <Icon color="var(--fg-tab)" type="Main" size="18" />
+          <Icon color="var(--fg-tab)" type="Figma" size="18" />
         </Button>
         {props.visibleNewProjectBtn ? (
           <Button className="button_clear button_title" onClick={props.onNewProject}>

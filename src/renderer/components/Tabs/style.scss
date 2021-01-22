@@ -20,7 +20,7 @@
     background-color: var(--bg-tab-hover);
     color: var(--fg-tab-hover);
     fill: var(--fg-tab-hover);
-    cursor: pointer;
+    cursor: default;
   }
 
   &__text {
@@ -33,14 +33,14 @@
   }
 
   &__close {
-    height: 16px;
+    height: 14px;
     color: var(--fg-tab);
     fill: var(--fg-tab);
 
     &:hover {
       color: var(--fg-tab-hover);
       fill: var(--fg-tab-hover);
-      cursor: pointer;
+      cursor: default;
     }
   }
 

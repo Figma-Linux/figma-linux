@@ -7,7 +7,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
     logLevel: LogLevel.INFO,
     enableColorSpaceSrgb: false,
     visibleNewProjectBtn: true,
-    panelHeight: 40,
+    panelHeight: 31,
     saveLastOpenedTabs: true,
     exportDir: `${process.env.HOME}/Pictures/Figma`,
     fontDirs: ["/usr/share/fonts", "/usr/local/share/fonts", `${process.env.HOME}/.local/share/fonts`],

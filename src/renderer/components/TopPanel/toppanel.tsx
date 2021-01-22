@@ -7,6 +7,7 @@ interface TopPanelProps {
   current: number;
   scalePanel: number;
   visibleNewProjectBtn: boolean;
+  isMaximized: boolean;
 
   newTab(): void;
   onMainTab(e: React.MouseEvent<HTMLDivElement>): void;
@@ -44,7 +45,7 @@ const TopPanel: React.FunctionComponent<TopPanelProps> = props => {
           <Icon color="var(--fg-header-control)" type="Minimize" size="18" />
         </Button>
         <Button className="button_clear button_control" onClick={props.maxiw}>
-          <Icon color="var(--fg-header-control)" type="Maximize" size="18" />
+          <Icon color="var(--fg-header-control)" type={props.isMaximized ? "Restore" : "Maximize"} size="18" />
         </Button>
         <Button className="button_clear button_control button_close" onClick={props.closew}>
           <Icon color="var(--fg-header-control)" type="Close" size="18" />

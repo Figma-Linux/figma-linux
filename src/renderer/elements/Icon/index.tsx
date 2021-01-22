@@ -19,6 +19,7 @@ import { Delete } from "./icons/Delete";
 import { MenuCorner } from "./icons/MenuCorner";
 import { Sync } from "./icons/Sync";
 import { Figma } from "./icons/Figma";
+import { Restore } from "./icons/Restore";
 
 import "../../animations.scss";
 import "./index.scss";
@@ -42,7 +43,8 @@ type Icons =
   | "Sync"
   | "MenuCorner"
   | "Settings"
-  | "Figma";
+  | "Figma"
+  | "Restore";
 
 export interface IconProps {
   color?: string;
@@ -76,6 +78,7 @@ export class Icon extends React.Component<ContainerProps, unknown> {
     Sync,
     MenuCorner,
     Figma,
+    Restore,
   };
 
   constructor(props: ContainerProps) {

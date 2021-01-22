@@ -207,11 +207,13 @@ class WindowManager {
     E.ipcMain.on("window-minimize", () => {
       this.mainWindow.minimize();
     });
-    E.ipcMain.on("window-maximize", () => {
+    E.ipcMain.on("window-maximize", (event: E.IpcMainEvent) => {
       if (this.mainWindow.isMaximized()) {
         this.mainWindow.restore();
+        event.reply("didRestored");
       } else {
         this.mainWindow.maximize();
+        event.reply("didMaximized");
       }
     });
     E.ipcMain.on("closeTab", (event, id) => {

@@ -25,7 +25,7 @@ const Tabs: React.FunctionComponent<Props> = props => {
             <Icon
               color={`${props.tabs.current === t.id ? "var(--fg-tab-active)" : "var(--fg-tab)"}`}
               type="Close"
-              size="16"
+              size="14"
             />
           </Button>
         </div>

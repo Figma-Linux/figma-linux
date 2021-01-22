@@ -1,8 +1,15 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../../assets/fonts/Inter.ttf')
+}
+
 html,
 body,
 #app,
 #react-page {
-  --fontControlSize: 12px;
+  --fontControlSize: 11px;
   --fontSize: 16px;
   --fontSubtitleSize: 18px;
   --fontTitleSize: 22px;

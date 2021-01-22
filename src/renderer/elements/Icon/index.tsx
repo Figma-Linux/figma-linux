@@ -20,7 +20,7 @@ import { MenuCorner } from "./icons/MenuCorner";
 import { Sync } from "./icons/Sync";
 import { Figma } from "./icons/Figma";
 import { Restore } from "./icons/Restore";
-
+import { CloseTab } from "./icons/CloseTab";
 import "../../animations.scss";
 import "./index.scss";
 
@@ -44,7 +44,8 @@ type Icons =
   | "MenuCorner"
   | "Settings"
   | "Figma"
-  | "Restore";
+  | "Restore"
+  | "CloseTab";
 
 export interface IconProps {
   color?: string;
@@ -79,6 +80,7 @@ export class Icon extends React.Component<ContainerProps, unknown> {
     MenuCorner,
     Figma,
     Restore,
+    CloseTab,
   };
 
   constructor(props: ContainerProps) {

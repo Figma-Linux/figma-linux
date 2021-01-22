@@ -15,12 +15,16 @@
   background-color: var(--bg-tab);
   color: var(--fg-tab);
   fill: var(--fg-tab);
-
+  
   &:hover {
     background-color: var(--bg-tab-hover);
     color: var(--fg-tab-hover);
     fill: var(--fg-tab-hover);
     cursor: default;
+  }
+
+  &:hover .tab__close{
+    opacity: 0.4;
   }
 
   &__text {
@@ -36,11 +40,14 @@
     height: 14px;
     color: var(--fg-tab);
     fill: var(--fg-tab);
+    opacity: 0;
+    display: inline-flex;
 
     &:hover {
       color: var(--fg-tab-hover);
       fill: var(--fg-tab-hover);
       cursor: default;
+      opacity: 1 !important;
     }
   }
 
@@ -49,6 +56,12 @@
     color: var(--fg-tab-active);
     fill: var(--fg-tab-active);
     opacity: 1;
+    
+    .tab__close {
+      opacity: 0.16;
+    }
+
+    
   }
 
   &_main_active {

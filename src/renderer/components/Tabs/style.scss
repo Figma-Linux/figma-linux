@@ -34,6 +34,11 @@
     text-overflow: clip;
     font-size: var(--fontControlSize);
     margin-right: 6px;
+    opacity: 0.4;
+  }
+
+  &:hover .tab__text {
+    opacity: 1;
   }
 
   &__close {
@@ -56,6 +61,10 @@
     color: var(--fg-tab-active);
     fill: var(--fg-tab-active);
     opacity: 1;
+    
+    .tab__text {
+      opacity: 1;
+    }
     
     .tab__close {
       opacity: 0.16;

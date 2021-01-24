@@ -74,13 +74,21 @@
   }
 
   &_main_active {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: var(--bg-panel);
+
+    .icon {
+      color: var(--bg-panel);
+      filter: invert(1)
+    }
 
     &:hover {    
       cursor: default;
-      background-color: #ffffff;
-      color: #000000;
+      background-color: var(--bg-panel);
+
+      .icon {
+        color: var(--bg-panel);
+        filter: invert(1)
+      }
     }
   }
 }

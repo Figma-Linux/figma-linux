@@ -9,7 +9,7 @@ export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 export const DOWNLOAD_ZIP_URI = "https://github.com/Figma-Linux/figma-linux-themes/archive/master.zip";
 export const DOWNLOAD_ZIP_PATH = "/tmp/master.zip";
 
-export const TOPPANELHEIGHT = 31;
+export const TOPPANELHEIGHT = 40;
 export const MENU_WIDTH = 330;
 
 export const PROTOCOL = "figma";

@@ -245,7 +245,7 @@ export const DEFAULT_PALETTE: Themes.Palette = {
   "bg-tab": "#222222",
   "bg-tab-hover": "#2c2c2c",
   "bg-tab-active": "#2c2c2c",
-  "fg-tab": "#7A7A7A",
+  "fg-tab": "#ffffff",
   "fg-tab-hover": "#ffffff",
   "fg-tab-active": "#ffffff",
   "bg-header": "#222222",

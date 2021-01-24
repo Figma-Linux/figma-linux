@@ -14,4 +14,8 @@
       align-items: center;
     }
   }
+  
+  &:hover .tab__close {    
+    opacity: 0.16;
+  }
 }

@@ -139,7 +139,7 @@ class Tabs extends React.Component<TabsProps, unknown> {
   };
 
   private mouseDownHandler = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    (e.target as HTMLDivElement).style.cursor = "grabbing";
+    (e.target as HTMLDivElement).style.cursor = "move";
 
     this.isMoving = true;
     this.pos.x = e.pageX;
@@ -149,7 +149,7 @@ class Tabs extends React.Component<TabsProps, unknown> {
     window.addEventListener("mouseup", this.mouseUpHandler);
   };
   private mouseUpHandler = (e: MouseEvent) => {
-    (e.target as HTMLDivElement).style.cursor = "grab";
+    (e.target as HTMLDivElement).style.cursor = "default";
     this.isMoving = false;
 
     window.removeEventListener("mousemove", this.mouseMoveHandler);

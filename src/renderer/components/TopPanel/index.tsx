@@ -13,17 +13,33 @@ interface TopPanelProps {
   views?: Views;
 }
 
+interface TopPanelStates {
+  isMaximized: boolean;
+}
+
 @inject("tabs")
 @inject("settings")
 @inject("views")
 @observer
 class TopPanel extends React.Component<TopPanelProps, unknown> {
   props: TopPanelProps;
+  state: TopPanelStates;
 
   constructor(props: TopPanelProps) {
     super(props);
 
     this.props = props;
+    this.state = { isMaximized: false };
+  }
+
+  componentDidMount(): void {
+    E.ipcRenderer.on("did-maximized", () => {
+      this.setState({ isMaximized: true });
+    });
+
+    E.ipcRenderer.on("did-restored", () => {
+      this.setState({ isMaximized: false });
+    });
   }
 
   private onMainTab = (e: React.MouseEvent<HTMLDivElement> & Event): void => {
@@ -75,6 +91,7 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
         onMainTab={this.onMainTab}
         openMenu={this.onOpenMenu}
         newTab={this.newTab}
+        isMaximized={this.state.isMaximized}
       />
     );
   }

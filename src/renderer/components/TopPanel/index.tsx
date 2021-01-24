@@ -33,14 +33,12 @@ class TopPanel extends React.Component<TopPanelProps, unknown> {
   }
 
   componentDidMount(): void {
-    E.ipcRenderer.on("didMaximized", () => {
+    E.ipcRenderer.on("did-maximized", () => {
       this.setState({ isMaximized: true });
-      console.log("test");
     });
 
-    E.ipcRenderer.on("didRestored", () => {
+    E.ipcRenderer.on("did-restored", () => {
       this.setState({ isMaximized: false });
-      console.log("test");
     });
   }
 

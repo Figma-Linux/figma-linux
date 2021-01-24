@@ -210,10 +210,10 @@ class WindowManager {
     E.ipcMain.on("window-maximize", (event: E.IpcMainEvent) => {
       if (this.mainWindow.isMaximized()) {
         this.mainWindow.restore();
-        event.reply("didRestored");
+        event.reply("did-restored");
       } else {
         this.mainWindow.maximize();
-        event.reply("didMaximized");
+        event.reply("did-maximized");
       }
     });
     E.ipcMain.on("closeTab", (event, id) => {

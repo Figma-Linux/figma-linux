@@ -1,0 +1,15 @@
+FROM 4tqrgqe5yrgfd/figma-linux-docker-iamge:latest
+
+WORKDIR /usr/src/figma-linux
+
+COPY ./@types ./@types
+COPY ./config ./config
+COPY ./lib ./lib
+COPY ./resources ./resources
+COPY ./scripts ./scripts
+COPY ./src ./src
+COPY ["./*.json", "./.prettierrc", "./.eslintrc", "./"]
+
+RUN npm i && \
+  npm run pack && \
+  echo $(node -e "const package = require('./package.json'); console.log(package.version);") > ./build/installers/version

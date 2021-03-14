@@ -63,6 +63,7 @@ class WindowManager {
       width: 1200,
       height: 900,
       frame: false,
+      resizable: true,
       webPreferences: {
         sandbox: false,
         zoomFactor: 1,

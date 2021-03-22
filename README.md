@@ -93,7 +93,7 @@ You can use an AUR helper like `yay` to install it:
 yay -S figma-linux
 ```
 ### RPM-based distros
-Download the .rpm package from our [Releases](https://github.com/Figma-Linux/figma-linux/release) page, then install it:
+Download the .rpm package from our [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, then install it:
 
 ```bash
 sudo dnf install figma-linux-*.x86_64.rpm

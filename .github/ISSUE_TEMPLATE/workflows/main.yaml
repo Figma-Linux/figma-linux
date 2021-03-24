@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+
+      - name: Build in Docker
+        run: ./scripts/build_artefacts.sh local

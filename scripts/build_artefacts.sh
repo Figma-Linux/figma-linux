@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [[ ! "$1" == "local" && ! "$1" == "repo" ]]; then
-  echo "Invalid arg: $1. Pass local or repo value"
+  echo "Invalid arg: "$1". Pass 'local' or 'repo' value"
   exit 1
 fi
 

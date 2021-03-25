@@ -13,12 +13,17 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build in Docker
-        run: ./scripts/build_artefacts.sh local
+        run: |
+          ls -la .
+          docker build -t figma-linux-artefacts -f "./Build_artefacts_local" .
+          ls -la .
+          mkdir -p ./build/installers
+          docker cp figma-linux-artefacts:/usr/src/figma-linux/build/installers/. ./build/installers
 
       # - name: Extract assets
       #   uses: shrink/actions-docker-extract@v1
       #   with:
-      #     image: '4tqrgqe5yrgfd/figma-linux-docker-iamge:latest'
+      #     image: '4tqrgqe5yrgfd/figma-linux-artefacts:latest'
       #     path: /usr/src/figma-linux/build/installers/.
 
       - name: Check Files

@@ -15,17 +15,15 @@ jobs:
       - name: Build in Docker
         run: |
           docker build -t figma-linux-artefacts -f "./Build_artefacts_local" .
-          ls -la .
-          docker image ls
           mkdir -p ./build/installers
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
-          ls -la .
 
-      # - name: Extract assets
-      #   uses: shrink/actions-docker-extract@v1
-      #   with:
-      #     image: '4tqrgqe5yrgfd/figma-linux-artefacts:latest'
-      #     path: /usr/src/figma-linux/build/installers/.
-
-      - name: Check Files
-        run: perl -v && ls -la . && ls -la ./build && ls -la ./build/installers
+      - name: Upload release assets
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/installers/figma-linux*
+          tag: ${{ github.ref }}
+          body: "Release description"
+          overwrite: true
+          file_glob: true

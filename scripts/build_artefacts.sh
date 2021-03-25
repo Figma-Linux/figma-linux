@@ -17,5 +17,5 @@ mkdir -p ./build/installers
 
 # docker image rm figma-linux-artefacts
 
-docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-iamge:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+docker cp 4tqrgqe5yrgfd/figma-linux-artefacts://usr/src/figma-linux/build/installers/. ./build/installers
 

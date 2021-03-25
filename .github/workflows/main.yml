@@ -20,7 +20,6 @@ jobs:
         with:
           image: '4tqrgqe5yrgfd/figma-linux-docker-iamge:latest'
           path: /usr/src/figma-linux/build/installers/.
-          destination: ./build/installers/
 
       - name: Check Files
         run: perl -v && ls -la . && ls -la ./build && ls -la ./build/installers

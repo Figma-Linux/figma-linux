@@ -17,9 +17,9 @@ jobs:
           docker build -t figma-linux-artefacts -f "./Build_artefacts_local" .
           ls -la .
           docker image ls
-          docker container ls
           mkdir -p ./build/installers
-          docker cp figma-linux-artefacts:latest:/usr/src/figma-linux/build/installers/. ./build/installers
+          docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+          ls -la .
 
       # - name: Extract assets
       #   uses: shrink/actions-docker-extract@v1

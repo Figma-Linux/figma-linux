@@ -15,5 +15,12 @@ jobs:
       - name: Build in Docker
         run: ./scripts/build_artefacts.sh local
 
+      - name: Extract assets
+        uses: shrink/actions-docker-extract@v1
+        with:
+          image: '4tqrgqe5yrgfd/figma-linux-docker-iamge:latest'
+          path: /usr/src/figma-linux/build/installers/.
+          destination: ./build/installers/
+
       - name: Check Files
         run: perl -v && ls -la . && ls -la ./build && ls -la ./build/installers

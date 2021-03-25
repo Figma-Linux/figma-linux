@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   create:
@@ -14,3 +14,6 @@ jobs:
 
       - name: Build in Docker
         run: ./scripts/build_artefacts.sh local
+
+      - name: Check
+        run: ls -la . && ls -la ./build && ls -la ./build/installers

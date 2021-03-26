@@ -3,16 +3,18 @@ name: Build
 on:
   create:
     tags:
-    - '*'
+    - 'v*.*.*'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
+        id: checkout
         uses: actions/checkout@v2
 
       - name: Build in Docker
+        id: build
         run: |
           docker build -t figma-linux-artefacts -f "./Build_artefacts_local" .
           mkdir -p ./build/installers
@@ -21,11 +23,12 @@ jobs:
           echo ::set-output name=release::${GITHUB_REF#refs/*/}
 
       - name: Upload release assets
+        id: release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./release_notes
-          name: Figma Linux ${{ steps.vars.outputs.release }}
+          name: Figma Linux ${{ steps.build.outputs.release }}
           files: |
             build/installers/figma-linux*
         env:

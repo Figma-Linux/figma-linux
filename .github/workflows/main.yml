@@ -17,6 +17,7 @@ jobs:
           docker build -t figma-linux-artefacts -f "./Build_artefacts_local" .
           mkdir -p ./build/installers
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+          perl ./scripts/generate_release_notes.pl
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v1

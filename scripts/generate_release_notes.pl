@@ -1,7 +1,7 @@
 #!/bin/perl
 
-my $features=`git log --oneline \$(git describe --tags --abbrev=0 @^)..@ | grep -Eo "feat:.*" | uniq`;
-my $fixes=`git log --oneline \$(git describe --tags --abbrev=0 @^)..@ | grep -Eo "fix:.*" | uniq`;
+my $features=`git log \$(git describe --tags --abbrev=0)..HEAD --no-merges --oneline | grep -Eo "feat:.*" | uniq`;
+my $fixes=`git log \$(git describe --tags --abbrev=0)..HEAD --no-merges --oneline | grep -Eo "fix:.*" | uniq`;
 my $hasFeatures=`printf "$features" | wc -l | tr -d '\n'`;
 my $hasFixes=`printf "$fixes" | wc -l | tr -d '\n'`;
 my @featureList = split /\n/, $features;

@@ -22,6 +22,11 @@ jobs:
           perl ./scripts/generate_release_notes.pl
           echo ::set-output name=release::${GITHUB_REF#refs/*/}
           ls -la .
+          git tag | tail -n2 | head -n1
+          git tag
+          git log | head -n50
+          git log $(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline
+          git log $(git tag | tail -n2 | head -n1)..@ --no-merges --oneline
           cat ./release_notes
 
       - name: Upload release assets

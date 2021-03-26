@@ -55,28 +55,16 @@
     ],
     "target": [
       {
-        "target": "deb",
-        "arch": [
-          "x64"
-        ]
+        "target": "deb"
       },
       {
-        "target": "zip",
-        "arch": [
-          "x64"
-        ]
+        "target": "zip"
       },
       {
-        "target": "rpm",
-        "arch": [
-          "x64"
-        ]
+        "target": "rpm"
       },
       {
-        "target": "pacman",
-        "arch": [
-          "x64"
-        ]
+        "target": "pacman"
       }
     ]
   }

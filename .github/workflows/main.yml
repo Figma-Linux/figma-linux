@@ -6,7 +6,7 @@ on:
     - 'v*.*.*'
 
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
@@ -15,6 +15,28 @@ jobs:
         with:
           fetch-depth: 0
 
+  build_arm64v8:
+    runs-on: ubuntu-latest
+    needs: setup
+    - name: Build in Docker
+      id: build
+      run: |
+        docker build -t figma-linux-artefacts -f "./Build_artefacts_arm64v8" .
+        mkdir -p ./build/installers
+        docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+        perl ./scripts/generate_release_notes.pl
+
+    - name: Cache arm64v8 artifacts
+      id: cache-arm64v8-artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: arm64v8
+        path: build/installers/figma-linux*
+
+  build_amd64:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
       - name: Build in Docker
         id: build
         run: |
@@ -22,9 +44,32 @@ jobs:
           mkdir -p ./build/installers
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
           perl ./scripts/generate_release_notes.pl
-          echo ::set-output name=release::${GITHUB_REF#refs/*/}
-          echo "cat ./release_notes"
-          cat ./release_notes
+
+      - name: Cache amd64 artifacts
+        id: cache-amd64-artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: amd64
+          path: |
+            build/installers/figma-linux*
+            build/installers/version
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build_arm64v8, build_amd64]
+    steps:
+      - name: Upload release assets
+        run: mkdir -p ./build/installers
+
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./build/installers
+
+      - name: ls assets
+        id: ls
+        run: |
+          ls -la ./build/installers
+          echo ::set-output name=release::$(cat build/installers/version)
 
       - name: Upload release assets
         id: release
@@ -32,7 +77,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./release_notes
-          name: Figma Linux ${{ steps.build.outputs.release }}
+          name: Figma Linux ${{ steps.ls.outputs.release }}
           files: |
             build/installers/figma-linux*
         env:

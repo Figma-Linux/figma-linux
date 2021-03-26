@@ -23,12 +23,7 @@ jobs:
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
           perl ./scripts/generate_release_notes.pl
           echo ::set-output name=release::${GITHUB_REF#refs/*/}
-          ls -la .
-          git tag | tail -n2 | head -n1
-          git tag
-          git log | head -n50
-          git log $(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline
-          git log $(git tag | tail -n2 | head -n1)..@ --no-merges --oneline
+          echo "cat ./release_notes"
           cat ./release_notes
 
       - name: Upload release assets

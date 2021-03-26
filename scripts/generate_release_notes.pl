@@ -9,11 +9,6 @@ my @fixList = split /\n/, $fixes;
 my $baseUrl = "https://github.com/Figma-Linux/figma-linux/issues";
 my $release_note_file_path = "./release_notes";
 
-printf("features: %s\n", $features);
-printf("fixes: %s\n", $fixes);
-printf("hasFeatures: %s\n", $hasFeatures);
-printf("hasFixes: %s\n", $hasFixes);
-
 `echo '' > $release_note_file_path`;
 
 if ($hasFeatures > 0) {

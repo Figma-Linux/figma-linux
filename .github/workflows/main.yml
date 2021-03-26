@@ -17,15 +17,13 @@ jobs:
           docker build -t figma-linux-artefacts -f "./Build_artefacts_local" .
           mkdir -p ./build/installers
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
-          cat ./build/installers/version  > ./release_notes
-          echo "dynamic description for release" >> ./release_notes
 
       - name: Upload release assets
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./release_notes
-          name: Figma Linux ${{ github.ref }}
+          name: Figma Linux ${GITHUB_REF##*/}
           files: |
             build/installers/figma-linux*
         env:

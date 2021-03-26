@@ -19,14 +19,14 @@ jobs:
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
           cat ./build/installers/version  > ./release_notes
           echo "dynamic description for release" >> ./release_notes
-          export DESC="$(cat ./release_notes)"
 
       - name: Upload release assets
-        uses: svenstaro/upload-release-action@v2
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/installers/figma-linux*
-          tag: ${{ github.ref }}
-          body: ${{ env.DESC }}
-          overwrite: true
-          file_glob: true
+          body_path: ./release_notes
+          name: Figma Linux ${{ github.ref }}
+          files: |
+            build/installers/figma-linux*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

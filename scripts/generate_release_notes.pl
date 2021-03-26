@@ -14,10 +14,13 @@ my $release_note_file_path = "./release_notes";
 
 `echo '' > $release_note_file_path`;
 
-if ($hasFeatures > 0) {
-  `echo '## Features:' >> $release_note_file_path`;
+sub generate {
+  my $title = $_[0];
+  my @list = @{$_[1]};
 
-  for my $msg (@featureList) {
+  `echo "$title" >> $release_note_file_path`;
+
+  for my $msg (@list) {
     my $issue = `echo "$msg" | grep -Eo "#.*" | tr -d '\n'`;
 
     if ($issue ne "") {
@@ -30,6 +33,10 @@ if ($hasFeatures > 0) {
     }
 
   }
+}
+
+if ($hasFeatures > 0) {
+  generate("## Features:", \@featureList);
 
   if ($hasFixes > 0) {
     `echo '' >> $release_note_file_path`;
@@ -37,20 +44,7 @@ if ($hasFeatures > 0) {
 }
 
 if ($hasFixes > 0) {
-  `echo '## Bug Fixes:' >> $release_note_file_path`;
-
-  for my $msg (@fixList) {
-    my $issue = `echo "$msg" | grep -Eo "#.*" | tr -d '\n'`;
-
-    if ($issue ne "") {
-      my $issueId = substr $issue, 1;
-      $msg =~ s/ ?(Close|#).*//gi;
-
-      `echo "* $msg [$issue]($baseUrl/$issueId)" >> $release_note_file_path`;
-    } else {
-      `echo "* $msg" >> $release_note_file_path`;
-    }
-  }
+  generate("## Bug Fixes:", \@fixList);
 
   if ($hasOther > 0) {
     `echo '' >> $release_note_file_path`;
@@ -58,18 +52,5 @@ if ($hasFixes > 0) {
 }
 
 if ($hasOther > 0) {
-  `echo '## Other Changes:' >> $release_note_file_path`;
-
-  for my $msg (@otherList) {
-    my $issue = `echo "$msg" | grep -Eo "#.*" | tr -d '\n'`;
-
-    if ($issue ne "") {
-      my $issueId = substr $issue, 1;
-      $msg =~ s/ ?(Close|#).*//gi;
-
-      `echo "* $msg [$issue]($baseUrl/$issueId)" >> $release_note_file_path`;
-    } else {
-      `echo "* $msg" >> $release_note_file_path`;
-    }
-  }
+  generate("## Other Changes:", \@otherList);
 }

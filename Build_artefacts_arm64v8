@@ -10,7 +10,7 @@ COPY ./scripts ./scripts
 COPY ./src ./src
 COPY ["./*.json", "./.prettierrc", "./.eslintrc", "./"]
 
-ENV PATH $PATH:/usr/src/figma-linux/node_modules/bin:/usr/src/figma-linux/node_modules/.bin
+ENV USE_SYSTEM_FPM true
 
 RUN npm i --no-package-lock
 RUN npm run pack

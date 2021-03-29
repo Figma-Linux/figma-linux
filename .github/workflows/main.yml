@@ -38,9 +38,6 @@ jobs:
         chmod +wr . -R
         chmod +x ./scripts/*.sh
         chmod +x ./scripts/*.pl
-        ls -la .
-        ls -la ./build
-        ls -la ./build/installers
 
     - name: Set up Docker Buildx
       id: buildx

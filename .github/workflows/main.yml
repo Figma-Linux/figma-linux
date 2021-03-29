@@ -46,7 +46,7 @@ jobs:
         qemu-version: latest
 
     - name: Available platforms
-        run: echo ${{ steps.buildx.outputs.platforms }}
+      run: echo ${{ steps.buildx.outputs.platforms }}
 
     - name: Build in Docker
       id: build

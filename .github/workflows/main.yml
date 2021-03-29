@@ -15,10 +15,22 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Cache src
+        id: cache-src
+        uses: actions/upload-artifact@v2
+        with:
+          name: src
+          path: ./*
+
   build_arm64v8:
     needs: setup
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: src
+        path: ./
+
     - name: Build in Docker
       id: build
       run: |
@@ -38,6 +50,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: src
+          path: ./
+
       - name: Build in Docker
         id: build
         run: |

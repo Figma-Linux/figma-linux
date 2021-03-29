@@ -34,9 +34,9 @@ jobs:
         path: ./
 
     - name: chmod
-        run: |
-          chmod +x ./scripts/*.sh
-          chmod +x ./scripts/*.pl
+      run: |
+        chmod +x ./scripts/*.sh
+        chmod +x ./scripts/*.pl
 
     - name: Build in Docker
       id: build

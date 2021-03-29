@@ -16,8 +16,9 @@ jobs:
           fetch-depth: 0
 
   build_arm64v8:
-    runs-on: ubuntu-latest
     needs: setup
+    runs-on: ubuntu-latest
+    steps:
     - name: Build in Docker
       id: build
       run: |

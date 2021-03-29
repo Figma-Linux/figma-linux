@@ -35,8 +35,12 @@ jobs:
 
     - name: chmod
       run: |
+        chmod +wr . -R
         chmod +x ./scripts/*.sh
         chmod +x ./scripts/*.pl
+        ls -la .
+        ls -la ./build
+        ls -la ./build/installers
 
     - name: Set up Docker Buildx
       id: buildx
@@ -44,9 +48,6 @@ jobs:
       with:
         buildx-version: latest
         qemu-version: latest
-
-    - name: Available platforms
-      run: echo ${{ steps.buildx.outputs.platforms }}
 
     - name: Build in Docker
       id: build

@@ -38,6 +38,16 @@ jobs:
         chmod +x ./scripts/*.sh
         chmod +x ./scripts/*.pl
 
+    - name: Set up Docker Buildx
+        id: buildx
+        uses: crazy-max/ghaction-docker-buildx@v3
+        with:
+          buildx-version: latest
+          qemu-version: latest
+
+    - name: Available platforms
+        run: echo ${{ steps.buildx.outputs.platforms }}
+
     - name: Build in Docker
       id: build
       run: |

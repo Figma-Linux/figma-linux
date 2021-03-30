@@ -14,6 +14,7 @@ printf("Bump %s to %s version.\n", $prevVersion, $version);
 system("sed -i \"s/$prevVersion/$version/\" ./package.json");
 system("sed -i \"s/$prevVersion/$version/\" ./src/package.json");
 system("sed -i \"s/$prevVersion/$version/\" ./snap/snapcraft.yaml");
+system("sed -i \"s/$prevVersion/$version/\" ./resources/figma-linux-appimage.desktop");
 
 system("git add .");
 system("git commit -m 'Release v$version'");

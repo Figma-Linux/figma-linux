@@ -16,4 +16,5 @@ ENV USE_SYSTEM_FPM true
 RUN npm i --no-package-lock
 RUN df -h
 RUN npm run pack
+RUN scripts/appimage.sh || echo 'Create AppImage fails'
 RUN echo $(node -e "const package = require('./package.json'); console.log(package.version);") > ./build/installers/version

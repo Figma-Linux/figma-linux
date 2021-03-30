@@ -41,7 +41,7 @@ jobs:
         cd /tmp
         git clone --single-branch --recursive https://github.com/AppImage/AppImageKit
         cd AppImageKit/
-        bash ci/build.sh || echo 'Build AppImageKit fails'
+        ARCH="aarch64" bash ci/build.sh || echo 'Build AppImageKit fails'
         ls -la .
 
     - name: Set up QEMU
@@ -110,7 +110,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: amd64
-          path: ./build/installers
+          path: ./
 
       - name: ls assets
         id: ls

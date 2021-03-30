@@ -38,6 +38,7 @@ jobs:
         chmod +wr . -R
         chmod +x ./scripts/*.sh
         chmod +x ./scripts/*.pl
+        df -h
 
     - name: Set up Docker Buildx
       id: buildx
@@ -49,6 +50,7 @@ jobs:
     - name: Build in Docker
       id: build
       run: |
+        df -h
         docker buildx build --platform linux/arm64 -t 4tqrgqe5yrgfd/figma-linux-artefacts-arm --load -f ./Build_artefacts_arm64v8 .
         mkdir -p ./build/installers
         docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-artefacts-arm)://usr/src/figma-linux/build/installers/. ./build/installers

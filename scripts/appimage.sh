@@ -2,6 +2,16 @@
 
 APP_DIR="./build/installers/linux-unpacked";
 
+ARCH=`uname -m | tr -d '\n'`;
+
+echo "ARCH: $ARCH";
+
+if [ $ARCH == "aarch64" ]; then
+  APP_DIR="./build/installers/linux-arm64-unpacked";
+fi
+
+echo "APP_DIR: $APP_DIR";
+
 if [ ! -d "$APP_DIR" ]; then
   echo "ERROR: It need run after electron-builder";
   exit 1;

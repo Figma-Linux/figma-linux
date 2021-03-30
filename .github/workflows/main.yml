@@ -115,8 +115,12 @@ jobs:
       - name: ls assets
         id: ls
         run: |
-          ls -la ./build/installers
-          echo ::set-output name=release::$(cat build/installers/version)
+          ls -la ./ || echo ''
+          ls -la ./build || echo ''
+          ls -la ./build/installers || echo ''
+          ls -la ./build/installers/build || echo ''
+          ls -la ./build/installers/build/installers || echo ''
+          echo ::set-output name=release::$(cat build/installers/version || echo '0.7.2')
 
       - name: Upload release assets
         id: release

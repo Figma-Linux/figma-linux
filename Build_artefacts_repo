@@ -1,4 +1,4 @@
-FROM 4tqrgqe5yrgfd/figma-linux-docker-iamge:latest
+FROM 4tqrgqe5yrgfd/figma-linux-docker-image:latest
 
 WORKDIR /usr/src/figma-linux
 

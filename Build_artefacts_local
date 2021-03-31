@@ -12,4 +12,5 @@ COPY ["./*.json", "./.prettierrc", "./.eslintrc", "./"]
 
 RUN npm i && \
   npm run pack && \
+  ./scripts/appimage.sh && \
   echo $(node -e "const package = require('./package.json'); console.log(package.version);") > ./build/installers/version

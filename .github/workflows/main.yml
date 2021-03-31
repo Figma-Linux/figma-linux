@@ -53,6 +53,7 @@ jobs:
         ARCH="aarch64" bash ci/build.sh
         ls -la .
         ls -la ./out
+        cp -rf ./out/appimagetool-aarch64.AppImage /bin/appimagetool
 
     - name: Build in Docker
       id: build
@@ -61,6 +62,7 @@ jobs:
         docker buildx build --platform linux/arm64 -t 4tqrgqe5yrgfd/figma-linux-artefacts-arm --load -f ./Build_artefacts_arm64v8 .
         mkdir -p ./build/installers
         docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-artefacts-arm)://usr/src/figma-linux/build/installers/. ./build/installers
+        ./scripts/appimage.sh
         perl ./scripts/generate_release_notes.pl
 
     - name: Cache arm64v8 artifacts

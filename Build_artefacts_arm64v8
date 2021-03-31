@@ -14,5 +14,10 @@ ENV USE_SYSTEM_FPM true
 
 RUN npm i --no-package-lock
 RUN npm run pack
+RUN cd /tmp && \
+    git clone --single-branch --recursive https://github.com/AppImage/AppImageKit && \
+    cd AppImageKit/ && \
+    ARCH="aarch64" bash ci/build.sh && \
+    cp -rf ./out/appimagetool-aarch64.AppImage /bin/appimagetool
 RUN scripts/appimage.sh || echo 'Create AppImage fails'
 RUN echo $(node -e "const package = require('./package.json'); console.log(package.version);") > ./build/installers/version

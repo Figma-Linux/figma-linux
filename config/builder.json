@@ -36,7 +36,8 @@
   },
 
   "appImage": {
-    "category": "Graphics"
+    "category": "Graphics",
+    "desktop": "resources/figma-linux-appimage.desktop"
   },
 
   "linux": {
@@ -65,6 +66,9 @@
       },
       {
         "target": "pacman"
+      },
+      {
+        "target": "appimage"
       }
     ]
   }

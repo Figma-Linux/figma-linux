@@ -3,7 +3,7 @@
 APP_DIR="./build/installers/linux-unpacked";
 
 ARCH=`uname -m | tr -d '\n'`;
-VER=`cat build/installers/version`;
+VER=`cat ./build/installers/version`;
 
 echo "ARCH: $ARCH, VER: $VER";
 

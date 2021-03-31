@@ -3,8 +3,9 @@
 APP_DIR="./build/installers/linux-unpacked";
 
 ARCH=`uname -m | tr -d '\n'`;
+VER=`cat build/installers/version`;
 
-echo "ARCH: $ARCH";
+echo "ARCH: $ARCH, VER: $VER";
 
 if [ $ARCH == "aarch64" ]; then
   APP_DIR="./build/installers/linux-arm64-unpacked";
@@ -25,5 +26,5 @@ cp -rf "./resources/icons" "$APP_DIR/";
 
 cd "$APP_DIR";
 
-appimagetool ./ ../figma-linux-$1.AppImage --appimage-extract-and-run
+appimagetool ./ ../figma-linux-${VER}_${ARCH}.AppImage --appimage-extract-and-run
 

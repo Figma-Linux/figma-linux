@@ -5,11 +5,21 @@ if [ ! -d "./build/installers" ]; then
   exit 1;
 fi
 
+arch=`uname -m | tr -d '\n'`;
 version=$(cat ./build/installers/version);
+linux_unpacked="build/installers/linux-unpacked";
 
-# sed -i "1s/^/figma-linux (${version}-1ubuntu0) devel; urgency=medium\n\n    * Publish ${version} version\n\n -- Chugunov Roman <Zebs-BMK@yandex.ru>  $(date -R)\n\n/" ./scripts/debian/changelog
+if [ $arch == "aarch64" ]; then
+  linux_unpacked="build/installers/linux-arm64-unpacked";
+fi
 
-docker build -t figma-linux-ppa -f Build_ppa .
+workdir="build/figma-linux-${version}"
+mkdir -p $workdir;
+mkdir -p $workdir/resources/icon;
 
-# docker image rm figma-linux-ppa
+cp -rf ./scripts/debian $workdir
+cp -rf ${linux_unpacked}/* $workdir
+cp -rf ${linux_unpacked}/icons/* $workdir/resources/icon
+cp -rf ./resources/figma-linux.desktop $workdir/resources
 
+docker build -t 4tqrgqe5yrgfd/figma-linux-ppa --build-arg FIGMA_LINUX_VERSION=${version} -f ./docker/Build_ppa .

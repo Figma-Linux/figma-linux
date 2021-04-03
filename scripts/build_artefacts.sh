@@ -7,7 +7,7 @@ fi
 
 from="$1"
 
-docker build -t figma-linux-artefacts -f "./Build_artefacts_$from" .
+docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_$from" .
 
 rm -rf ./build/installers
 mkdir -p ./build/installers

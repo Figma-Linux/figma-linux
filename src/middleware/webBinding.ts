@@ -10,7 +10,7 @@ interface IntiApiOptions {
   fileBrowser: boolean;
 }
 
-const API_VERSION = 28;
+const API_VERSION = 36;
 let webPort: MessagePort;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 
@@ -233,8 +233,8 @@ const publicAPI: any = {
     sendMsgToMain("setTitle", args.title);
   },
 
-  setUser(args: any) {
-    console.log("unimplemented setUser, args: ", args);
+  setUser(args: WebApi.SetUser) {
+    sendMsgToMain("setAuthedUsers", [args.id]);
   },
 
   newFile(args: any) {
@@ -291,6 +291,16 @@ const publicAPI: any = {
   },
   openDevTools(args: { mode: string }) {
     sendMsgToMain("openDevTools", args.mode);
+  },
+
+  setAuthedUsers(args: WebApi.SetAuthedUsers) {
+    sendMsgToMain("setAuthedUsers", args.userIDs);
+  },
+  setWorkspaceName(args: WebApi.SetWorkspaceName) {
+    sendMsgToMain("setWorkspaceName", args.name);
+  },
+  setFigjamEnabled(args: WebApi.SetFigjamEnabled) {
+    sendMsgToMain("setFigjamEnabled", args.figjamEnabled);
   },
 
   async createMultipleNewLocalFileExtensions(args: WebApi.CreateMultipleExtension) {

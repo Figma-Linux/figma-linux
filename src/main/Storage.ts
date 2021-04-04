@@ -90,6 +90,12 @@ export class Storage {
 
     this.set(this.settings);
   };
+  public setUserIds = (ids: string[]): void => {
+    this.settings.authedUserIDs = ids;
+    this.settings.userId = ids[0] || "";
+
+    this.set(this.settings);
+  };
 }
 
 export const storage = new Storage();

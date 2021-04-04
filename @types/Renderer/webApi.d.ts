@@ -48,4 +48,17 @@ declare namespace WebApi {
     path: string;
     postscript: string;
   }
+
+  interface SetUser {
+    id: string;
+  }
+  interface SetAuthedUsers {
+    userIDs: string[];
+  }
+  interface SetWorkspaceName {
+    name: string;
+  }
+  interface SetFigjamEnabled {
+    figjamEnabled: boolean;
+  }
 }

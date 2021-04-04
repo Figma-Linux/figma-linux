@@ -67,6 +67,9 @@ declare namespace Electron {
     on(channel: "updatePanelScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
     on(channel: "startAppAuth", listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void): this;
     on(channel: "finishAppAuth", listener: (event: IpcMainInvokeEvent, auth: { redirectURL: string }) => void): this;
+    on(channel: "setAuthedUsers", listener: (event: IpcMainInvokeEvent, userIds: string[]) => void): this;
+    on(channel: "setWorkspaceName", listener: (event: IpcMainInvokeEvent, name: string) => void): this;
+    on(channel: "setFigjamEnabled", listener: (event: IpcMainInvokeEvent, enabled: boolean) => void): this;
     on(
       channel: "setFeatureFlags",
       listener: (event: IpcMainInvokeEvent, auth: { featureFlags: FeatureFlags }) => void,

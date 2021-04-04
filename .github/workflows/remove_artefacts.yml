@@ -1,9 +1,6 @@
 name: Artifacts
 
 on:
-  schedule:
-    - cron: '1 5,17 * * *'
-
   workflow_dispatch:
     inputs:
       age:

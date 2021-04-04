@@ -16,7 +16,8 @@
     "check": "npm run lint && npm run prettier",
     "lint": "eslint src/**/*.{ts,tsx}",
     "prettier": "prettier src/**/*.{ts,tsx} --write",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "package": "rm -rf build/installers && npm run build && electron-builder --config=config/builder.json -l"
   },
   "lint-staged": {
     "*.{ts, tsx, js, jsx}": [

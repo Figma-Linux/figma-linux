@@ -1,0 +1,19 @@
+name: Artifacts
+
+on:
+  workflow_dispatch:
+    inputs:
+      age:
+        description: 'Age'
+        required: true
+        default: '1 hour'
+
+jobs:
+  setup:
+    name: Remove artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: ${{ github.event.inputs.age }}

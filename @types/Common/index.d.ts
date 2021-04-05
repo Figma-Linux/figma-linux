@@ -144,10 +144,13 @@ interface FeatureFlags {
 
 interface SettingsInterface {
   clientId: string;
+  userId: string;
+  authedUserIDs: string[];
   app: {
     logLevel: number;
     enableColorSpaceSrgb: boolean;
     visibleNewProjectBtn: boolean;
+    useZenity: boolean;
     panelHeight: number;
     saveLastOpenedTabs: boolean;
     exportDir: string;

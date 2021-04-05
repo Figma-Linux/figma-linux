@@ -4,8 +4,9 @@ import { observable, action, toJS } from "mobx";
 
 export class Settings {
   @observable settings?: SettingsInterface;
-
   @observable isSyncDisabled: boolean;
+
+  private useZenityChanged = false;
 
   constructor() {
     this.settings = storage.get();
@@ -56,12 +57,22 @@ export class Settings {
   public visibleNewProjectBtn = (visible: boolean): void => {
     this.settings.app.visibleNewProjectBtn = visible;
   };
+  @action
+  public changeUseZenity = (value: boolean): void => {
+    this.settings.app.useZenity = value;
+
+    this.useZenityChanged = true;
+  };
 
   @action
-  public selectExportDir = (): void => {
-    const dirs = E.remote.dialog.showOpenDialogSync({ properties: ["openDirectory"] });
+  public selectExportDir = async (): Promise<void> => {
+    const directory = await E.ipcRenderer.invoke("select-export-directory");
 
-    this.settings.app.exportDir = dirs[0];
+    if (!directory) {
+      return;
+    }
+
+    this.settings.app.exportDir = directory;
   };
   @action
   public inputExportDir = (dir: string): void => {
@@ -69,10 +80,14 @@ export class Settings {
   };
 
   @action
-  public addDir = (): void => {
-    const dirs = E.remote.dialog.showOpenDialogSync({ properties: ["openDirectory", "multiSelections"] });
+  public addDir = async (): Promise<void> => {
+    const directories = await E.ipcRenderer.invoke("add-font-directories");
 
-    this.settings.app.fontDirs = [...this.settings.app.fontDirs, ...dirs];
+    if (!directories) {
+      return;
+    }
+
+    this.settings.app.fontDirs = [...this.settings.app.fontDirs, ...directories];
   };
   @action
   public removeDir = (index: number): void => {
@@ -100,6 +115,10 @@ export class Settings {
     storage.set(settings);
 
     E.ipcRenderer.send("updateVisibleNewProjectBtn", settings.app.visibleNewProjectBtn);
+
+    if (this.useZenityChanged) {
+      E.ipcRenderer.send("set-use-zenity", settings.app.useZenity);
+    }
   };
 
   private events = (): void => {

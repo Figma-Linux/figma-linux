@@ -14,8 +14,8 @@ import {
   DOWNLOAD_ZIP_PATH,
 } from "Const";
 import { storage } from "Main/Storage";
-import WindowManager from "Main/window/WindowManager";
-import { mkPath, access, showSaveDialog } from "Utils/Main";
+import { mkPath, access } from "Utils/Main";
+import { dialogs } from "Main/Dialogs";
 import { logger } from "Main/Logger";
 
 export const themesDirectory = path.resolve(app.getPath("userData"), "Themes");
@@ -183,12 +183,11 @@ export async function exportCreatorTheme(theme: Themes.Theme): Promise<void> {
 
   delete themeData.id;
 
-  const wm = WindowManager.instance;
   const themeName = `${theme.name.replace(/\s/, "_")}.json`;
   const lastDir = storage.get().app.exportDir;
   const dir = lastDir ? `${lastDir}/${themeName}` : themeName;
 
-  const filePath = await showSaveDialog(wm.mainWindow, {
+  const filePath = await dialogs.showSaveDialog({
     title: "Choose theme export directory location",
     defaultPath: dir,
   });

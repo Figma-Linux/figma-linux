@@ -12,11 +12,12 @@
     "start": "electron dist/main/main.js",
     "build": "rm -rf ./dist; electron-webpack app; rm -rf dist/main/dest dist/renderer/dest dist/**/*.map dist/**/*.bak dist/renderer/index.html dist/.renderer-index-template.html dist/package-lock.json",
     "builder": "electron-builder --config=config/builder.json -l",
-    "pack": "rm -rf build/installers && npm run build && npm run builder && ./scripts/appimage.sh $npm_package_version",
+    "pack": "rm -rf build/installers && npm run build && npm run builder",
     "check": "npm run lint && npm run prettier",
     "lint": "eslint src/**/*.{ts,tsx}",
     "prettier": "prettier src/**/*.{ts,tsx} --write",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "package": "rm -rf build/installers && npm run build && electron-builder --config=config/builder.json -l"
   },
   "lint-staged": {
     "*.{ts, tsx, js, jsx}": [
@@ -68,7 +69,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.1.0",
     "css-loader": "^4.3.0",
-    "electron": "^11.1.1",
+    "electron": "12.0.2",
     "electron-builder": "^22.10.4",
     "electron-rebuild": "^2.3.4",
     "electron-webpack": "^2.8.2",

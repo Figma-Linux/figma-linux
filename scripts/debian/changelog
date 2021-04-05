@@ -1,0 +1,256 @@
+figma-linux (0.7.1-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.7.1 version
+  * Bug fixes
+  *  Fixed #154 - copy as PNG
+  *  Fixed #155 - get local fonts
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Mon, 11 Jan 2021 23:19:06 +0300
+
+figma-linux (0.7.0-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.7.0 version
+  * Features:
+  *  Added support of Figma Plugins
+  *  Added themes and Theme Creator
+  *  Updated window frame
+  *  Updated main menu
+  *  Updated UI of the app
+  *  Updated help menu
+  *  Added a menu item for opens project and prototypes links from clipboard
+  *  Updated settings
+  *  Updated .desktop files
+  *  Updated Desktop API for communicate with Figma Web App
+  *  Changed behavior of opening projects
+  *  Updated tabs behavior
+
+  * Bug fixes
+  *  Fixed #127 - Duplicate window buttons
+
+  * Other changes
+  *  Updated electron to 11.1.1
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 10 Jan 2021 20:27:36 +0300
+
+figma-linux (0.6.4-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.6.4 version
+  *
+  *  Fixed #139 - Desktop App is out of date
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Wed, 25 Nov 2020 21:04:26 +0300
+
+figma-linux (0.6.3-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.6.3 version
+  *
+  *  Feature: Added window control (thx @crtnr)
+  *
+  *  Fixed #86 - present mode
+  *  Fixed #93 - Fix characters in file dialog for snap package.
+  *  Fixed open link from app
+  *  Fixed #75 - App stops responding after login
+  *  Fixed #82, #108, #79 - Fix login via google chrome and chromium browsers.
+  *  Fixed #115 - Fix bug with zoom.
+  *  improve application GPU performance (thx @devhammed)
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 06 Sep 2020 17:29:10 +0300
+
+figma-linux (0.6.2-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.6.2 version
+  *
+  *  Fixed #88 - Figma Desktop App is out of date
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Wed, 05 Feb 2020 11:53:11 +0300
+
+figma-linux (0.6.1-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.6.0-beta.1 version
+  *
+  *  Fixed hiding of main menu
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Tue, 26 Nov 2019 17:27:34 +0300
+
+figma-linux (0.6.0-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.6.0-beta.1 version
+  *
+  *  Fixed #72 - Sign in bug
+  *  Fixed #70, #57, #60- Segmentation fault
+  * Other changes
+  *
+  *  Updated electron to 7.1.2
+  *  Updated TypeScript to 3.7.2
+  *  Updated electron-builder to 22.1.0
+  *  Replaced C++ native module on Rust native module with the same logic
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Tue, 26 Nov 2019 16:42:50 +0300
+
+figma-linux (0.5.7-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.5.7 version
+  *
+  *  Fixed #64 - No access to removable media devices
+  *  Fixed #63 - Triggering shortcuts
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 27 Oct 2019 19:49:48 +0300
+
+figma-linux (0.5.6-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.5.6 version
+  *
+  *  Fixed #59 - "You don't have permission to open this file"
+  *  Fixed #61 - Sing Out doesn't work
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 13 Sep 2019 09:17:48 +0300
+
+figma-linux (0.5.5-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.5.5 version
+  *
+  *  Fixed #52 - Using of figma plugins
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Thu, 05 Sep 2019 10:18:43 +0300
+
+figma-linux (0.5.4-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.5.4 version
+  *
+  *  Fixed #58 - Figma Desktop App is out of date
+  *  Started work on figma plugins
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Thu, 22 Aug 2019 11:41:20 +0300
+
+figma-linux (0.5.3-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.5.3 version
+  *
+  *  Fixed #44 - the app crashed when the settings file does not exists
+  *  Fixed #45 - Some items of menu did not work
+  *  Fixed incorrect update of tab title
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 03 Aug 2019 22:51:22 +0300
+
+figma-linux (0.5.2-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.5.2 version
+  *
+  * Fixed #47,#46
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 19 Jul 2019 09:20:08 +0300
+
+figma-linux (0.5.1-1ubuntu3) devel; urgency=medium
+
+  * Publish 0.5.1 version
+  *
+  * Fixed #41
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Thu, 23 May 2019 14:07:49 +0300
+
+figma-linux (0.5.1-1ubuntu2) devel; urgency=medium
+
+  * Publish 0.5.1 version
+  *
+  * Fixed #41
+
+  -- Chugunov Roman <Zebs-BMK@yandex.ru>  Thu, 23 May 2019 12:53:51 +0300
+
+figma-linux (0.5.1-1ubuntu1) devel; urgency=medium
+
+  * Publish 0.5.1 version
+  *
+  * Fixed #41
+
+  -- Chugunov Roman <Zebs-BMK@yandex.ru>  Thu, 23 May 2019 12:53:34 +0300
+
+figma-linux (0.5.0-1ubuntu4) devel; urgency=medium
+
+  * Publish 0.5.0 version
+  *
+  * Fixed #27
+  * Added a new setting for disabling the native module (disable local fount support)
+  * Added log in stdout with count of all fonts
+  * Added open gpu info in the help meny entry
+  * Updated the node native module close #35
+  * Fixed #30
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 15 Feb 2019 12:12:09 +0300
+
+figma-linux (0.5.0-1ubuntu3) devel; urgency=medium
+
+  * Publish 0.5.0 version
+  *
+  * Fixed #27
+  * Added a new setting for disabling the native module (disable local fount support)
+  * Added log in stdout with count of all fonts
+  * Added open gpu info in the help meny entry
+  * Updated the node native module close #35
+  * Fixed #30
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 15 Feb 2019 12:12:09 +0300
+
+figma-linux (0.5.0-1ubuntu2) devel; urgency=medium
+
+  * Publish 0.5.0 version
+  *
+  * Fixed #27
+  * Added a new setting for disabling the native module (disable local fount support)
+  * Added log in stdout with count of all fonts
+  * Added open gpu info in the help meny entry
+  * Updated the node native module close #35
+  * Fixed #30
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 15 Feb 2019 12:12:09 +0300
+
+figma-linux (0.5.0-1ubuntu1) devel; urgency=medium
+
+  * Publish 0.5.0 version
+  *
+  * Fixed #27
+  * Added a new setting for disabling the native module (disable local fount support)
+  * Added log in stdout with count of all fonts
+  * Added open gpu info in the help meny entry
+  * Updated the node native module close #35
+  * Fixed #30
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 15 Feb 2019 12:12:09 +0300
+
+figma-linux (0.4.0-1ubuntu1) bionic; urgency=medium
+
+  * Publish 0.4.0 version
+  *
+  * Added the restore last tabs feature
+  * Added the disable main menu feature
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 15 Feb 2019 12:12:09 +0300
+
+figma-linux (0.3.0-1ubuntu1) bionic; urgency=medium
+
+  * Publish 0.3.0 version on Launchpad
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Mon, 04 Feb 2019 13:55:13 +0300
+
+figma-linux (0.2.2-1ubuntu6) bionic; urgency=medium
+
+  * Add postrm script for remove symlink /usr/local/bin/figma-linux
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Mon, 04 Feb 2019 12:51:09 +0300
+
+figma-linux (0.2.2-1ubuntu5) bionic; urgency=medium
+
+  * fix postinst.sh
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 03 Feb 2019 11:56:11 +0300
+
+figma-linux (0.2.2-1ubuntu4) bionic; urgency=medium
+
+  * fix postinst.sh
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 03 Feb 2019 11:56:11 +0300
+
+figma-linux (0.2.2-1ubuntu3) bionic; urgency=medium
+
+  * Initial release 0.2.2
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 19 Jan 2019 22:51:39 +0300

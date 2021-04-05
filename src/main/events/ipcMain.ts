@@ -3,20 +3,13 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { MANIFEST_FILE_NAME, FILE_EXTENSION_WHITE_LIST } from "Const";
-import {
-  listenToWebBindingPromise,
-  listenToWebRegisterCallback,
-  showSaveDialog,
-  access,
-  mkPath,
-  showOpenDialog,
-  showMessageBox,
-} from "Utils/Main";
+import { listenToWebBindingPromise, listenToWebRegisterCallback, access, mkPath } from "Utils/Main";
 import { sanitizeFileName, wait } from "Utils/Common";
 
 import WindowManager from "Main/window/WindowManager";
 import { logger } from "Main/Logger";
 import { storage } from "Main/Storage";
+import { dialogs } from "Main/Dialogs";
 import Ext from "Main/ExtensionManager";
 
 export const registerIpcMainHandlers = () => {
@@ -123,11 +116,10 @@ export const registerIpcMainHandlers = () => {
     }
 
     const dirName = sanitizeFileName(data.dirName);
-    const windowManager = WindowManager.instance;
     const lastDir = storage.get().app.lastSavedPluginDir;
     const dir = lastDir ? `${lastDir}/${dirName}` : dirName;
 
-    const saveDir = await showSaveDialog(windowManager.mainWindow, {
+    const saveDir = await dialogs.showSaveDialog({
       title: manifest.name ? "Choose plugin directory location" : "Choose plugin name and directory location",
       defaultPath: dir,
     });
@@ -186,6 +178,19 @@ export const registerIpcMainHandlers = () => {
     },
   );
 
+  E.ipcMain.handle("add-font-directories", async () => {
+    return dialogs.showOpenDialog({ properties: ["openDirectory", "multiSelections"] });
+  });
+  E.ipcMain.handle("select-export-directory", async () => {
+    const directories = await dialogs.showOpenDialog({ properties: ["openDirectory"] });
+
+    if (!directories) {
+      return null;
+    }
+
+    return directories[0];
+  });
+
   E.ipcMain.handle("writeFiles", async (sender, data) => {
     const files = data.files;
 
@@ -193,14 +198,13 @@ export const registerIpcMainHandlers = () => {
       return;
     }
 
-    const view = WindowManager.instance.mainWindow;
     let skipReplaceConfirmation = false;
     let directoryPath = null;
     const lastDir = storage.get().app.lastExportDir || storage.get().app.exportDir;
 
     if (files.length === 1 && !files[0].name.includes(path.sep)) {
       const originalFileName = files[0].name;
-      const savePath = await showSaveDialog(view, {
+      const savePath = await dialogs.showSaveDialog({
         defaultPath: `${lastDir}/${path.basename(originalFileName)}`,
         showsTagField: false,
       });
@@ -217,7 +221,7 @@ export const registerIpcMainHandlers = () => {
         storage.setExportDirectory(path.parse(savePath).dir);
       }
     } else {
-      const directories = await showOpenDialog(view, {
+      const directories = await dialogs.showOpenDialog({
         properties: ["openDirectory", "createDirectory"],
         buttonLabel: "Save",
         defaultPath: lastDir,
@@ -241,13 +245,11 @@ export const registerIpcMainHandlers = () => {
         path.relative(directoryPath, outputPath).startsWith("..") ||
         !validExtensions.includes(path.extname(outputPath))
       ) {
-        await showMessageBox(view, {
+        await dialogs.showMessageBox({
           type: "error",
           title: "Export Failed",
           message: "Export failed",
           detail: `"${outputPath}" is not a valid path. No files were saved.`,
-          buttons: ["OK"],
-          defaultId: 0,
         });
         return;
       }
@@ -256,9 +258,10 @@ export const registerIpcMainHandlers = () => {
         ++filesToBeReplaced;
       } catch (ex) {}
     }
+
     if (filesToBeReplaced > 0 && !skipReplaceConfirmation) {
       const single = filesToBeReplaced === 1;
-      const selectedID = await showMessageBox(view, {
+      const selectedID = await dialogs.showMessageBox({
         type: "warning",
         title: "Replace Existing Files",
         message: `Replace existing file${single ? "" : `s`}?`,
@@ -267,8 +270,7 @@ export const registerIpcMainHandlers = () => {
             ? `"${files[0].name}" already exists`
             : `${filesToBeReplaced} files including "${files[0].name}" already exist`
         }. Replacing ${single ? "it" : "them"} will overwrite ${single ? "its" : "their"} existing contents.`,
-        buttons: ["Replace", "Cancel"],
-        defaultId: 0,
+        textOkButton: "Replace",
       });
       if (selectedID !== 0) {
         return;
@@ -281,13 +283,11 @@ export const registerIpcMainHandlers = () => {
       try {
         fs.writeFileSync(outputPath, Buffer.from(file.buffer), { encoding: "binary" });
       } catch (ex) {
-        await showMessageBox(view, {
+        await dialogs.showMessageBox({
           type: "error",
           title: "Export Failed",
           message: "Saving file failed",
           detail: `"${file.name}" could not be saved. Remaining files will not be saved.`,
-          buttons: ["OK"],
-          defaultId: 0,
         });
       }
     }

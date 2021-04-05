@@ -1,11 +1,13 @@
 import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
 import * as E from "electron";
 import * as url from "url";
+import * as util from "util";
 
 import Tabs from "./Tabs";
 import Fonts from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
+import { dialogs } from "../Dialogs";
 import MenuState from "../MenuState";
 import * as Const from "Const";
 import {
@@ -27,7 +29,6 @@ import {
   setMenuFromTemplate,
   buildActionToMenuItemMap,
   resetMenu,
-  showMessageBoxSync,
   loadCreatorTheme,
   saveCreatorTheme,
   exportCreatorTheme,
@@ -53,11 +54,15 @@ class WindowManager {
   private static _instance: WindowManager;
   private panelHeight = storage.get().app.panelHeight;
   private enableColorSpaceSrgbWasChanged = false;
+  private figmaUserIDs: string[] = [];
+  private userId: string;
 
   private constructor() {
     this.home = Const.HOMEPAGE;
     this.figmaUiScale = storage.get().ui.scaleFigmaUI;
     this.panelScale = storage.get().ui.scalePanel;
+    this.figmaUserIDs = storage.get().authedUserIDs;
+    this.userId = storage.get().userId;
 
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
@@ -317,6 +322,15 @@ class WindowManager {
 
       this.mainTab.webContents.loadURL(url);
     });
+    E.ipcMain.on("setAuthedUsers", (event, userIds) => {
+      this.setFigmaUserIDs(userIds);
+    });
+    E.ipcMain.on("setWorkspaceName", (event, name) => {
+      logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
+    });
+    E.ipcMain.on("setFigjamEnabled", (event, enabled) => {
+      logger.info("The setFigjamEnabled not implemented, enabled: ", enabled);
+    });
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
     });
@@ -341,16 +355,16 @@ class WindowManager {
       this.mainWindow.removeBrowserView(this.settingsView);
 
       if (this.enableColorSpaceSrgbWasChanged) {
-        const id = showMessageBoxSync(this.mainWindow, {
-          type: "none",
+        const id = dialogs.showMessageBoxSync({
+          type: "question",
           title: "Figma",
           message: "Restart to Change Color Space?",
           detail: `Figma needs to be restarted to change the color space.`,
-          buttons: ["Cancel", "Restart"],
-          defaultId: 1,
+          textOkButton: "Restart",
+          defaultFocusedButton: "Ok",
         });
 
-        if (id) {
+        if (!id) {
           E.app.relaunch();
           E.app.quit();
         }
@@ -559,6 +573,13 @@ class WindowManager {
     });
   };
 
+  public setFigmaUserIDs = (userIds: string[]): void => {
+    if (!util.isDeepStrictEqual(this.figmaUserIDs, userIds)) {
+      storage.setUserIds(userIds);
+      this.figmaUserIDs = userIds;
+    }
+  };
+
   public tryHandleAppAuthRedeemUrl = (url: string): boolean => {
     if (isAppAuthRedeem(url)) {
       const normalizedUrl = normalizeUrl(url);
@@ -578,11 +599,11 @@ class WindowManager {
 
   public addTab = (
     scriptPreload = "loadMainContent.js",
-    url = `${this.home}/login`,
+    url = Const.RECENT_FILES,
     title?: string,
     focused = true,
   ): E.BrowserView => {
-    const tab = Tabs.newTab(url, this.getBounds(), scriptPreload);
+    const tab = Tabs.newTab(`${url}?fuid=${this.userId}`, this.getBounds(), scriptPreload);
 
     if (focused) {
       this.focusTab(tab.webContents.id);
@@ -603,7 +624,7 @@ class WindowManager {
   };
 
   public addMainTab = (): E.BrowserView => {
-    const url = `${this.home}/login`;
+    const url = `${Const.RECENT_FILES}/?fuid=${this.userId}`;
     const tab = Tabs.newTab(url, this.getBounds(), "loadMainContent.js", false);
 
     this.mainWindow.setBrowserView(tab);
@@ -734,31 +755,26 @@ class WindowManager {
   };
 
   private logoutAndRestart = (event?: E.Event): void => {
-    E.net
-      .request(`${this.home}/logout`)
-      .on("response", response => {
-        response.on("error", (err: Error) => {
-          logger.error("Request error: ", err);
-        });
-        response.on("end", () => {
-          if (response.statusCode >= 200 && response.statusCode <= 299) {
-            E.session.defaultSession.cookies.flushStore().then(() => {
-              this.mainWindow.setBrowserView(this.mainTab);
-              this.mainTab.webContents.reload();
+    const request = E.net.request({
+      url: Const.LOGOUT_PAGE,
+      useSessionCookies: true,
+    });
 
-              Tabs.closeAll();
+    request.on("response", async response => {
+      this.setFigmaUserIDs([]);
+      try {
+        await Promise.all([E.session.defaultSession.clearStorageData(), E.session.defaultSession.clearCache()]);
+      } finally {
+        Tabs.closeAll();
 
-              this.mainWindow.webContents.send("closeAllTab");
-            });
-          }
+        this.mainWindow.setBrowserView(this.mainTab);
+        this.mainTab.webContents.loadURL(Const.LOGIN_PAGE);
 
-          if (response.statusCode >= 400) {
-            E.session.defaultSession.clearStorageData();
-            this.mainWindow.webContents.loadURL(`${this.home}`);
-          }
-        });
-      })
-      .end();
+        this.mainWindow.webContents.send("closeAllTab");
+      }
+    });
+    request.on("error", error => logger.error("Logout error: ", error));
+    request.end();
 
     event && event.preventDefault();
     return;

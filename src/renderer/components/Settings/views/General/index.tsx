@@ -64,6 +64,11 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
             text="Show new project button"
             onChange={props.settings.visibleNewProjectBtn}
           />
+          <CheckBox
+            value={props.settings.settings.app.useZenity}
+            text="Use Zenity for Dialogs"
+            onChange={props.settings.changeUseZenity}
+          />
         </div>
         <div></div>
         <div className="flex flex_column">
@@ -73,7 +78,12 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
               type="text"
               className="justify__content_left flex_grow_1 input_inline border_light input_w_70per marg_right_10px"
               contentBefore={
-                <Button className="button_clear" onClick={(): void => props.settings.selectExportDir()}>
+                <Button
+                  className="button_clear"
+                  onClick={(): void => {
+                    props.settings.selectExportDir();
+                  }}
+                >
                   <Icon color="var(--text)" size="22" type="Folder" />
                 </Button>
               }
@@ -84,7 +94,9 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
               text="Change"
               type="primary"
               className="width_60px"
-              onClick={(): void => props.settings.selectExportDir()}
+              onClick={(): void => {
+                props.settings.selectExportDir();
+              }}
             />
           </div>
         </div>
@@ -97,7 +109,9 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
               type="primary"
               text="+ Add directory"
               className="width_120px"
-              onClick={(): void => props.settings.addDir()}
+              onClick={(): void => {
+                props.settings.addDir();
+              }}
             />
             <List>
               <ListItems items={props.settings.settings.app.fontDirs} onRemove={props.settings.removeDir} />

@@ -1,3 +1,45 @@
+figma-linux (0.7.2-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.7.2 version
+
+  ## Features:
+  * feat: update artifact name for packages
+  * feat: starts added workflow
+  * feat: start updating of the app build
+  * feat: update artifact name for packages
+  * feat: implemented dialogs via Zenity. [#159](https://github.com/Figma-Linux/figma-linux/issues/159)
+
+  ## Bug Fixes:
+  * fix: update icon for home button
+  * fix: Fix to make window snapping work again. [#186](https://github.com/Figma-Linux/figma-linux/issues/186)
+  * fix: exporting files with the slash symbol in name
+  * fix: Titlebar revamp. [#170](https://github.com/Figma-Linux/figma-linux/issues/170)
+  * fix: Log out button does nothing. [#188](https://github.com/Figma-Linux/figma-linux/issues/188)
+  * fix: update README
+  * fix: Log out button does nothing. [#188](https://github.com/Figma-Linux/figma-linux/issues/188)
+  * fix: Logs out on every start. [#189](https://github.com/Figma-Linux/figma-linux/issues/189)
+  * fix: workflow
+  * fix: main.yaml
+  * fix: rename workflow file
+  * fix: update README
+  * fix: use Zenity dialogs
+  * fix: update build appImage
+  * fix: reset settings after exporting of a file
+  * fix: get a font file. [#155](https://github.com/Figma-Linux/figma-linux/issues/155)
+  * fix: brought back the old logic of drag of window
+  * fix: get local fonts. [#155](https://github.com/Figma-Linux/figma-linux/issues/155)
+  * fix: set clipboard data function. [#154](https://github.com/Figma-Linux/figma-linux/issues/154)
+
+  ## Other Changes:
+  * other: Improve application name in desktop file. [#161](https://github.com/Figma-Linux/figma-linux/issues/161)
+  * other: Bump Electron.js version to 12.0.2
+  * other: Update Build_artefacts_arm64v8
+  * other: add arm64v8
+  * other: update generate_release_notes.pl script
+  * other: added script for bump figma linux version
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Mon, 05 Apr 2021 16:33:44 +0300
+
 figma-linux (0.7.1-1ubuntu0) devel; urgency=medium
 
   * Publish 0.7.1 version

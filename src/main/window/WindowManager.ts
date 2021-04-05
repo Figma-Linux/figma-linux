@@ -329,7 +329,7 @@ class WindowManager {
       logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
     });
     E.ipcMain.on("setFigjamEnabled", (event, enabled) => {
-      logger.info("The setFigjamEnabled not implemented, workspaceName: ", enabled);
+      logger.info("The setFigjamEnabled not implemented, enabled: ", enabled);
     });
     E.ipcMain.on("receiveTabs", (event, tabs) => {
       this.tabs = tabs;
@@ -755,31 +755,26 @@ class WindowManager {
   };
 
   private logoutAndRestart = (event?: E.Event): void => {
-    E.net
-      .request(`${this.home}/logout`)
-      .on("response", response => {
-        response.on("error", (err: Error) => {
-          logger.error("Request error: ", err);
-        });
-        response.on("end", () => {
-          if (response.statusCode >= 200 && response.statusCode <= 299) {
-            E.session.defaultSession.cookies.flushStore().then(() => {
-              this.mainWindow.setBrowserView(this.mainTab);
-              this.mainTab.webContents.reload();
+    const request = E.net.request({
+      url: Const.LOGOUT_PAGE,
+      useSessionCookies: true,
+    });
 
-              Tabs.closeAll();
+    request.on("response", async response => {
+      this.setFigmaUserIDs([]);
+      try {
+        await Promise.all([E.session.defaultSession.clearStorageData(), E.session.defaultSession.clearCache()]);
+      } finally {
+        Tabs.closeAll();
 
-              this.mainWindow.webContents.send("closeAllTab");
-            });
-          }
+        this.mainWindow.setBrowserView(this.mainTab);
+        this.mainTab.webContents.loadURL(Const.LOGIN_PAGE);
 
-          if (response.statusCode >= 400) {
-            E.session.defaultSession.clearStorageData();
-            this.mainWindow.webContents.loadURL(`${this.home}`);
-          }
-        });
-      })
-      .end();
+        this.mainWindow.webContents.send("closeAllTab");
+      }
+    });
+    request.on("error", error => logger.error("Logout error: ", error));
+    request.end();
 
     event && event.preventDefault();
     return;

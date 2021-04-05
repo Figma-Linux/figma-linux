@@ -203,7 +203,7 @@ export const registerIpcMainHandlers = () => {
     const lastDir = storage.get().app.lastExportDir || storage.get().app.exportDir;
 
     if (files.length === 1 && !files[0].name.includes(path.sep)) {
-      const originalFileName = files[0].name;
+      const originalFileName = files[0].name.replace(/\//g, "-");
       const savePath = await dialogs.showSaveDialog({
         defaultPath: `${lastDir}/${path.basename(originalFileName)}`,
         showsTagField: false,
@@ -239,7 +239,7 @@ export const registerIpcMainHandlers = () => {
     directoryPath = path.resolve(directoryPath);
     let filesToBeReplaced = 0;
     for (const file of files) {
-      const outputPath = path.join(directoryPath, file.name);
+      const outputPath = path.join(directoryPath, file.name.replace(/\//g, "-"));
       const validExtensions = [".fig", ".jpg", ".pdf", ".png", ".svg"];
       if (
         path.relative(directoryPath, outputPath).startsWith("..") ||
@@ -277,7 +277,7 @@ export const registerIpcMainHandlers = () => {
       }
     }
     for (const file of files) {
-      const outputPath = path.join(directoryPath, file.name);
+      const outputPath = path.join(directoryPath, file.name.replace(/\//g, "-"));
       mkPath(path.dirname(outputPath));
 
       try {

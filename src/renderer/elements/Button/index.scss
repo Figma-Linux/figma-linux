@@ -72,12 +72,14 @@
   &_title {
     padding: 12px;
     color: var(--fg-header);
+    opacity: .4;
     background-color: var(--bg-header-control);
 
     &:hover {
-      background-color: var(--bg-header-control-hover);
-      color: var(--bg-header-hover);
-      cursor: pointer;
+      opacity: 1;
+      // background-color: var(--bg-header-control-hover);
+      // color: var(--bg-header-hover);
+      cursor: default;
     }
   }
   &_control {
@@ -88,14 +90,14 @@
     &:hover {
       background-color: var(--bg-header-control-hover);
       color: var(--bg-header-control-hover);
-      cursor: pointer;
+      cursor: default;
     }
   }
   &_close {
     color: var(--fg-header-control);
     &:hover {
       background: var(--bg-window-close);
-      cursor: pointer;
+      cursor: default;
     }
   }
 

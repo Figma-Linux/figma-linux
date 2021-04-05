@@ -15,12 +15,16 @@
   background-color: var(--bg-tab);
   color: var(--fg-tab);
   fill: var(--fg-tab);
-
+  
   &:hover {
     background-color: var(--bg-tab-hover);
     color: var(--fg-tab-hover);
     fill: var(--fg-tab-hover);
-    cursor: pointer;
+    cursor: default;
+  }
+
+  &:hover .tab__close{
+    opacity: 0.4;
   }
 
   &__text {
@@ -30,17 +34,25 @@
     text-overflow: clip;
     font-size: var(--fontControlSize);
     margin-right: 6px;
+    opacity: 0.4;
+  }
+
+  &:hover .tab__text {
+    opacity: 1;
   }
 
   &__close {
-    height: 16px;
+    height: 14px;
     color: var(--fg-tab);
     fill: var(--fg-tab);
+    opacity: 0;
+    display: inline-flex;
 
     &:hover {
       color: var(--fg-tab-hover);
       fill: var(--fg-tab-hover);
-      cursor: pointer;
+      cursor: default;
+      opacity: 1 !important;
     }
   }
 
@@ -48,5 +60,35 @@
     background-color: var(--bg-tab-active);
     color: var(--fg-tab-active);
     fill: var(--fg-tab-active);
+    opacity: 1;
+    
+    .tab__text {
+      opacity: 1;
+    }
+    
+    .tab__close {
+      opacity: 0.16;
+    }
+
+    
+  }
+
+  &_main_active {
+    background-color: var(--bg-panel);
+
+    .icon {
+      color: var(--bg-panel);
+      filter: invert(1)
+    }
+
+    &:hover {    
+      cursor: default;
+      background-color: var(--bg-panel);
+
+      .icon {
+        color: var(--bg-panel);
+        filter: invert(1)
+      }
+    }
   }
 }

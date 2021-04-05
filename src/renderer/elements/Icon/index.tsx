@@ -21,6 +21,7 @@ import { Sync } from "./icons/Sync";
 import { Figma } from "./icons/Figma";
 import { Restore } from "./icons/Restore";
 import { CloseTab } from "./icons/CloseTab";
+import { Home } from "./icons/Home";
 import "../../animations.scss";
 import "./index.scss";
 
@@ -45,6 +46,7 @@ type Icons =
   | "Settings"
   | "Figma"
   | "Restore"
+  | "Home"
   | "CloseTab";
 
 export interface IconProps {
@@ -81,6 +83,7 @@ export class Icon extends React.Component<ContainerProps, unknown> {
     Figma,
     Restore,
     CloseTab,
+    Home,
   };
 
   constructor(props: ContainerProps) {
@@ -90,7 +93,6 @@ export class Icon extends React.Component<ContainerProps, unknown> {
   render(): JSX.Element {
     const classNames: string[] = ["icon"];
     const IconView = this.iconsMap[this.props.type];
-    const size = this.props.size || "16";
 
     if (this.props.className) {
       classNames.push(this.props.className);
@@ -101,7 +103,7 @@ export class Icon extends React.Component<ContainerProps, unknown> {
 
     return (
       <div className={classNames.join(" ")}>
-        <IconView color={this.props.color} size={size} />
+        <IconView {...this.props} />
       </div>
     );
   }

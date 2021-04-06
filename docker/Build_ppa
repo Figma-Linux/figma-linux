@@ -15,4 +15,4 @@ RUN chmod 600 ~/.ssh/id_rsa
 RUN tar cJf ./build/figma-linux_$FIGMA_LINUX_VERSION.orig.tar.xz ./build/installers/linux-unpacked/*
 RUN cd build/figma-linux-${FIGMA_LINUX_VERSION} && EDITOR=/bin/true dpkg-source -q --commit . patchsetname
 RUN cd build/figma-linux-${FIGMA_LINUX_VERSION} && debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback"
-RUN dput ppa-figma ./build/figma-linux_${FIGMA_LINUX_VERSION}-1ubuntu${FIGMA_LINUX_REV}_source.changes
+RUN dput ppa-figma ./build/figma-linux_${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}ubuntu0_source.changes

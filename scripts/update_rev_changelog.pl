@@ -16,7 +16,7 @@ printf("Version: %s, revision number: %s.\n", $version, $rev);
 
 system("rm -rf /tmp/tmp_changelog");
 system("touch /tmp/tmp_changelog");
-system("echo \"figma-linux (${version}-1ubuntu${rev}) devel; urgency=medium\" >> /tmp/tmp_changelog");
+system("echo \"figma-linux (${version}-${rev}ubuntu0) devel; urgency=medium\" >> /tmp/tmp_changelog");
 system("echo \"\" >> /tmp/tmp_changelog");
 system("echo \"  * Bump revision number for ${version} version\" >> /tmp/tmp_changelog");
 system("echo \"\" >> /tmp/tmp_changelog");

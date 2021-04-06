@@ -89,6 +89,7 @@ jobs:
           ls -la ./scripts
           ls -la ./build
           ls -la ./build/installers
+          cat ./scripts/debian/changelog
           mkdir ./gpg
           echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
           echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key

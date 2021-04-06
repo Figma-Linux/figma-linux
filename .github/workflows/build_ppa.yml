@@ -1,4 +1,4 @@
-name: Build PPA
+name: Upload new rev PPA
 
 on:
   workflow_dispatch:

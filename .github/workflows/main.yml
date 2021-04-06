@@ -77,6 +77,7 @@ jobs:
         id: version
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
+          sha256sum ./build/installers/*
 
       - name: Upload release assets
         id: release
@@ -139,6 +140,7 @@ jobs:
         id: version
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
+          sha256sum ./build/installers/*
 
       - name: Upload release assets
         id: release

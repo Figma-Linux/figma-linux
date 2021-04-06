@@ -25,6 +25,7 @@ jobs:
           git tag | tail -1
           git checkout $(git tag | tail -1)
           git status
+          ls -la .
           perl ./scripts/update_rev_changelog.pl "$(git tag | tail -1 | tr -d 'v')" "${{ github.event.inputs.rev }}"
 
       - name: Cache src

@@ -74,7 +74,7 @@ jobs:
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
           echo ::set-output name=ref::"refs/tags/v$(cat build/installers/version)"
-          sha256sum ./build/installers/*
+          sha256sum ./build/installers/figma-linux*
 
       - name: Upload release assets
         id: release
@@ -136,7 +136,7 @@ jobs:
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
           echo ::set-output name=ref::"refs/tags/v$(cat build/installers/version)"
-          sha256sum ./build/installers/*
+          sha256sum ./build/installers/figma-linux*
 
       - name: Upload release assets
         id: release

@@ -23,4 +23,4 @@ jobs:
       - name: Update PKGBUILD
         id: pkgbuild
         run: |
-          git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
+          sed -i "s/$prevVersion/$version/" ./PKGBUILD

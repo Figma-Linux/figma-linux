@@ -84,6 +84,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REF: ${{ steps.version.outputs.ref }}
+          INPUT_TAG_NAME: v${{ steps.version.outputs.release }}
 
   build_amd64:
     runs-on: ubuntu-latest
@@ -144,3 +145,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REF: ${{ steps.version.outputs.ref }}
+          INPUT_TAG_NAME: v${{ steps.version.outputs.release }}

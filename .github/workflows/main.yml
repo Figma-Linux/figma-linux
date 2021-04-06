@@ -36,8 +36,8 @@ jobs:
     - name: Setup
       run: |
         chmod +wr . -R
-        chmod +x ./scripts/*.sh
-        chmod +x ./scripts/*.pl
+        chmod +x ./**/*.sh
+        chmod +x ./**/*.pl
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -101,8 +101,8 @@ jobs:
       - name: Setup
         run: |
           chmod +wr . -R
-          chmod +x ./scripts/*.sh
-          chmod +x ./scripts/*.pl
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
 
       - name: Build in Docker
         id: build
@@ -168,7 +168,8 @@ jobs:
           rm -rf ./repo
           rm -rf ./amd64
           ls -la .
-          chmod +x ./scripts/*
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
           ls -la ./scripts
           ls -la ./build
           ls -la ./build/installers

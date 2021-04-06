@@ -84,7 +84,7 @@ jobs:
           files: build/installers/figma-linux*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_REF: {{ steps.version.outputs.ref }}
+          CUSTOM_REF: ${{ steps.version.outputs.ref }}
 
   build_amd64:
     runs-on: ubuntu-latest
@@ -145,4 +145,4 @@ jobs:
           files: build/installers/figma-linux*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CUSTOM_REF: {{ steps.version.outputs.ref }}
+          CUSTOM_REF: ${{ steps.version.outputs.ref }}

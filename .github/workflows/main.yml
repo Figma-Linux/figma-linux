@@ -110,6 +110,7 @@ jobs:
           docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_local" .
           mkdir -p ./build/installers
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+          mv ./build/installers/figma-linux_$(cat build/installers/version)_linux_x64.zip ./build/installers/figma-linux_$(cat build/installers/version)_linux_amd64.zip
           perl ./scripts/generate_release_notes.pl
 
       - name: Cache amd64 artifacts

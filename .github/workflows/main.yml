@@ -133,7 +133,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: amd64
-          path: ./
+          path: ./build/installers
 
       - name: Get version
         id: version

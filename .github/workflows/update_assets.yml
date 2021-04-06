@@ -127,14 +127,11 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: amd64
-          path: ./
+          path: ./build/installers
 
       - name: Get version
         id: version
         run: |
-          ls -la .
-          ls -la ./build
-          ls -la ./build/installers
           echo ::set-output name=release::$(cat build/installers/version)
           echo ::set-output name=ref::"refs/tags/v$(cat build/installers/version)"
 

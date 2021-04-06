@@ -40,7 +40,7 @@ plugs:
 parts:
   figma-linux:
     plugin: dump
-    source: https://github.com/Figma-Linux/figma-linux/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/figma-linux_${SNAPCRAFT_PROJECT_VERSION}_linux_${SNAP_ARCH}.zip
+    source: https://github.com/Figma-Linux/figma-linux/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/figma-linux_${SNAPCRAFT_PROJECT_VERSION}_linux_$SNAP_ARCH.zip
     stage-packages:
       - fonts-noto-cjk
 

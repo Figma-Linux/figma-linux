@@ -80,11 +80,11 @@ jobs:
         uses: ChugunovRoman/action-gh-release@master
         with:
           name: Figma Linux ${{ steps.version.outputs.release }}
+          tag_name: v${{ steps.version.outputs.release }}
           files: build/installers/figma-linux*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: ${{ steps.version.outputs.ref }}
-          INPUT_TAG_NAME: v${{ steps.version.outputs.release }}
+          CUSTOM_REF: {{ steps.version.outputs.ref }}
 
   build_amd64:
     runs-on: ubuntu-latest
@@ -141,8 +141,8 @@ jobs:
         uses: ChugunovRoman/action-gh-release@master
         with:
           name: Figma Linux ${{ steps.version.outputs.release }}
+          tag_name: v${{ steps.version.outputs.release }}
           files: build/installers/figma-linux*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REF: ${{ steps.version.outputs.ref }}
-          INPUT_TAG_NAME: v${{ steps.version.outputs.release }}
+          CUSTOM_REF: {{ steps.version.outputs.ref }}

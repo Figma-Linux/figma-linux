@@ -9,18 +9,18 @@ jobs:
     steps:
       - name: Import SSH key
         id: key
-        run: echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
-        run: ssh-keyscan aur.archlinux.org >> ~./.ssh/known_hosts
+        run: |
+          echo "Importing SSH ley..."
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          echo "Step completed"
 
-      - name: Checkout aur repo
+      - name: Checkout AUR repo
         id: checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
+        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
 
-      - name: Cache src
-        id: cache-src
-        uses: actions/upload-artifact@v2
-        with:
-          name: repo
-          path: ./*
+      - name: Update PKGBUILD
+        id: pkgbuild
+        run: |
+          git clone ssh://aur@aur.archlinux.org/figma-linux.git ./

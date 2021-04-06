@@ -76,9 +76,10 @@ jobs:
 
       - name: Import keys
         run: |
+          mkdir -p ./build/installers
           ls -la .
           mv ./repo/* ./
-          mv ./amd64/* ./
+          mv ./amd64/* ./build/installers
           rm -rf ./repo
           rm -rf ./amd64
           ls -la .

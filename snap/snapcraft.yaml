@@ -14,6 +14,9 @@ architectures:
   - build-on: amd64
     run-on: amd64
 
+  - build-on: arm64
+    run-on: arm64
+
 plugs:
   gnome-3-28-1804:
     interface: content
@@ -37,7 +40,7 @@ plugs:
 parts:
   figma-linux:
     plugin: dump
-    source: https://github.com/Figma-Linux/figma-linux/releases/download/v$SNAPCRAFT_PROJECT_VERSION/figma-linux-$SNAPCRAFT_PROJECT_VERSION.zip
+    source: https://github.com/Figma-Linux/figma-linux/releases/download/v${SNAPCRAFT_PROJECT_VERSION}/figma-linux_${SNAPCRAFT_PROJECT_VERSION}_linux_${SNAP_ARCH}.zip
     stage-packages:
       - fonts-noto-cjk
 
@@ -62,4 +65,4 @@ apps:
       TMPDIR: $XDG_RUNTIME_DIR
       PATH: '$SNAP:$SNAP/usr/sbin:$SNAP/usr/bin:$SNAP/sbin:$SNAP/bin:$PATH'
       SNAP_DESKTOP_RUNTIME: $SNAP/gnome-platform
-      LD_LIBRARY_PATH: '$SNAP_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/x86_64-linux-gnu:$SNAP/usr/lib/x86_64-linux-gnu'
+      LD_LIBRARY_PATH: '$SNAP_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/${SNAP_ARCH}-linux-gnu:$SNAP/usr/lib/${SNAP_ARCH}-linux-gnu:$LD_LIBRARY_PATH:$SNAP/lib:$SNAP/usr/lib:$SNAP/lib/${SNAP_ARCH}-linux-gnu:$SNAP/usr/lib/${SNAP_ARCH}-linux-gnu'

@@ -1,0 +1,10 @@
+#!/bin/sh
+# postrm script for qmmp
+#
+# see: dh_installdeb(1)
+set -e
+
+rm -rf /usr/local/bin/figma-linux
+
+#DEBHELPER#
+exit 0

@@ -3,6 +3,8 @@ import { LogLevel } from "Enums";
 
 export const DEFAULT_SETTINGS: SettingsInterface = {
   clientId: v4(),
+  userId: "",
+  authedUserIDs: [],
   app: {
     logLevel: LogLevel.INFO,
     enableColorSpaceSrgb: false,

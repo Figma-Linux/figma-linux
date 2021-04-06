@@ -144,6 +144,8 @@ interface FeatureFlags {
 
 interface SettingsInterface {
   clientId: string;
+  userId: string;
+  authedUserIDs: string[];
   app: {
     logLevel: number;
     enableColorSpaceSrgb: boolean;

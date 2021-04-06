@@ -1,0 +1,188 @@
+name: Build
+
+on:
+  create:
+    tags:
+    - 'v*.*.*'
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache src
+        id: cache-src
+        uses: actions/upload-artifact@v2
+        with:
+          name: repo
+          path: ./*
+
+  build_arm64v8:
+    needs: setup
+    name: build for arm64v8
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v2
+      with:
+        name: repo
+        path: ./
+
+    - name: Setup
+      run: |
+        chmod +wr . -R
+        chmod +x ./scripts/*.sh
+        chmod +x ./scripts/*.pl
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build in Docker
+      id: build
+      run: |
+        docker buildx build --platform linux/arm64 -t 4tqrgqe5yrgfd/figma-linux-artefacts-arm --load -f ./docker/Build_artefacts_arm64v8 .
+        mkdir -p ./build/installers
+        docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-artefacts-arm)://usr/src/figma-linux/build/installers/. ./build/installers
+        perl ./scripts/generate_release_notes.pl
+
+    - name: Cache arm64v8 artifacts
+      id: cache-arm64v8-artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: arm64v8
+        path: build/installers/*
+
+  release_arm64v8:
+    name: Upload assets
+    runs-on: ubuntu-latest
+    needs: build_arm64v8
+    steps:
+      - name: mkdir installers
+        run: mkdir -p ./build/installers
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: arm64v8
+          path: ./build/installers
+
+      - name: Get version
+        id: version
+        run: |
+          echo ::set-output name=release::$(cat build/installers/version)
+
+      - name: Upload release assets
+        id: release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Figma Linux ${{ steps.version.outputs.release }}
+          files: build/installers/figma-linux*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_amd64:
+    runs-on: ubuntu-latest
+    name: build for amd64
+    needs: setup
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: repo
+          path: ./
+
+      - name: Setup
+        run: |
+          chmod +wr . -R
+          chmod +x ./scripts/*.sh
+          chmod +x ./scripts/*.pl
+
+      - name: Build in Docker
+        id: build
+        run: |
+          docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_local" .
+          mkdir -p ./build/installers
+          docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+          perl ./scripts/generate_release_notes.pl
+
+      - name: Cache amd64 artifacts
+        id: cache-amd64-artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: amd64
+          path: |
+            ./release_notes
+            build/installers/*
+
+  release_amd64:
+    name: Upload assets
+    runs-on: ubuntu-latest
+    needs: build_amd64
+    steps:
+      - name: mkdir installers
+        run: mkdir -p ./build/installers
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: amd64
+          path: ./
+
+      - name: Get version
+        id: version
+        run: |
+          echo ::set-output name=release::$(cat build/installers/version)
+
+      - name: Upload release assets
+        id: release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body_path: ./release_notes
+          name: Figma Linux ${{ steps.version.outputs.release }}
+          files: build/installers/figma-linux*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload_ppa_amd64:
+    name: Upload to Launchpad PPA
+    runs-on: ubuntu-latest
+    needs: build_amd64
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./
+
+      - name: Import keys
+        run: |
+          ls -la .
+          mv ./repo/* ./
+          mv ./amd64/* ./
+          rm -rf ./repo
+          rm -rf ./amd64
+          ls -la .
+          chmod +x ./scripts/*
+          ls -la ./scripts
+          ls -la ./build
+          ls -la ./build/installers
+          mkdir ./gpg
+          echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
+          echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
+          echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Upload PPA
+        run: |
+          ./scripts/build_ppa.sh

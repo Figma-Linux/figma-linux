@@ -1,12 +1,19 @@
 import * as E from "electron";
 
+import { storage } from "../Storage";
 import { NativeDialogs } from "./Native";
 import { ZenityDialogs } from "./Zenity";
 
 export class Provider {
   private provider: ProviderDialog;
 
-  constructor(provider: Dialogs.Providers) {
+  constructor() {
+    let provider: Dialogs.Providers = "Native";
+
+    if (storage.get().app.useZenity) {
+      provider = "Zenity";
+    }
+
     this.provider = this.makeProvider(provider);
 
     this.initListeners();
@@ -58,4 +65,4 @@ export class Provider {
   };
 }
 
-export const dialogs = new Provider("Native");
+export const dialogs = new Provider();

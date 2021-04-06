@@ -1,5 +1,7 @@
 name: Update Assets
 
+on: workflow_dispatch
+
 jobs:
   setup:
     name: Setup

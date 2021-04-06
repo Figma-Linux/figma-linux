@@ -1,0 +1,26 @@
+name: AUR
+
+on: workflow_dispatch
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import SSH key
+        id: key
+        run: echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
+        run: ssh-keyscan aur.archlinux.org >> ~./.ssh/known_hosts
+
+      - name: Checkout aur repo
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache src
+        id: cache-src
+        uses: actions/upload-artifact@v2
+        with:
+          name: repo
+          path: ./*

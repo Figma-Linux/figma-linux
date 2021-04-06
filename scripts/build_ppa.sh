@@ -5,6 +5,7 @@ if [ ! -d "./build/installers" ]; then
   exit 1;
 fi
 
+rev="$1";
 arch=`uname -m | tr -d '\n'`;
 version=$(cat ./build/installers/version);
 linux_unpacked="build/installers/linux-unpacked";
@@ -22,4 +23,4 @@ cp -rf ${linux_unpacked}/* $workdir
 cp -rf ${linux_unpacked}/icons/* $workdir/resources/icon
 cp -rf ./resources/figma-linux.desktop $workdir/resources
 
-docker build -t 4tqrgqe5yrgfd/figma-linux-ppa --build-arg FIGMA_LINUX_VERSION=${version} -f ./docker/Build_ppa .
+docker build -t 4tqrgqe5yrgfd/figma-linux-ppa --build-arg FIGMA_LINUX_VERSION=${version} --build-arg FIGMA_LINUX_REV=${rev} -f ./docker/Build_ppa .

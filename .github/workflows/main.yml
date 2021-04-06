@@ -186,4 +186,4 @@ jobs:
 
       - name: Build and Upload PPA
         run: |
-          ./scripts/build_ppa.sh
+          ./scripts/build_ppa.sh "0"

@@ -23,4 +23,20 @@ jobs:
       - name: Update PKGBUILD
         id: pkgbuild
         run: |
+          prevVersion=$(cat ./PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]')
+          version="0.7.3"
+          echo "Bump version from $prevVersion to $version"
           sed -i "s/$prevVersion/$version/" ./PKGBUILD
+          sed -i "s/$prevVersion/$version/" ./.SRCINFO
+          echo "Updating sums"
+          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = NEW_SHA_SUMS_FOR_X86_64\n/" ./.SRCINFO
+          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = NEW_SHA_SUMS_FOR_AARCH64\n/" ./.SRCINFO
+          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"NEW_SHA_SUMS_FOR_X86_64\")\n/" ./PKGBUILD
+          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"NEW_SHA_SUMS_FOR_AARCH64\")\n/" ./PKGBUILD
+
+      - name: Push to AUR
+        id: push
+        run: |
+          git add .
+          git commit -m "Release v$version"
+          git push origin master

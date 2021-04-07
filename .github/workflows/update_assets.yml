@@ -74,7 +74,7 @@ jobs:
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
           echo ::set-output name=ref::"refs/tags/v$(cat build/installers/version)"
-          sha256sum ./build/installers/figma-linux*
+          sha256sum ./build/installers/figma-linux* || echo ""
 
       - name: Upload release assets
         id: release
@@ -83,6 +83,8 @@ jobs:
           name: Figma Linux ${{ steps.version.outputs.release }}
           tag_name: v${{ steps.version.outputs.release }}
           files: build/installers/figma-linux*
+          append_body: false
+          delete_assets: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_REF: ${{ steps.version.outputs.ref }}
@@ -136,7 +138,7 @@ jobs:
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
           echo ::set-output name=ref::"refs/tags/v$(cat build/installers/version)"
-          sha256sum ./build/installers/figma-linux*
+          sha256sum ./build/installers/figma-linux* || echo ""
 
       - name: Upload release assets
         id: release
@@ -145,6 +147,8 @@ jobs:
           name: Figma Linux ${{ steps.version.outputs.release }}
           tag_name: v${{ steps.version.outputs.release }}
           files: build/installers/figma-linux*
+          append_body: false
+          delete_assets: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_REF: ${{ steps.version.outputs.ref }}

@@ -77,11 +77,11 @@ jobs:
         id: version
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
-          sha256sum ./build/installers/*
+          sha256sum ./build/installers/figma-linux* || echo ""
 
       - name: Upload release assets
         id: release
-        uses: softprops/action-gh-release@v1
+        uses: ChugunovRoman/action-gh-release@master
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: Figma Linux ${{ steps.version.outputs.release }}
@@ -140,11 +140,11 @@ jobs:
         id: version
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
-          sha256sum ./build/installers/*
+          sha256sum ./build/installers/figma-linux* || echo ""
 
       - name: Upload release assets
         id: release
-        uses: softprops/action-gh-release@v1
+        uses: ChugunovRoman/action-gh-release@master
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./release_notes

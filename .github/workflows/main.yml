@@ -190,3 +190,58 @@ jobs:
       - name: Build and Upload PPA
         run: |
           ./scripts/build_ppa.sh "1"
+
+  upload_aur:
+    name: Upload to AUR
+    runs-on: ubuntu-latest
+    needs: [build_amd64 build_arm64v8]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: [amd64 arm64v8]
+          path: ./
+
+      - name: Prepare artifacts
+        run: |
+          ls -la .
+          rm -rf ./*.(deb,pacman,rpm,AppImage)
+          rm -rf ./linux*
+          ls -la .
+
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          echo "Step completed"
+
+      - name: Checkout AUR repo
+        id: checkout
+        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
+
+      - name: Update PKGBUILD
+        id: pkgbuild
+        run: |
+          prevVersion=$(cat ./PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]')
+          version="$(cat ./version)"
+          sha256sums_x86_64="$(sha256sum ./figma-linux_${version}_linux_amd64.zip)"
+          sha256sums_aarch64="$(sha256sum ./figma-linux_${version}_linux_arm64.zip)"
+          echo "Bump version from $prevVersion to $version"
+          echo "New sha256sums for x86_64: ${sha256sums_x86_64}"
+          echo "New sha256sums for aarch64: ${sha256sums_aarch64}"
+          sed -i "s/$prevVersion/$version/" ./PKGBUILD
+          sed -i "s/$prevVersion/$version/" ./.SRCINFO
+          echo "Updating sums..."
+          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = ${sha256sums_x86_64}\n/" ./.SRCINFO
+          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = ${sha256sums_aarch64}\n/" ./.SRCINFO
+          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"${sha256sums_x86_64}\")\n/" ./PKGBUILD
+          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"${sha256sums_aarch64}\")\n/" ./PKGBUILD
+
+      - name: Push to AUR
+        id: push
+        run: |
+          git add .
+          git commit -m "Release v$version"
+          git push origin master

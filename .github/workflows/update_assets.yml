@@ -84,7 +84,7 @@ jobs:
           tag_name: v${{ steps.version.outputs.release }}
           files: build/installers/figma-linux*
           append_body: false
-          delete_assets: true
+          delete_assets: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CUSTOM_REF: ${{ steps.version.outputs.ref }}

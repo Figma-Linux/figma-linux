@@ -37,6 +37,8 @@ jobs:
       - name: Push to AUR
         id: push
         run: |
+          git config --global --add user.name "${{ secrets.USER_NAME }}"
+          git config --global --add user.email "${{ secrets.EMAIL }}"
           git add .
           git commit -m "Release v$version"
           git push origin master

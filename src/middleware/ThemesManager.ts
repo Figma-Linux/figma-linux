@@ -57,28 +57,28 @@ export class ThemesManager {
 
     for (const key of keys) {
       const value = this.currentTheme.palette[key];
-      document.documentElement.style.setProperty(`--${key}`, value);
+      document.body.style.setProperty(`--${key}`, value);
 
       if (key === "bg-toolbar-active") {
-        document.documentElement.style.setProperty("--bg-primary-btn", value);
-        document.documentElement.style.setProperty("--bg-overlay-active", value);
+        document.body.style.setProperty("--bg-primary-btn", value);
+        document.body.style.setProperty("--bg-overlay-active", value);
       }
       if (key === "fg-overlay") {
-        document.documentElement.style.setProperty("--fg-overlay", value);
-        document.documentElement.style.setProperty("--fg-overlay-right", value);
+        document.body.style.setProperty("--fg-overlay", value);
+        document.body.style.setProperty("--fg-overlay-right", value);
       }
       if (key === "fg-toolbar-active") {
-        document.documentElement.style.setProperty("--fg-overlay-active", value);
+        document.body.style.setProperty("--fg-overlay-active", value);
       }
       if (key === "fg-toolbar-active") {
-        document.documentElement.style.setProperty("--fg-overlay-active", value);
+        document.body.style.setProperty("--fg-overlay-active", value);
       }
       if (key === "text-disabled") {
-        document.documentElement.style.setProperty("--fg-overlay-secondary", value);
-        document.documentElement.style.setProperty("--fg-toolbar-placeholder", value);
+        document.body.style.setProperty("--fg-overlay-secondary", value);
+        document.body.style.setProperty("--fg-toolbar-placeholder", value);
       }
       if (key === "borders") {
-        document.documentElement.style.setProperty("--fg-overlay-sep", value);
+        document.body.style.setProperty("--fg-overlay-sep", value);
       }
     }
   }
@@ -94,6 +94,7 @@ export class ThemesManager {
     const additionStyleRules: string[] = [
       "#react-page { background-color: var(--bg-panel); }",
       `span[class*="action_option--shortcut"] { color: var(--fg-overlay); }`,
+      `div[class*="search--searchContainer"] input { background-color: var(--bg-panel) !important; }`,
     ];
 
     this.setThemeVariables();
@@ -143,6 +144,11 @@ export class ThemesManager {
         }
         if (/basic_form--textInput/.test(cssRule.selectorText)) {
           cssRule.style["backgroundColor"] = `var(--bg-panel)`;
+        }
+        if (
+          /(search--searchContainer--.*:hover|search--expandingSearchBoxContainerFocused)/.test(cssRule.selectorText)
+        ) {
+          cssRule.style["backgroundColor"] = `var(--bg-header)`;
         }
         if (/step_breadcrumb--stepTitle/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--text-active)`;

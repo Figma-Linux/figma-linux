@@ -1,5 +1,4 @@
 import * as E from "electron";
-import * as fs from "fs";
 
 import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
 import { isMenuItem } from "Utils/Common";

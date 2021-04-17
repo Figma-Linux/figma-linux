@@ -3,6 +3,8 @@
   overflow-x: hidden;
   display: flex;
   align-content: stretch;
+  user-select: none;
+  -webkit-app-region: drag;
 }
 
 .tab {
@@ -15,7 +17,7 @@
   background-color: var(--bg-tab);
   color: var(--fg-tab);
   fill: var(--fg-tab);
-  
+
   &:hover {
     background-color: var(--bg-tab-hover);
     color: var(--fg-tab-hover);
@@ -35,6 +37,7 @@
     font-size: var(--fontControlSize);
     margin-right: 6px;
     opacity: 0.4;
+    -webkit-app-region: no-drag;
   }
 
   &:hover .tab__text {
@@ -47,6 +50,7 @@
     fill: var(--fg-tab);
     opacity: 0;
     display: inline-flex;
+    -webkit-app-region: no-drag;
 
     &:hover {
       color: var(--fg-tab-hover);
@@ -61,16 +65,16 @@
     color: var(--fg-tab-active);
     fill: var(--fg-tab-active);
     opacity: 1;
-    
+
     .tab__text {
       opacity: 1;
     }
-    
+
     .tab__close {
       opacity: 0.16;
     }
 
-    
+
   }
 
   &_main_active {
@@ -81,7 +85,7 @@
       filter: invert(1)
     }
 
-    &:hover {    
+    &:hover {
       cursor: default;
       background-color: var(--bg-panel);
 

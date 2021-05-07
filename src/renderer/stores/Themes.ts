@@ -6,12 +6,15 @@ import { storage } from "Storage";
 
 export class Themes {
   @observable themes: Themes.Theme[] = [];
-  @observable currentTheme: string;
+  @observable currentThemeId: string;
+  @observable currentTheme: Themes.Theme;
   @observable creatorTheme: Themes.Theme;
   @observable previewerZoom: number;
 
   constructor() {
-    this.currentTheme = storage.get().theme.currentTheme;
+    this.currentThemeId = storage.get().theme.currentTheme;
+    const theme = E.ipcRenderer.sendSync("getCurrentTheme");
+    this.currentTheme = theme;
     this.creatorTheme = {
       ...DEFAULT_THEME,
       id: TEST_THEME_ID,
@@ -23,12 +26,14 @@ export class Themes {
 
   @action
   setTheme = (theme: string): void => {
-    this.currentTheme = theme;
+    this.currentThemeId = theme;
   };
 
   @action
   changeTheme = (id: string): void => {
-    this.currentTheme = id;
+    this.currentThemeId = id;
+    const t = E.ipcRenderer.sendSync("getCurrentTheme", id);
+    this.currentTheme = t;
 
     if (id === "0") {
       E.ipcRenderer.send("set-default-theme");
@@ -59,7 +64,7 @@ export class Themes {
     E.ipcRenderer.send("saveCreatorTheme", toJS(this.creatorTheme));
   };
 
-  getThemeById = (id: string): Themes.Theme | undefined => {
+  getThemeById = (id: string): Themes.Theme => {
     const theme = this.themes.find(theme => {
       return theme.id === id;
     });
@@ -70,6 +75,22 @@ export class Themes {
 
     return theme;
   };
+  getCurrentTheme = (): Themes.Theme => {
+    if (this.currentTheme) {
+      return this.currentTheme;
+    }
+
+    const theme = this.themes.find(theme => {
+      return theme.id === this.currentThemeId;
+    });
+
+    if (!theme) {
+      return DEFAULT_THEME;
+    }
+
+    return theme;
+  };
+
   private events = (): void => {
     E.ipcRenderer.on("getUploadedThemes", (sender, themes) => {
       this.themes = themes;
@@ -86,6 +107,7 @@ export class Themes {
       }
 
       this.setTheme(theme.id);
+      this.currentTheme = theme;
     });
     E.ipcRenderer.on("loadCreatorTheme", (sender, theme) => {
       this.creatorTheme = theme;

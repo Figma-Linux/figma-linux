@@ -30,10 +30,12 @@ import {
   buildActionToMenuItemMap,
   resetMenu,
   loadCreatorTheme,
+  getThemeById,
   saveCreatorTheme,
   exportCreatorTheme,
   updateThemesFromRepository,
   getThemesCount,
+  updateIds,
 } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -47,6 +49,7 @@ class WindowManager {
   panelScale: number;
   closedTabsHistory: Array<string> = [];
   themes: Themes.Theme[] = [];
+  currentTheme: Themes.Theme;
   creatorTheme: Themes.Theme;
   private lastFocusedTab: E.WebContents;
   private tabs: Tab[];
@@ -107,7 +110,14 @@ class WindowManager {
       setTimeout(() => this.restoreTabs(), 1000);
     }
 
-    this.updateThemes();
+    updateIds().then(() => {
+      this.updateThemes();
+    });
+
+    getThemeById().then(theme => {
+      this.currentTheme = theme;
+    });
+
     this.updatePanelScale(this.panelScale);
   }
 
@@ -439,6 +449,11 @@ class WindowManager {
         this.settingsView.webContents.send("sync-themes-end");
       }
       logger.debug("Sync themes end");
+    });
+    E.ipcMain.on("getCurrentTheme", (event, id) => {
+      getThemeById(id).then(theme => {
+        event.returnValue = theme;
+      });
     });
     E.ipcMain.on("set-clipboard-data", (event, data) => {
       const format = data.format;
@@ -969,7 +984,7 @@ class WindowManager {
       this.mainWindow.webContents.send("getUploadedThemes", this.themes);
     });
 
-    this.creatorTheme = await loadCreatorTheme();
+    [this.creatorTheme, this.currentTheme] = await Promise.all([loadCreatorTheme(), getThemeById()]);
     const themesCount = await getThemesCount();
 
     logger.debug("themes count: ", themesCount);

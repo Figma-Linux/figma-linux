@@ -35,7 +35,7 @@ class ThemesBody extends React.Component<ThemeViewProps, unknown> {
 
   render(): JSX.Element {
     const themes = toJS(this.props.themes.themes);
-    const currentTheme = toJS(this.props.themes.currentTheme);
+    const currentTheme = toJS(this.props.themes.currentThemeId);
 
     return (
       <div className="themes">

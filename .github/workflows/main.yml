@@ -139,6 +139,10 @@ jobs:
       - name: Get version
         id: version
         run: |
+          ls -la .
+          ls -la ./build
+          ls -la ./build/installers
+          ls -la ./amd64
           echo ::set-output name=release::$(cat build/installers/version)
           sha256sum ./build/installers/figma-linux* || echo ""
 

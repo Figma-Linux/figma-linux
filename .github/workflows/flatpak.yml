@@ -26,7 +26,7 @@ jobs:
       - name: Update configs
         id: update
         run: |
-          apt install libxml2-utils -y
+          sudo apt install libxml2-utils -y
           whereis xmllint
           echo "<li>Bug Fixes:</li>" >> /tmp/testfile
           echo "<ul>" >> /tmp/testfile

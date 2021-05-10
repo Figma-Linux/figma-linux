@@ -27,7 +27,6 @@ jobs:
         id: update
         run: |
           sudo apt install libxml2-utils -y
-          whereis xmllint
           echo "<li>Bug Fixes:</li>" >> /tmp/testfile
           echo "<ul>" >> /tmp/testfile
           echo "<li>fix: 1</li>" >> /tmp/testfile
@@ -46,11 +45,11 @@ jobs:
           xmllint --format /tmp/tmp1 > ./io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./io.github.Figma_Linux.figma_linux.appdata.xml
 
-      # - name: Push
-      #   id: push
-      #   run: |
-      #     git config --global --add user.name "${{ secrets.USER_NAME }}"
-      #     git config --global --add user.email "${{ secrets.EMAIL }}"
-      #     git add .
-      #     git commit -m "Release v$version"
-      #     git push origin master
+      - name: Push
+        id: push
+        run: |
+          git config --global --add user.name "${{ secrets.USER_NAME }}"
+          git config --global --add user.email "${{ secrets.EMAIL }}"
+          git add .
+          git commit -m "Release v$version"
+          git push origin master

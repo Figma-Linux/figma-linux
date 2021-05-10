@@ -212,9 +212,11 @@ jobs:
         id: key
         run: |
           echo "Importing SSH ley..."
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "Updating ~/.ssh/known_hosts..."
           ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
           echo "Step completed"
 
       - name: Checkout AUR repo
@@ -238,6 +240,7 @@ jobs:
           sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = ${sha256sums_aarch64}\n/" ./.SRCINFO
           sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"${sha256sums_x86_64}\")\n/" ./PKGBUILD
           sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"${sha256sums_aarch64}\")\n/" ./PKGBUILD
+          echo ::set-output name=release::$version
 
       - name: Push to AUR
         id: push
@@ -246,4 +249,67 @@ jobs:
           git config --global --add user.email "${{ secrets.EMAIL }}"
           git add .
           git commit -m "Release v$version"
-          git push origin master
+          git tag -a v${{ steps.pkgbuild.outputs.release }} -m "Publish v${{ steps.pkgbuild.outputs.release }} version"
+          git push --tags origin master
+
+  flatpak:
+    name: Setup
+    runs-on: ubuntu-latest
+    needs: [build_amd64 build_arm64v8]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: [repo, amd64]
+          path: ./
+
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "Step completed"
+
+      - name: Clone repo
+        id: clone
+        run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./flatpak-repo
+
+      - name: Update configs
+        id: update
+        run: |
+          sudo apt install libxml2-utils -y
+          ls -la .
+          ls -la ./repo
+          ls -la ./flatpak-repo
+          ls -la ./amd64
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ./repo/scripts/generate_release_notes.pl 1
+          data=$(cat ./release_notes | tr -d '\n')
+          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./release_notes
+          # prevVersion=$(cat ./flatpak-repoio.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
+          version="$(cat ./amd64/build/installers/version)"
+          echo "Bump version from $prevVersion to $version"
+          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
+          sed -i "s|<description>.\{0,12\}<ul>.*<\/ul>.\{0,12\}<\/description>|<description><ul>$data<\/ul><\/description>|g" /tmp/tmp1
+          xmllint --format /tmp/tmp1 > ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          echo ::set-output name=release::$version
+
+      - name: Push
+        id: push
+        run: |
+          git config --global --add user.name "${{ secrets.USER_NAME }}"
+          git config --global --add user.email "${{ secrets.EMAIL }}"
+          cd ./flatpak-repo && git add .
+          cd ./flatpak-repo && git commit -m "Release v$version"
+          cd ./flatpak-repo && git tag -a v${{ steps.update.outputs.release }} -m "Publish v${{ steps.update.outputs.release }} version"
+          cd ./flatpak-repo && git push --tags origin master
+

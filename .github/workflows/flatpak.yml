@@ -12,7 +12,7 @@ jobs:
         run: |
           echo "Importing SSH ley..."
           mkdir -p ~/.ssh
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "Updating ~/.ssh/known_hosts..."
           ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
           echo "Step completed"

@@ -1,0 +1,52 @@
+name: flatpak
+
+on: workflow_dispatch
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~./.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          echo "Step completed"
+
+      - name: Clone repo
+        id: clone
+        run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./
+
+      - name: Update configs
+        id: update
+        run: |
+          whereis xmllint
+          echo "<li>Bug Fixes:</li>" >> ./testfile
+          echo "<ul>" >> ./testfile
+          echo "<li>fix: 1</li>" >> ./testfile
+          echo "<li>fix: 2</li>" >> ./testfile
+          echo "</ul>" >> ./testfile
+          data=$(cat ./testfile | tr -d '\n')
+          cat ./io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./testfile
+          prevVersion=$(cat ./io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
+          version="0.7.3"
+          echo "Bump version from $prevVersion to $version"
+          sed -i "s/$prevVersion/$version/" ./io.github.Figma_Linux.figma_linux.yml
+          sed -i "s/$prevVersion/$version/" ./io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > ./tmp1
+          sed -i "s|<description>.\{0,12\}<ul>.*<\/ul>.\{0,12\}<\/description>|<description><ul>$data<\/ul><\/description>|g" ./tmp1
+          xmllint --format ./tmp1 > ./io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./io.github.Figma_Linux.figma_linux.appdata.xml
+
+      # - name: Push
+      #   id: push
+      #   run: |
+      #     git config --global --add user.name "${{ secrets.USER_NAME }}"
+      #     git config --global --add user.email "${{ secrets.EMAIL }}"
+      #     git add .
+      #     git commit -m "Release v$version"
+      #     git push origin master

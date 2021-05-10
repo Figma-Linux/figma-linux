@@ -198,11 +198,23 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: [amd64, arm64v8]
           path: ./
 
       - name: Prepare artifacts
         run: |
+          ls -la .
+          mv ./repo/* ./
+          mv ./amd64/* ./
+          mv ./arm64v8/* ./
+          rm -rf ./repo
+          rm -rf ./amd64
+          rm -rf ./arm64v8
+          ls -la .
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ls -la ./scripts
+          ls -la ./build
+          ls -la ./build/installers
           ls -la .
           rm -rf ./*.(deb,pacman,rpm,AppImage)
           rm -rf ./linux*
@@ -259,7 +271,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: [repo, amd64]
           path: ./
 
       - name: Import SSH key
@@ -286,6 +297,17 @@ jobs:
           ls -la ./repo
           ls -la ./flatpak-repo
           ls -la ./amd64
+          mv ./amd64/* ./
+          mv ./arm64v8/* ./
+          rm -rf ./repo
+          rm -rf ./amd64
+          rm -rf ./arm64v8
+          ls -la .
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ls -la ./scripts
+          ls -la ./build
+          ls -la ./build/installers
           chmod +x ./**/*.sh
           chmod +x ./**/*.pl
           ./repo/scripts/generate_release_notes.pl 1

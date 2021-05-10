@@ -33,7 +33,7 @@ class App extends React.Component<AppProps, unknown> {
   }
 
   render(): JSX.Element {
-    const theme = this.props.themes.getThemeById(this.props.themes.currentTheme);
+    const theme = this.props.themes.getCurrentTheme();
     const pallet = getColorPallet(theme);
 
     const View = viewMap[this.props.views.view];

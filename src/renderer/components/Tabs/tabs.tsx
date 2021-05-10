@@ -12,7 +12,7 @@ interface Props {
 
 const Tabs: React.FunctionComponent<Props> = props => {
   return (
-    <div className="tabBar" onMouseDown={props.mouseDownHandler}>
+    <div className="tabBar">
       {props.tabs.tabs.map((t: Tab, i: number) => (
         <div
           key={i}

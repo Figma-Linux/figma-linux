@@ -25,7 +25,8 @@ jobs:
           # git tag | tail -1
           # git checkout $(git tag | tail -1)
           # git status
-          chmod +x ./scripts/*
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
           perl ./scripts/update_rev_changelog.pl "$(git tag | tail -1 | tr -d 'v')" "${{ github.event.inputs.rev }}"
 
       - name: Cache src
@@ -48,8 +49,8 @@ jobs:
       - name: Setup
         run: |
           chmod +wr . -R
-          chmod +x ./scripts/*.sh
-          chmod +x ./scripts/*.pl
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
 
       - name: Build in Docker
         id: build
@@ -83,10 +84,12 @@ jobs:
           rm -rf ./repo
           rm -rf ./amd64
           ls -la .
-          chmod +x ./scripts/*
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
           ls -la ./scripts
           ls -la ./build
           ls -la ./build/installers
+          cat ./scripts/debian/changelog
           mkdir ./gpg
           echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
           echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
@@ -101,4 +104,4 @@ jobs:
 
       - name: Build and Upload PPA
         run: |
-          ./scripts/build_ppa.sh
+          ./scripts/build_ppa.sh "${{ github.event.inputs.rev }}"

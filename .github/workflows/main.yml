@@ -36,8 +36,8 @@ jobs:
     - name: Setup
       run: |
         chmod +wr . -R
-        chmod +x ./scripts/*.sh
-        chmod +x ./scripts/*.pl
+        chmod +x ./**/*.sh
+        chmod +x ./**/*.pl
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -77,10 +77,11 @@ jobs:
         id: version
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
+          sha256sum ./build/installers/figma-linux* || echo ""
 
       - name: Upload release assets
         id: release
-        uses: softprops/action-gh-release@v1
+        uses: ChugunovRoman/action-gh-release@master
         if: startsWith(github.ref, 'refs/tags/')
         with:
           name: Figma Linux ${{ steps.version.outputs.release }}
@@ -101,8 +102,8 @@ jobs:
       - name: Setup
         run: |
           chmod +wr . -R
-          chmod +x ./scripts/*.sh
-          chmod +x ./scripts/*.pl
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
 
       - name: Build in Docker
         id: build
@@ -133,16 +134,17 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: amd64
-          path: ./
+          path: ./build/installers
 
       - name: Get version
         id: version
         run: |
           echo ::set-output name=release::$(cat build/installers/version)
+          sha256sum ./build/installers/figma-linux* || echo ""
 
       - name: Upload release assets
         id: release
-        uses: softprops/action-gh-release@v1
+        uses: ChugunovRoman/action-gh-release@master
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./release_notes
@@ -168,7 +170,8 @@ jobs:
           rm -rf ./repo
           rm -rf ./amd64
           ls -la .
-          chmod +x ./scripts/*
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
           ls -la ./scripts
           ls -la ./build
           ls -la ./build/installers
@@ -186,4 +189,127 @@ jobs:
 
       - name: Build and Upload PPA
         run: |
-          ./scripts/build_ppa.sh
+          ./scripts/build_ppa.sh "1"
+
+  upload_aur:
+    name: Upload to AUR
+    runs-on: ubuntu-latest
+    needs: [build_amd64 build_arm64v8]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: [amd64 arm64v8]
+          path: ./
+
+      - name: Prepare artifacts
+        run: |
+          ls -la .
+          rm -rf ./*.(deb,pacman,rpm,AppImage)
+          rm -rf ./linux*
+          ls -la .
+
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "Step completed"
+
+      - name: Checkout AUR repo
+        id: checkout
+        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
+
+      - name: Update PKGBUILD
+        id: pkgbuild
+        run: |
+          prevVersion=$(cat ./PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]')
+          version="$(cat ./version)"
+          sha256sums_x86_64="$(sha256sum ./figma-linux_${version}_linux_amd64.zip)"
+          sha256sums_aarch64="$(sha256sum ./figma-linux_${version}_linux_arm64.zip)"
+          echo "Bump version from $prevVersion to $version"
+          echo "New sha256sums for x86_64: ${sha256sums_x86_64}"
+          echo "New sha256sums for aarch64: ${sha256sums_aarch64}"
+          sed -i "s/$prevVersion/$version/" ./PKGBUILD
+          sed -i "s/$prevVersion/$version/" ./.SRCINFO
+          echo "Updating sums..."
+          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = ${sha256sums_x86_64}\n/" ./.SRCINFO
+          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = ${sha256sums_aarch64}\n/" ./.SRCINFO
+          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"${sha256sums_x86_64}\")\n/" ./PKGBUILD
+          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"${sha256sums_aarch64}\")\n/" ./PKGBUILD
+          echo ::set-output name=release::$version
+
+      - name: Push to AUR
+        id: push
+        run: |
+          git config --global --add user.name "${{ secrets.USER_NAME }}"
+          git config --global --add user.email "${{ secrets.EMAIL }}"
+          git add .
+          git commit -m "Release v$version"
+          git tag -a v${{ steps.pkgbuild.outputs.release }} -m "Publish v${{ steps.pkgbuild.outputs.release }} version"
+          git push --tags origin master
+
+  flatpak:
+    name: Setup
+    runs-on: ubuntu-latest
+    needs: [build_amd64 build_arm64v8]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: [repo, amd64]
+          path: ./
+
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          mkdir -p ~/.ssh
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "Step completed"
+
+      - name: Clone repo
+        id: clone
+        run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./flatpak-repo
+
+      - name: Update configs
+        id: update
+        run: |
+          sudo apt install libxml2-utils -y
+          ls -la .
+          ls -la ./repo
+          ls -la ./flatpak-repo
+          ls -la ./amd64
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ./repo/scripts/generate_release_notes.pl 1
+          data=$(cat ./release_notes | tr -d '\n')
+          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./release_notes
+          # prevVersion=$(cat ./flatpak-repoio.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
+          version="$(cat ./amd64/build/installers/version)"
+          echo "Bump version from $prevVersion to $version"
+          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
+          sed -i "s|<description>.\{0,12\}<ul>.*<\/ul>.\{0,12\}<\/description>|<description><ul>$data<\/ul><\/description>|g" /tmp/tmp1
+          xmllint --format /tmp/tmp1 > ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          echo ::set-output name=release::$version
+
+      - name: Push
+        id: push
+        run: |
+          git config --global --add user.name "${{ secrets.USER_NAME }}"
+          git config --global --add user.email "${{ secrets.EMAIL }}"
+          cd ./flatpak-repo && git add .
+          cd ./flatpak-repo && git commit -m "Release v$version"
+          cd ./flatpak-repo && git tag -a v${{ steps.update.outputs.release }} -m "Publish v${{ steps.update.outputs.release }} version"
+          cd ./flatpak-repo && git push --tags origin master
+

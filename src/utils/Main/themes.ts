@@ -2,7 +2,6 @@ import { app, net } from "electron";
 import * as Azip from "adm-zip";
 import * as fs from "fs";
 import * as path from "path";
-import { v4 } from "uuid";
 
 import {
   AVAILABLE_THEME_FIELDS,
@@ -198,6 +197,67 @@ export async function exportCreatorTheme(theme: Themes.Theme): Promise<void> {
   return writeThemeFile(filePath, themeData);
 }
 
+export async function updateIds(): Promise<void> {
+  const currentThemeId = storage.get().theme.currentTheme;
+  const files = await fs.promises.readdir(themesDirectory);
+  let newCurrentThemeId: string | undefined;
+  let needUpdate = false;
+
+  for (const fileName of files) {
+    const fullFilePath = path.resolve(themesDirectory, fileName);
+    const themeFile = await readThemeFile(fullFilePath);
+
+    if (await isValidThemeFile(fullFilePath, themeFile)) {
+      const theme: Themes.Theme = translatePaletteToKebabCase(themeFile);
+
+      if (theme.id !== currentThemeId) {
+        needUpdate = true;
+      } else {
+        newCurrentThemeId = path.parse(fileName).name;
+      }
+    }
+  }
+
+  if (!needUpdate) {
+    return;
+  }
+
+  for (const fileName of files) {
+    const fullFilePath = path.resolve(themesDirectory, fileName);
+    const themeFile = await readThemeFile(fullFilePath);
+
+    if (await isValidThemeFile(fullFilePath, themeFile)) {
+      const theme: Themes.Theme = translatePaletteToKebabCase(themeFile);
+
+      theme.id = path.parse(fileName).name;
+
+      await writeThemeFile(fullFilePath, theme);
+    }
+  }
+
+  storage.setTheme(newCurrentThemeId);
+}
+
+export async function getThemeById(id?: string): Promise<Themes.Theme> {
+  const themeName = id || storage.get().theme.currentTheme;
+  const fullFilePath = path.join(themesDirectory, `${themeName}.json`);
+
+  if (!(await access(fullFilePath))) {
+    return DEFAULT_THEME;
+  }
+
+  const themeFile = await readThemeFile(fullFilePath);
+  logger.info("getThemeById, themeFile");
+
+  if (await isValidThemeFile(fullFilePath, themeFile)) {
+    const theme: Themes.Theme = translatePaletteToKebabCase(themeFile);
+
+    return theme;
+  }
+
+  return DEFAULT_THEME;
+}
+
 export async function getThemesFromDirectory(): Promise<Themes.Theme[]> {
   const files = await fs.promises.readdir(themesDirectory);
   const creatorTheme = await loadCreatorTheme();
@@ -211,7 +271,7 @@ export async function getThemesFromDirectory(): Promise<Themes.Theme[]> {
       const theme: Themes.Theme = translatePaletteToKebabCase(themeFile);
 
       if (!theme.id) {
-        theme.id = v4();
+        theme.id = path.parse(fileName).name;
 
         await writeThemeFile(fullFilePath, theme);
       }

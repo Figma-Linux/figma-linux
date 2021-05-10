@@ -199,12 +199,21 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: [amd64 arm64v8]
           path: ./
 
       - name: Prepare artifacts
         run: |
           ls -la .
+          mv ./repo/* ./
+          mv ./amd64/* ./
+          rm -rf ./repo
+          rm -rf ./amd64
+          ls -la .
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ls -la ./scripts
+          ls -la ./build
+          ls -la ./build/installers
           rm -rf ./*.(deb,pacman,rpm,AppImage)
           rm -rf ./linux*
           ls -la .
@@ -260,7 +269,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: [repo amd64]
           path: ./
 
       - name: Import SSH key
@@ -284,11 +292,20 @@ jobs:
         run: |
           sudo apt install libxml2-utils -y
           ls -la .
+          mv ./repo/* ./
+          mv ./amd64/* ./
+          rm -rf ./repo
+          rm -rf ./amd64
+          ls -la .
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ls -la ./scripts
+          ls -la ./build
+          ls -la ./build/installers
+          ls -la .
           ls -la ./repo
           ls -la ./flatpak-repo
           ls -la ./amd64
-          chmod +x ./**/*.sh
-          chmod +x ./**/*.pl
           ./repo/scripts/generate_release_notes.pl 1
           data=$(cat ./release_notes | tr -d '\n')
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml

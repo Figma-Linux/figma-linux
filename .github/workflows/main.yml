@@ -259,7 +259,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: [repo, amd64]
+          name: [repo amd64]
           path: ./
 
       - name: Import SSH key

@@ -71,11 +71,14 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: arm64v8
-          path: ./
+          path: ./build/installers
 
       - name: Get version
         id: version
         run: |
+          ls -la .
+          ls -la ./build
+          ls -la ./build/installers
           echo ::set-output name=release::$(cat build/installers/version)
           sha256sum ./build/installers/figma-linux* || echo ""
 
@@ -156,43 +159,44 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  upload_ppa_amd64:
-    name: Upload to Launchpad PPA
-    runs-on: ubuntu-latest
-    needs: build_amd64
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          path: ./
+  # Uncommnet before next release
+  # upload_ppa_amd64:
+  #   name: Upload to Launchpad PPA
+  #   runs-on: ubuntu-latest
+  #   needs: build_amd64
+  #   steps:
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         path: ./
 
-      - name: Import keys
-        run: |
-          ls -la .
-          mv ./repo/* ./
-          mv ./amd64/* ./
-          rm -rf ./repo
-          rm -rf ./amd64
-          ls -la .
-          chmod +x ./**/*.sh
-          chmod +x ./**/*.pl
-          ls -la ./scripts
-          ls -la ./build
-          ls -la ./build/installers
-          mkdir ./gpg
-          echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
-          echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
-          echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
+  #     - name: Import keys
+  #       run: |
+  #         ls -la .
+  #         mv ./repo/* ./
+  #         mv ./amd64/* ./
+  #         rm -rf ./repo
+  #         rm -rf ./amd64
+  #         ls -la .
+  #         chmod +x ./**/*.sh
+  #         chmod +x ./**/*.pl
+  #         ls -la ./scripts
+  #         ls -la ./build
+  #         ls -la ./build/installers
+  #         mkdir ./gpg
+  #         echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
+  #         echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
+  #         echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
+  #         echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Upload PPA
-        run: |
-          ./scripts/build_ppa.sh "1"
+  #     - name: Build and Upload PPA
+  #       run: |
+  #         ./scripts/build_ppa.sh "1"
 
   upload_aur:
     name: Upload to AUR
@@ -206,22 +210,25 @@ jobs:
       - name: Prepare artifacts
         run: |
           ls -la .
-          mv ./repo/* ./
-          mv ./amd64/* ./
-          mv ./arm64v8/* ./
+          mkdir -p src/build/installers
+          mv ./repo/* ./src
+          mv ./amd64/* ./src/build/installers/
+          mv ./arm64v8/* ./src/build/installers/
           rm -rf ./repo
           rm -rf ./amd64
           rm -rf ./arm64v8
           ls -la .
+          ls -la ./src
+          ls -la ./src/build
+          ls -la ./src/build/installers
           chmod +x ./**/*.sh
           chmod +x ./**/*.pl
-          ls -la ./scripts
-          ls -la ./build
-          ls -la ./build/installers
-          ls -la .
-          rm -rf ./*.(deb,pacman,rpm,AppImage)
-          rm -rf ./linux*
-          ls -la .
+          rm -rf ./src/build/installers/*.deb
+          rm -rf ./src/build/installers/*.pacman
+          rm -rf ./src/build/installers/*.rpm
+          rm -rf ./src/build/installers/*.AppImage
+          rm -rf ./src/build/installers/linux*
+          ls -la ./src/build/installers/
 
       - name: Import SSH key
         id: key
@@ -236,25 +243,25 @@ jobs:
 
       - name: Checkout AUR repo
         id: checkout
-        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
+        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./aur
 
       - name: Update PKGBUILD
         id: pkgbuild
         run: |
-          prevVersion=$(cat ./PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]')
-          version="$(cat ./version)"
-          sha256sums_x86_64="$(sha256sum ./figma-linux_${version}_linux_amd64.zip)"
-          sha256sums_aarch64="$(sha256sum ./figma-linux_${version}_linux_arm64.zip)"
+          prevVersion=$(cat ./aur/PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]')
+          version="$(cat ./src/build/installers/version)"
+          sha256sums_x86_64="$(sha256sum ./src/build/installers/figma-linux_${version}_linux_amd64.zip)"
+          sha256sums_aarch64="$(sha256sum ./src/build/installers/figma-linux_${version}_linux_arm64.zip)"
           echo "Bump version from $prevVersion to $version"
           echo "New sha256sums for x86_64: ${sha256sums_x86_64}"
           echo "New sha256sums for aarch64: ${sha256sums_aarch64}"
-          sed -i "s/$prevVersion/$version/" ./PKGBUILD
-          sed -i "s/$prevVersion/$version/" ./.SRCINFO
+          sed -i "s/$prevVersion/$version/" ./aur/PKGBUILD
+          sed -i "s/$prevVersion/$version/" ./aur/.SRCINFO
           echo "Updating sums..."
-          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = ${sha256sums_x86_64}\n/" ./.SRCINFO
-          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = ${sha256sums_aarch64}\n/" ./.SRCINFO
-          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"${sha256sums_x86_64}\")\n/" ./PKGBUILD
-          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"${sha256sums_aarch64}\")\n/" ./PKGBUILD
+          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = ${sha256sums_x86_64}\n/" ./aur/.SRCINFO
+          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = ${sha256sums_aarch64}\n/" ./aur/.SRCINFO
+          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"${sha256sums_x86_64}\")\n/" ./aur/PKGBUILD
+          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"${sha256sums_aarch64}\")\n/" ./aur/PKGBUILD
           echo ::set-output name=release::$version
 
       - name: Push to AUR
@@ -262,13 +269,13 @@ jobs:
         run: |
           git config --global --add user.name "${{ secrets.USER_NAME }}"
           git config --global --add user.email "${{ secrets.EMAIL }}"
-          git add .
-          git commit -m "Release v$version"
-          git tag -a v${{ steps.pkgbuild.outputs.release }} -m "Publish v${{ steps.pkgbuild.outputs.release }} version"
-          git push --tags origin master
+          cd ./aur && git add .
+          cd ./aur && git commit -m "Release v$version"
+          cd ./aur && git tag -a v${{ steps.pkgbuild.outputs.release }} -m "Publish v${{ steps.pkgbuild.outputs.release }} version"
+          cd ./aur && git push --tags origin master
 
   flatpak:
-    name: Setup
+    name: upload flatpak
     runs-on: ubuntu-latest
     needs: [release_amd64, release_arm64v8]
     steps:
@@ -300,24 +307,20 @@ jobs:
           ls -la ./repo
           ls -la ./flatpak-repo
           ls -la ./amd64
+          ls -la ./arm64v8
           mv ./amd64/* ./
           mv ./arm64v8/* ./
           rm -rf ./repo
           rm -rf ./amd64
           rm -rf ./arm64v8
           ls -la .
-          chmod +x ./**/*.sh
-          chmod +x ./**/*.pl
-          ls -la ./scripts
-          ls -la ./build
-          ls -la ./build/installers
-          chmod +x ./**/*.sh
-          chmod +x ./**/*.pl
+          chmod +x ./**/*.sh || echo ''
+          chmod +x ./**/*.pl || echo ''
           ./repo/scripts/generate_release_notes.pl 1
           data=$(cat ./release_notes | tr -d '\n')
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./release_notes
-          # prevVersion=$(cat ./flatpak-repoio.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
+          prevVersion=$(cat ./flatpak-repoio.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
           version="$(cat ./amd64/build/installers/version)"
           echo "Bump version from $prevVersion to $version"
           sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml

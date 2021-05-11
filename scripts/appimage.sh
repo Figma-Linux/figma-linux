@@ -25,6 +25,7 @@ cp -rf "./resources/icons/256x256.png" "$APP_DIR/figma-linux.png";
 cp -rf "./resources/icons" "$APP_DIR/";
 chmod a+x "$APP_DIR/AppRun"
 chmod a+x "$APPDIR/figma-linux"
+chmod a+x "$APPDIR/chrome-sandbox"
 chmod a+x "$APPDIR/*.sh"
 
 cd "$APP_DIR";

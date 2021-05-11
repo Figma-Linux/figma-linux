@@ -23,6 +23,7 @@ cat "./resources/figma-linux-appimage.desktop" > "$APP_DIR/figma-linux.desktop";
 cp -rf "./resources/AppRun" "$APP_DIR/AppRun";
 cp -rf "./resources/icons/256x256.png" "$APP_DIR/figma-linux.png";
 cp -rf "./resources/icons" "$APP_DIR/";
+chmod a+x "$APP_DIR/AppRun"
 
 cd "$APP_DIR";
 

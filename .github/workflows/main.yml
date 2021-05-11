@@ -251,6 +251,9 @@ jobs:
         run: |
           prevVersion=$(cat ./aur/PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]')
           version="$(cat ./src/build/installers/version)"
+          ls -la .
+          ls -la ./src
+          ls -la ./src/build/installers/
           sha256sums_x86_64="$(sha256sum ./src/build/installers/figma-linux_${version}_linux_amd64.zip)"
           sha256sums_aarch64="$(sha256sum ./src/build/installers/figma-linux_${version}_linux_arm64.zip)"
           echo "Bump version from $prevVersion to $version"

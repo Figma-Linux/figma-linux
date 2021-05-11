@@ -221,8 +221,8 @@ jobs:
           ls -la ./src
           ls -la ./src/build
           ls -la ./src/build/installers
-          chmod +x ./**/*.sh
-          chmod +x ./**/*.pl
+          find ./ -type f -iname "*.sh" -exec chmod +x {} \;
+          find ./ -type f -iname "*.pl" -exec chmod +x {} \;
           rm -rf ./src/build/installers/*.deb
           rm -rf ./src/build/installers/*.pacman
           rm -rf ./src/build/installers/*.rpm
@@ -305,6 +305,7 @@ jobs:
           sudo apt install libxml2-utils -y
           ls -la .
           ls -la ./repo
+          ls -la ./repo/scripts
           ls -la ./flatpak-repo
           ls -la ./amd64
           ls -la ./arm64v8
@@ -314,8 +315,8 @@ jobs:
           rm -rf ./amd64
           rm -rf ./arm64v8
           ls -la .
-          chmod +x ./**/*.sh || echo ''
-          chmod +x ./**/*.pl || echo ''
+          find ./ -type f -iname "*.sh" -exec chmod +x {} \;
+          find ./ -type f -iname "*.pl" -exec chmod +x {} \;
           ./repo/scripts/generate_release_notes.pl 1
           data=$(cat ./release_notes | tr -d '\n')
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml

@@ -262,10 +262,10 @@ jobs:
           sed -i "s/$prevVersion/$version/" ./aur/PKGBUILD
           sed -i "s/$prevVersion/$version/" ./aur/.SRCINFO
           echo "Updating sums..."
-          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = ${sha256sums_x86_64}\n/" ./aur/.SRCINFO
-          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = ${sha256sums_aarch64}\n/" ./aur/.SRCINFO
-          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"${sha256sums_x86_64}\")\n/" ./aur/PKGBUILD
-          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"${sha256sums_aarch64}\")\n/" ./aur/PKGBUILD
+          sed -i "s/sha256sums_x86_64 = .*\n/sha256sums_x86_64 = $\{sha256sums_x86_64\}\n/" ./aur/.SRCINFO
+          sed -i "s/sha256sums_aarch64 = .*\n/sha256sums_aarch64 = $\{sha256sums_aarch64\}\n/" ./aur/.SRCINFO
+          sed -i "s/sha256sums_x86_64=(\".*\")\n/sha256sums_x86_64=(\"$\{sha256sums_x86_64\}\")\n/" ./aur/PKGBUILD
+          sed -i "s/sha256sums_aarch64=(\".*\")\n/sha256sums_aarch64=(\"$\{sha256sums_aarch64\}\")\n/" ./aur/PKGBUILD
           echo ::set-output name=release::$version
 
       - name: Push to AUR
@@ -273,10 +273,11 @@ jobs:
         run: |
           git config --global --add user.name "${{ secrets.USER_NAME }}"
           git config --global --add user.email "${{ secrets.EMAIL }}"
-          cd ./aur && git add .
-          cd ./aur && git commit -m "Release v$version"
-          cd ./aur && git tag -a v${{ steps.pkgbuild.outputs.release }} -m "Publish v${{ steps.pkgbuild.outputs.release }} version"
-          cd ./aur && git push --tags origin master
+          cd ./aur
+          git add .
+          git commit -m "Release v$version"
+          git tag -a v${{ steps.pkgbuild.outputs.release }} -m "Publish v${{ steps.pkgbuild.outputs.release }} version"
+          git push --tags origin master
 
   flatpak:
     name: Update Flatpak
@@ -320,11 +321,9 @@ jobs:
           ls -la .
           find ./ -type f -iname "*.sh" -exec chmod +x {} \;
           find ./ -type f -iname "*.pl" -exec chmod +x {} \;
-          cd ./repo && ./scripts/generate_release_notes.pl 1
-          echo "ls -la ."
-          ls -la .
-          echo "ls -la ./repo"
-          ls -la ./repo
+          cd ./repo
+          ./scripts/generate_release_notes.pl 1
+          cd ..
           data=$(cat ./repo/release_notes | tr -d '\n')
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./repo/release_notes
@@ -344,8 +343,9 @@ jobs:
         run: |
           git config --global --add user.name "${{ secrets.USER_NAME }}"
           git config --global --add user.email "${{ secrets.EMAIL }}"
-          cd ./flatpak-repo && git add .
-          cd ./flatpak-repo && git commit -m "Release v$version"
-          cd ./flatpak-repo && git tag -a v${{ steps.update.outputs.release }} -m "Publish v${{ steps.update.outputs.release }} version"
-          cd ./flatpak-repo && git push --tags origin master
+          cd ./flatpak-repo
+          git add .
+          git commit -m "Release v$version"
+          git tag -a v${{ steps.update.outputs.release }} -m "Publish v${{ steps.update.outputs.release }} version"
+          git push --tags origin master
 

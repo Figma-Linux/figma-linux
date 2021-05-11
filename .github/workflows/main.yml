@@ -276,7 +276,7 @@ jobs:
           cd ./aur && git push --tags origin master
 
   flatpak:
-    name: upload flatpak
+    name: Update Flatpak
     runs-on: ubuntu-latest
     needs: [release_amd64, release_arm64v8]
     steps:
@@ -317,12 +317,16 @@ jobs:
           ls -la .
           find ./ -type f -iname "*.sh" -exec chmod +x {} \;
           find ./ -type f -iname "*.pl" -exec chmod +x {} \;
-          ./repo/scripts/generate_release_notes.pl 1
-          data=$(cat ./release_notes | tr -d '\n')
+          cd ./repo && ./repo/scripts/generate_release_notes.pl 1
+          echo "ls -la ."
+          ls -la .
+          echo "ls -la ./repo"
+          ls -la ./repo
+          data=$(cat ./repo/release_notes | tr -d '\n')
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          cat ./release_notes
-          prevVersion=$(cat ./flatpak-repoio.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
-          version="$(cat ./amd64/build/installers/version)"
+          cat ./repo/release_notes
+          prevVersion=$(cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
+          version="$(cat ./build/installers/version)"
           echo "Bump version from $prevVersion to $version"
           sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
           sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml

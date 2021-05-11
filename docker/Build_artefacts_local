@@ -11,5 +11,6 @@ COPY ./src ./src
 COPY ["./*.json", "./.prettierrc", "./.eslintrc", "./"]
 
 RUN npm i && \
+  chmod a+x ./resources/AppRun && \
   npm run pack && \
   echo $(node -e "const package = require('./package.json'); console.log(package.version);") > ./build/installers/version

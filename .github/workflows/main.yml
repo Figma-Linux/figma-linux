@@ -234,6 +234,7 @@ jobs:
         id: key
         run: |
           echo "Importing SSH ley..."
+          mkdir ~/.ssh
           echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "Updating ~/.ssh/known_hosts..."
           ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
@@ -311,7 +312,6 @@ jobs:
           ls -la ./arm64v8
           mv ./amd64/* ./
           mv ./arm64v8/* ./
-          rm -rf ./repo
           rm -rf ./amd64
           rm -rf ./arm64v8
           ls -la .

@@ -1,6 +1,6 @@
 #!/bin/perl
 
-my $isXml = "$ARGV[0]";
+my $isHtml = "$ARGV[0]";
 my $features=`git log \$(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "feat:.*" | uniq`;
 my $fixes=`git log \$(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "fix:.*" | uniq`;
 my $other=`git log \$(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "other:.*" | uniq`;
@@ -21,24 +21,25 @@ sub generate {
 
   `echo "$title" >> $release_note_file_path`;
 
-  if ($isXml ne "") {
+  if ($isHtml ne "") {
     `echo "<ul>" >> $release_note_file_path`;
   }
 
   for my $msg (@list) {
     my $issue = `echo "$msg" | grep -Eo "#.*" | tr -d '\n'`;
+    $msg =~ s/^(feat|other|fix): //gi;
 
     if ($issue ne "") {
       my $issueId = substr $issue, 1;
       $msg =~ s/ ?(Close|#).*$//gi;
 
-      if ($isXml eq "") {
+      if ($isHtml eq "") {
         `echo "* $msg [$issue]($baseUrl/$issueId)" >> $release_note_file_path`;
       } else {
-        `echo "<li>$msg [$issue]($baseUrl/$issueId)</li>" >> $release_note_file_path`;
+        `echo '<li>$msg <a href="$baseUrl/$issueId" target="_blank">$issue</a></li>' >> $release_note_file_path`;
       }
     } else {
-      if ($isXml eq "") {
+      if ($isHtml eq "") {
         `echo "* $msg" >> $release_note_file_path`;
       } else {
         `echo "<li>$msg</li>" >> $release_note_file_path`;
@@ -46,13 +47,13 @@ sub generate {
     }
   }
 
-  if ($isXml ne "") {
+  if ($isHtml ne "") {
     `echo "</ul>" >> $release_note_file_path`;
   }
 }
 
 if ($hasFeatures > 0) {
-  if ($isXml eq "") {
+  if ($isHtml eq "") {
     generate("## Features:", \@featureList);
   } else {
     generate("<li>Features:</li>", \@featureList);
@@ -64,7 +65,7 @@ if ($hasFeatures > 0) {
 }
 
 if ($hasFixes > 0) {
-  if ($isXml eq "") {
+  if ($isHtml eq "") {
     generate("## Bug Fixes:", \@fixList);
   } else {
     generate("<li>Bug Fixes:</li>", \@fixList);
@@ -76,7 +77,7 @@ if ($hasFixes > 0) {
 }
 
 if ($hasOther > 0) {
-  if ($isXml eq "") {
+  if ($isHtml eq "") {
     generate("## Other Changes:", \@otherList);
   } else {
     generate("<li>Other Changes:</li>", \@otherList);

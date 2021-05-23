@@ -1,0 +1,26 @@
+FROM archlinux
+
+WORKDIR /usr/src/figma-linux-aur
+
+COPY ./src/build/installers/ /usr/src/
+
+RUN pacman -Sy sudo git nano binutils --noconfirm && \
+  git clone https://aur.archlinux.org/figma-linux.git . && \
+  export prevVersion=$(cat ./PKGBUILD | grep -E 'pkgver=".*"' | tr -d '[a-z="\n]') && \
+  export version="$(cat /usr/src/version)" && \
+  export lineStartPos="$(grep -onE '[a-z0-9]{64,64}' ./PKGBUILD | awk -F":" '{print $1}' | head -1)" && \
+  export lineEndPos="$(grep -onE '[a-z0-9]{64,64}' ./PKGBUILD | awk -F":" '{print $1}' | tail -1)" && \
+  cp -rf /usr/src/*.zip /usr/src/figma-linux-aur/ && \
+  export sha256sums_x86_64="$(sha256sum /usr/src/figma-linux-aur/figma-linux_0.7.3_linux_amd64.zip)" && \
+  export sha256sums_aarch64="$(sha256sum /usr/src/figma-linux-aur/figma-linux_0.7.3_linux_arm64.zip)" && \
+  sed -i ./PKGBUILD -re "${lineStartPos},${lineEndPos}d" && \
+  echo "Bump version from $prevVersion to $version" && \
+  echo "New sha256sums for x86_64: ${sha256sums_x86_64}" && \
+  echo "New sha256sums for aarch64: ${sha256sums_aarch64}" && \
+  sed -i "s/$prevVersion/$version/" ./PKGBUILD && \
+  sed -i "s/pkgrel=\".\{1,10\}\"/pkgrel=\"0\"/" ./PKGBUILD && \
+  sed -i "s/EUID == 0/EUID == 99999/" /usr/bin/makepkg && \
+  sudo makepkg -g -f -p PKGBUILD >> ./PKGBUILD && \
+  sudo makepkg --printsrcinfo > .SRCINFO && \
+  rm -rf /var/cache/pacman/pkg/* && \
+  pacman -Scc --noconfirm

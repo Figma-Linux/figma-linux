@@ -24,6 +24,7 @@ declare namespace Electron {
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggle-settings-developer-tools", listener: () => void): this;
     on(event: "toggle-current-tab-devtools", listener: () => void): this;
+    on(event: "handlePluginMenuAction", listener: (pluginMenuAction: Menu.MenuAction) => void): this;
     on(event: "handleUrl", listener: (senderId: number, url: string) => void): this;
     on(event: "openSettingsView", listener: () => void): this;
     on(event: "openThemeCreatorView", listener: () => void): this;
@@ -38,6 +39,7 @@ declare namespace Electron {
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggle-settings-developer-tools"): boolean;
     emit(event: "toggle-current-tab-devtools"): boolean;
+    emit(event: "handlePluginMenuAction", pluginMenuAction: Menu.MenuAction): boolean;
     emit(event: "handleUrl", senderId: number, url: string): boolean;
     emit(event: "openSettingsView"): boolean;
     emit(event: "openThemeCreatorView"): boolean;

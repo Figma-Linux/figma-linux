@@ -488,6 +488,9 @@ class WindowManager {
       return null;
     });
 
+    E.app.on("handlePluginMenuAction", pluginMenuAction => {
+      this.lastFocusedTab.send("handlePluginMenuAction", pluginMenuAction);
+    });
     E.app.on("toggle-current-tab-devtools", () => {
       toggleDetachedDevTools(this.lastFocusedTab);
     });

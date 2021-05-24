@@ -11,7 +11,7 @@ export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.Brow
       return;
     }
 
-    window.webContents.send("handlePluginMenuAction", item.pluginMenuAction);
+    E.app.emit("handlePluginMenuAction", item.pluginMenuAction);
   }
 };
 

@@ -53,11 +53,15 @@ jobs:
       #     git add .
       #     git commit -m "Release v$version"
       #     git push origin master
-      - uses: octokit/request-action@v2.x
-        name: Create Pull Request
-        id: cpr
-        with:
-          route: GET /repos/flathub/io.github.Figma_Linux.figma_linux/pulls
-          body: '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name:  Create Pull Request
+        run: |
+          curl -X POST -u "${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/flathub/io.github.Figma_Linux.figma_linux/pulls -d '{"title": "Release v0.7.4 version","head":"Figma-Linux:bump-version","base":"master"}'
+
+      # - uses: octokit/request-action@v2.x
+      #   name: Create Pull Request
+      #   id: cpr
+      #   with:
+      #     route: GET /repos/flathub/io.github.Figma_Linux.figma_linux/pulls
+      #     body: '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

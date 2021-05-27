@@ -319,7 +319,7 @@ jobs:
           find ./ -type f -iname "*.sh" -exec chmod +x {} \;
           find ./ -type f -iname "*.pl" -exec chmod +x {} \;
           cd ./repo
-          ./scripts/generate_release_notes.pl 1
+          ./scripts/generate_release_notes.pl --html
           cd ..
           data=$(cat ./repo/release_notes | tr -d '\n')
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml

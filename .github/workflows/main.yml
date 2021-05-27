@@ -159,43 +159,43 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  upload_ppa_amd64:
-    name: Upload to Launchpad PPA
-    runs-on: ubuntu-latest
-    needs: build_amd64
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          path: ./
+  # upload_ppa_amd64:
+  #   name: Upload to Launchpad PPA
+  #   runs-on: ubuntu-latest
+  #   needs: build_amd64
+  #   steps:
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         path: ./
 
-      - name: Import keys
-        run: |
-          ls -la .
-          mv ./repo/* ./
-          mv ./amd64/* ./
-          rm -rf ./repo
-          rm -rf ./amd64
-          ls -la .
-          chmod +x ./**/*.sh
-          chmod +x ./**/*.pl
-          ls -la ./scripts
-          ls -la ./build
-          ls -la ./build/installers
-          mkdir ./gpg
-          echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
-          echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
-          echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
+  #     - name: Import keys
+  #       run: |
+  #         ls -la .
+  #         mv ./repo/* ./
+  #         mv ./amd64/* ./
+  #         rm -rf ./repo
+  #         rm -rf ./amd64
+  #         ls -la .
+  #         chmod +x ./**/*.sh
+  #         chmod +x ./**/*.pl
+  #         ls -la ./scripts
+  #         ls -la ./build
+  #         ls -la ./build/installers
+  #         mkdir ./gpg
+  #         echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
+  #         echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
+  #         echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
+  #         echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v1
+  #       with:
+  #         username: ${{ secrets.DOCKER_USERNAME }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Upload PPA
-        run: |
-          ./scripts/build_ppa.sh "1"
+  #     - name: Build and Upload PPA
+  #       run: |
+  #         ./scripts/build_ppa.sh "1"
 
   upload_aur:
     name: Upload to AUR

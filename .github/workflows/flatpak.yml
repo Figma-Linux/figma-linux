@@ -57,9 +57,7 @@ jobs:
         name: Create Pull Request
         id: cpr
         with:
-          route: GET /repos/{owner}/{repo}/pulls
-          owner: flathub
+          route: GET /repos/flathub/io.github.Figma_Linux.figma_linux/pulls
           body: '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'
-          repo: io.github.Figma_Linux.figma_linux
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

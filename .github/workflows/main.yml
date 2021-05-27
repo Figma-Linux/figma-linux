@@ -298,7 +298,7 @@ jobs:
           git remote add main git@github.com:flathub/io.github.Figma_Linux.figma_linux.git
           git pull main master --no-ff
           git push origin master
-          git push origin --delete bump-version
+          git push origin --delete bump-version || echo ''
 
       - name: Update configs
         id: update

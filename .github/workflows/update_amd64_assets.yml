@@ -1,0 +1,85 @@
+name: Update amd64 Assets
+
+on: workflow_dispatch
+
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        id: checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Cache src
+        id: cache-src
+        uses: actions/upload-artifact@v2
+        with:
+          name: repo
+          path: ./*
+
+  build_amd64:
+    runs-on: ubuntu-latest
+    name: build for amd64
+    needs: setup
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: repo
+          path: ./
+
+      - name: Setup
+        run: |
+          chmod +wr . -R
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+
+      - name: Build in Docker
+        id: build
+        run: |
+          docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_local" --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) .
+          mkdir -p ./build/installers
+          docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+          mv ./build/installers/figma-linux_$(cat build/installers/version)_linux_x64.zip ./build/installers/figma-linux_$(cat build/installers/version)_linux_amd64.zip
+
+      - name: Cache amd64 artifacts
+        id: cache-amd64-artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: amd64
+          path: build/installers/*
+
+  release_amd64:
+    name: Upload assets
+    runs-on: ubuntu-latest
+    needs: build_amd64
+    steps:
+      - name: mkdir installers
+        run: mkdir -p ./build/installers
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: amd64
+          path: ./build/installers
+
+      - name: Get version
+        id: version
+        run: |
+          echo ::set-output name=release::$(cat build/installers/version)
+          echo ::set-output name=ref::"refs/tags/v$(cat build/installers/version)"
+          sha256sum ./build/installers/figma-linux* || echo ""
+
+      - name: Upload release assets
+        id: release
+        uses: ChugunovRoman/action-gh-release@master
+        with:
+          name: Figma Linux ${{ steps.version.outputs.release }}
+          tag_name: v${{ steps.version.outputs.release }}
+          files: build/installers/figma-linux*
+          append_body: false
+          delete_assets: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CUSTOM_REF: ${{ steps.version.outputs.ref }}

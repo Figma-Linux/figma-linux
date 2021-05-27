@@ -16,7 +16,7 @@ system("sed -i \"s/$prevVersion/$version/\" ./src/package.json");
 system("sed -i \"s/$prevVersion/$version/\" ./snap/snapcraft.yaml");
 system("sed -i \"s/$prevVersion/$version/\" ./resources/figma-linux-appimage.desktop");
 
-system("perl scripts/generate_release_notes.pl");
+system("perl scripts/generate_release_notes.pl --latest");
 
 my $notes=`cat ./release_notes`;
 

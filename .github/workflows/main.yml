@@ -352,7 +352,7 @@ jobs:
           cd ./flatpak-repo
           git checkout -b bump-version
           git add .
-          git commit -m "Release v$version"
+          git commit -m "Release v${{ steps.update.outputs.release }}"
           git push origin bump-version
 
       - name:  Create Pull Request

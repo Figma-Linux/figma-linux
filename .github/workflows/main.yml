@@ -197,75 +197,75 @@ jobs:
   #       run: |
   #         ./scripts/build_ppa.sh "1"
 
-  upload_aur:
-    name: Upload to AUR
-    runs-on: ubuntu-latest
-    needs: [release_amd64, release_arm64v8]
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          path: ./
+  # upload_aur:
+  #   name: Upload to AUR
+  #   runs-on: ubuntu-latest
+  #   needs: [release_amd64, release_arm64v8]
+  #   steps:
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         path: ./
 
-      - name: Prepare artifacts
-        run: |
-          ls -la .
-          mkdir -p src/build/installers
-          mv ./repo/* ./src
-          mv ./amd64/build/installers/* ./src/build/installers/
-          mv ./arm64v8/* ./src/build/installers/
-          rm -rf ./repo
-          rm -rf ./amd64
-          rm -rf ./arm64v8
-          ls -la .
-          ls -la ./src
-          ls -la ./src/build
-          ls -la ./src/build/installers
-          find ./ -type f -iname "*.sh" -exec chmod +x {} \;
-          find ./ -type f -iname "*.pl" -exec chmod +x {} \;
-          rm -rf ./src/build/installers/*.deb
-          rm -rf ./src/build/installers/*.pacman
-          rm -rf ./src/build/installers/*.rpm
-          rm -rf ./src/build/installers/*.AppImage
-          rm -rf ./src/build/installers/linux*
-          ls -la ./src/build/installers/
+  #     - name: Prepare artifacts
+  #       run: |
+  #         ls -la .
+  #         mkdir -p src/build/installers
+  #         mv ./repo/* ./src
+  #         mv ./amd64/build/installers/* ./src/build/installers/
+  #         mv ./arm64v8/* ./src/build/installers/
+  #         rm -rf ./repo
+  #         rm -rf ./amd64
+  #         rm -rf ./arm64v8
+  #         ls -la .
+  #         ls -la ./src
+  #         ls -la ./src/build
+  #         ls -la ./src/build/installers
+  #         find ./ -type f -iname "*.sh" -exec chmod +x {} \;
+  #         find ./ -type f -iname "*.pl" -exec chmod +x {} \;
+  #         rm -rf ./src/build/installers/*.deb
+  #         rm -rf ./src/build/installers/*.pacman
+  #         rm -rf ./src/build/installers/*.rpm
+  #         rm -rf ./src/build/installers/*.AppImage
+  #         rm -rf ./src/build/installers/linux*
+  #         ls -la ./src/build/installers/
 
-      - name: Import SSH key
-        id: key
-        run: |
-          echo "Importing SSH ley..."
-          mkdir ~/.ssh
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
-          echo "Updating ~/.ssh/known_hosts..."
-          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-          chmod 600 ~/.ssh/id_rsa
-          echo "Step completed"
+  #     - name: Import SSH key
+  #       id: key
+  #       run: |
+  #         echo "Importing SSH ley..."
+  #         mkdir ~/.ssh
+  #         echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+  #         echo "Updating ~/.ssh/known_hosts..."
+  #         ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+  #         chmod 700 ~/.ssh
+  #         chmod 600 ~/.ssh/id_rsa
+  #         echo "Step completed"
 
-      - name: Checkout AUR repo
-        id: checkout
-        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./aur
+  #     - name: Checkout AUR repo
+  #       id: checkout
+  #       run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./aur
 
-      - name: Update PKGBUILD
-        id: pkgbuild
-        run: |
-          mkdir new-aur
-          cd ./src
-          docker build -t 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux -f ./docker/archlinux .
-          docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux)://usr/src/figma-linux-aur/. ../new-aur
-          cp -rf ../new-aur/PKGBUILD ../aur/
-          cp -rf ../new-aur/.SRCINFO ../aur/
-          echo ::set-output name=release::$version
+  #     - name: Update PKGBUILD
+  #       id: pkgbuild
+  #       run: |
+  #         mkdir new-aur
+  #         cd ./src
+  #         docker build -t 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux -f ./docker/archlinux .
+  #         docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux)://usr/src/figma-linux-aur/. ../new-aur
+  #         cp -rf ../new-aur/PKGBUILD ../aur/
+  #         cp -rf ../new-aur/.SRCINFO ../aur/
+  #         echo ::set-output name=release::$version
 
-      - name: Push to AUR
-        id: push
-        run: |
-          git config --global --add user.name "${{ secrets.USER_NAME }}"
-          git config --global --add user.email "${{ secrets.EMAIL }}"
-          cd ./aur
-          git status
-          git add .
-          git commit -m "Release v${{ steps.pkgbuild.outputs.release }}"
-          git push origin master
+  #     - name: Push to AUR
+  #       id: push
+  #       run: |
+  #         git config --global --add user.name "${{ secrets.USER_NAME }}"
+  #         git config --global --add user.email "${{ secrets.EMAIL }}"
+  #         cd ./aur
+  #         git status
+  #         git add .
+  #         git commit -m "Release v${{ steps.pkgbuild.outputs.release }}"
+  #         git push origin master
 
   flatpak:
     name: Update Flatpak
@@ -327,15 +327,15 @@ jobs:
           prevVersion=$(cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
           version="$(cat ./build/installers/version)"
           echo "Bump version from $prevVersion to $version"
-          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
           echo "Updating sums..."
-          export sha256sums_x86_64="$(sha256sum ./build/installers/figma-linux_${version}_linux_amd64.deb)"
-          export sha256sums_aarch64="$(sha256sum ./build/installers/figma-linux_${version}_linux_arm64.deb)"
+          export sha256sums_x86_64="$(sha256sum ./build/installers/figma-linux_${version}_linux_amd64.deb | awk '{print $1}' | tr -d '\n')"
+          export sha256sums_aarch64="$(sha256sum ./build/installers/figma-linux_${version}_linux_arm64.deb | awk '{print $1}' | tr -d '\n')"
           echo "sha256sums_x86_64: $sha256sums_x86_64"
           echo "sha256sums_aarch64: $sha256sums_aarch64"
-          perl -pe 's{sha256:.*}{++$n == 1 ? \"sha256: $ENV{'sha256sums_x86_64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
-          perl -pe 's{sha256:.*}{++$n == 2 ? \"sha256: $ENV{'sha256sums_aarch64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          perl -pe 's{sha256:.*}{++$n == 1 ? "sha256: $ENV{'sha256sums_x86_64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          perl -pe 's{sha256:.*}{++$n == 2 ? "sha256: $ENV{'sha256sums_aarch64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
           echo 'cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml after update sha sums'
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
@@ -355,13 +355,6 @@ jobs:
           git commit -m "Release v$version"
           git push origin bump-version
 
-      - uses: octokit/request-action@v2.x
-        name: Create Pull Request
-        id: cpr
-        with:
-          route: GET /repos/{owner}/{repo}/pulls
-          owner: flathub
-          body: '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'
-          repo: io.github.Figma_Linux.figma_linux
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name:  Create Pull Request
+        run: |
+          curl -X POST -u "ChugunovRoman:${{ secrets.REPO_ACCESS_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/flathub/io.github.Figma_Linux.figma_linux/pulls -d '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'

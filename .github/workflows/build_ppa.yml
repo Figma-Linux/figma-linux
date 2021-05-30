@@ -91,7 +91,6 @@ jobs:
           ls -la ./build/installers
           ls -la ./build/installers/linux-unpacked
           ls -la ./build/installers/linux-unpacked/installers
-          cat ./scripts/debian/changelog
           mkdir ./gpg
           echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
           echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
@@ -104,6 +103,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Upload PPA
-        run: |
-          ./scripts/build_ppa.sh "${{ github.event.inputs.rev }}"
+      # - name: Build and Upload PPA
+      #   run: |
+      #     ./scripts/build_ppa.sh "${{ github.event.inputs.rev }}"

@@ -9,7 +9,10 @@ COPY ./gpg ./
 
 RUN ls -la .
 RUN ls -la ./build
+RUN ls -la ./build/figma-linux-0.7.4
 RUN ls -la ./build/installers
+RUN ls -la ./build/installers/linux-unpacked
+RUN ls -la ./build/installers/linux-unpacked
 # RUN gpg --import --no-tty --batch --yes ./pub.key
 # RUN gpg --import --no-tty --batch --yes ./secret.key
 # RUN gpg -k

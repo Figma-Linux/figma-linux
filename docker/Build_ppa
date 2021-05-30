@@ -14,12 +14,16 @@ RUN cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/figma-linux && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/chrome-sandbox && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/*.sh && \
+  ls -la ./build/figma-linux-${FIGMA_LINUX_VERSION}/ && \
+  ls -la ./build/figma-linux-${FIGMA_LINUX_VERSION}/installers || echo '' && \
+  ls -la ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian || echo '' && \
   gpg --import --no-tty --batch --yes ./pub.key && \
   gpg --import --no-tty --batch --yes ./secret.key && \
   gpg -k && \
   cp -rf ./id_rsa ~/.ssh && \
   chmod 600 ~/.ssh/id_rsa && \
   tar cJf ./build/figma-linux_${FIGMA_LINUX_VERSION}ubuntu0.orig.tar.xz ./build/installers/linux-unpacked/* && \
+  ls -lah ./build && \
   cd build/figma-linux-${FIGMA_LINUX_VERSION} && \
   chmod a+x debian/rules debian/postinst debian/postrm && \
   EDITOR=/bin/true dpkg-source -q --commit . patchsetname && \

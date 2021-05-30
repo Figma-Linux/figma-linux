@@ -55,7 +55,7 @@ jobs:
       - name: Build in Docker
         id: build
         run: |
-          docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_local" .
+          docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_local" --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) .
           mkdir -p ./build/installers
           docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
 

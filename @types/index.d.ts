@@ -114,10 +114,7 @@ declare namespace Electron {
     ): void;
     handle(
       channel: "getLocalFileExtensionSource",
-      listener: (
-        event: IpcMainInvokeEvent,
-        id: number,
-      ) => Promise<void> | Extensions.ExtensionSource | Extensions.ExtensionSourceError,
+      listener: (event: IpcMainInvokeEvent, id: number) => Promise<void> | Extensions.ExtensionSource,
     ): void;
     handle(
       channel: "createMultipleNewLocalFileExtensions",
@@ -202,10 +199,7 @@ declare namespace Electron {
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
     invoke(channel: "getLocalFileExtensionManifest", id: number): Promise<number[]>;
-    invoke(
-      channel: "getLocalFileExtensionSource",
-      id: number,
-    ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError>;
+    invoke(channel: "getLocalFileExtensionSource", id: number): Promise<Extensions.ExtensionSource>;
     invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;

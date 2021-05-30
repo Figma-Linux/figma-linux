@@ -11,9 +11,7 @@ COPY ./gpg ./
 RUN cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/figma-linux && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/chrome-sandbox && \
-  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/**/*.sh && \
-  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/**/*.so && \
-  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/**/*.so.* && \
+  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/*.sh && \
   ls -la ./build/figma-linux-${FIGMA_LINUX_VERSION} && \
   gpg --import --no-tty --batch --yes ./pub.key && \
   gpg --import --no-tty --batch --yes ./secret.key && \

@@ -19,7 +19,7 @@ RUN cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
   gpg -k && \
   cp -rf ./id_rsa ~/.ssh && \
   chmod 600 ~/.ssh/id_rsa && \
-  tar cJf ./build/figma-linux_${FIGMA_LINUX_VERSION}.orig.tar.xz ./build/installers/linux-unpacked/* && \
+  tar cJf ./build/figma-linux_${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}ubuntu0.orig.tar.xz ./build/installers/linux-unpacked/* && \
   cd build/figma-linux-${FIGMA_LINUX_VERSION} && \
   chmod a+x debian/rules debian/postinst debian/postrm && \
   EDITOR=/bin/true dpkg-source -q --commit . patchsetname && \

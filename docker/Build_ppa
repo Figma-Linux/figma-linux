@@ -19,6 +19,7 @@ RUN cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
   cp -rf ./id_rsa ~/.ssh && \
   chmod 600 ~/.ssh/id_rsa && \
   tar cJf ./build/figma-linux_${FIGMA_LINUX_VERSION}.orig.tar.xz ./build/installers/linux-unpacked/* && \
+  ls -lah ./build && \
   cd build/figma-linux-${FIGMA_LINUX_VERSION} && EDITOR=/bin/true dpkg-source -q --commit . patchsetname && \
-  cd build/figma-linux-${FIGMA_LINUX_VERSION} && debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback" && \
+  debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback" && \
   dput ppa-figma ./build/figma-linux_${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}ubuntu0_source.changes

@@ -23,7 +23,4 @@ cp -rf ${linux_unpacked}/* $workdir
 cp -rf ${linux_unpacked}/icons/* $workdir/resources/icon
 cp -rf ./resources/figma-linux.desktop $workdir/resources
 
-ls -la $workdir
-ls -la $workdir/installers
-
-# docker build -t 4tqrgqe5yrgfd/figma-linux-ppa --build-arg FIGMA_LINUX_VERSION=${version} --build-arg FIGMA_LINUX_REV=${rev} -f ./docker/Build_ppa .
+docker build -t 4tqrgqe5yrgfd/figma-linux-ppa --build-arg FIGMA_LINUX_VERSION=${version} --build-arg FIGMA_LINUX_REV=${rev} -f ./docker/Build_ppa .

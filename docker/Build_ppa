@@ -7,18 +7,15 @@ WORKDIR /usr/src/figma-linux
 COPY ./build ./build
 COPY ./gpg ./
 
-RUN ls -la .
-RUN ls -la ./build
-RUN ls -la ./build/figma-linux-0.7.4
-RUN ls -la ./build/installers
-RUN ls -la ./build/installers/linux-unpacked
-RUN gpg --import --no-tty --batch --yes ./pub.key
-RUN gpg --import --no-tty --batch --yes ./secret.key
-RUN gpg -k
-RUN cp -rf ./id_rsa ~/.ssh
-RUN chmod 600 ~/.ssh/id_rsa
-RUN tar cJf ./build/figma-linux_$FIGMA_LINUX_VERSION.orig.tar.xz ./build/installers/linux-unpacked/*
-RUN ls -lah ./build
-# RUN cd build/figma-linux-${FIGMA_LINUX_VERSION} && EDITOR=/bin/true dpkg-source -q --commit . patchsetname
-# RUN cd build/figma-linux-${FIGMA_LINUX_VERSION} && debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback"
-# RUN dput ppa-figma ./build/figma-linux_${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}ubuntu0_source.changes
+
+RUN cat ./build/figma-linux-0.7.4/debian/changelog
+# RUN gpg --import --no-tty --batch --yes ./pub.key
+#   gpg --import --no-tty --batch --yes ./secret.key && \
+#   gpg -k && \
+#   cp -rf ./id_rsa ~/.ssh && \
+#   chmod 600 ~/.ssh/id_rsa && \
+#   tar cJf ./build/figma-linux_$FIGMA_LINUX_VERSION.orig.tar.xz ./build/installers/linux-unpacked/* && \
+#   ls -lah ./build && \
+#   cd build/figma-linux-${FIGMA_LINUX_VERSION} && EDITOR=/bin/true dpkg-source -q --commit . patchsetname && \
+#   cd build/figma-linux-${FIGMA_LINUX_VERSION} && debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback" && \
+#   dput ppa-figma ./build/figma-linux_${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}ubuntu0_source.changes

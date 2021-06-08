@@ -51,6 +51,15 @@ class App {
       this.session = new Session();
     }
 
+    // Chromium flags for better performance and GPU support
+    // Full flags reference: https://peter.sh/experiments/chromium-command-line-switches/
+    E.app.commandLine.appendSwitch("no-sandbox");
+    E.app.commandLine.appendSwitch("ignore-gpu-blocklist");
+    E.app.commandLine.appendSwitch("enable-gpu-rasterization");
+    E.app.commandLine.appendSwitch("enable-video-decode");
+    E.app.commandLine.appendSwitch("enable-accelerated-2d-canvas");
+    E.app.commandLine.appendSwitch("enable-experimental-canvas-features");
+
     const colorSpace = storage.get().app.enableColorSpaceSrgb;
 
     if (colorSpace) {

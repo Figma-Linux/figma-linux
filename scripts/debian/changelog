@@ -1,3 +1,13 @@
+figma-linux (0.8.1-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.8.1 version
+
+  ## Bug Fixes:
+  * fix size of close icon
+  * fix build app for ppa repository
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 24 Jul 2021 01:57:43 +0300
+
 figma-linux (0.8.0-1ubuntu0) devel; urgency=medium
 
   * Publish 0.8.0 version

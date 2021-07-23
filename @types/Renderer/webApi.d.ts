@@ -49,6 +49,12 @@ declare namespace WebApi {
     postscript: string;
   }
 
+  interface SetUsingMic {
+    isUsingMicrophone: boolean;
+  }
+  interface SetIsInVoiceCall {
+    isInVoiceCall: boolean;
+  }
   interface SetUser {
     id: string;
   }

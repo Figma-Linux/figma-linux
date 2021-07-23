@@ -70,6 +70,8 @@ declare namespace Electron {
     on(channel: "startAppAuth", listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void): this;
     on(channel: "finishAppAuth", listener: (event: IpcMainInvokeEvent, auth: { redirectURL: string }) => void): this;
     on(channel: "setAuthedUsers", listener: (event: IpcMainInvokeEvent, userIds: string[]) => void): this;
+    on(channel: "setUsingMicrophone", listener: (event: IpcMainInvokeEvent, isUsingMicrophone: boolean) => void): this;
+    on(channel: "setIsInVoiceCall", listener: (event: IpcMainInvokeEvent, isInVoiceCall: boolean) => void): this;
     on(channel: "setWorkspaceName", listener: (event: IpcMainInvokeEvent, name: string) => void): this;
     on(channel: "setFigjamEnabled", listener: (event: IpcMainInvokeEvent, enabled: boolean) => void): this;
     on(
@@ -114,10 +116,7 @@ declare namespace Electron {
     ): void;
     handle(
       channel: "getLocalFileExtensionSource",
-      listener: (
-        event: IpcMainInvokeEvent,
-        id: number,
-      ) => Promise<void> | Extensions.ExtensionSource | Extensions.ExtensionSourceError,
+      listener: (event: IpcMainInvokeEvent, id: number) => Promise<void> | Extensions.ExtensionSource,
     ): void;
     handle(
       channel: "createMultipleNewLocalFileExtensions",
@@ -154,6 +153,14 @@ declare namespace Electron {
     on(channel: "didTabAdd", listener: (event: IpcRendererEvent, data: Tab) => void): this;
     on(channel: "getUploadedThemes", listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void): this;
     on(channel: "mainTabFocused", listener: (event: IpcRendererEvent) => void): this;
+    on(
+      channel: "setUsingMicrophone",
+      listener: (event: IpcRendererEvent, data: { id: number; isUsingMicrophone: boolean }) => void,
+    ): this;
+    on(
+      channel: "setIsInVoiceCall",
+      listener: (event: IpcRendererEvent, data: { id: number; isInVoiceCall: boolean }) => void,
+    ): this;
     on(channel: "themes-change", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
     on(channel: "set-default-theme", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "loadCreatorTheme", listener: (event: IpcRendererEvent, theme: Themes.Theme) => void): this;
@@ -202,10 +209,7 @@ declare namespace Electron {
     invoke(channel: "writeNewExtensionToDisk", data: WebApi.WriteNewExtensionToDiskArgs): Promise<number>;
     invoke(channel: "getAllLocalFileExtensionIds"): Promise<number[]>;
     invoke(channel: "getLocalFileExtensionManifest", id: number): Promise<number[]>;
-    invoke(
-      channel: "getLocalFileExtensionSource",
-      id: number,
-    ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError>;
+    invoke(channel: "getLocalFileExtensionSource", id: number): Promise<Extensions.ExtensionSource>;
     invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
@@ -230,6 +234,8 @@ declare namespace Electron {
     send(channel: "didTabAdd", data: Tab): this;
     send(channel: "handleUrl", url: string): this;
     send(channel: "mainTabFocused"): this;
+    send(channel: "setUsingMicrophone", data: { id: number; isUsingMicrophone: boolean }): this;
+    send(channel: "setIsInVoiceCall", data: { id: number; isInVoiceCall: boolean }): this;
     send(channel: "themes-change", theme: Themes.Theme): this;
     send(channel: "loadCreatorTheme", theme: Themes.Theme): this;
     send(channel: "sync-themes-start", theme: Themes.Theme): this;

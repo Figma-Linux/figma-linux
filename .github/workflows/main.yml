@@ -76,9 +76,6 @@ jobs:
       - name: Get version
         id: version
         run: |
-          ls -la .
-          ls -la ./build
-          ls -la ./build/installers
           echo ::set-output name=release::$(cat build/installers/version)
           sha256sum ./build/installers/figma-linux* || echo ""
 
@@ -142,9 +139,6 @@ jobs:
       - name: Get version
         id: version
         run: |
-          ls -la .
-          ls -la ./build
-          ls -la ./build/installers
           echo ::set-output name=release::$(cat build/installers/version)
           sha256sum ./build/installers/figma-linux* || echo ""
 
@@ -159,43 +153,43 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # upload_ppa_amd64:
-  #   name: Upload to Launchpad PPA
-  #   runs-on: ubuntu-latest
-  #   needs: build_amd64
-  #   steps:
-  #     - uses: actions/download-artifact@v2
-  #       with:
-  #         path: ./
+  upload_ppa_amd64:
+    name: Upload to Launchpad PPA
+    runs-on: ubuntu-latest
+    needs: build_amd64
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          path: ./
 
-  #     - name: Import keys
-  #       run: |
-  #         ls -la .
-  #         mv ./repo/* ./
-  #         mv ./amd64/* ./
-  #         rm -rf ./repo
-  #         rm -rf ./amd64
-  #         ls -la .
-  #         chmod +x ./**/*.sh
-  #         chmod +x ./**/*.pl
-  #         ls -la ./scripts
-  #         ls -la ./build
-  #         ls -la ./build/installers
-  #         mkdir ./gpg
-  #         echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
-  #         echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
-  #         echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
-  #         echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
+      - name: Import keys
+        run: |
+          ls -la .
+          mv ./repo/* ./
+          mv ./amd64/* ./
+          rm -rf ./repo
+          rm -rf ./amd64
+          ls -la .
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+          ls -la ./scripts
+          ls -la ./build
+          ls -la ./build/installers
+          mkdir ./gpg
+          echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
+          echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
+          echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
 
-  #     - name: Login to DockerHub
-  #       uses: docker/login-action@v1
-  #       with:
-  #         username: ${{ secrets.DOCKER_USERNAME }}
-  #         password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-  #     - name: Build and Upload PPA
-  #       run: |
-  #         ./scripts/build_ppa.sh "1"
+      - name: Build and Upload PPA
+        run: |
+          ./scripts/build_ppa.sh "1"
 
   upload_aur:
     name: Upload to AUR
@@ -254,6 +248,7 @@ jobs:
           docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux)://usr/src/figma-linux-aur/. ../new-aur
           cp -rf ../new-aur/PKGBUILD ../aur/
           cp -rf ../new-aur/.SRCINFO ../aur/
+          export version=$(cat build/installers/version)
           echo ::set-output name=release::$version
 
       - name: Push to AUR
@@ -327,15 +322,15 @@ jobs:
           prevVersion=$(cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
           version="$(cat ./build/installers/version)"
           echo "Bump version from $prevVersion to $version"
-          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          sed -i "s/$prevVersion/$version/" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
           echo "Updating sums..."
-          export sha256sums_x86_64="$(sha256sum ./build/installers/figma-linux_${version}_linux_amd64.deb)"
-          export sha256sums_aarch64="$(sha256sum ./build/installers/figma-linux_${version}_linux_arm64.deb)"
+          export sha256sums_x86_64="$(sha256sum ./build/installers/figma-linux_${version}_linux_amd64.deb | awk '{print $1}' | tr -d '\n')"
+          export sha256sums_aarch64="$(sha256sum ./build/installers/figma-linux_${version}_linux_arm64.deb | awk '{print $1}' | tr -d '\n')"
           echo "sha256sums_x86_64: $sha256sums_x86_64"
           echo "sha256sums_aarch64: $sha256sums_aarch64"
-          perl -pe 's{sha256:.*}{++$n == 1 ? \"sha256: $ENV{'sha256sums_x86_64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
-          perl -pe 's{sha256:.*}{++$n == 2 ? \"sha256: $ENV{'sha256sums_aarch64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          perl -pe 's{sha256:.*}{++$n == 1 ? "sha256: $ENV{'sha256sums_x86_64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
+          perl -pe 's{sha256:.*}{++$n == 2 ? "sha256: $ENV{'sha256sums_aarch64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
           echo 'cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml after update sha sums'
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
@@ -352,16 +347,9 @@ jobs:
           cd ./flatpak-repo
           git checkout -b bump-version
           git add .
-          git commit -m "Release v$version"
+          git commit -m "Release v${{ steps.update.outputs.release }}"
           git push origin bump-version
 
-      - uses: octokit/request-action@v2.x
-        name: Create Pull Request
-        id: cpr
-        with:
-          route: GET /repos/{owner}/{repo}/pulls
-          owner: flathub
-          body: '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'
-          repo: io.github.Figma_Linux.figma_linux
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name:  Create Pull Request
+        run: |
+          curl -X POST -u "ChugunovRoman:${{ secrets.REPO_ACCESS_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/flathub/io.github.Figma_Linux.figma_linux/pulls -d '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'

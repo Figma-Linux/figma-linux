@@ -22,6 +22,8 @@ import { Figma } from "./icons/Figma";
 import { Restore } from "./icons/Restore";
 import { CloseTab } from "./icons/CloseTab";
 import { Home } from "./icons/Home";
+import { Muted } from "./icons/Muted";
+import { UnMuted } from "./icons/UnMuted";
 import "../../animations.scss";
 import "./index.scss";
 
@@ -47,6 +49,8 @@ type Icons =
   | "Figma"
   | "Restore"
   | "Home"
+  | "Muted"
+  | "UnMuted"
   | "CloseTab";
 
 export interface IconProps {
@@ -84,6 +88,8 @@ export class Icon extends React.Component<ContainerProps, unknown> {
     Restore,
     CloseTab,
     Home,
+    Muted,
+    UnMuted,
   };
 
   constructor(props: ContainerProps) {

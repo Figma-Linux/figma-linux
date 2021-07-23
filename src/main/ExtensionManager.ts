@@ -1,5 +1,6 @@
-import { promises } from "fs";
-import { dirname, join } from "path";
+import * as fs from "fs";
+import * as path from "path";
+import * as cp from "child_process";
 import * as Chokidar from "chokidar";
 import { storage } from "Storage";
 import { logger } from "./Logger";
@@ -163,7 +164,7 @@ class ExtensionManager {
     const extensionPath = this.getPath(id);
 
     try {
-      const manifest = await promises.readFile(extensionPath, { encoding: "utf8" });
+      const manifest = await fs.promises.readFile(extensionPath, { encoding: "utf8" });
       const lastKnownName = this.getOrUpdateKnownNameFromManifest(id, manifest);
 
       return { path: extensionPath, lastKnownName, manifest };
@@ -172,21 +173,98 @@ class ExtensionManager {
     }
   }
 
-  public async getLocalFileExtensionSource(
-    id: number,
-  ): Promise<Extensions.ExtensionSource | Extensions.ExtensionSourceError> {
+  public async getLocalFileExtensionSource(id: number): Promise<Extensions.ExtensionSource> {
     const extensionPath = this.getPath(id);
+    const manifest = JSON.parse(await fs.promises.readFile(extensionPath, { encoding: "utf8" }));
+    const manifestDir = path.dirname(extensionPath);
+    const result: Extensions.ExtensionSource = {
+      stdout: "",
+      stderr: "",
+      path: "",
+    };
 
-    const manifest = await promises.readFile(extensionPath, { encoding: "utf8" });
-    const parsed = JSON.parse(manifest);
-    if (parsed && parsed.main && parsed.ui) {
-      const [main, ui] = await Promise.all([
-        promises.readFile(join(dirname(extensionPath), parsed.main), { encoding: "utf8" }),
-        promises.readFile(join(dirname(extensionPath), parsed.ui), { encoding: "utf8" }),
-      ]);
-      return { source: main, html: ui };
+    if (manifest.build && typeof manifest.build === "string") {
+      result.path = process.env.PATH || "";
+      await new Promise<void>((resolve, reject) => {
+        cp.exec(manifest.build, { cwd: manifestDir }, (error, stdout, stderr) => {
+          result.stdout = stdout;
+          result.stderr = stderr;
+
+          if (error) {
+            result.buildErrCode = error.code;
+          }
+
+          resolve();
+        });
+      });
+
+      if (result.buildErrCode) {
+        return result;
+      }
     }
-    throw new Error("manifest is invalid: " + JSON.stringify(manifest));
+
+    const loadFileFromManifestProperty = async (prop: string, key?: string) => {
+      const fileName = key ? manifest[prop][key] : manifest[prop];
+      const property = key ? prop + "." + key : prop;
+      if (!fileName) {
+        return undefined;
+      }
+      if (typeof fileName !== "string") {
+        throw new Error(`Manifest "${property}" property must be a string`);
+      }
+      const propPath = path.resolve(manifestDir, fileName);
+      if (path.relative(manifestDir, propPath).startsWith("..")) {
+        throw new Error(
+          `Manifest "${property}" file must be located in same directory, or a subdirectory, as manifest`,
+        );
+      }
+      return fs.promises.readFile(propPath, { encoding: "utf8" });
+    };
+    const loadFilesFromManifestProperty = async (prop: string) => {
+      if (!manifest[prop]) {
+        return undefined;
+      }
+      if (typeof manifest[prop] !== "object") {
+        throw new Error(`Manifest "${prop}" property must be an object`);
+      }
+      const files: Dict<string> = {};
+      const filesArr = [];
+      const keys = Object.keys(manifest[prop]);
+      for (const key of keys) {
+        filesArr.push(loadFileFromManifestProperty(prop, key));
+      }
+      await Promise.all(filesArr).then(htmlArr => {
+        for (let i = 0; i < keys.length; i++) {
+          const key = keys[i],
+            html = htmlArr[i];
+          if (html) {
+            files[key] = html;
+          }
+        }
+      });
+      return files;
+    };
+
+    result.source = await loadFileFromManifestProperty("main");
+    if (!result.source) {
+      result.source = await loadFileFromManifestProperty("script");
+    }
+    if (!result.source) {
+      throw new Error("Missing or empty script");
+    }
+    let html;
+    if (typeof manifest["ui"] === "string") {
+      html = await loadFileFromManifestProperty("ui");
+    } else {
+      html = await loadFilesFromManifestProperty("ui");
+    }
+    if (!html) {
+      html = await loadFileFromManifestProperty("html");
+    }
+    if (html) {
+      result.html = html;
+    }
+    return result;
   }
 
   private notifyObservers(args: Extensions.NotifyObserverParams): void {

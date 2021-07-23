@@ -1,4 +1,4 @@
-name: flatpak
+name: Flatpak
 
 on: workflow_dispatch
 
@@ -7,49 +7,62 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
     steps:
-      - name: Import SSH key
-        id: key
-        run: |
-          echo "Importing SSH ley..."
-          mkdir -p ~/.ssh
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
-          echo "Updating ~/.ssh/known_hosts..."
-          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
-          chmod 700 ~/.ssh
-          chmod 600 ~/.ssh/id_rsa
-          echo "Step completed"
+      # - name: Import SSH key
+      #   id: key
+      #   run: |
+      #     echo "Importing SSH ley..."
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+      #     echo "Updating ~/.ssh/known_hosts..."
+      #     ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+      #     chmod 700 ~/.ssh
+      #     chmod 600 ~/.ssh/id_rsa
+      #     echo "Step completed"
 
-      - name: Clone repo
-        id: clone
-        run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./
+      # - name: Clone repo
+      #   id: clone
+      #   run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./
 
-      - name: Update configs
-        id: update
-        run: |
-          sudo apt install libxml2-utils -y
-          echo "<li>Bug Fixes:</li>" >> /tmp/testfile
-          echo "<ul>" >> /tmp/testfile
-          echo "<li>fix: 1</li>" >> /tmp/testfile
-          echo "<li>fix: 2</li>" >> /tmp/testfile
-          echo "</ul>" >> /tmp/testfile
-          data=$(cat /tmp/testfile | tr -d '\n')
-          cat ./io.github.Figma_Linux.figma_linux.appdata.xml
-          cat /tmp/testfile
-          prevVersion=$(cat ./io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
-          version="0.7.3"
-          echo "Bump version from $prevVersion to $version"
-          sed -i "s/$prevVersion/$version/" ./io.github.Figma_Linux.figma_linux.yml
-          sed -i "s/$prevVersion/$version/" ./io.github.Figma_Linux.figma_linux.appdata.xml
-          cat ./io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
-          sed -i "s|<description>.\{0,12\}<ul>.*<\/ul>.\{0,12\}<\/description>|<description><ul>$data<\/ul><\/description>|g" /tmp/tmp1
-          xmllint --format /tmp/tmp1 > ./io.github.Figma_Linux.figma_linux.appdata.xml
-          cat ./io.github.Figma_Linux.figma_linux.appdata.xml
+      # - name: Update configs
+      #   id: update
+      #   run: |
+      #     sudo apt install libxml2-utils -y
+      #     echo "<li>Bug Fixes:</li>" >> /tmp/testfile
+      #     echo "<ul>" >> /tmp/testfile
+      #     echo "<li>fix: 1</li>" >> /tmp/testfile
+      #     echo "<li>fix: 2</li>" >> /tmp/testfile
+      #     echo "</ul>" >> /tmp/testfile
+      #     data=$(cat /tmp/testfile | tr -d '\n')
+      #     cat ./io.github.Figma_Linux.figma_linux.appdata.xml
+      #     cat /tmp/testfile
+      #     prevVersion=$(cat ./io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
+      #     version="0.7.3"
+      #     echo "Bump version from $prevVersion to $version"
+      #     sed -i "s/$prevVersion/$version/" ./io.github.Figma_Linux.figma_linux.yml
+      #     sed -i "s/$prevVersion/$version/" ./io.github.Figma_Linux.figma_linux.appdata.xml
+      #     cat ./io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
+      #     sed -i "s|<description>.\{0,12\}<ul>.*<\/ul>.\{0,12\}<\/description>|<description><ul>$data<\/ul><\/description>|g" /tmp/tmp1
+      #     xmllint --format /tmp/tmp1 > ./io.github.Figma_Linux.figma_linux.appdata.xml
+      #     cat ./io.github.Figma_Linux.figma_linux.appdata.xml
 
-      - name: Push
-        id: push
+      # - name: Push
+      #   id: push
+      #   run: |
+      #     git config --global --add user.name "${{ secrets.USER_NAME }}"
+      #     git config --global --add user.email "${{ secrets.EMAIL }}"
+      #     git add .
+      #     git commit -m "Release v$version"
+      #     git push origin master
+      - name:  Create Pull Request
         run: |
-          git config --global --add user.name "${{ secrets.USER_NAME }}"
-          git config --global --add user.email "${{ secrets.EMAIL }}"
-          git add .
-          git commit -m "Release v$version"
-          git push origin master
+          curl -X POST -u "ChugunovRoman:${{ secrets.REPO_ACCESS_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/flathub/io.github.Figma_Linux.figma_linux/pulls -d '{"title": "Release v0.7.4 version","head":"Figma-Linux:bump-version","base":"master"}'
+
+      # - uses: octokit/request-action@v2.x
+      #   name: Create Pull Request
+      #   id: cpr
+      #   with:
+      #     route: GET /repos/flathub/io.github.Figma_Linux.figma_linux/pulls
+      #     body: '{"title": "Release v0.7.4 version","head":"Figma-Linux:bump-version","base":"master"}'
+      #     data: '{"title": "Release v0.7.4 version","head":"Figma-Linux:bump-version","base":"master"}'
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

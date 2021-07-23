@@ -19,6 +19,8 @@ export class Tabs implements TabsStore {
       showBackBtn: data.showBackBtn,
       order: this.tabs.length === 0 ? 1 : this.tabs.length + 1,
       focused: data.focused,
+      isUsingMicrophone: false,
+      isInVoiceCall: false,
     });
   };
 
@@ -96,6 +98,12 @@ export class Tabs implements TabsStore {
     });
     E.ipcRenderer.on("mainTabFocused", sender => {
       this.setFocus();
+    });
+    E.ipcRenderer.on("setUsingMicrophone", (sender, data) => {
+      this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, isUsingMicrophone: data.isUsingMicrophone } : t));
+    });
+    E.ipcRenderer.on("setIsInVoiceCall", (sender, data) => {
+      this.tabs = this.tabs.map(t => (t.id === data.id ? { ...t, isInVoiceCall: data.isInVoiceCall } : t));
     });
 
     E.ipcRenderer.on("closeTab", (sender, data) => {

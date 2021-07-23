@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { Text, Button, Icon } from "Elements";
 
+import { MicrophoneIcon } from "./microphoneIcon";
+
 interface Props {
   tabs: TabsStore;
 
@@ -21,6 +23,7 @@ const Tabs: React.FunctionComponent<Props> = props => {
           onAuxClick={e => props.clickTab(e, t)}
         >
           <Text className="tab__text pointer_events_none">{t.title}</Text>
+          <MicrophoneIcon isUsingMicrophone={t.isUsingMicrophone} isInVoiceCall={t.isInVoiceCall} />
           <Button className="tab__close button_clear" onClick={(e): void => props.close(e, t.id)}>
             <Icon
               color={`${props.tabs.current === t.id ? "var(--fg-tab-active)" : "var(--fg-tab)"}`}

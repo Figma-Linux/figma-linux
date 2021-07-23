@@ -50,12 +50,11 @@ declare namespace Extensions {
   }
 
   interface ExtensionSource {
-    source: string;
-    html: string;
-  }
-  interface ExtensionSourceError {
-    buildErrCode: boolean;
-    stderr: string;
-    path: string;
+    source?: string;
+    html?: Dict<string> | string;
+    buildErrCode?: number;
+    stdout?: string;
+    stderr?: string;
+    path?: string;
   }
 }

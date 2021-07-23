@@ -1,3 +1,15 @@
+figma-linux (0.8.0-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.8.0 version
+
+  ## Features:
+  * Update desktop API. [#225](https://github.com/Figma-Linux/figma-linux/issues/225)
+
+  ## Bug Fixes:
+  * Fix creating of plugins
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 23 Jul 2021 20:22:37 +0300
+
 figma-linux (0.7.4-1ubuntu0) devel; urgency=medium
 
   * Publish 0.7.4 version

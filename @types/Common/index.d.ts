@@ -7,6 +7,8 @@ interface Tab {
   fileKey?: string;
   order?: number;
   focused?: boolean;
+  isUsingMicrophone?: boolean;
+  isInVoiceCall?: boolean;
 }
 
 interface SavedTab {

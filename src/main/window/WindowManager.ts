@@ -338,6 +338,24 @@ class WindowManager {
     E.ipcMain.on("setAuthedUsers", (event, userIds) => {
       this.setFigmaUserIDs(userIds);
     });
+    E.ipcMain.on("setUsingMicrophone", (event, isUsingMicrophone) => {
+      const view = Tabs.getByWebContentId(event.sender.id);
+
+      if (!view) {
+        return;
+      }
+
+      this.mainWindow.webContents.send("setUsingMicrophone", { id: view.webContents.id, isUsingMicrophone });
+    });
+    E.ipcMain.on("setIsInVoiceCall", (event, isInVoiceCall) => {
+      const view = Tabs.getByWebContentId(event.sender.id);
+
+      if (!view) {
+        return;
+      }
+
+      this.mainWindow.webContents.send("setIsInVoiceCall", { id: view.webContents.id, isInVoiceCall });
+    });
     E.ipcMain.on("setWorkspaceName", (event, name) => {
       logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
     });

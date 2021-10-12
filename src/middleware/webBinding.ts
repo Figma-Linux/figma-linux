@@ -247,8 +247,7 @@ const publicAPI: any = {
     console.log("Method addTabAnalyticsMetadata not implemented");
   },
   requestMicrophonePermission(args: any) {
-    // sendMsgToMain("requestMicrophonePermission", args.isUsingMicrophone);
-    console.log("Method requestMicrophonePermission not implemented");
+    sendMsgToMain("requestMicrophonePermission", args);
   },
 
   newFile(args: any) {

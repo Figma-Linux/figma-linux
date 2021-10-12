@@ -345,6 +345,31 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setUsingMicrophone", { id: view.webContents.id, isUsingMicrophone });
     });
+    E.ipcMain.on("requestMicrophonePermission", event => {
+      const view = Tabs.getByWebContentId(event.sender.id);
+
+      if (!view) {
+        return;
+      }
+
+      view.webContents.session.setPermissionRequestHandler((webContents, permission, cb) => {
+        const id = dialogs.showMessageBoxSync({
+          type: "question",
+          title: "Figma",
+          message: "Microphone access required for voice call.",
+          detail: `Allow microphone access?`,
+          textOkButton: "Allow",
+          textCancelButton: "Deny",
+          defaultFocusedButton: "Ok",
+        });
+
+        if (id === 0 && permission === "media") {
+          return cb(true);
+        }
+
+        return cb(false);
+      });
+    });
     E.ipcMain.on("setIsInVoiceCall", (event, isInVoiceCall) => {
       const view = Tabs.getByWebContentId(event.sender.id);
 

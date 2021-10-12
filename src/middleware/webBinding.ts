@@ -287,7 +287,7 @@ const publicAPI: any = {
       if (isMenuItem(item)) {
         pluginMenuData.push(item);
       } else {
-        sendMsgToMain("log-error", "[desktop] invalid plugin menu item", args);
+        // sendMsgToMain("log-error", "[desktop] invalid plugin menu item", args);
       }
     }
 

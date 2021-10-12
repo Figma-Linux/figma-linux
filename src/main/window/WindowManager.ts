@@ -129,10 +129,10 @@ class WindowManager {
     return WindowManager._instance;
   }
 
-  openUrl = (url: string) => {
+  openUrl = (url: string): void => {
     if (isAppAuthRedeem(url)) {
       const normalizedUrl = normalizeUrl(url);
-      const tab = Tabs.getAll()[0];
+      const tab = Tabs.getTabByIndex(0);
 
       tab.webContents.loadURL(normalizedUrl);
     } else if (/figma:\/\//.test(url)) {
@@ -142,7 +142,7 @@ class WindowManager {
     }
   };
 
-  loadRecentFilesMainTab = () => {
+  loadRecentFilesMainTab = (): void => {
     this.mainTab.webContents.loadURL(Const.RECENT_FILES);
   };
 
@@ -679,42 +679,30 @@ class WindowManager {
 
   public focusTab = (webContentsId: number): void => {
     const tabs = Tabs.getAll();
-    let foundView = false;
 
-    for (const tab of tabs) {
-      if (tab.webContents.id === webContentsId) {
-        this.mainWindow.setBrowserView(tab);
-        this.lastFocusedTab = tab.webContents;
-        foundView = true;
-      }
-    }
+    tabs.forEach(tab => {
+      this.mainWindow.removeBrowserView(tab);
+    });
 
-    if (!foundView) {
-      this.mainWindow.setBrowserView(this.mainTab);
+    const neededTab = Tabs.getByWebContentId(webContentsId);
+
+    if (!neededTab) {
+      this.mainWindow.addBrowserView(this.mainTab);
       this.lastFocusedTab = this.mainTab.webContents;
+
+      return;
     }
+
+    this.mainWindow.addBrowserView(neededTab);
+    this.lastFocusedTab = neededTab.webContents;
+
+    // Ugly hack for rerender BrowserView
+    setTimeout(() => {
+      this.mainWindow.removeBrowserView(neededTab);
+      this.mainWindow.addBrowserView(neededTab);
+      this.lastFocusedTab = neededTab.webContents;
+    }, 500);
   };
-
-  // For multiply BrowserView
-  // public focusTab = (webContentsId: number): void => {
-  //   const tabs = Tabs.getAll();
-  //   let foundView = false;
-
-  //   for (const tab of tabs) {
-  //     if (tab.webContents.id !== webContentsId) {
-  //       this.mainWindow.removeBrowserView(tab);
-  //     } else {
-  //       foundView = true;
-  //       this.mainWindow.addBrowserView(tab);
-  //       this.lastFocusedTab = tab.webContents;
-  //     }
-  //   }
-
-  //   if (!foundView) {
-  //     this.mainWindow.addBrowserView(this.mainTab);
-  //     this.lastFocusedTab = this.mainTab.webContents;
-  //   }
-  // };
 
   private initSettingsView = () => {
     this.settingsView = new E.BrowserView({
@@ -830,9 +818,9 @@ class WindowManager {
 
     const tabs = Tabs.getAll();
 
-    for (const tab of tabs) {
+    tabs.forEach(tab => {
       tab.webContents.send("themes-change", theme);
-    }
+    });
 
     storage.setTheme(theme.id);
   };
@@ -950,9 +938,9 @@ class WindowManager {
 
     this.updateBounds();
 
-    for (const view of views) {
+    views.forEach(view => {
       view.webContents.setZoomFactor(this.figmaUiScale);
-    }
+    });
   };
 
   private updateFigmaUiScale = (figmaScale: number): void => {
@@ -960,9 +948,9 @@ class WindowManager {
 
     this.figmaUiScale = +figmaScale.toFixed(2);
 
-    for (const view of views) {
+    views.forEach(view => {
       view.webContents.setZoomFactor(+figmaScale.toFixed(2));
-    }
+    });
   };
 
   private updatePanelScale = (panelScale: number): void => {

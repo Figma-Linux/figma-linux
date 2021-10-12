@@ -6,7 +6,7 @@ import stores from "./stores";
 import App from "./components";
 import { isDev } from "Utils/Common";
 
-onError((err: any) => {
+onError((err: Error) => {
   console.log("Mobx error: ", err);
 });
 

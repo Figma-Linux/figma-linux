@@ -90,9 +90,7 @@ class WindowManager {
     this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
     this.initMenu();
-
     this.mainTab = this.addMainTab();
-
     this.mainWindow.on("resize", this.updateBounds);
     this.mainWindow.on("maximize", () => setTimeout(() => this.updateBounds(), 100));
     this.mainWindow.on("unmaximize", () => setTimeout(() => this.updateBounds(), 100));
@@ -799,7 +797,7 @@ class WindowManager {
       useSessionCookies: true,
     });
 
-    request.on("response", async response => {
+    request.on("response", async () => {
       this.setFigmaUserIDs([]);
       try {
         await Promise.all([E.session.defaultSession.clearStorageData(), E.session.defaultSession.clearCache()]);

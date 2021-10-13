@@ -76,7 +76,7 @@ class App {
   }
 
   private appEvent = (): void => {
-    if (!E.app.isDefaultProtocolClient(Const.PROTOCOL) {
+    if (!E.app.isDefaultProtocolClient(Const.PROTOCOL)) {
       E.app.setAsDefaultProtocolClient(Const.PROTOCOL);
     }
     E.app.allowRendererProcessReuse = false;

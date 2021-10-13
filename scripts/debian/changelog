@@ -1,3 +1,23 @@
+figma-linux (0.9.0-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.9.0 version
+
+  ## Features:
+  * Implement get access mic. [#238](https://github.com/Figma-Linux/figma-linux/issues/238)
+
+  ## Bug Fixes:
+  * Avoid setting defaultProtocolClient if already set. [#241](https://github.com/Figma-Linux/figma-linux/issues/241)
+  * open project after switch accounts. [#210](https://github.com/Figma-Linux/figma-linux/issues/210)
+  * fix blank screen after first switch on tab
+  * Updated module for read local fonts
+  * Change category to graphics ( [#232)](https://github.com/Figma-Linux/figma-linux/issues/232))
+  * fix workflow for flatpak
+
+  ## Other Changes:
+  * Removed freetype2 library
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Wed, 13 Oct 2021 21:56:47 +0300
+
 figma-linux (0.8.1-1ubuntu0) devel; urgency=medium
 
   * Publish 0.8.1 version

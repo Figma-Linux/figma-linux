@@ -58,14 +58,12 @@ class WindowManager {
   private panelHeight = storage.get().app.panelHeight;
   private enableColorSpaceSrgbWasChanged = false;
   private figmaUserIDs: string[] = [];
-  private userId: string;
 
   private constructor() {
     this.home = Const.HOMEPAGE;
     this.figmaUiScale = storage.get().ui.scaleFigmaUI;
     this.panelScale = storage.get().ui.scalePanel;
     this.figmaUserIDs = storage.get().authedUserIDs;
-    this.userId = storage.get().userId;
 
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
@@ -640,6 +638,10 @@ class WindowManager {
       storage.setUserIds(userIds);
       this.figmaUserIDs = userIds;
     }
+
+    if (userIds.length === 1) {
+      storage.setUserId(userIds[0]);
+    }
   };
 
   public tryHandleAppAuthRedeemUrl = (url: string): boolean => {
@@ -665,7 +667,8 @@ class WindowManager {
     title?: string,
     focused = true,
   ): E.BrowserView => {
-    const tab = Tabs.newTab(`${url}?fuid=${this.userId}`, this.getBounds(), scriptPreload);
+    const userId = storage.get().userId;
+    const tab = Tabs.newTab(`${url}?fuid=${userId}`, this.getBounds(), scriptPreload);
 
     if (focused) {
       this.focusTab(tab.webContents.id);
@@ -686,7 +689,8 @@ class WindowManager {
   };
 
   public addMainTab = (): E.BrowserView => {
-    const url = `${Const.RECENT_FILES}/?fuid=${this.userId}`;
+    const userId = storage.get().userId;
+    const url = `${Const.RECENT_FILES}/?fuid=${userId}`;
     const tab = Tabs.newTab(url, this.getBounds(), "loadMainContent.js", false);
 
     this.mainWindow.setBrowserView(tab);

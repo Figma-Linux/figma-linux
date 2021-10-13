@@ -115,7 +115,11 @@ export class Storage {
   };
   public setUserIds = (ids: string[]): void => {
     this.settings.authedUserIDs = ids;
-    this.settings.userId = ids[0] || "";
+
+    this.set(this.settings);
+  };
+  public setUserId = (id: string): void => {
+    this.settings.userId = id;
 
     this.set(this.settings);
   };

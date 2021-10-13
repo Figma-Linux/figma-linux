@@ -8,7 +8,7 @@ import WindowManager from "./WindowManager";
 export default class Tabs {
   public static registeredCancelCallbackMap: Map<number, () => void> = new Map();
 
-  private static tabs: Array<E.BrowserView> = [];
+  private static tabs: Map<number, E.BrowserView> = new Map();
 
   public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string, save = true): E.BrowserView => {
     const options: E.BrowserViewConstructorOptions = {
@@ -54,64 +54,77 @@ export default class Tabs {
     isDev && tab.webContents.toggleDevTools();
 
     if (save) {
-      Tabs.tabs.push(tab);
+      Tabs.tabs.set(tab.webContents.id, tab);
     }
 
     return tab;
   };
 
-  public static closeAll = () => {
-    Tabs.tabs = Tabs.tabs.filter(t => {
-      if (t.webContents.id != 1) {
-        return false;
-      } else {
-        return true;
+  public static closeAll = (): void => {
+    Tabs.tabs.forEach((value, id) => {
+      if (id !== 1) {
+        Tabs.tabs.delete(id);
       }
     });
   };
 
-  public static close = (id: number) => {
-    Tabs.tabs = Tabs.tabs.filter(t => {
-      if (t.webContents.id != id) {
-        return true;
-      } else {
-        // FIXME: https://github.com/electron/electron/pull/23578#issuecomment-703736447
-        t.webContents.loadURL("about:blank");
-        if (t.webContents && !t.webContents.isDestroyed()) {
-          t.webContents.destroy();
+  public static close = (tabId: number): void => {
+    Tabs.tabs.forEach((value, id) => {
+      if (id === tabId) {
+        value.webContents.loadURL("about:blank");
+
+        if (value.webContents && !value.webContents.isDestroyed()) {
+          value.webContents.destroy();
         }
-        return false;
+
+        Tabs.tabs.delete(id);
       }
     });
   };
 
-  public static reloadAll = () => Tabs.tabs.forEach(t => (!t.webContents.isDestroyed() ? t.webContents.reload() : ""));
+  public static reloadAll = (): void =>
+    Tabs.tabs.forEach(t => (!t.webContents.isDestroyed() ? t.webContents.reload() : ""));
 
   public static getTabByIndex = (index: number): E.BrowserView | undefined => {
-    return Tabs.tabs[index];
+    let i = 0;
+    let foundTab: E.BrowserView | undefined;
+
+    Tabs.tabs.forEach(tab => {
+      if (index === i) {
+        foundTab = tab;
+      }
+
+      i++;
+    });
+
+    return foundTab;
   };
 
   public static getTabIndex = (webContentsId: number): number | undefined => {
-    let index: number | undefined;
+    let i = 0;
 
-    Tabs.tabs.forEach((t, i) => {
-      if (t.webContents.id === webContentsId) {
-        index = i;
+    Tabs.tabs.forEach((_, id) => {
+      if (webContentsId === id) {
+        return;
+      }
+
+      i++;
+    });
+
+    return i;
+  };
+
+  public static getAll = (): Map<number, E.BrowserView> => Tabs.tabs;
+
+  public static getByWebContentId = (webContentsId: number): E.BrowserView | undefined => {
+    let foundTab: E.BrowserView | undefined;
+
+    Tabs.tabs.forEach((tab, id) => {
+      if (id === webContentsId) {
+        foundTab = tab;
       }
     });
 
-    return index;
-  };
-
-  public static getAll = (): Array<E.BrowserView> => Tabs.tabs;
-
-  public static getByWebContentId = (id: number): E.BrowserView | undefined => {
-    for (const tab of Tabs.tabs) {
-      if (tab.webContents.id === id) {
-        return tab;
-      }
-    }
-
-    return undefined;
+    return foundTab;
   };
 }

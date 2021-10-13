@@ -173,8 +173,12 @@ jobs:
           chmod +x ./**/*.sh
           chmod +x ./**/*.pl
           ls -la ./scripts
-          ls -la ./build
-          ls -la ./build/installers
+          ls -la ./build || echo ""
+          ls -la ./build/installers || echo ""
+          ls -la ./build/installers/linux-unpacked || echo ""
+          ls -la ./build/installers/linux-unpacked/installers || echo ""
+          ls -la ./build/installers/linux-unpacked/installers/linux-unpacked || echo ""
+          pwd
           mkdir ./gpg
           echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
           echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key

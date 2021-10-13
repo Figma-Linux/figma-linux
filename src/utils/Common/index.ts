@@ -1,6 +1,7 @@
 /**
  * Common utils
  */
+export * from "./app";
 export * from "./url";
 export * from "./wait";
 export * from "./isDev";

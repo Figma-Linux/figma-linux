@@ -247,8 +247,7 @@ const publicAPI: any = {
     console.log("Method addTabAnalyticsMetadata not implemented");
   },
   requestMicrophonePermission(args: any) {
-    // sendMsgToMain("requestMicrophonePermission", args.isUsingMicrophone);
-    console.log("Method requestMicrophonePermission not implemented");
+    sendMsgToMain("requestMicrophonePermission", args);
   },
 
   newFile(args: any) {
@@ -287,7 +286,7 @@ const publicAPI: any = {
       if (isMenuItem(item)) {
         pluginMenuData.push(item);
       } else {
-        sendMsgToMain("log-error", "[desktop] invalid plugin menu item", args);
+        // sendMsgToMain("log-error", "[desktop] invalid plugin menu item", args);
       }
     }
 

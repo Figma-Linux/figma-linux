@@ -1,23 +1,24 @@
 import * as E from "electron";
-import * as Settings from "electron-settings";
+import * as path from "path";
+import * as fs from "fs";
 import * as _ from "lodash";
 
 import * as Const from "Const";
+import { app } from "Utils/Common";
+import { accessSync } from "Utils/Main/fs";
 
 /**
  * This class has dual initialization: in main process and renderer process
  * For change the settings from renderer process the class use Ipc communication
  */
 export class Storage {
+  private filePath: string;
   private settings: SettingsInterface;
 
   constructor() {
-    this.settings = Settings.getSync() as SettingsInterface;
+    this.filePath = path.join(app.getPath("userData"), "settings.json");
 
-    const mergedSettings = _.merge(Const.DEFAULT_SETTINGS, this.settings);
-
-    this.settings = mergedSettings;
-    Settings.setSync(mergedSettings);
+    this.createIfNotExist();
 
     if (process.type === "browser") {
       this.initListeners();
@@ -25,13 +26,35 @@ export class Storage {
   }
 
   private initListeners = () => {
-    E.ipcMain.on("set-settings", (event, settings) => {
+    E.ipcMain.on("set-settings", (_, settings) => {
       this.set(settings);
     });
   };
+  private createIfNotExist = (): void => {
+    const exist = accessSync(this.filePath);
 
-  public get = () => {
-    return Settings.getSync() as SettingsInterface;
+    if (!exist) {
+      const mergedSettings = _.merge(Const.DEFAULT_SETTINGS, this.settings);
+
+      this.settings = mergedSettings;
+      this.writeSync(mergedSettings);
+
+      return;
+    }
+
+    this.settings = this.readSync();
+  };
+  private readSync = (): SettingsInterface => {
+    const content = fs.readFileSync(this.filePath).toString();
+
+    return JSON.parse(content);
+  };
+  private writeSync = (settings: SettingsInterface): void => {
+    fs.writeFileSync(this.filePath, JSON.stringify(settings, null, 2));
+  };
+
+  public get = (): SettingsInterface => {
+    return this.readSync();
   };
 
   public set = (settings: SettingsInterface): void => {
@@ -39,7 +62,7 @@ export class Storage {
       E.ipcRenderer.send("set-settings", settings);
     } else {
       this.settings = settings;
-      Settings.setSync(this.settings);
+      this.writeSync(this.settings);
     }
   };
 
@@ -92,7 +115,11 @@ export class Storage {
   };
   public setUserIds = (ids: string[]): void => {
     this.settings.authedUserIDs = ids;
-    this.settings.userId = ids[0] || "";
+
+    this.set(this.settings);
+  };
+  public setUserId = (id: string): void => {
+    this.settings.userId = id;
 
     this.set(this.settings);
   };

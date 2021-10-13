@@ -58,14 +58,12 @@ class WindowManager {
   private panelHeight = storage.get().app.panelHeight;
   private enableColorSpaceSrgbWasChanged = false;
   private figmaUserIDs: string[] = [];
-  private userId: string;
 
   private constructor() {
     this.home = Const.HOMEPAGE;
     this.figmaUiScale = storage.get().ui.scaleFigmaUI;
     this.panelScale = storage.get().ui.scalePanel;
     this.figmaUserIDs = storage.get().authedUserIDs;
-    this.userId = storage.get().userId;
 
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
@@ -90,9 +88,7 @@ class WindowManager {
     this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
 
     this.initMenu();
-
     this.mainTab = this.addMainTab();
-
     this.mainWindow.on("resize", this.updateBounds);
     this.mainWindow.on("maximize", () => setTimeout(() => this.updateBounds(), 100));
     this.mainWindow.on("unmaximize", () => setTimeout(() => this.updateBounds(), 100));
@@ -131,10 +127,10 @@ class WindowManager {
     return WindowManager._instance;
   }
 
-  openUrl = (url: string) => {
+  openUrl = (url: string): void => {
     if (isAppAuthRedeem(url)) {
       const normalizedUrl = normalizeUrl(url);
-      const tab = Tabs.getAll()[0];
+      const tab = Tabs.getTabByIndex(0);
 
       tab.webContents.loadURL(normalizedUrl);
     } else if (/figma:\/\//.test(url)) {
@@ -144,7 +140,7 @@ class WindowManager {
     }
   };
 
-  loadRecentFilesMainTab = () => {
+  loadRecentFilesMainTab = (): void => {
     this.mainTab.webContents.loadURL(Const.RECENT_FILES);
   };
 
@@ -346,6 +342,31 @@ class WindowManager {
       }
 
       this.mainWindow.webContents.send("setUsingMicrophone", { id: view.webContents.id, isUsingMicrophone });
+    });
+    E.ipcMain.on("requestMicrophonePermission", event => {
+      const view = Tabs.getByWebContentId(event.sender.id);
+
+      if (!view) {
+        return;
+      }
+
+      view.webContents.session.setPermissionRequestHandler((webContents, permission, cb) => {
+        const id = dialogs.showMessageBoxSync({
+          type: "question",
+          title: "Figma",
+          message: "Microphone access required for voice call.",
+          detail: `Allow microphone access?`,
+          textOkButton: "Allow",
+          textCancelButton: "Deny",
+          defaultFocusedButton: "Ok",
+        });
+
+        if (id === 0 && permission === "media") {
+          return cb(true);
+        }
+
+        return cb(false);
+      });
     });
     E.ipcMain.on("setIsInVoiceCall", (event, isInVoiceCall) => {
       const view = Tabs.getByWebContentId(event.sender.id);
@@ -617,6 +638,10 @@ class WindowManager {
       storage.setUserIds(userIds);
       this.figmaUserIDs = userIds;
     }
+
+    if (userIds.length === 1) {
+      storage.setUserId(userIds[0]);
+    }
   };
 
   public tryHandleAppAuthRedeemUrl = (url: string): boolean => {
@@ -642,7 +667,8 @@ class WindowManager {
     title?: string,
     focused = true,
   ): E.BrowserView => {
-    const tab = Tabs.newTab(`${url}?fuid=${this.userId}`, this.getBounds(), scriptPreload);
+    const userId = storage.get().userId;
+    const tab = Tabs.newTab(`${url}?fuid=${userId}`, this.getBounds(), scriptPreload);
 
     if (focused) {
       this.focusTab(tab.webContents.id);
@@ -663,7 +689,8 @@ class WindowManager {
   };
 
   public addMainTab = (): E.BrowserView => {
-    const url = `${Const.RECENT_FILES}/?fuid=${this.userId}`;
+    const userId = storage.get().userId;
+    const url = `${Const.RECENT_FILES}/?fuid=${userId}`;
     const tab = Tabs.newTab(url, this.getBounds(), "loadMainContent.js", false);
 
     this.mainWindow.setBrowserView(tab);
@@ -681,42 +708,30 @@ class WindowManager {
 
   public focusTab = (webContentsId: number): void => {
     const tabs = Tabs.getAll();
-    let foundView = false;
 
-    for (const tab of tabs) {
-      if (tab.webContents.id === webContentsId) {
-        this.mainWindow.setBrowserView(tab);
-        this.lastFocusedTab = tab.webContents;
-        foundView = true;
-      }
-    }
+    tabs.forEach(tab => {
+      this.mainWindow.removeBrowserView(tab);
+    });
 
-    if (!foundView) {
-      this.mainWindow.setBrowserView(this.mainTab);
+    const neededTab = Tabs.getByWebContentId(webContentsId);
+
+    if (!neededTab) {
+      this.mainWindow.addBrowserView(this.mainTab);
       this.lastFocusedTab = this.mainTab.webContents;
+
+      return;
     }
+
+    this.mainWindow.addBrowserView(neededTab);
+    this.lastFocusedTab = neededTab.webContents;
+
+    // Ugly hack for rerender BrowserView
+    setTimeout(() => {
+      this.mainWindow.removeBrowserView(neededTab);
+      this.mainWindow.addBrowserView(neededTab);
+      this.lastFocusedTab = neededTab.webContents;
+    }, 500);
   };
-
-  // For multiply BrowserView
-  // public focusTab = (webContentsId: number): void => {
-  //   const tabs = Tabs.getAll();
-  //   let foundView = false;
-
-  //   for (const tab of tabs) {
-  //     if (tab.webContents.id !== webContentsId) {
-  //       this.mainWindow.removeBrowserView(tab);
-  //     } else {
-  //       foundView = true;
-  //       this.mainWindow.addBrowserView(tab);
-  //       this.lastFocusedTab = tab.webContents;
-  //     }
-  //   }
-
-  //   if (!foundView) {
-  //     this.mainWindow.addBrowserView(this.mainTab);
-  //     this.lastFocusedTab = this.mainTab.webContents;
-  //   }
-  // };
 
   private initSettingsView = () => {
     this.settingsView = new E.BrowserView({
@@ -799,7 +814,7 @@ class WindowManager {
       useSessionCookies: true,
     });
 
-    request.on("response", async response => {
+    request.on("response", async () => {
       this.setFigmaUserIDs([]);
       try {
         await Promise.all([E.session.defaultSession.clearStorageData(), E.session.defaultSession.clearCache()]);
@@ -832,9 +847,9 @@ class WindowManager {
 
     const tabs = Tabs.getAll();
 
-    for (const tab of tabs) {
+    tabs.forEach(tab => {
       tab.webContents.send("themes-change", theme);
-    }
+    });
 
     storage.setTheme(theme.id);
   };
@@ -952,9 +967,9 @@ class WindowManager {
 
     this.updateBounds();
 
-    for (const view of views) {
+    views.forEach(view => {
       view.webContents.setZoomFactor(this.figmaUiScale);
-    }
+    });
   };
 
   private updateFigmaUiScale = (figmaScale: number): void => {
@@ -962,9 +977,9 @@ class WindowManager {
 
     this.figmaUiScale = +figmaScale.toFixed(2);
 
-    for (const view of views) {
+    views.forEach(view => {
       view.webContents.setZoomFactor(+figmaScale.toFixed(2));
-    }
+    });
   };
 
   private updatePanelScale = (panelScale: number): void => {

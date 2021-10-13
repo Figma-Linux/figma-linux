@@ -136,7 +136,7 @@ When you do changes in middleware component, You need to rebuild (`npm run build
 
 ## Community
 
-Join us on [telegram](https://t.me/figma_linux) and [spectrum.chat](https://spectrum.chat/figma-linux)
+Join us on [Telegram](https://t.me/figma_linux) or [Spectrum](https://spectrum.chat/figma-linux).
 
 
 ## Become a Backer

@@ -164,21 +164,12 @@ jobs:
 
       - name: Import keys
         run: |
-          ls -la .
           mv ./repo/* ./
           mv ./amd64/* ./
           rm -rf ./repo
           rm -rf ./amd64
-          ls -la .
           chmod +x ./**/*.sh
           chmod +x ./**/*.pl
-          ls -la ./scripts
-          ls -la ./build || echo ""
-          ls -la ./build/installers || echo ""
-          ls -la ./build/installers/linux-unpacked || echo ""
-          ls -la ./build/installers/linux-unpacked/installers || echo ""
-          ls -la ./build/installers/linux-unpacked/installers/linux-unpacked || echo ""
-          pwd
           mkdir ./gpg
           echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
           echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
@@ -206,7 +197,6 @@ jobs:
 
       - name: Prepare artifacts
         run: |
-          ls -la .
           mkdir -p src/build/installers
           mv ./repo/* ./src
           mv ./amd64/build/installers/* ./src/build/installers/
@@ -214,10 +204,6 @@ jobs:
           rm -rf ./repo
           rm -rf ./amd64
           rm -rf ./arm64v8
-          ls -la .
-          ls -la ./src
-          ls -la ./src/build
-          ls -la ./src/build/installers
           find ./ -type f -iname "*.sh" -exec chmod +x {} \;
           find ./ -type f -iname "*.pl" -exec chmod +x {} \;
           rm -rf ./src/build/installers/*.deb
@@ -225,7 +211,6 @@ jobs:
           rm -rf ./src/build/installers/*.rpm
           rm -rf ./src/build/installers/*.AppImage
           rm -rf ./src/build/installers/linux*
-          ls -la ./src/build/installers/
 
       - name: Import SSH key
         id: key
@@ -303,18 +288,10 @@ jobs:
         id: update
         run: |
           sudo apt install libxml2-utils -y
-          ls -la .
-          ls -la ./repo
-          ls -la ./repo/scripts
-          ls -la ./flatpak-repo
-          ls -la ./amd64
-          ls -la ./arm64v8
           mv ./amd64/* ./
           mv ./arm64v8/* ./build/installers
           rm -rf ./amd64
           rm -rf ./arm64v8
-          ls -la .
-          ls -la ./build/installers
           find ./ -type f -iname "*.sh" -exec chmod +x {} \;
           find ./ -type f -iname "*.pl" -exec chmod +x {} \;
           cd ./repo

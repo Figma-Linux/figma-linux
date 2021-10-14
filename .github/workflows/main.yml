@@ -321,6 +321,7 @@ jobs:
           ./scripts/generate_release_notes.pl --html
           cd ..
           data=$(cat ./repo/release_notes | tr -d '\n')
+          echo "First Print *appdata.xml file:"
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./repo/release_notes
           prevVersion=$(cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
@@ -339,7 +340,10 @@ jobs:
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
           sed -i "s|<releases>|<releases><release version=\"$version\" date=\"$(date '+%Y-%m-%d')\"><description><ul>$data<\/ul><\/description>|g" /tmp/tmp1
+          echo "Print before formatting /tmp/tmp1 xml file:"
+          cat /tmp/tmp1
           xmllint --format /tmp/tmp1 > ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
+          echo "Print after formatting /tmp/tmp1 xml file:"
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           echo ::set-output name=release::$version
 

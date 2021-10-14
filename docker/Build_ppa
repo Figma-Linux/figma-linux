@@ -26,10 +26,10 @@ RUN cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
   ls -lah ./build || echo '' && \
   ls -lah ./build/installers || echo '' && \
   ls -lah ./build/installers/linux-unpacked || echo '' && \
-  ls -lah ./build/installers/linux-unpacked/installers || echo '' && \
-  ls -lah ./build/installers/linux-unpacked/installers || echo '' && \
-  ls -lah ./build/installers/linux-unpacked/installers/linux-unpacked || echo '' && \
   cd build/figma-linux-${FIGMA_LINUX_VERSION} && \
+  ls -la . || echo '' && \
+  ls -la installers || echo '' && \
+  ls -la installers/linux-unpacked || echo '' && \
   chmod a+x debian/rules debian/postinst debian/postrm && \
   EDITOR=/bin/true dpkg-source -q --commit . patchsetname && \
   debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback" && \

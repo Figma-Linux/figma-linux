@@ -339,7 +339,7 @@ jobs:
           echo 'cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml after update sha sums'
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
-          sed -i "s|<releases>|<releases><release version=\"$version\" date=\"$(date '+%Y-%m-%d')\"><description><ul>$data<\/ul><\/description>|g" /tmp/tmp1
+          sed -i "s|<releases>|<releases><release version=\"$version\" date=\"$(date '+%Y-%m-%d')\"><description><ul>$data<\/ul><\/description><\/release>|g" /tmp/tmp1
           echo "Print before formatting /tmp/tmp1 xml file:"
           cat /tmp/tmp1
           xmllint --format /tmp/tmp1 > ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml

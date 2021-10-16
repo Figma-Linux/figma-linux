@@ -8,9 +8,9 @@ import WindowManager from "./WindowManager";
 export default class Tabs {
   public static registeredCancelCallbackMap: Map<number, () => void> = new Map();
 
-  private static tabs: Map<number, E.BrowserView> = new Map();
+  private static tabs: Map<number, TabData> = new Map();
 
-  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string, save = true): E.BrowserView => {
+  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string, save = true): TabData => {
     const options: E.BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,
@@ -53,15 +53,20 @@ export default class Tabs {
 
     isDev && tab.webContents.toggleDevTools();
 
+    const data = {
+      micAccess: false,
+      view: tab,
+    };
+
     if (save) {
-      Tabs.tabs.set(tab.webContents.id, tab);
+      Tabs.tabs.set(tab.webContents.id, data);
     }
 
-    return tab;
+    return data;
   };
 
   public static closeAll = (): void => {
-    Tabs.tabs.forEach((value, id) => {
+    Tabs.tabs.forEach((_, id) => {
       if (id !== 1) {
         Tabs.tabs.delete(id);
       }
@@ -71,10 +76,10 @@ export default class Tabs {
   public static close = (tabId: number): void => {
     Tabs.tabs.forEach((value, id) => {
       if (id === tabId) {
-        value.webContents.loadURL("about:blank");
+        value.view.webContents.loadURL("about:blank");
 
-        if (value.webContents && !value.webContents.isDestroyed()) {
-          value.webContents.destroy();
+        if (value.view.webContents && !value.view.webContents.isDestroyed()) {
+          value.view.webContents.destroy();
         }
 
         Tabs.tabs.delete(id);
@@ -83,11 +88,11 @@ export default class Tabs {
   };
 
   public static reloadAll = (): void =>
-    Tabs.tabs.forEach(t => (!t.webContents.isDestroyed() ? t.webContents.reload() : ""));
+    Tabs.tabs.forEach(t => (!t.view.webContents.isDestroyed() ? t.view.webContents.reload() : ""));
 
-  public static getTabByIndex = (index: number): E.BrowserView | undefined => {
+  public static getTabByIndex = (index: number): TabData | undefined => {
     let i = 0;
-    let foundTab: E.BrowserView | undefined;
+    let foundTab: TabData | undefined;
 
     Tabs.tabs.forEach(tab => {
       if (index === i) {
@@ -114,10 +119,18 @@ export default class Tabs {
     return i;
   };
 
-  public static getAll = (): Map<number, E.BrowserView> => Tabs.tabs;
+  public static getAll = (): Map<number, TabData> => Tabs.tabs;
 
-  public static getByWebContentId = (webContentsId: number): E.BrowserView | undefined => {
-    let foundTab: E.BrowserView | undefined;
+  public static setMicAccess = (webContentsId: number, value: boolean): void => {
+    Tabs.tabs.forEach((tab, id) => {
+      if (id === webContentsId) {
+        tab.micAccess = value;
+      }
+    });
+  };
+
+  public static getByWebContentId = (webContentsId: number): TabData | undefined => {
+    let foundTab: TabData | undefined;
 
     Tabs.tabs.forEach((tab, id) => {
       if (id === webContentsId) {

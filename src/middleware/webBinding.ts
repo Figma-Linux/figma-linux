@@ -9,7 +9,7 @@ interface IntiApiOptions {
   fileBrowser: boolean;
 }
 
-const API_VERSION = 39;
+const API_VERSION = 48;
 let webPort: MessagePort;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 
@@ -244,10 +244,10 @@ const publicAPI: any = {
 
   addTabAnalyticsMetadata(args: any) {
     // sendMsgToMain("addTabAnalyticsMetadata", args.isUsingMicrophone);
-    console.log("Method addTabAnalyticsMetadata not implemented");
+    console.log("Method addTabAnalyticsMetadata not implemented, args: ", args);
   },
-  requestMicrophonePermission(args: any) {
-    sendMsgToMain("requestMicrophonePermission", args);
+  requestMicrophonePermission() {
+    sendMsgToMain("requestMicrophonePermission");
   },
 
   newFile(args: any) {

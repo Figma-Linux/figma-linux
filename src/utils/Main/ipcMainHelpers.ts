@@ -29,13 +29,13 @@ export function listenToWebBindingPromise(
       method = "handlePromiseReject";
     }
 
-    const view = Tab.getByWebContentId(event.sender.id);
+    const tab = Tab.getByWebContentId(event.sender.id);
 
-    if (!view) {
+    if (!tab) {
       return;
     }
 
-    view.webContents.send(method, promiseID, result);
+    tab.view.webContents.send(method, promiseID, result);
   });
 }
 
@@ -46,14 +46,14 @@ export function listenToWebRegisterCallback(
   E.ipcMain.on(`web-callback:${channel}`, (event: E.IpcMainEvent, args: any, callbackID: number) => {
     isDev && console.log(`[ipc] from web: ${channel} (callback ${callbackID})`);
 
-    const view = Tab.getByWebContentId(event.sender.id);
+    const tab = Tab.getByWebContentId(event.sender.id);
 
-    if (!view) {
+    if (!tab) {
       return;
     }
 
     const cancel = listener(event.sender, args, (args: any) => {
-      view.webContents.send("handleCallback", callbackID, args);
+      tab.view.webContents.send("handleCallback", callbackID, args);
     });
 
     Tab.registeredCancelCallbackMap.set(callbackID, cancel);

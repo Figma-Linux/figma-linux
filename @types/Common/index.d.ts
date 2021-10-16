@@ -11,6 +11,11 @@ interface Tab {
   isInVoiceCall?: boolean;
 }
 
+interface TabData {
+  micAccess: boolean;
+  view: import("electron").BrowserView;
+}
+
 interface SavedTab {
   title?: string;
   url?: string;

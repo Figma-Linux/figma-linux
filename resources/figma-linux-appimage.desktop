@@ -6,6 +6,6 @@ Terminal=false
 Type=Application
 Icon=figma-linux
 StartupWMClass=figma-linux
-X-AppImage-Version=0.9.1
+X-AppImage-Version=0.9.2
 Categories=Graphics;
 MimeType=application/figma;x-scheme-handler/figma;

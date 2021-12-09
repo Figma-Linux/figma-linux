@@ -9,7 +9,7 @@ interface IntiApiOptions {
   fileBrowser: boolean;
 }
 
-const API_VERSION = 48;
+const API_VERSION = 53;
 let webPort: MessagePort;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 

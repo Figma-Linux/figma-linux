@@ -95,6 +95,7 @@ export class ThemesManager {
       "#react-page { background-color: var(--bg-panel); }",
       `span[class*="action_option--shortcut"] { color: var(--fg-overlay); }`,
       `div[class*="search--searchContainer"] input { background-color: var(--bg-panel) !important; }`,
+      `div[class*="file_browser_page_view"] { background-color: var(--bg-panel) !important; }`,
     ];
 
     this.setThemeVariables();

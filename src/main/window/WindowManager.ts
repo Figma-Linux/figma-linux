@@ -150,7 +150,7 @@ class WindowManager {
     if (Array.isArray(tabs) && tabs.length) {
       tabs.forEach((tab, i) => {
         setTimeout(() => {
-          this.addTab("loadContent.js", tab.url, tab.title, false);
+          this.addTab("loadContent.js", tab.url, tab.title);
         }, 500 * i);
       });
 
@@ -308,7 +308,7 @@ class WindowManager {
         url = `${url}${args[2]}`;
       }
 
-      this.addTab("loadContent.js", url, undefined, false);
+      this.addTab("loadContent.js", url);
     });
     E.ipcMain.on("setFeatureFlags", (_, args) => {
       storage.setFeatureFlags(args.featureFlags);
@@ -660,35 +660,23 @@ class WindowManager {
     return false;
   };
 
-  public addTab = (
-    scriptPreload = "loadMainContent.js",
-    url = Const.RECENT_FILES,
-    title?: string,
-    focused = true,
-  ): E.BrowserView => {
+  public addTab = (scriptPreload = "loadMainContent.js", url = Const.RECENT_FILES, title?: string): E.BrowserView => {
     const userId = storage.get().userId;
     const tab = Tabs.newTab(`${url}?fuid=${userId}`, this.getBounds(), scriptPreload);
-
-    if (focused) {
-      this.focusTab(tab.view.webContents.id);
-    }
 
     tab.view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
     tab.view.webContents.on("new-window", this.onNewWindow);
 
     MenuState.updateActionState(Const.ACTIONTABSTATE);
 
+    this.mainWindow.addBrowserView(tab.view);
+    this.mainWindow.setTopBrowserView(this.mainTab);
     this.mainWindow.webContents.send("didTabAdd", {
       id: tab.view.webContents.id,
       url,
       showBackBtn: true,
       title,
-      focused,
     });
-
-    if (focused) {
-      this.focusTab(tab.view.webContents.id);
-    }
 
     tab.view.webContents.session.setPermissionRequestHandler((webContents, permission, cb) => {
       if (permission === "media") {
@@ -724,7 +712,8 @@ class WindowManager {
     const url = `${Const.RECENT_FILES}/?fuid=${userId}`;
     const tab = Tabs.newTab(url, this.getBounds(), "loadMainContent.js", false);
 
-    this.mainWindow.setBrowserView(tab.view);
+    this.mainWindow.addBrowserView(tab.view);
+    this.mainWindow.setTopBrowserView(tab.view);
 
     tab.view.webContents.on("will-navigate", this.onMainTabWillNavigate);
     tab.view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
@@ -738,30 +727,17 @@ class WindowManager {
   };
 
   public focusTab = (webContentsId: number): void => {
-    const tabs = Tabs.getAll();
-
-    tabs.forEach(tab => {
-      this.mainWindow.removeBrowserView(tab.view);
-    });
-
     const neededTab = Tabs.getByWebContentId(webContentsId);
 
     if (!neededTab) {
-      this.mainWindow.addBrowserView(this.mainTab);
+      this.mainWindow.setTopBrowserView(this.mainTab);
       this.lastFocusedTab = this.mainTab.webContents;
 
       return;
     }
 
-    this.mainWindow.addBrowserView(neededTab.view);
+    this.mainWindow.setTopBrowserView(neededTab.view);
     this.lastFocusedTab = neededTab.view.webContents;
-
-    // Ugly hack for rerender BrowserView
-    setTimeout(() => {
-      this.mainWindow.removeBrowserView(neededTab.view);
-      this.mainWindow.addBrowserView(neededTab.view);
-      this.lastFocusedTab = neededTab.view.webContents;
-    }, 500);
   };
 
   private initSettingsView = () => {

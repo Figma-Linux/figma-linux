@@ -1,3 +1,17 @@
+figma-linux (0.9.3-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.9.3 version
+
+  ## Bug Fixes:
+  * Backgroud color for the main projects page
+  * Update the work with tab's BrowserView
+  * Bump desktop API version to 53
+
+  ## Other Changes:
+  * Bump Electron.js version to 13.6.3
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Thu, 09 Dec 2021 12:40:23 +0300
+
 figma-linux (0.9.2-1ubuntu0) devel; urgency=medium
 
   * Publish 0.9.2 version

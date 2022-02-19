@@ -84,6 +84,12 @@ If you receive a `NO_PUBKEY` error while running `apt update`, then you must add
 sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 70F3445E637983CC
 ```
 
+#### Alternative Ubuntu install
+
+Download the .deb package from the [Releases](https://github.com/Figma-Linux/figma-linux/releases) page, and install it with `apt`.
+```bash
+sudo apt install figma-linux_*_amd64.deb
+```
 
 ### Arch-based distros
 

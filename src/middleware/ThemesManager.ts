@@ -81,6 +81,15 @@ export class ThemesManager {
         document.body.style.setProperty("--fg-overlay-sep", value);
       }
     }
+
+    document.body.style.setProperty("background-color", "var(--gb-panel)");
+
+    document.body.style.setProperty("--color-bg", "var(--bg-panel)");
+    document.body.style.setProperty("--color-bg-selected", "var(--bg-panel)");
+    document.body.style.setProperty("--color-text", "var(--text)");
+    document.body.style.setProperty("--color-text-secondary", "var(--text)");
+    document.body.style.setProperty("--color-border", "var(--borders)");
+    document.body.style.setProperty("--color-text-disabled", "var(--text-disabled)");
   }
 
   init(): void {
@@ -132,6 +141,15 @@ export class ThemesManager {
         }
         if (/tool_bar--toolBarRightSide|pages_panel--pageRowSelected/.test(cssRule.selectorText)) {
           cssRule.style["fill"] = `var(--text-active)`;
+        }
+        if (/.svg-container/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`.svg-container path:not([fill="none"]) { fill: var(--text-active); }`);
+        }
+        if (/.text--_negText/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
+        }
+        if (/.navbar--workspaceSubtitle/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
         }
         if (/upgrade_section--icon/.test(cssRule.selectorText)) {
           additionStyleRules.push(`span[class*="upgrade_section--icon"] > svg > path { fill: var(--text); }`);

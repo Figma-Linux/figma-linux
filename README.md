@@ -105,7 +105,7 @@ sudo dnf install figma-linux-*.x86_64.rpm
 1. Clone the repository:
 ```bash
 git clone https://github.com/Figma-Linux/figma-linux
-cd linux
+cd figma-linux
 ```
 2. Install Rust:
 ```bash

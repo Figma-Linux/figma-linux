@@ -81,6 +81,16 @@ export class ThemesManager {
         document.body.style.setProperty("--fg-overlay-sep", value);
       }
     }
+
+    document.body.style.setProperty("background-color", "var(--gb-panel)");
+
+    document.body.style.setProperty("--color-bg", "var(--bg-panel)");
+    document.body.style.setProperty("--color-bg-selected", "var(--bg-panel)");
+    document.body.style.setProperty("--color-text", "var(--text)");
+    document.body.style.setProperty("--color-text-secondary", "var(--text)");
+    document.body.style.setProperty("--color-border", "var(--borders)");
+    document.body.style.setProperty("--color-text-disabled", "var(--text-disabled)");
+    document.body.style.setProperty("--color-bg-selected-secondary", "var(--bg-panel)");
   }
 
   init(): void {
@@ -94,7 +104,6 @@ export class ThemesManager {
     const additionStyleRules: string[] = [
       "#react-page { background-color: var(--bg-panel); }",
       `span[class*="action_option--shortcut"] { color: var(--fg-overlay); }`,
-      `div[class*="search--searchContainer"] input { background-color: var(--bg-panel) !important; }`,
       `div[class*="file_browser_page_view"] { background-color: var(--bg-panel) !important; }`,
     ];
 
@@ -123,7 +132,6 @@ export class ThemesManager {
         }
 
         if (/search--searchInput/.test(cssRule.selectorText)) {
-          cssRule.style["backgroundColor"] = `var(--bg-panel)`;
           cssRule.style["color"] = `var(--text-active)`;
         }
 
@@ -132,6 +140,15 @@ export class ThemesManager {
         }
         if (/tool_bar--toolBarRightSide|pages_panel--pageRowSelected/.test(cssRule.selectorText)) {
           cssRule.style["fill"] = `var(--text-active)`;
+        }
+        if (/.svg-container/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`.svg-container path:not([fill="none"]) { fill: var(--text-active); }`);
+        }
+        if (/.text--_negText/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
+        }
+        if (/.navbar--workspaceSubtitle/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
         }
         if (/upgrade_section--icon/.test(cssRule.selectorText)) {
           additionStyleRules.push(`span[class*="upgrade_section--icon"] > svg > path { fill: var(--text); }`);
@@ -145,11 +162,6 @@ export class ThemesManager {
         }
         if (/basic_form--textInput/.test(cssRule.selectorText)) {
           cssRule.style["backgroundColor"] = `var(--bg-panel)`;
-        }
-        if (
-          /(search--searchContainer--.*:hover|search--expandingSearchBoxContainerFocused)/.test(cssRule.selectorText)
-        ) {
-          cssRule.style["backgroundColor"] = `var(--bg-header)`;
         }
         if (/step_breadcrumb--stepTitle/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--text-active)`;

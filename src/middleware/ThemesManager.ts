@@ -103,7 +103,6 @@ export class ThemesManager {
     const additionStyleRules: string[] = [
       "#react-page { background-color: var(--bg-panel); }",
       `span[class*="action_option--shortcut"] { color: var(--fg-overlay); }`,
-      `div[class*="search--searchContainer"] input { background-color: var(--bg-panel) !important; }`,
       `div[class*="file_browser_page_view"] { background-color: var(--bg-panel) !important; }`,
     ];
 
@@ -132,7 +131,6 @@ export class ThemesManager {
         }
 
         if (/search--searchInput/.test(cssRule.selectorText)) {
-          cssRule.style["backgroundColor"] = `var(--bg-panel)`;
           cssRule.style["color"] = `var(--text-active)`;
         }
 
@@ -163,11 +161,6 @@ export class ThemesManager {
         }
         if (/basic_form--textInput/.test(cssRule.selectorText)) {
           cssRule.style["backgroundColor"] = `var(--bg-panel)`;
-        }
-        if (
-          /(search--searchContainer--.*:hover|search--expandingSearchBoxContainerFocused)/.test(cssRule.selectorText)
-        ) {
-          cssRule.style["backgroundColor"] = `var(--bg-header)`;
         }
         if (/step_breadcrumb--stepTitle/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--text-active)`;

@@ -90,6 +90,7 @@ export class ThemesManager {
     document.body.style.setProperty("--color-text-secondary", "var(--text)");
     document.body.style.setProperty("--color-border", "var(--borders)");
     document.body.style.setProperty("--color-text-disabled", "var(--text-disabled)");
+    document.body.style.setProperty("--color-bg-selected-secondary", "var(--bg-panel)");
   }
 
   init(): void {

@@ -1,3 +1,12 @@
+figma-linux (0.9.5-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.9.5 version
+
+  ## Bug Fixes:
+  * No visibility of top navbar editing icons & selected element. [#266](https://github.com/Figma-Linux/figma-linux/issues/266)
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Wed, 23 Feb 2022 22:48:50 +0300
+
 figma-linux (0.9.4-1ubuntu0) devel; urgency=medium
 
   * Publish 0.9.4 version

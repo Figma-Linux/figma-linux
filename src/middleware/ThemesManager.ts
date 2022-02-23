@@ -91,6 +91,8 @@ export class ThemesManager {
     document.body.style.setProperty("--color-border", "var(--borders)");
     document.body.style.setProperty("--color-text-disabled", "var(--text-disabled)");
     document.body.style.setProperty("--color-bg-selected-secondary", "var(--bg-panel)");
+    document.body.style.setProperty("--color-bg-selected", "var(--bg-panel-hover)");
+    document.body.style.setProperty("--color-text-toolbar", "var(--text)");
   }
 
   init(): void {
@@ -140,9 +142,18 @@ export class ThemesManager {
         }
         if (/tool_bar--toolBarRightSide|pages_panel--pageRowSelected/.test(cssRule.selectorText)) {
           cssRule.style["fill"] = `var(--text-active)`;
+          cssRule.style["background-color"] = `var(--bg-panel-hover)`;
         }
-        if (/.svg-container/.test(cssRule.selectorText)) {
-          additionStyleRules.push(`.svg-container path:not([fill="none"]) { fill: var(--text-active); }`);
+        if (/community_hub_link--communityArrow|new_file_creation_topbar--plusIcon/.test(cssRule.selectorText)) {
+          cssRule.style["fill"] = `var(--text-active)`;
+        }
+        if (
+          /new_file_creation_topbar--importIcon|option_button--_optionButton|raw_components--_iconButton|object_row--layerIcon|segmented_control--icon/.test(
+            cssRule.selectorText,
+          )
+        ) {
+          cssRule.style["color"] = `var(--text-active)`;
+          cssRule.style["fill"] = `var(--text-active)`;
         }
         if (/.text--_negText/.test(cssRule.selectorText)) {
           additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);

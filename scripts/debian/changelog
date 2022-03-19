@@ -1,3 +1,17 @@
+figma-linux (0.9.6-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.9.6 version
+
+  ## Bug Fixes:
+  * tab sizing for user interactions and adds focus to new tabs
+
+  ## Other Changes:
+  * Bump Electron version from 13.6.3 to 13.6.9
+  * replace scss on css
+  * Remove the old libstdc++ library
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 19 Mar 2022 22:21:25 +0300
+
 figma-linux (0.9.5-1ubuntu0) devel; urgency=medium
 
   * Publish 0.9.5 version

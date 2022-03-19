@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { Text, Button, Icon } from "Elements";
 
-import "./style.scss";
+import "./style.css";
 
 interface HeaderProps {
   text: string;

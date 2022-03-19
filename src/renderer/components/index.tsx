@@ -7,7 +7,7 @@ import { Themes } from "Store/Themes";
 import TopPanel from "./TopPanel";
 import Settings from "./Settings";
 import ThemeCreator from "./ThemeCreator";
-import "./style.scss";
+import "./style.css";
 
 interface AppProps {
   views?: Views;

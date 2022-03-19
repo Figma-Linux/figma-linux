@@ -1,0 +1,12 @@
+.general {
+  padding-bottom: 20px;
+}
+.general .add {
+  align-self: center;
+}
+.general .add:hover {
+  cursor: pointer;
+}
+.general .button:hover {
+  cursor: pointer;
+}

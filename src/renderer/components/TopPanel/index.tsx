@@ -5,7 +5,7 @@ import { observer, inject } from "mobx-react";
 import Panel from "./toppanel";
 import { Settings } from "Store/Settings";
 import { Views } from "Store/Views";
-import "./style.scss";
+import "./style.css";
 
 interface TopPanelProps {
   tabs?: TabsStore;

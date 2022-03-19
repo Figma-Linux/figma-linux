@@ -3,7 +3,7 @@ import * as React from "react";
 import { Button, Text, Icon } from "Elements";
 import { getColorPallet } from "Utils/Render";
 
-import "./index.scss";
+import "./index.css";
 
 interface ThemeViewItemProps {
   currentTheme: string;

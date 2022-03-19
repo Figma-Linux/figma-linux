@@ -1,0 +1,138 @@
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../../assets/fonts/Inter.ttf')
+}
+
+html,
+body,
+#app,
+#react-page {
+  --fontControlSize: 12px;
+  --fontSize: 16px;
+  --fontSubtitleSize: 18px;
+  --fontTitleSize: 22px;
+
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: 0;
+  height: 100%;
+
+  font-family: 'Inter', sans-serif;
+  font-size: var(--fontSize);
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+}
+
+#body {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.hover:hover {
+  cursor: pointer;
+}
+
+.hidden {
+  display: none;
+}
+
+.section {
+  padding: 30px 0px;
+  border-bottom: 1px solid var(--borders);
+}
+.section_end {
+  border-bottom: 0px;
+}
+
+.grid {
+  display: grid;
+
+}
+.grid_1x2 {
+  grid-template-columns: 1fr 1fr;
+}
+.grid_1x3 {
+  grid-template-columns: 10fr 2fr 10fr;
+}
+.grid_1x3_input {
+  grid-template-columns: 10fr 30px 10fr;
+}
+
+.grid_cgap5per {
+  grid-column-gap: 5%;
+}
+
+.justify__content {
+  justify-content: left;
+}
+.justify__content_center {
+  justify-content: center;
+}
+.justify__content_right {
+  justify-content: right;
+}
+.justify__content_space_around {
+  justify-content: space-around;
+}
+
+.align_items_center {
+  align-items: center;
+}
+
+.flex {
+  display: flex;
+}
+.flex_column {
+  flex-direction: column;
+}
+.flex_grow_1 {
+  flex-grow: 1;
+}
+
+.width {}
+.width_60px {
+  width: 60px;
+}
+.width_100px {
+  width: 100px;
+}
+.width_110px {
+  width: 110px;
+}
+.width_120px {
+  width: 120px;
+}
+
+.border_light {
+  border: 1px solid var(--borders);
+}
+
+.pad_left_6px {
+  padding-left: 6px;
+}
+.pad_left_10px {
+  padding-left: 10px;
+}
+.pad_top_10px {
+  padding-top: 10px;
+}
+
+.marg_right_10px {
+  margin-right: 10px;
+}
+
+.pointer_events_none {
+  pointer-events: none;
+}

@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
 const rootFolder = process.cwd();
-const resolveExtensions = [".ts", ".tsx", ".js", ".jsx", ".json", ".scss"];
+const resolveExtensions = [".ts", ".tsx", ".js", ".jsx", ".json", ".css"];
 const resolveModules = ["node_modules", "react"];
 
 module.exports = config => {

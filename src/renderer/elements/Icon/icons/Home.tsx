@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { IconProps } from "..";
-import "../index.scss";
+import "../index.css";
 
 export const Home: React.FunctionComponent<IconProps> = props => {
   const size = props.size ? props.size : "16";

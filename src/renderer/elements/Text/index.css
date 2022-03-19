@@ -1,0 +1,30 @@
+.text {
+  font-size: var(--fontSize);
+  font-family: 'Inter', sans-serif;
+}
+.text_title {
+  display: block;
+  font-size: var(--fontTitleSize);
+  font-weight: 600;
+}
+.text_subtitle {
+  color: var(--text-active);
+  display: block;
+  padding-bottom: 20px;
+  font-size: var(--fontSubtitleSize);
+  font-weight: 600;
+}
+
+.text_light {
+  color: var(--fg-tab-active);
+}
+.text_dark {
+  color: var(--text-active);
+}
+.text_inactive {
+  color: var(--text-disabled);
+}
+
+.text_nopadding {
+  padding: 0;
+}

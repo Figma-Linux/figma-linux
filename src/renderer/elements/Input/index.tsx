@@ -4,7 +4,7 @@ import { InputColor, InputColorProps } from "./types/Color";
 import { InputRange, InputRangeProps } from "./types/Range";
 import { InputText, InputTextProps } from "./types/Text";
 
-import "./index.scss";
+import "./index.css";
 
 export interface InputBaseProps {
   className?: string;

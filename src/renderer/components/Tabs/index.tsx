@@ -6,7 +6,7 @@ import { toJS } from "mobx";
 import * as Const from "Const";
 import { isValidProjectLink } from "Utils/Common";
 import TabList from "./tabs";
-import "./style.scss";
+import "./style.css";
 
 interface TabsProps {
   tabs?: TabsStore;

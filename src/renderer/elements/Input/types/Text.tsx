@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import "../index.scss";
+import "../index.css";
 
 export interface InputTextProps {
   onChange(event: React.MouseEvent<any> | React.ChangeEvent<any>, delta: number): void;

@@ -48,6 +48,7 @@ class WindowManager {
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
+  tabsWereRestored: boolean;
   themes: Themes.Theme[] = [];
   currentTheme: Themes.Theme;
   creatorTheme: Themes.Theme;
@@ -64,6 +65,7 @@ class WindowManager {
     this.figmaUiScale = storage.get().ui.scaleFigmaUI;
     this.panelScale = storage.get().ui.scalePanel;
     this.figmaUserIDs = storage.get().authedUserIDs;
+    this.tabsWereRestored = false;
 
     const options: E.BrowserWindowConstructorOptions = {
       width: 1200,
@@ -151,12 +153,17 @@ class WindowManager {
       tabs.forEach((tab, i) => {
         setTimeout(() => {
           this.addTab("loadContent.js", tab.url, tab.title);
+          if (i === tabs.length - 1) {
+            this.tabsWereRestored = true;
+          }
         }, 500 * i);
       });
 
       storage.clearLastOpenedTabs();
 
       MenuState.updateInFileBrowserActionState();
+    } else {
+      this.tabsWereRestored = true;
     }
   };
 
@@ -670,12 +677,18 @@ class WindowManager {
     MenuState.updateActionState(Const.ACTIONTABSTATE);
 
     this.mainWindow.addBrowserView(tab.view);
-    this.mainWindow.setTopBrowserView(this.mainTab);
+    if (this.lastFocusedTab && this.tabsWereRestored && this.lastFocusedTab.id !== tab.view.webContents.id) {
+      this.focusTab(tab.view.webContents.id);
+    } else {
+      this.focusMainTab();
+    }
     this.mainWindow.webContents.send("didTabAdd", {
       id: tab.view.webContents.id,
       url,
       showBackBtn: true,
       title,
+      focused:
+        this.lastFocusedTab && this.tabsWereRestored ? this.lastFocusedTab.id === tab.view.webContents.id : false,
     });
 
     tab.view.webContents.session.setPermissionRequestHandler((webContents, permission, cb) => {

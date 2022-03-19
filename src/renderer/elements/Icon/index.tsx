@@ -24,8 +24,9 @@ import { CloseTab } from "./icons/CloseTab";
 import { Home } from "./icons/Home";
 import { Muted } from "./icons/Muted";
 import { UnMuted } from "./icons/UnMuted";
-import "../../animations.scss";
-import "./index.scss";
+
+import "../../animations.css";
+import "./index.css";
 
 type Icons =
   | "Close"

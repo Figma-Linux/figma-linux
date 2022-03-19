@@ -2,7 +2,7 @@ import * as E from "electron";
 import * as React from "react";
 import { observer, inject } from "mobx-react";
 
-import "./style.scss";
+import "./style.css";
 import { Text, Button, Icon } from "Elements";
 import Header from "../Header";
 import General from "./views/General";

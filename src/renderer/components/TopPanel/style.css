@@ -1,0 +1,23 @@
+.top-panel {
+  display: grid;
+  grid-template: "a b c";
+  grid-template-columns: auto 1fr auto;
+  background-color: var(--bg-header);
+  -webkit-app-region: no-drag;
+}
+.top-panel>.panelButtons {
+  display: inline-flex;
+  flex-direction: row;
+  align-content: center;
+  -webkit-app-region: no-drag;
+
+}
+.top-panel>.panelButtons>.button {
+  display: flex;
+  align-items: center;
+  -webkit-app-region: no-drag;
+}
+
+.top-panel:hover .tab__close {
+  opacity: 0.16;
+}

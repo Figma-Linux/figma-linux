@@ -3,7 +3,7 @@ import * as React from "react";
 import { observer, inject } from "mobx-react";
 import { toJS } from "mobx";
 
-import "./style.scss";
+import "./style.css";
 import View from "./view";
 import { Themes } from "Store/Themes";
 import { AVAILABLE_THEME_COLOR_VALUE } from "Const";

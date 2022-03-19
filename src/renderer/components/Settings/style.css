@@ -1,0 +1,54 @@
+.settings {
+  padding: 5% 0px;
+  width: 70%;
+  margin: auto;
+  height: -webkit-fill-available;
+}
+.settings__header {
+  border-top: 1px solid var(--borders);
+  border-left: 1px solid var(--borders);
+  border-right: 1px solid var(--borders);
+}
+
+.settings__panel {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  background: var(--bg-toolbar);
+  color: var(--bg-panel);
+  padding: 14px 10px 14px 30px;
+  border-left: 1px solid var(--borders);
+  border-right: 1px solid var(--borders);
+}
+
+.settings__body {
+  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  background: var(--bg-panel);
+  padding: 20px 30px;
+  height: 80%;
+  border-bottom: 1px solid var(--borders);
+  border-left: 1px solid var(--borders);
+  border-right: 1px solid var(--borders);
+
+}
+.settings__body::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+.settings__body::-webkit-scrollbar-thumb {
+  width: 0;
+  background: transparent;
+}
+
+.settings__tab {
+  padding: 10px 0px;
+  margin-right: 36px;
+  background: var(--bg-toolbar);
+  border: 0;
+}
+.settings__tab:hover {
+  cursor: pointer;
+  background: var(--bg-toolbar);
+}

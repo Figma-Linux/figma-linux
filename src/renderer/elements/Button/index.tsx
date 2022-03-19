@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { Text } from "..";
-import "./index.scss";
+import "./index.css";
 
 export interface ButtonProps {
   onClick?(e: React.MouseEvent<HTMLDivElement, MouseEvent>): void;

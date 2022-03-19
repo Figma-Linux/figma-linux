@@ -1,0 +1,81 @@
+.tabBar {
+  position: relative;
+  overflow-x: hidden;
+  display: flex;
+  align-content: stretch;
+  user-select: none;
+  -webkit-app-region: drag;
+}
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  user-select: none;
+  overflow: hidden;
+  background-color: var(--bg-tab);
+  color: var(--fg-tab);
+  fill: var(--fg-tab);
+  -webkit-app-region: no-drag;
+}
+.tab:hover {
+  background-color: var(--bg-tab-hover);
+  color: var(--fg-tab-hover);
+  fill: var(--fg-tab-hover);
+  cursor: default;
+}
+.tab:hover .tab__close {
+  opacity: 0.4;
+}
+.tab__text {
+  overflow: hidden;
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: clip;
+  font-size: var(--fontControlSize);
+  margin-right: 6px;
+  opacity: 0.4;
+}
+.tab:hover .tab__text {
+  opacity: 1;
+}
+.tab__close {
+  height: 14px;
+  color: var(--fg-tab);
+  fill: var(--fg-tab);
+  opacity: 0;
+  display: inline-flex;
+}
+.tab__close:hover {
+  color: var(--fg-tab-hover);
+  fill: var(--fg-tab-hover);
+  cursor: default;
+  opacity: 1 !important;
+}
+.tab_active {
+  background-color: var(--bg-tab-active);
+  color: var(--fg-tab-active);
+  fill: var(--fg-tab-active);
+  opacity: 1;
+}
+.tab_active .tab__text {
+  opacity: 1;
+}
+.tab_active .tab__close {
+  opacity: 0.16;
+}
+.tab_main_active {
+  background-color: var(--bg-panel);
+}
+.tab_main_active .icon {
+  color: var(--bg-panel);
+  filter: invert(1);
+}
+.tab_main_active:hover {
+  cursor: default;
+  background-color: var(--bg-panel);
+}
+.tab_main_active:hover .icon {
+  color: var(--bg-panel);
+  filter: invert(1);
+}

@@ -7,7 +7,7 @@ import { DEFAULT_THEME, TEST_THEME_ID } from "Const";
 import ThemeItem from "./themeItem";
 import { Themes as ThemesStore } from "Store/Themes";
 import { Settings } from "Store/Settings";
-import "./index.scss";
+import "./index.css";
 
 interface ThemeViewProps {
   settings?: Settings;

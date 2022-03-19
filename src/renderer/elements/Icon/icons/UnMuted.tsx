@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { IconProps } from "..";
-import "../index.scss";
+import "../index.css";
 
 export const UnMuted: React.FunctionComponent<IconProps> = props => {
   const color = props.color ? props.color : "#1BC47D";

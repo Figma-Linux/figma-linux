@@ -1,7 +1,7 @@
 import * as React from "react";
 import { observer, inject } from "mobx-react";
 
-import "./index.scss";
+import "./index.css";
 import { Input, List, CheckBox, Text, Button, Icon } from "Elements";
 import { Settings } from "Store/Settings";
 import ListItems from "./listItems";

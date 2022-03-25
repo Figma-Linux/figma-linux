@@ -85,6 +85,7 @@ export class ThemesManager {
     document.body.style.setProperty("background-color", "var(--gb-panel)");
 
     document.body.style.setProperty("--color-bg", "var(--bg-panel)");
+    document.body.style.setProperty("--color-bg-toolbar", "var(--bg-toolbar)");
     document.body.style.setProperty("--color-bg-selected", "var(--bg-panel)");
     document.body.style.setProperty("--color-text", "var(--text)");
     document.body.style.setProperty("--color-text-secondary", "var(--text)");

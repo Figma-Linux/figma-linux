@@ -1,3 +1,20 @@
+figma-linux (0.10.0-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.10.0 version
+
+  ## Features:
+  * Add checkbox for enbale/disable figma-linux themes
+
+  ## Bug Fixes:
+  * Update icons for deb package for LaucnhPad
+  * theme manager rules for better display themes colors
+  * missing home toolbar bg color
+
+  ## Other Changes:
+  * remove unnecessary libm library
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 20 May 2022 22:49:44 +0300
+
 figma-linux (0.9.6-1ubuntu0) devel; urgency=medium
 
   * Publish 0.9.6 version

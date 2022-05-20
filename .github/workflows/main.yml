@@ -189,7 +189,7 @@ jobs:
   upload_aur:
     name: Upload to AUR
     runs-on: ubuntu-latest
-    needs: [release_amd64, release_arm64v8]
+    needs: release_amd64
     steps:
       - uses: actions/download-artifact@v2
         with:

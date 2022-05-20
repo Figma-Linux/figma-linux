@@ -96,10 +96,16 @@ export class ThemesManager {
     document.body.style.setProperty("--color-text", "var(--text)");
     document.body.style.setProperty("--color-text-secondary", "var(--text)");
     document.body.style.setProperty("--color-border", "var(--borders)");
+    document.body.style.setProperty("--color-border-menu", "var(--borders)");
+    document.body.style.setProperty("--color-conditionalborder", "var(--borders)");
+    document.body.style.setProperty("--color-border-tooltip", "var(--borders)");
     document.body.style.setProperty("--color-text-disabled", "var(--text-disabled)");
     document.body.style.setProperty("--color-bg-selected-secondary", "var(--bg-panel)");
     document.body.style.setProperty("--color-bg-selected", "var(--bg-panel-hover)");
     document.body.style.setProperty("--color-text-toolbar", "var(--text)");
+    document.body.style.setProperty("--color-bg-hover", "var(--bg-panel-hover)");
+    document.body.style.setProperty("--color-bg-secondary", "var(--bg-panel-hover)");
+    document.body.style.setProperty("--color-bg-tooltip", "var(--bg-overlay)");
   }
 
   init(): void {
@@ -114,6 +120,7 @@ export class ThemesManager {
       "#react-page { background-color: var(--bg-panel); }",
       `span[class*="action_option--shortcut"] { color: var(--fg-overlay); }`,
       `div[class*="file_browser_page_view"] { background-color: var(--bg-panel) !important; }`,
+      `input[class*="sidebar_search--searchInput"]::placeholder { color: var(--text-active); }`,
     ];
 
     this.setThemeVariables();
@@ -140,8 +147,12 @@ export class ThemesManager {
           });
         }
 
-        if (/search--searchInput/.test(cssRule.selectorText)) {
+        if (/search--searchInput|search--searchContainerWithSelection/.test(cssRule.selectorText)) {
+          cssRule.style["background-color"] = `var(--bg-panel-hover)`;
           cssRule.style["color"] = `var(--text-active)`;
+        }
+        if (/option_button--toggled|segmented_control--segmentSelected/.test(cssRule.selectorText)) {
+          cssRule.style["background-color"] = `var(--bg-panel-hover)`;
         }
 
         if (/searchIcon/.test(cssRule.selectorText)) {

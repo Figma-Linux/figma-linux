@@ -4,6 +4,11 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Run builder",
+      "type": "shell",
+      "command": "npm run builder"
+    },
+    {
       "label": "Run Dev",
       "type": "shell",
       "command": "npm run dev"
@@ -27,6 +32,11 @@
       "label": "Build & Run Release",
       "type": "shell",
       "command": "npm run build && npm run start"
+    },
+    {
+      "label": "Build & Run Dev",
+      "type": "shell",
+      "command": "npm run build && npm run dev"
     },
     {
       "label": "Copy settings",

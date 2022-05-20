@@ -7,12 +7,42 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Build & Run Release",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "program": "echo",
       "preLaunchTask": "Build & Run Release"
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Build & Run Dev",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Build & Run Dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Release",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Run Release"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Dev",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Run Dev"
+    },
   ]
 }

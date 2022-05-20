@@ -58,6 +58,7 @@ class WindowManager {
   private static _instance: WindowManager;
   private panelHeight = storage.get().app.panelHeight;
   private enableColorSpaceSrgbWasChanged = false;
+  private disableThemesChanged = false;
   private figmaUserIDs: string[] = [];
 
   private constructor() {
@@ -112,9 +113,11 @@ class WindowManager {
       this.updateThemes();
     });
 
-    getThemeById().then(theme => {
-      this.currentTheme = theme;
-    });
+    if (!storage.get().app.disableThemes) {
+      getThemeById().then(theme => {
+        this.currentTheme = theme;
+      });
+    }
 
     this.updatePanelScale(this.panelScale);
   }
@@ -356,7 +359,7 @@ class WindowManager {
         return;
       }
 
-      tab.view.webContents.session.setPermissionRequestHandler((webContents, permission, cb) => {
+      tab.view.webContents.session.setPermissionRequestHandler((_, permission, cb) => {
         const id = dialogs.showMessageBoxSync({
           type: "question",
           title: "Figma",
@@ -383,16 +386,16 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setIsInVoiceCall", { id: tab.view.webContents.id, isInVoiceCall });
     });
-    E.ipcMain.on("setWorkspaceName", (event, name) => {
+    E.ipcMain.on("setWorkspaceName", (_, name) => {
       logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
     });
-    E.ipcMain.on("setFigjamEnabled", (event, enabled) => {
+    E.ipcMain.on("setFigjamEnabled", (_, enabled) => {
       logger.info("The setFigjamEnabled not implemented, enabled: ", enabled);
     });
-    E.ipcMain.on("receiveTabs", (event, tabs) => {
+    E.ipcMain.on("receiveTabs", (_, tabs) => {
       this.tabs = tabs;
     });
-    E.ipcMain.on("enableColorSpaceSrgbWasChanged", (event, enabled) => {
+    E.ipcMain.on("enableColorSpaceSrgbWasChanged", (_, enabled) => {
       const previousValue = storage.get().app.enableColorSpaceSrgb;
 
       if (enabled === previousValue) {
@@ -400,6 +403,15 @@ class WindowManager {
       }
 
       this.enableColorSpaceSrgbWasChanged = true;
+    });
+    E.ipcMain.on("disableThemesChanged", (_, enabled) => {
+      const previousValue = storage.get().app.disableThemes;
+
+      if (enabled === previousValue) {
+        return;
+      }
+
+      this.disableThemesChanged = true;
     });
     E.ipcMain.on("closeSettingsView", () => {
       if (!this.settingsView) {
@@ -412,8 +424,9 @@ class WindowManager {
 
       this.mainWindow.removeBrowserView(this.settingsView);
 
+      let id = 1;
       if (this.enableColorSpaceSrgbWasChanged) {
-        const id = dialogs.showMessageBoxSync({
+        id = dialogs.showMessageBoxSync({
           type: "question",
           title: "Figma",
           message: "Restart to Change Color Space?",
@@ -421,11 +434,28 @@ class WindowManager {
           textOkButton: "Restart",
           defaultFocusedButton: "Ok",
         });
+      }
+      if (this.disableThemesChanged) {
+        let text = "Restart to disable themes?";
+        const disableThemes = storage.get().app.disableThemes;
 
-        if (!id) {
-          E.app.relaunch();
-          E.app.quit();
+        if (!disableThemes) {
+          text = "Restart to enable themes?";
         }
+
+        id = dialogs.showMessageBoxSync({
+          type: "question",
+          title: "Figma",
+          message: text,
+          detail: `Figma needs to be restarted to change use of themes.`,
+          textOkButton: "Restart",
+          defaultFocusedButton: "Ok",
+        });
+      }
+
+      if (!id) {
+        E.app.relaunch();
+        E.app.quit();
       }
 
       this.destroyView(this.settingsView);
@@ -453,6 +483,10 @@ class WindowManager {
       this.mainWindow.webContents.send("updateVisibleNewProjectBtn", visible);
     });
     E.ipcMain.on("themes-change", (_, theme) => {
+      if (storage.get().app.disableThemes) {
+        return;
+      }
+
       if (theme.id === Const.TEST_THEME_ID) {
         const testTheme = this.themes.find(t => t.id === theme.id);
 
@@ -464,6 +498,10 @@ class WindowManager {
       this.changeTheme(theme);
     });
     E.ipcMain.on("set-default-theme", () => {
+      if (storage.get().app.disableThemes) {
+        return;
+      }
+
       this.changeTheme(Const.DEFAULT_THEME);
     });
     E.ipcMain.on("saveCreatorTheme", (_, theme) => {

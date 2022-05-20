@@ -1,0 +1,48 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Build & Run Release",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Build & Run Release"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Build & Run Dev",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Build & Run Dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Release",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Run Release"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Run Dev",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "echo",
+      "preLaunchTask": "Run Dev"
+    },
+  ]
+}

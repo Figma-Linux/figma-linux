@@ -78,6 +78,10 @@ export const registerIpcMainHandlers = () => {
     return view.sender.isDevToolsOpened();
   });
 
+  E.ipcMain.handle("themesIsDisabled", async () => {
+    return storage.get().app.disableThemes;
+  });
+
   listenToWebBindingPromise("openExtensionDirectory", async (webContents: E.WebContents, id: number) => {
     console.error("TODO");
   });

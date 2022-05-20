@@ -10,6 +10,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
     enableColorSpaceSrgb: false,
     visibleNewProjectBtn: true,
     useZenity: false,
+    disableThemes: false,
     panelHeight: 40,
     saveLastOpenedTabs: true,
     exportDir: `${process.env.HOME}/Pictures/Figma`,

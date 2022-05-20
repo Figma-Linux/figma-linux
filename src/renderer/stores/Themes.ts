@@ -76,6 +76,10 @@ export class Themes {
     return theme;
   };
   getCurrentTheme = (): Themes.Theme => {
+    if (storage.get().app.disableThemes) {
+      return DEFAULT_THEME;
+    }
+
     if (this.currentTheme) {
       return this.currentTheme;
     }

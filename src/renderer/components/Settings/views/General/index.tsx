@@ -69,6 +69,11 @@ const GeneralBody: React.FunctionComponent<GeneralBodyProps> = props => {
             text="Use Zenity for Dialogs"
             onChange={props.settings.changeUseZenity}
           />
+          <CheckBox
+            value={props.settings.settings.app.disableThemes}
+            text="Disable themes"
+            onChange={props.settings.changeDisableThemes}
+          />
         </div>
         <div></div>
         <div className="flex flex_column">

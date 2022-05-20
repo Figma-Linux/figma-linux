@@ -8,7 +8,13 @@ export class ThemesManager {
   constructor() {
     this.currentTheme = DEFAULT_THEME;
 
-    this.themeEvents();
+    E.ipcRenderer.invoke("themesIsDisabled").then(disabled => {
+      if (disabled) {
+        return;
+      }
+
+      this.themeEvents();
+    });
   }
 
   private themeEvents() {

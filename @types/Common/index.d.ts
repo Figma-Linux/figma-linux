@@ -158,6 +158,7 @@ interface SettingsInterface {
     enableColorSpaceSrgb: boolean;
     visibleNewProjectBtn: boolean;
     useZenity: boolean;
+    disableThemes: boolean;
     panelHeight: number;
     saveLastOpenedTabs: boolean;
     exportDir: string;

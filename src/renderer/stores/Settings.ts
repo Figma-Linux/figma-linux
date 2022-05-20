@@ -63,6 +63,12 @@ export class Settings {
 
     this.useZenityChanged = true;
   };
+  @action
+  public changeDisableThemes = (value: boolean): void => {
+    this.settings.app.disableThemes = value;
+
+    E.ipcRenderer.send("disableThemesChanged", value);
+  };
 
   @action
   public selectExportDir = async (): Promise<void> => {

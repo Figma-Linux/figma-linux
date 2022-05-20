@@ -40,6 +40,12 @@ export default class Tabs {
     tab.setBounds(rect);
     tab.webContents.loadURL(url);
     tab.webContents.on("dom-ready", () => {
+      const disableThemes = storage.get().app.disableThemes;
+
+      if (disableThemes) {
+        return;
+      }
+
       const currentThemeId = storage.get().theme.currentTheme;
       if (currentThemeId !== "0") {
         const wm = WindowManager.instance;

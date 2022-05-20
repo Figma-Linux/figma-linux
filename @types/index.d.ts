@@ -65,6 +65,7 @@ declare namespace Electron {
       channel: "enableColorSpaceSrgbWasChanged",
       listener: (event: IpcMainInvokeEvent, enabled: boolean) => void,
     ): this;
+    on(channel: "disableThemesChanged", listener: (event: IpcMainInvokeEvent, enabled: boolean) => void): this;
     on(channel: "updateFigmaUiScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
     on(channel: "updatePanelScale", listener: (event: IpcMainInvokeEvent, scale: number) => void): this;
     on(channel: "startAppAuth", listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void): this;
@@ -123,6 +124,7 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, data: WebApi.CreateMultipleExtension) => Promise<void> | any,
     ): void;
     handle(channel: "isDevToolsOpened", listener: (event: IpcMainInvokeEvent) => Promise<void> | any): void;
+    handle(channel: "themesIsDisabled", listener: (event: IpcMainInvokeEvent) => Promise<void> | boolean): void;
     handle(
       channel: "writeFiles",
       listener: (event: IpcMainInvokeEvent, data: WebApi.WriteFiles) => Promise<void> | void,
@@ -185,6 +187,7 @@ declare namespace Electron {
     send(channel: "closeThemeCreatorView"): this;
     send(channel: "themeCreatorExportTheme", theme: Themes.Theme): this;
     send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
+    send(channel: "disableThemesChanged", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
     send(channel: "updatePanelScale", scale: number): this;
     send(channel: "log-debug", ...args: any[]): this;
@@ -211,6 +214,7 @@ declare namespace Electron {
     invoke(channel: "getLocalFileExtensionManifest", id: number): Promise<number[]>;
     invoke(channel: "getLocalFileExtensionSource", id: number): Promise<Extensions.ExtensionSource>;
     invoke(channel: "createMultipleNewLocalFileExtensions", data: WebApi.CreateMultipleExtension): Promise<any>;
+    invoke(channel: "themesIsDisabled"): Promise<boolean>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
     invoke(channel: "get-fonts"): Promise<FontsMap>;

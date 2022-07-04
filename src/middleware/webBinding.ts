@@ -321,7 +321,7 @@ const publicAPI: any = {
 
     return { data: result };
   },
-  async getAllLocalFileExtensionIds() {
+  async getAllLocalManifestFileExtensionIds() {
     const list = await E.ipcRenderer.invoke("getAllLocalFileExtensionIds");
     return { data: list };
   },

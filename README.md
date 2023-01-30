@@ -138,6 +138,13 @@ Aside from that, you can also run:
 ATTENTION:
 When you do changes in middleware component, You need to rebuild (`npm run build`) and restart the app each time, because the middleware execute only on run the app, Hot Reload won't work.
 
+Example of **.env** for local development:
+```
+NODE_ENV=dev
+DEV_PANEL_PORT=3338
+DEV_SETTINGS_PORT=3339
+```
+
 
 
 ## Community

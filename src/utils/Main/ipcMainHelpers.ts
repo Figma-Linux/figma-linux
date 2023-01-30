@@ -1,10 +1,10 @@
-import * as E from "electron";
+import { ipcMain, WebContents, IpcMainEvent } from "electron";
 
 import Tab from "Main/window/Tabs";
 import { isDev } from "Utils/Common";
 
-export function listenToWebBinding(channel: string, listener: (sender: E.WebContents, ...args: any[]) => void): void {
-  E.ipcMain.on(`web:${channel}`, (event: E.IpcMainEvent, ...args: any[]) => {
+export function listenToWebBinding(channel: string, listener: (sender: WebContents, ...args: any[]) => void): void {
+  ipcMain.on(`web:${channel}`, (event: IpcMainEvent, ...args: any[]) => {
     isDev && console.log(`[ipc] from web: ${channel}`);
 
     event.returnValue = listener(event.sender, ...args);
@@ -13,9 +13,9 @@ export function listenToWebBinding(channel: string, listener: (sender: E.WebCont
 
 export function listenToWebBindingPromise(
   channel: string,
-  listener: (sender: E.WebContents, ...args: any[]) => void,
+  listener: (sender: WebContents, ...args: any[]) => void,
 ): void {
-  E.ipcMain.on(`web-promise:${channel}`, async (event: E.IpcMainEvent, promiseID: number, ...args: any[]) => {
+  ipcMain.on(`web-promise:${channel}`, async (event: IpcMainEvent, promiseID: number, ...args: any[]) => {
     isDev && console.log(`[ipc] from web: ${channel} (promise ${promiseID})`);
 
     let result;
@@ -41,9 +41,9 @@ export function listenToWebBindingPromise(
 
 export function listenToWebRegisterCallback(
   channel: string,
-  listener: (sender: E.WebContents, ...args: any[]) => () => void,
+  listener: (sender: WebContents, ...args: any[]) => () => void,
 ): void {
-  E.ipcMain.on(`web-callback:${channel}`, (event: E.IpcMainEvent, args: any, callbackID: number) => {
+  ipcMain.on(`web-callback:${channel}`, (event: IpcMainEvent, args: any, callbackID: number) => {
     isDev && console.log(`[ipc] from web: ${channel} (callback ${callbackID})`);
 
     const tab = Tab.getByWebContentId(event.sender.id);

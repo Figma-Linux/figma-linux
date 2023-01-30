@@ -1,6 +1,6 @@
-import * as E from "electron";
+import type { WebContents } from "electron";
 
-export const toggleDetachedDevTools = (webContents: E.WebContents) => {
+export const toggleDetachedDevTools = (webContents: WebContents) => {
   if (!webContents || webContents.isDevToolsOpened()) {
     webContents.closeDevTools();
 

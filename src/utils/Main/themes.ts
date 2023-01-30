@@ -59,7 +59,7 @@ function translatePaletteToCamelCase(themeFile: Themes.Theme): Themes.Theme {
 
   for (const paletteKey of palette) {
     const paletteValue = themeFile.palette[paletteKey];
-    const newPaletteKey = paletteKey.replace(/-([a-z])/g, s => s.replace("-", "").toUpperCase());
+    const newPaletteKey = paletteKey.replace(/-([a-z])/g, (s) => s.replace("-", "").toUpperCase());
 
     newPalette[newPaletteKey] = paletteValue;
   }
@@ -147,7 +147,7 @@ export async function loadCreatorTheme(): Promise<Themes.Theme> {
     return defaultTheme;
   }
 
-  const themeFile = await fs.promises.readFile(filePath).catch(error => {
+  const themeFile = await fs.promises.readFile(filePath).catch((error) => {
     logger.error("Cannot read theme creator file: '${filePath}', error: ", error);
 
     return defaultTheme;
@@ -293,7 +293,7 @@ export function updateThemesFromRepository(): Promise<void> {
   return new Promise((res, rej) => {
     net
       .request(DOWNLOAD_ZIP_URI)
-      .on("response", response => {
+      .on("response", (response) => {
         const buffers: Uint8Array[] = [];
         let length = 0;
 
@@ -301,14 +301,14 @@ export function updateThemesFromRepository(): Promise<void> {
           logger.error("Cannot download themes, error: ", error);
           rej(error);
         });
-        response.on("data", data => {
+        response.on("data", (data) => {
           buffers.push(data);
           length += data.length;
         });
         response.on("end", async () => {
           const buffer = Buffer.concat(buffers);
 
-          await fs.promises.writeFile(DOWNLOAD_ZIP_PATH, buffer).catch(error => {
+          await fs.promises.writeFile(DOWNLOAD_ZIP_PATH, buffer).catch((error) => {
             rej(error);
           });
 

@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { session, Event, Cookie } from "electron";
 
 import * as Const from "Const";
 import { logger } from "./Logger";
@@ -18,23 +18,23 @@ export class Session {
   };
 
   public handleAppReady = () => {
-    E.session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    session.defaultSession.setPermissionRequestHandler((_, permission, callback) => {
       const whitelist = ["fullscreen", "pointerLock"];
       callback(whitelist.includes(permission));
     });
 
-    const defaultUserAgent = E.session.defaultSession.getUserAgent();
-    const userAgent = defaultUserAgent.replace(/Figma([^\/]+)\/([^\s]+)/, "Figma$1/$2 Figma/$2");
+    const defaultUserAgent = session.defaultSession.getUserAgent();
+    const userAgent = defaultUserAgent.replace(/Figma([^/]+)\/([^\s]+)/, "Figma$1/$2 Figma/$2");
 
-    E.session.defaultSession.setUserAgent(userAgent);
-    E.session.defaultSession.cookies
+    session.defaultSession.setUserAgent(userAgent);
+    session.defaultSession.cookies
       .get({
         url: Const.HOMEPAGE,
       })
-      .then(cookies => {
-        E.session.defaultSession.cookies.on("changed", this.handleCookiesChanged);
+      .then((cookies) => {
+        session.defaultSession.cookies.on("changed", this.handleCookiesChanged);
 
-        this._hasFigmaSession = !!cookies.find(cookie => {
+        this._hasFigmaSession = !!cookies.find((cookie) => {
           return cookie.name === Const.FIGMA_SESSION_COOKIE_NAME;
         });
 
@@ -45,7 +45,7 @@ export class Session {
       );
   };
 
-  private handleCookiesChanged = (event: E.Event, cookie: E.Cookie, cause: string, removed: boolean) => {
+  private handleCookiesChanged = (event: Event, cookie: Cookie, cause: string, removed: boolean) => {
     if (isSameCookieDomain(cookie.domain || "", Const.PARSED_HOMEPAGE.hostname || "")) {
       if (cookie.name === Const.FIGMA_SESSION_COOKIE_NAME) {
         logger.debug(`${cookie.name} cookie changed:`, cause, cookie.name, cookie.domain, removed ? "removed" : "");

@@ -31,7 +31,7 @@ class ExtensionManager {
       const watcher = Chokidar.watch(path, undefined);
       watcher.on("all", () => this.fileWatcher(id));
       this.extensionMap.set(id, { path, watcher });
-      this.loadExtensionManifest(id).then(result => {
+      this.loadExtensionManifest(id).then((result) => {
         this.notifyObservers({ type: "added", id, localLoadResult: result });
       });
     } else {
@@ -57,7 +57,9 @@ class ExtensionManager {
     if (entry && entry.watcher) {
       try {
         entry.watcher.close();
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     this.extensionMap.delete(id);
@@ -84,7 +86,9 @@ class ExtensionManager {
         if (parsed && parsed.name) {
           entry.lastKnownName = parsed.name;
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error(e);
+      }
 
       return entry.lastKnownName;
     }
@@ -115,7 +119,7 @@ class ExtensionManager {
       this.manifestObservers.splice(index, 1);
 
       if (!this.manifestObservers.length) {
-        this.extensionMap.forEach(entry => {
+        this.extensionMap.forEach((entry) => {
           if (entry.watcher) {
             entry.watcher.close();
             delete entry.watcher;
@@ -185,7 +189,7 @@ class ExtensionManager {
 
     if (manifest.build && typeof manifest.build === "string") {
       result.path = process.env.PATH || "";
-      await new Promise<void>((resolve, reject) => {
+      await new Promise<void>((resolve) => {
         cp.exec(manifest.build, { cwd: manifestDir }, (error, stdout, stderr) => {
           result.stdout = stdout;
           result.stderr = stderr;
@@ -233,7 +237,7 @@ class ExtensionManager {
       for (const key of keys) {
         filesArr.push(loadFileFromManifestProperty(prop, key));
       }
-      await Promise.all(filesArr).then(htmlArr => {
+      await Promise.all(filesArr).then((htmlArr) => {
         for (let i = 0; i < keys.length; i++) {
           const key = keys[i],
             html = htmlArr[i];
@@ -268,7 +272,7 @@ class ExtensionManager {
   }
 
   private notifyObservers(args: Extensions.NotifyObserverParams): void {
-    this.manifestObservers.forEach(callback => {
+    this.manifestObservers.forEach((callback) => {
       try {
         callback(args);
       } catch (ex) {
@@ -278,7 +282,7 @@ class ExtensionManager {
   }
 
   private fileWatcher(id: number): void {
-    this.loadExtensionManifest(id).then(result => {
+    this.loadExtensionManifest(id).then((result) => {
       this.notifyObservers({ type: "changed", id, localLoadResult: result });
     });
   }

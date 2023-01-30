@@ -1,7 +1,7 @@
-import * as E from "electron";
+import { ipcMain } from "electron";
 
 import { LOGLEVEL } from "Const";
-import { LogLevel } from "Enums";
+import { LogLevel } from "Types/enums";
 import { storage } from "./Storage";
 
 export class Logger {
@@ -18,9 +18,9 @@ export class Logger {
   }
 
   private initLoggerEvent = (): void => {
-    E.ipcMain.on("log-debug", (sender, ...msg) => this.debug(`[From web content: ${sender.sender.id}]`, ...msg));
-    E.ipcMain.on("log-info", (sender, ...msg) => this.info(`[From web content: ${sender.sender.id}]`, ...msg));
-    E.ipcMain.on("log-error", (sender, ...msg) => this.error(`[From web content: ${sender.sender.id}]`, ...msg));
+    ipcMain.on("log-debug", (sender, ...msg) => this.debug(`[From web content: ${sender.sender.id}]`, ...msg));
+    ipcMain.on("log-info", (sender, ...msg) => this.info(`[From web content: ${sender.sender.id}]`, ...msg));
+    ipcMain.on("log-error", (sender, ...msg) => this.error(`[From web content: ${sender.sender.id}]`, ...msg));
   };
 
   private getDateTime = (): string => {
@@ -29,7 +29,7 @@ export class Logger {
     return currentDate.toLocaleString();
   };
 
-  private print = (level: number, ...argv: any[]) => {
+  private print = (level: number, ...argv: unknown[]) => {
     if (level < this.logLevel) {
       return;
     }
@@ -39,13 +39,13 @@ export class Logger {
     console.log(`[${dateTime}]:[${this.levels[level]}] -`, ...argv);
   };
 
-  public debug = (...argv: any[]): void => {
+  public debug = (...argv: unknown[]): void => {
     this.print(LogLevel.DEBUG, ...argv);
   };
-  public info = (...argv: any[]): void => {
+  public info = (...argv: unknown[]): void => {
     this.print(LogLevel.INFO, ...argv);
   };
-  public error = (...argv: any[]): void => {
+  public error = (...argv: unknown[]): void => {
     this.print(LogLevel.ERROR, ...argv);
   };
 }

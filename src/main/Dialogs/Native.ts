@@ -1,10 +1,10 @@
-import * as E from "electron";
+import { MessageBoxOptions, OpenDialogOptions, dialog } from "electron";
 
 export class NativeDialogs implements ProviderDialog {
   constructor() {}
 
   public showMessageBox = async (options: Dialogs.MessageBoxOptions) => {
-    const ops: E.MessageBoxOptions = {
+    const ops: MessageBoxOptions = {
       type: options.type,
       title: options.title,
       message: options.message,
@@ -32,11 +32,11 @@ export class NativeDialogs implements ProviderDialog {
       }
     }
 
-    const result = await E.dialog.showMessageBox(null, ops);
+    const result = await dialog.showMessageBox(null, ops);
     return result.response;
   };
   public showMessageBoxSync = (options: Dialogs.MessageBoxOptions) => {
-    const ops: E.MessageBoxOptions = {
+    const ops: MessageBoxOptions = {
       type: options.type,
       title: options.title,
       message: options.message,
@@ -64,25 +64,25 @@ export class NativeDialogs implements ProviderDialog {
       }
     }
 
-    const result = E.dialog.showMessageBoxSync(null, ops);
+    const result = dialog.showMessageBoxSync(null, ops);
     return result;
   };
 
   public showOpenDialog = async (options: Dialogs.OpenOptions) => {
-    const result = await E.dialog.showOpenDialog(null, options as E.OpenDialogOptions);
+    const result = await dialog.showOpenDialog(null, options as OpenDialogOptions);
     return !result.canceled ? result.filePaths : null;
   };
   public showOpenDialogSync = (options: Dialogs.OpenOptions) => {
-    const result = E.dialog.showOpenDialogSync(null, options as E.OpenDialogOptions);
+    const result = dialog.showOpenDialogSync(null, options as OpenDialogOptions);
     return result || [];
   };
 
   public showSaveDialog = async (options: Dialogs.SaveOptions) => {
-    const result = await E.dialog.showSaveDialog(null, options);
+    const result = await dialog.showSaveDialog(null, options);
     return !result.canceled && result.filePath ? result.filePath : null;
   };
   public showSaveDialogSync = (options: Dialogs.SaveOptions) => {
-    const result = E.dialog.showSaveDialogSync(null, options);
+    const result = dialog.showSaveDialogSync(null, options);
     return result;
   };
 }

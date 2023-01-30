@@ -10,3 +10,4 @@ export * from "./devTools";
 export * from "./Menu/menu";
 export * from "./Menu/menuItems";
 export * from "./ipcMainHelpers";
+export * from "./defaultSettings";

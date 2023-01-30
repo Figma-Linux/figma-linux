@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { app } from "electron";
 
 import { INITACTIONINITSTATE, ACTIONTABSTATE, ACTIONFILEBROWSERSTATE } from "Const";
 
@@ -11,7 +11,7 @@ class MenuState {
   public static pluginMenuData: Menu.MenuItem[] = [];
 
   private static update = (state: MenuState.MenuStateParams) => {
-    const app = E.remote ? E.remote.app : E.app;
+    // const app = E.remote ? E.remote.app : E.app;
 
     if (state.actionState) {
       MenuState.actionState = {
@@ -41,7 +41,7 @@ class MenuState {
   };
 
   public static updateInProjectActionState = () => {
-    const newPluginMenuData = MenuState.pluginMenuData.map(item => {
+    const newPluginMenuData = MenuState.pluginMenuData.map((item) => {
       if (item.visible === false) {
         return {
           ...item,
@@ -57,7 +57,7 @@ class MenuState {
   };
 
   public static updateInFileBrowserActionState = () => {
-    const newPluginMenuData = MenuState.pluginMenuData.map(item => {
+    const newPluginMenuData = MenuState.pluginMenuData.map((item) => {
       if (item.type === "run-menu-action" && item.name.key === "plugins-menu-manage") {
         return {
           ...item,

@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { ipcMain, dialog, shell, WebContents } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -13,12 +13,12 @@ import { dialogs } from "Main/Dialogs";
 import Ext from "Main/ExtensionManager";
 
 export const registerIpcMainHandlers = () => {
-  E.ipcMain.handle("createMultipleNewLocalFileExtensions", async (sender, data) => {
+  ipcMain.handle("createMultipleNewLocalFileExtensions", async (sender, data) => {
     const added: any[] = [];
     const existed: any[] = [];
 
     const windowManager = WindowManager.instance;
-    const dialogResult = await E.dialog.showOpenDialog(windowManager.mainWindow, data.options);
+    const dialogResult = await dialog.showOpenDialog(windowManager.mainWindow, data.options);
 
     if (!dialogResult || dialogResult.canceled) {
       return { added, existed };
@@ -31,9 +31,9 @@ export const registerIpcMainHandlers = () => {
 
       if (stats.isDirectory() && depth > 0) {
         let fileNames = await fs.promises.readdir(entryPath);
-        fileNames = fileNames.filter(name => name[0] !== ".");
+        fileNames = fileNames.filter((name) => name[0] !== ".");
 
-        await Promise.all(fileNames.map(name => processEntry(path.resolve(entryPath, name), depth - 1, false)));
+        await Promise.all(fileNames.map((name) => processEntry(path.resolve(entryPath, name), depth - 1, false)));
       } else if (path.basename(entryPath) === MANIFEST_FILE_NAME) {
         const res = Ext.addPath(entryPath);
 
@@ -47,46 +47,46 @@ export const registerIpcMainHandlers = () => {
       }
     }
 
-    await Promise.all(pickedPaths.map(name => processEntry(name, data.depth, true)));
+    await Promise.all(pickedPaths.map((name) => processEntry(name, data.depth, true)));
 
     return { added, existed };
   });
 
-  E.ipcMain.handle("getAllLocalFileExtensionIds", async () => {
+  ipcMain.handle("getAllLocalFileExtensionIds", async () => {
     return Ext.getAllIds();
   });
 
-  E.ipcMain.handle("getLocalFileExtensionManifest", async (sender, id) => {
+  ipcMain.handle("getLocalFileExtensionManifest", async (sender, id) => {
     return Ext.loadExtensionManifest(id);
   });
 
-  E.ipcMain.on("removeLocalFileExtension", async (sender, id) => {
+  ipcMain.on("removeLocalFileExtension", async (sender, id) => {
     Ext.removePath(id);
   });
 
-  E.ipcMain.on("openExtensionDirectory", async (sender, id) => {
+  ipcMain.on("openExtensionDirectory", async (sender, id) => {
     const extensionDirectory = path.parse(Ext.getPath(id)).dir;
 
-    E.shell.openPath(extensionDirectory);
+    shell.openPath(extensionDirectory);
   });
 
-  E.ipcMain.handle("getLocalFileExtensionSource", async (sender, id) => {
+  ipcMain.handle("getLocalFileExtensionSource", async (sender, id) => {
     return Ext.getLocalFileExtensionSource(id);
   });
 
-  E.ipcMain.handle("isDevToolsOpened", async view => {
+  ipcMain.handle("isDevToolsOpened", async (view) => {
     return view.sender.isDevToolsOpened();
   });
 
-  E.ipcMain.handle("themesIsDisabled", async () => {
+  ipcMain.handle("themesIsDisabled", async () => {
     return storage.get().app.disableThemes;
   });
 
-  listenToWebBindingPromise("openExtensionDirectory", async (webContents: E.WebContents, id: number) => {
+  listenToWebBindingPromise("openExtensionDirectory", async (webContents: WebContents, id: number) => {
     console.error("TODO");
   });
 
-  E.ipcMain.handle("writeNewExtensionToDisk", async (sender, data) => {
+  ipcMain.handle("writeNewExtensionToDisk", async (sender, data) => {
     let manifest: Extensions.ManifestFile | null = null;
     let manifestFile = null;
 
@@ -154,7 +154,7 @@ export const registerIpcMainHandlers = () => {
     const saveFilesPromises = [];
     for (const file of data.files) {
       const filePath = path.join(saveDir, file.name);
-      const promise = fs.promises.writeFile(filePath, file.content, { encoding: "utf8" }).catch(error => {
+      const promise = fs.promises.writeFile(filePath, file.content, { encoding: "utf8" }).catch((error) => {
         logger.error(`Cannot save file: ${filePath} for extension: "${manifest.name}", error:\n`, error);
       });
       saveFilesPromises.push(promise);
@@ -173,7 +173,7 @@ export const registerIpcMainHandlers = () => {
 
   listenToWebRegisterCallback(
     "registerManifestChangeObserver",
-    (webContents: E.WebContents, args: any, callback: () => void) => {
+    (webContents: WebContents, args: any, callback: () => void) => {
       Ext.addObserver(callback);
 
       return () => {
@@ -182,10 +182,10 @@ export const registerIpcMainHandlers = () => {
     },
   );
 
-  E.ipcMain.handle("add-font-directories", async () => {
+  ipcMain.handle("add-font-directories", async () => {
     return dialogs.showOpenDialog({ properties: ["openDirectory", "multiSelections"] });
   });
-  E.ipcMain.handle("select-export-directory", async () => {
+  ipcMain.handle("select-export-directory", async () => {
     const directories = await dialogs.showOpenDialog({ properties: ["openDirectory"] });
 
     if (!directories) {
@@ -195,7 +195,7 @@ export const registerIpcMainHandlers = () => {
     return directories[0];
   });
 
-  E.ipcMain.handle("writeFiles", async (sender, data) => {
+  ipcMain.handle("writeFiles", async (sender, data) => {
     const files = data.files;
 
     if (!files.length) {

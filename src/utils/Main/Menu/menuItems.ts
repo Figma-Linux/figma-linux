@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { app, shell, MenuItemConstructorOptions } from "electron";
 
 import { LINKS } from "Const";
 import { item, commandToMainProcess, handleUrl, toggleDetachedDevTools } from "Utils/Main";
@@ -17,7 +17,7 @@ const PLUGINS_MENU = {
       },
     },
   ],
-} as E.MenuItemConstructorOptions;
+} as MenuItemConstructorOptions;
 
 const HELP_MENU = {
   role: "help",
@@ -25,7 +25,7 @@ const HELP_MENU = {
     {
       label: "Help Page",
       click(): void {
-        E.shell.openExternal(LINKS.HELP_PAGE);
+        shell.openExternal(LINKS.HELP_PAGE);
       },
     },
     {
@@ -35,56 +35,56 @@ const HELP_MENU = {
           return;
         }
 
-        E.shell.openExternal(LINKS.PLUGINS_DOCS);
+        shell.openExternal(LINKS.PLUGINS_DOCS);
       },
     },
     {
       label: "Community Forum",
       click(): void {
-        E.shell.openExternal(LINKS.FIGMA_COMMUNITY_FORUM);
+        shell.openExternal(LINKS.FIGMA_COMMUNITY_FORUM);
       },
     },
     {
       label: "Figma Linux Community Forum",
       click(): void {
-        E.shell.openExternal(LINKS.FIGMA_LINUX_COMMUNITY_FORUM);
+        shell.openExternal(LINKS.FIGMA_LINUX_COMMUNITY_FORUM);
       },
     },
     {
       label: "Figma Linux in Telegram",
       click(): void {
-        E.shell.openExternal(LINKS.FIGMA_LINUX_TELEGRAM);
+        shell.openExternal(LINKS.FIGMA_LINUX_TELEGRAM);
       },
     },
     {
       label: "Figma Linux Themes",
       click(): void {
-        E.shell.openExternal(LINKS.THEMES_REPO);
+        shell.openExternal(LINKS.THEMES_REPO);
       },
     },
     {
       label: "Video Tutorials",
       click(): void {
-        E.shell.openExternal(LINKS.VIDEO_TUTORIALS);
+        shell.openExternal(LINKS.VIDEO_TUTORIALS);
       },
     },
     {
       label: "Release Notes",
       click(): void {
-        E.shell.openExternal(LINKS.RELEASE_NOTES);
+        shell.openExternal(LINKS.RELEASE_NOTES);
       },
     },
     {
       label: "Legal Summary",
       click(): void {
-        E.shell.openExternal(LINKS.LEGAL_SUMMARY);
+        shell.openExternal(LINKS.LEGAL_SUMMARY);
       },
     },
     { type: "separator" },
     {
       label: "Sign Out",
       click(): void {
-        E.app.emit("sign-out");
+        app.emit("sign-out");
       },
     },
     { type: "separator" },
@@ -92,7 +92,7 @@ const HELP_MENU = {
       label: "Toggle Developer Tools",
       accelerator: "Ctrl+Alt+I",
       click(): void {
-        E.app.emit("toggle-current-tab-devtools");
+        app.emit("toggle-current-tab-devtools");
       },
     },
     {
@@ -110,15 +110,15 @@ const HELP_MENU = {
       label: "Toggle Additional Developer Tools",
       accelerator: "Shift+Ctrl+Alt+S",
       click(): void {
-        E.app.emit("toggle-settings-developer-tools");
+        app.emit("toggle-settings-developer-tools");
       },
     },
     item("GPU", "", { id: "chrome://gpu", click: commandToMainProcess }),
   ],
-} as E.MenuItemConstructorOptions;
+} as MenuItemConstructorOptions;
 
-export const getMenuTemplate = (pluginMenuItems?: any[]): E.MenuItemConstructorOptions[] => {
-  const menu: E.MenuItemConstructorOptions[] = [
+export const getMenuTemplate = (pluginMenuItems?: any[]): MenuItemConstructorOptions[] => {
+  const menu: MenuItemConstructorOptions[] = [
     item("New File", "Ctrl+N", { id: "newFile", click: commandToMainProcess }),
     item("Open File Browser", "Ctrl+O", { id: "openFileBrowser", click: commandToMainProcess }),
     item("Open File URL from Clipboard", "Ctrl+Shift+O", { id: "openFileUrlClipboard", click: commandToMainProcess }),
@@ -141,13 +141,13 @@ export const getMenuTemplate = (pluginMenuItems?: any[]): E.MenuItemConstructorO
   menu.push({
     label: "Theme Creator",
     click: () => {
-      E.app.emit("openThemeCreatorView");
+      app.emit("openThemeCreatorView");
     },
   });
   menu.push({
     label: "Settings",
     click: () => {
-      E.app.emit("openSettingsView");
+      app.emit("openSettingsView");
     },
   });
   menu.push(HELP_MENU);
@@ -156,7 +156,7 @@ export const getMenuTemplate = (pluginMenuItems?: any[]): E.MenuItemConstructorO
   menu.push({
     label: "Exit",
     click: () => {
-      E.app.quit();
+      app.quit();
     },
   });
 

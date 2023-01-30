@@ -1,11 +1,10 @@
-import * as E from "electron";
+import { app, ipcMain, ipcRenderer } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 import * as _ from "lodash";
 
 import * as Const from "Const";
-import { app } from "Utils/Common";
-import { accessSync } from "Utils/Main/fs";
+import { DEFAULT_SETTINGS, accessSync } from "Utils/Main";
 
 /**
  * This class has dual initialization: in main process and renderer process
@@ -26,7 +25,7 @@ export class Storage {
   }
 
   private initListeners = () => {
-    E.ipcMain.on("set-settings", (_, settings) => {
+    ipcMain.on("set-settings", (_, settings) => {
       this.set(settings);
     });
   };
@@ -34,7 +33,7 @@ export class Storage {
     const exist = accessSync(this.filePath);
 
     if (!exist) {
-      const mergedSettings = _.merge(Const.DEFAULT_SETTINGS, this.settings);
+      const mergedSettings = _.merge(DEFAULT_SETTINGS, this.settings);
 
       this.settings = mergedSettings;
       this.writeSync(mergedSettings);
@@ -59,7 +58,7 @@ export class Storage {
 
   public set = (settings: SettingsInterface): void => {
     if (process.type === "renderer") {
-      E.ipcRenderer.send("set-settings", settings);
+      ipcRenderer.send("set-settings", settings);
     } else {
       this.settings = settings;
       this.writeSync(this.settings);

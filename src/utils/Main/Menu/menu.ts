@@ -1,21 +1,27 @@
-import * as E from "electron";
+import { app, BrowserWindow, KeyboardEvent, MenuItemConstructorOptions, Menu, MenuItem } from "electron";
 
 import { getMenuTemplate } from "Utils/Main";
 import { stringOfActionMenuItemName, assertNever } from "Utils/Common";
 import MenuState from "Main/MenuState";
 
-export const handlePluginMenuAction = (item: Menu.PluginMenuItem, window: E.BrowserWindow): void => {
+export const handlePluginMenuAction = (
+  // item: Menu.PluginMenuItem,
+  item: any,
+  window: BrowserWindow | undefined,
+  event: KeyboardEvent,
+): void => {
   if (item && item.pluginMenuAction && window) {
     if (item.pluginMenuAction.type === "manage") {
       handleUrl(window, "/my_plugins");
       return;
     }
 
-    E.app.emit("handlePluginMenuAction", item.pluginMenuAction);
+    app.emit("handlePluginMenuAction", item.pluginMenuAction);
   }
 };
 
-export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuItem | undefined => {
+// Menu.PluginMenuItem
+export const electronOfPluginMenuItem = (input: Menu.MenuItem): any | undefined => {
   switch (input.type) {
     case "run-menu-action": {
       const label = stringOfActionMenuItemName(input.name);
@@ -48,26 +54,23 @@ export const electronOfPluginMenuItem = (input: Menu.MenuItem): Menu.PluginMenuI
   return undefined;
 };
 
-export const setMenuFromTemplate = (
-  pluginMenuData: Menu.MenuItem[],
-  template?: E.MenuItemConstructorOptions[],
-): E.Menu => {
-  let mainMenu: E.Menu;
+export const setMenuFromTemplate = (pluginMenuData: Menu.MenuItem[], template?: MenuItemConstructorOptions[]): Menu => {
+  let mainMenu: Menu;
 
   const pluginMenuItems = pluginMenuData.length === 0 ? undefined : pluginMenuData.map(electronOfPluginMenuItem);
 
   if (template) {
-    mainMenu = E.Menu.buildFromTemplate(template as E.MenuItemConstructorOptions[]);
+    mainMenu = Menu.buildFromTemplate(template as MenuItemConstructorOptions[]);
   } else {
-    mainMenu = E.Menu.buildFromTemplate(getMenuTemplate(pluginMenuItems) as E.MenuItemConstructorOptions[]);
+    mainMenu = Menu.buildFromTemplate(getMenuTemplate(pluginMenuItems) as MenuItemConstructorOptions[]);
   }
 
-  E.Menu.setApplicationMenu(mainMenu);
+  Menu.setApplicationMenu(mainMenu);
 
   return mainMenu;
 };
 
-export const buildActionToMenuItemMap = (menu: E.Menu) => {
+export const buildActionToMenuItemMap = (menu: Menu) => {
   const map: any = {};
   const parseMenu = (menu: any) => {
     for (const item of menu.items) {
@@ -84,20 +87,20 @@ export const buildActionToMenuItemMap = (menu: E.Menu) => {
   return map;
 };
 
-export const resetMenu = (pluginMenuData: Menu.MenuItem[], template?: E.MenuItemConstructorOptions[]) => {
-  const mainMenu: E.Menu = setMenuFromTemplate(pluginMenuData, template);
+export const resetMenu = (pluginMenuData: Menu.MenuItem[], template?: MenuItemConstructorOptions[]) => {
+  const mainMenu: Menu = setMenuFromTemplate(pluginMenuData, template);
   const menuItemMap = buildActionToMenuItemMap(mainMenu);
 
   for (const action of Object.keys(menuItemMap)) {
-    const menuItem: E.MenuItem = menuItemMap[action];
+    const menuItem: MenuItem = menuItemMap[action];
     menuItem.enabled = MenuState.actionState ? !!MenuState.actionState[action] : false;
   }
 
   return mainMenu;
 };
 
-export const item = (label: string, accelerator: string, params: E.MenuItemConstructorOptions) => {
-  const props: E.MenuItemConstructorOptions = {
+export const item = (label: string, accelerator: string, params: MenuItemConstructorOptions) => {
+  const props: MenuItemConstructorOptions = {
     label,
     enabled: true,
     ...params,
@@ -110,14 +113,14 @@ export const item = (label: string, accelerator: string, params: E.MenuItemConst
   return props;
 };
 
-export const commandToMainProcess = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
-  E.app.emit("handle-command", window.webContents, item.id);
+export const commandToMainProcess = (item: Menu.PluginMenuItem, window: BrowserWindow) => {
+  app.emit("handle-command", window.webContents, item.id);
 };
 
-export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: E.BrowserWindow) => {
+export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: BrowserWindow) => {
   window.webContents.send("handlePageCommand", item.id);
 };
 
-export const handleUrl = (window: E.BrowserWindow, url: string) => {
-  E.app.emit("handleUrl", window.webContents.id, url);
+export const handleUrl = (window: BrowserWindow, url: string) => {
+  app.emit("handleUrl", window.webContents.id, url);
 };

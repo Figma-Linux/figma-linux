@@ -1,14 +1,12 @@
 {
-  "extends": "./node_modules/electron-webpack/tsconfig-base.json",
   "compilerOptions": {
-    "jsx": "react",
     "outDir": "./dist",
     "baseUrl": "./",
     "noImplicitAny": true,
     "allowJs": false,
-    "target": "es6",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "nodenext",
     "sourceMap": true,
     "preserveConstEnums": true,
     "removeComments": true,
@@ -27,7 +25,7 @@
     ],
     "typeRoots": [
       "node_modules/@types",
-      "@types/**/*.d.ts"
+      "src/types/**/*.d.ts"
     ],
     "paths": {
       "Main": ["src/main"],
@@ -38,26 +36,22 @@
       "Elements": ["src/renderer/elements"],
       "Store": ["src/renderer/stores"],
       "Store/*": ["src/renderer/stores/*"],
-      "Middleware": ["src/middleware"],
-      "Middleware/*": ["src/middleware/*"],
+      "DesktopAPI": ["DesktopAPI"],
+      "DesktopAPI/*": ["DesktopAPI/*"],
       "Const": ["src/constants"],
       "Utils": ["src/utils"],
       "Utils/*": ["src/utils/*"],
-      "Enums": ["@types/enums.ts"],
+      "Enums": ["src/types/enums.ts"],
       "Storage": ["src/main/Storage.ts"],
+      "Types": ["src/types"],
+      "Types/*": ["src/types/*"],
       "*": ["node_modules/@types/*"]
-    },
+    }
   },
   "include": [
-    "@types/**/*",
-    "src/main/index.ts",
-    "src/renderer/index.tsx",
-    "src/middleware/loadMainContent.ts",
-    "src/middleware/loadContent.ts",
-    "src/middleware/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "build"
+    "src/constants/**/*",
+    "src/main/**/*",
+    "src/types/**/*",
+    "src/utils/**/*",
   ]
 }

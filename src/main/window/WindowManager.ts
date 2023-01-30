@@ -1,10 +1,27 @@
-import installExtension, { REACT_DEVELOPER_TOOLS } from "electron-devtools-installer";
-import * as E from "electron";
+import {
+  app,
+  net,
+  shell,
+  clipboard,
+  session,
+  nativeImage,
+  ipcMain,
+  IpcMainEvent,
+  BrowserView,
+  BrowserWindow,
+  WebContents,
+  Rectangle,
+  Event,
+  Menu,
+  MenuItem,
+  BrowserWindowConstructorOptions,
+  MenuItemConstructorOptions,
+} from "electron";
 import * as url from "url";
 import * as util from "util";
 
 import Tabs from "./Tabs";
-import Fonts from "../Fonts";
+import { FontsManager } from "../Fonts";
 import { storage } from "../Storage";
 import { logger } from "../Logger";
 import { dialogs } from "../Dialogs";
@@ -22,8 +39,8 @@ import {
   isCommunityUrl,
 } from "Utils/Common";
 import {
-  winUrlDev,
-  winUrlProd,
+  panelUrlDev,
+  panelUrlProd,
   toggleDetachedDevTools,
   getThemesFromDirectory,
   setMenuFromTemplate,
@@ -36,15 +53,16 @@ import {
   updateThemesFromRepository,
   getThemesCount,
   updateIds,
+  DEFAULT_SETTINGS,
 } from "Utils/Main";
 import { registerIpcMainHandlers } from "Main/events";
 
 class WindowManager {
   home: string;
-  mainWindow: E.BrowserWindow;
-  settingsView: E.BrowserView | null = null;
-  themeCreatorView: E.BrowserView | null = null;
-  mainTab: E.BrowserView;
+  mainWindow: BrowserWindow;
+  settingsView: BrowserView | null = null;
+  themeCreatorView: BrowserView | null = null;
+  mainTab: BrowserView;
   figmaUiScale: number;
   panelScale: number;
   closedTabsHistory: Array<string> = [];
@@ -52,9 +70,9 @@ class WindowManager {
   themes: Themes.Theme[] = [];
   currentTheme: Themes.Theme;
   creatorTheme: Themes.Theme;
-  private lastFocusedTab: E.WebContents;
+  private lastFocusedTab: WebContents;
   private tabs: Tab[];
-  private menu: E.Menu;
+  private menu: Menu;
   private static _instance: WindowManager;
   private panelHeight = storage.get().app.panelHeight;
   private enableColorSpaceSrgbWasChanged = false;
@@ -68,7 +86,7 @@ class WindowManager {
     this.figmaUserIDs = storage.get().authedUserIDs;
     this.tabsWereRestored = false;
 
-    const options: E.BrowserWindowConstructorOptions = {
+    const options: BrowserWindowConstructorOptions = {
       width: 1200,
       height: 900,
       frame: false,
@@ -82,13 +100,12 @@ class WindowManager {
         webSecurity: false,
         webgl: true,
         experimentalFeatures: true,
-        enableRemoteModule: true,
         contextIsolation: false,
       },
     };
 
-    this.mainWindow = new E.BrowserWindow(options);
-    this.mainWindow.loadURL(isDev ? winUrlDev : winUrlProd);
+    this.mainWindow = new BrowserWindow(options);
+    this.mainWindow.loadURL(isDev ? panelUrlDev : panelUrlProd);
 
     this.initMenu();
     this.mainTab = this.addMainTab();
@@ -97,13 +114,12 @@ class WindowManager {
     this.mainWindow.on("unmaximize", () => setTimeout(() => this.updateBounds(), 100));
     this.mainWindow.on("move", () => setTimeout(() => this.updateBounds(), 100));
 
-    isDev && this.installReactDevTools();
-    isDev && this.mainWindow.webContents.openDevTools({ mode: "detach" });
+    isDev && toggleDetachedDevTools(this.mainWindow.webContents);
 
     this.addIpc();
     registerIpcMainHandlers();
 
-    E.app.on("will-quit", this.onWillQuit);
+    app.on("will-quit", this.onWillQuit);
 
     if (storage.get().app.saveLastOpenedTabs) {
       setTimeout(() => this.restoreTabs(), 1000);
@@ -114,7 +130,7 @@ class WindowManager {
     });
 
     if (!storage.get().app.disableThemes) {
-      getThemeById().then(theme => {
+      getThemeById().then((theme) => {
         this.currentTheme = theme;
       });
     }
@@ -170,14 +186,14 @@ class WindowManager {
     }
   };
 
-  private initMenu = (template?: E.MenuItemConstructorOptions[]) => {
+  private initMenu = (template?: MenuItemConstructorOptions[]) => {
     let pluginMenuData: Menu.MenuItem[] = [];
     this.menu = setMenuFromTemplate(pluginMenuData, template);
     const menuItemMap = buildActionToMenuItemMap(this.menu);
 
     this.menu = resetMenu(pluginMenuData, template);
 
-    E.app.on("os-menu-invalidated", state => {
+    app.on("os-menu-invalidated", (state) => {
       if (Array.isArray(state.pluginMenuData)) {
         pluginMenuData = state.pluginMenuData;
 
@@ -187,7 +203,7 @@ class WindowManager {
       if (!state.actionState) return;
 
       for (const action of Object.keys(menuItemMap)) {
-        const menuItem: E.MenuItem = menuItemMap[action];
+        const menuItem: MenuItem = menuItemMap[action];
         menuItem.enabled = state.actionState ? !!state.actionState[action] : false;
       }
     });
@@ -206,7 +222,7 @@ class WindowManager {
   private onWillQuit = (): void => {
     const lastOpenedTabs: SavedTab[] = [];
 
-    this.tabs.forEach(tab => {
+    this.tabs.forEach((tab) => {
       if (tab.id > 1) {
         lastOpenedTabs.push({
           title: tab.title,
@@ -219,17 +235,17 @@ class WindowManager {
   };
 
   private addIpc = (): void => {
-    E.ipcMain.on("newTab", () => this.addTab());
-    E.ipcMain.on("newProject", () => {
+    ipcMain.on("newTab", () => this.addTab());
+    ipcMain.on("newProject", () => {
       this.newProject();
     });
-    E.ipcMain.on("appExit", () => {
-      E.app.quit();
+    ipcMain.on("appExit", () => {
+      app.quit();
     });
-    E.ipcMain.on("window-minimize", () => {
+    ipcMain.on("window-minimize", () => {
       this.mainWindow.minimize();
     });
-    E.ipcMain.on("window-maximize", (event: E.IpcMainEvent) => {
+    ipcMain.on("window-maximize", (event: IpcMainEvent) => {
       if (this.mainWindow.isMaximized()) {
         this.mainWindow.restore();
         event.reply("did-restored");
@@ -238,21 +254,21 @@ class WindowManager {
         event.reply("did-maximized");
       }
     });
-    E.ipcMain.on("closeTab", (event, id) => {
+    ipcMain.on("closeTab", (event, id) => {
       this.closeTab(id);
     });
-    E.ipcMain.on("setTabFocus", (event, id) => {
+    ipcMain.on("setTabFocus", (event, id) => {
       this.focusTab(id);
 
       MenuState.updateInProjectActionState();
     });
-    E.ipcMain.on("setFocusToMainTab", () => {
+    ipcMain.on("setFocusToMainTab", () => {
       this.focusMainTab();
     });
-    E.ipcMain.on("closeAllTab", () => {
+    ipcMain.on("closeAllTab", () => {
       logger.debug("Close all tab");
     });
-    E.ipcMain.on("setTitle", (event, title) => {
+    ipcMain.on("setTitle", (event, title) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -261,7 +277,7 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setTitle", { id: tab.view.webContents.id, title });
     });
-    E.ipcMain.on("openMenu", () => {
+    ipcMain.on("openMenu", () => {
       const windowWidth = this.mainWindow.getBounds().width;
 
       this.menu.popup({
@@ -270,7 +286,7 @@ class WindowManager {
         y: this.panelHeight,
       });
     });
-    E.ipcMain.on("setPluginMenuData", (event, pluginMenu) => {
+    ipcMain.on("setPluginMenuData", (event, pluginMenu) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -283,14 +299,14 @@ class WindowManager {
         MenuState.updateInFileBrowserActionState();
       }
     });
-    E.ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
+    ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
         return;
       }
     });
-    E.ipcMain.on("setTabUrl", (event, url: string) => {
+    ipcMain.on("setTabUrl", (event, url: string) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -299,7 +315,7 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setTabUrl", { id: tab.view.webContents.id, url });
     });
-    E.ipcMain.on("updateFileKey", (event, key) => {
+    ipcMain.on("updateFileKey", (event, key) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -308,10 +324,10 @@ class WindowManager {
 
       this.mainWindow.webContents.send("updateFileKey", { id: tab.view.webContents.id, fileKey: key });
     });
-    E.ipcMain.on("updateActionState", (_, state) => {
+    ipcMain.on("updateActionState", (_, state) => {
       MenuState.updateActionState(state);
     });
-    E.ipcMain.on("openFile", (_, ...args) => {
+    ipcMain.on("openFile", (_, ...args: string[]) => {
       let url = `${this.home}${args[0]}`;
 
       if (args[2]) {
@@ -320,30 +336,30 @@ class WindowManager {
 
       this.addTab("loadContent.js", url);
     });
-    E.ipcMain.on("setFeatureFlags", (_, args) => {
+    ipcMain.on("setFeatureFlags", (_, args) => {
       storage.setFeatureFlags(args.featureFlags);
     });
-    E.ipcMain.on("openDevTools", (event, mode) => {
+    ipcMain.on("openDevTools", (event, mode) => {
       if (event.sender) {
         event.sender.openDevTools({ mode });
       }
     });
-    E.ipcMain.on("startAppAuth", (_, args) => {
+    ipcMain.on("startAppAuth", (_, args) => {
       if (isAppAuthGrandLink(args.grantPath)) {
         const url = `${this.home}${args.grantPath}?desktop_protocol=figma`;
 
-        E.shell.openExternal(url);
+        shell.openExternal(url);
       }
     });
-    E.ipcMain.on("finishAppAuth", (_, args) => {
+    ipcMain.on("finishAppAuth", (_, args) => {
       const url = `${this.home}${args.redirectURL}`;
 
       this.mainTab.webContents.loadURL(url);
     });
-    E.ipcMain.on("setAuthedUsers", (_, userIds) => {
+    ipcMain.on("setAuthedUsers", (_, userIds) => {
       this.setFigmaUserIDs(userIds);
     });
-    E.ipcMain.on("setUsingMicrophone", (event, isUsingMicrophone) => {
+    ipcMain.on("setUsingMicrophone", (event, isUsingMicrophone) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -352,7 +368,7 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setUsingMicrophone", { id: tab.view.webContents.id, isUsingMicrophone });
     });
-    E.ipcMain.on("requestMicrophonePermission", event => {
+    ipcMain.on("requestMicrophonePermission", (event) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab || tab.micAccess) {
@@ -377,7 +393,7 @@ class WindowManager {
         return cb(false);
       });
     });
-    E.ipcMain.on("setIsInVoiceCall", (event, isInVoiceCall) => {
+    ipcMain.on("setIsInVoiceCall", (event, isInVoiceCall) => {
       const tab = Tabs.getByWebContentId(event.sender.id);
 
       if (!tab) {
@@ -386,16 +402,16 @@ class WindowManager {
 
       this.mainWindow.webContents.send("setIsInVoiceCall", { id: tab.view.webContents.id, isInVoiceCall });
     });
-    E.ipcMain.on("setWorkspaceName", (_, name) => {
+    ipcMain.on("setWorkspaceName", (_, name) => {
       logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
     });
-    E.ipcMain.on("setFigjamEnabled", (_, enabled) => {
+    ipcMain.on("setFigjamEnabled", (_, enabled) => {
       logger.info("The setFigjamEnabled not implemented, enabled: ", enabled);
     });
-    E.ipcMain.on("receiveTabs", (_, tabs) => {
+    ipcMain.on("receiveTabs", (_, tabs) => {
       this.tabs = tabs;
     });
-    E.ipcMain.on("enableColorSpaceSrgbWasChanged", (_, enabled) => {
+    ipcMain.on("enableColorSpaceSrgbWasChanged", (_, enabled) => {
       const previousValue = storage.get().app.enableColorSpaceSrgb;
 
       if (enabled === previousValue) {
@@ -404,7 +420,7 @@ class WindowManager {
 
       this.enableColorSpaceSrgbWasChanged = true;
     });
-    E.ipcMain.on("disableThemesChanged", (_, enabled) => {
+    ipcMain.on("disableThemesChanged", (_, enabled) => {
       const previousValue = storage.get().app.disableThemes;
 
       if (enabled === previousValue) {
@@ -413,7 +429,7 @@ class WindowManager {
 
       this.disableThemesChanged = true;
     });
-    E.ipcMain.on("closeSettingsView", () => {
+    ipcMain.on("closeSettingsView", () => {
       if (!this.settingsView) {
         return;
       }
@@ -454,13 +470,13 @@ class WindowManager {
       }
 
       if (!id) {
-        E.app.relaunch();
-        E.app.quit();
+        app.relaunch();
+        app.quit();
       }
 
       this.destroyView(this.settingsView);
     });
-    E.ipcMain.on("closeThemeCreatorView", () => {
+    ipcMain.on("closeThemeCreatorView", () => {
       if (!this.themeCreatorView) {
         return;
       }
@@ -473,22 +489,22 @@ class WindowManager {
 
       this.destroyView(this.themeCreatorView);
     });
-    E.ipcMain.on("updateFigmaUiScale", (event, scale) => {
+    ipcMain.on("updateFigmaUiScale", (event, scale) => {
       this.updateFigmaUiScale(scale);
     });
-    E.ipcMain.on("updatePanelScale", (event, scale) => {
+    ipcMain.on("updatePanelScale", (event, scale) => {
       this.updatePanelScale(scale);
     });
-    E.ipcMain.on("updateVisibleNewProjectBtn", (_, visible) => {
+    ipcMain.on("updateVisibleNewProjectBtn", (_, visible) => {
       this.mainWindow.webContents.send("updateVisibleNewProjectBtn", visible);
     });
-    E.ipcMain.on("themes-change", (_, theme) => {
+    ipcMain.on("themes-change", (_, theme) => {
       if (storage.get().app.disableThemes) {
         return;
       }
 
       if (theme.id === Const.TEST_THEME_ID) {
-        const testTheme = this.themes.find(t => t.id === theme.id);
+        const testTheme = this.themes.find((t) => t.id === theme.id);
 
         if (testTheme) {
           testTheme.palette = theme.palette;
@@ -497,17 +513,17 @@ class WindowManager {
 
       this.changeTheme(theme);
     });
-    E.ipcMain.on("set-default-theme", () => {
+    ipcMain.on("set-default-theme", () => {
       if (storage.get().app.disableThemes) {
         return;
       }
 
       this.changeTheme(Const.DEFAULT_THEME);
     });
-    E.ipcMain.on("saveCreatorTheme", (_, theme) => {
+    ipcMain.on("saveCreatorTheme", (_, theme) => {
       saveCreatorTheme(theme);
       if (theme.id === Const.TEST_THEME_ID) {
-        const testTheme = this.themes.find(t => t.id === theme.id);
+        const testTheme = this.themes.find((t) => t.id === theme.id);
 
         if (testTheme) {
           testTheme.palette = theme.palette;
@@ -516,10 +532,10 @@ class WindowManager {
 
       this.creatorTheme = theme;
     });
-    E.ipcMain.on("themeCreatorExportTheme", (_, theme) => {
+    ipcMain.on("themeCreatorExportTheme", (_, theme) => {
       exportCreatorTheme(theme);
     });
-    E.ipcMain.on("sync-themes", async () => {
+    ipcMain.on("sync-themes", async () => {
       logger.debug("Sync themes start");
       if (this.isActive(this.settingsView)) {
         this.settingsView.webContents.send("sync-themes-start");
@@ -533,36 +549,36 @@ class WindowManager {
       }
       logger.debug("Sync themes end");
     });
-    E.ipcMain.on("getCurrentTheme", (event, id) => {
-      getThemeById(id).then(theme => {
+    ipcMain.on("getCurrentTheme", (event, id) => {
+      getThemeById(id).then((theme) => {
         event.returnValue = theme;
       });
     });
-    E.ipcMain.on("set-clipboard-data", (event, data) => {
+    ipcMain.on("set-clipboard-data", (event, data) => {
       const format = data.format;
       const buffer = Buffer.from(data.data);
 
       if (["image/jpeg", "image/png"].indexOf(format) !== -1) {
-        E.clipboard.writeImage(E.nativeImage.createFromBuffer(buffer));
+        clipboard.writeImage(nativeImage.createFromBuffer(buffer));
       } else if (format === "image/svg+xml") {
-        E.clipboard.writeText(buffer.toString());
+        clipboard.writeText(buffer.toString());
       } else if (format === "application/pdf") {
-        E.clipboard.writeBuffer("Portable Document Format", buffer);
+        clipboard.writeBuffer("Portable Document Format", buffer);
       } else {
-        E.clipboard.writeBuffer(format, buffer);
+        clipboard.writeBuffer(format, buffer);
       }
     });
-    E.ipcMain.handle("get-fonts", async () => {
+    ipcMain.handle("get-fonts", async () => {
       let dirs = storage.get().app.fontDirs;
 
       if (!dirs) {
-        dirs = Const.DEFAULT_SETTINGS.app.fontDirs;
+        dirs = DEFAULT_SETTINGS.app.fontDirs;
       }
 
-      return Fonts.getFonts(dirs);
+      return FontsManager.getFonts(dirs);
     });
-    E.ipcMain.handle("get-font-file", async (event, data) => {
-      const file = await Fonts.getFontFile(data.path);
+    ipcMain.handle("get-font-file", async (event, data) => {
+      const file = await FontsManager.getFontFile(data.path);
 
       if (file && file.byteLength > 0) {
         return file;
@@ -571,37 +587,37 @@ class WindowManager {
       return null;
     });
 
-    E.app.on("handlePluginMenuAction", pluginMenuAction => {
+    app.on("handlePluginMenuAction", (pluginMenuAction) => {
       this.lastFocusedTab.send("handlePluginMenuAction", pluginMenuAction);
     });
-    E.app.on("toggle-current-tab-devtools", () => {
+    app.on("toggle-current-tab-devtools", () => {
       toggleDetachedDevTools(this.lastFocusedTab);
     });
-    E.app.on("openSettingsView", () => {
+    app.on("openSettingsView", () => {
       this.enableColorSpaceSrgbWasChanged = false;
       this.initSettingsView();
     });
-    E.app.on("openThemeCreatorView", () => {
+    app.on("openThemeCreatorView", () => {
       this.initThemeCreatorView();
     });
-    E.app.on("sign-out", () => {
+    app.on("sign-out", () => {
       this.logoutAndRestart();
     });
-    E.app.on("toggle-settings-developer-tools", () => {
+    app.on("toggle-settings-developer-tools", () => {
       if (this.settingsView && this.isActive(this.settingsView)) {
         toggleDetachedDevTools(this.settingsView.webContents);
       } else if (this.themeCreatorView && this.isActive(this.themeCreatorView)) {
         toggleDetachedDevTools(this.themeCreatorView.webContents);
       }
     });
-    E.app.on("handleUrl", (senderId, path) => {
+    app.on("handleUrl", (senderId, path) => {
       if (senderId !== this.mainTab.webContents.id) {
         this.focusMainTab();
       }
 
       this.mainTab.webContents.send("handleUrl", path);
     });
-    E.app.on("handle-command", (sender, id) => {
+    app.on("handle-command", (sender, id) => {
       switch (id) {
         case "scale-normal": {
           this.updateAllScale();
@@ -656,7 +672,7 @@ class WindowManager {
           break;
         }
         case "openFileUrlClipboard": {
-          const uri = E.clipboard.readText();
+          const uri = clipboard.readText();
 
           if (isValidProjectLink(uri) || isPrototypeUrl(uri)) {
             this.addTab("loadContent.js", normalizeUrl(uri));
@@ -705,12 +721,12 @@ class WindowManager {
     return false;
   };
 
-  public addTab = (scriptPreload = "loadMainContent.js", url = Const.RECENT_FILES, title?: string): E.BrowserView => {
+  public addTab = (scriptPreload = "loadMainContent.js", url = Const.RECENT_FILES, title?: string): BrowserView => {
     const userId = storage.get().userId;
     const tab = Tabs.newTab(`${url}?fuid=${userId}`, this.getBounds(), scriptPreload);
 
     tab.view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
-    tab.view.webContents.on("new-window", this.onNewWindow);
+    // tab.view.webContents.on("new-window", this.onNewWindow);
 
     MenuState.updateActionState(Const.ACTIONTABSTATE);
 
@@ -758,7 +774,7 @@ class WindowManager {
     return tab.view;
   };
 
-  public addMainTab = (): E.BrowserView => {
+  public addMainTab = (): BrowserView => {
     const userId = storage.get().userId;
     const url = `${Const.RECENT_FILES}/?fuid=${userId}`;
     const tab = Tabs.newTab(url, this.getBounds(), "loadMainContent.js", false);
@@ -768,7 +784,7 @@ class WindowManager {
 
     tab.view.webContents.on("will-navigate", this.onMainTabWillNavigate);
     tab.view.webContents.on("will-navigate", this.onMainWindowWillNavigate);
-    tab.view.webContents.on("new-window", this.onNewWindow);
+    // tab.view.webContents.on("new-window", this.onNewWindow);
 
     MenuState.updateInFileBrowserActionState();
 
@@ -792,12 +808,11 @@ class WindowManager {
   };
 
   private initSettingsView = () => {
-    this.settingsView = new E.BrowserView({
+    this.settingsView = new BrowserView({
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
         experimentalFeatures: false,
-        enableRemoteModule: true,
       },
     });
 
@@ -819,23 +834,22 @@ class WindowManager {
       vertical: true,
     });
 
-    this.settingsView.webContents.loadURL(isDev ? winUrlDev : winUrlProd);
+    this.settingsView.webContents.loadURL(isDev ? panelUrlDev : panelUrlProd);
 
     this.settingsView.webContents.on("did-finish-load", () => {
       this.settingsView.webContents.send("renderView", "Settings");
       this.settingsView.webContents.send("getUploadedThemes", this.themes);
 
-      isDev && this.settingsView.webContents.openDevTools({ mode: "detach" });
+      isDev && toggleDetachedDevTools(this.settingsView.webContents);
     });
   };
 
   private initThemeCreatorView = () => {
-    this.themeCreatorView = new E.BrowserView({
+    this.themeCreatorView = new BrowserView({
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false,
         experimentalFeatures: false,
-        enableRemoteModule: true,
       },
     });
 
@@ -857,7 +871,7 @@ class WindowManager {
       vertical: true,
     });
 
-    this.themeCreatorView.webContents.loadURL(isDev ? winUrlDev : winUrlProd);
+    this.themeCreatorView.webContents.loadURL(isDev ? panelUrlDev : panelUrlProd);
 
     this.themeCreatorView.webContents.on("did-finish-load", () => {
       this.themeCreatorView.webContents.send("renderView", "ThemeCreator");
@@ -866,8 +880,8 @@ class WindowManager {
     });
   };
 
-  private logoutAndRestart = (event?: E.Event): void => {
-    const request = E.net.request({
+  private logoutAndRestart = (event?: Event): void => {
+    const request = net.request({
       url: Const.LOGOUT_PAGE,
       useSessionCookies: true,
     });
@@ -875,7 +889,7 @@ class WindowManager {
     request.on("response", async () => {
       this.setFigmaUserIDs([]);
       try {
-        await Promise.all([E.session.defaultSession.clearStorageData(), E.session.defaultSession.clearCache()]);
+        await Promise.all([session.defaultSession.clearStorageData(), session.defaultSession.clearCache()]);
       } finally {
         Tabs.closeAll();
 
@@ -885,7 +899,7 @@ class WindowManager {
         this.mainWindow.webContents.send("closeAllTab");
       }
     });
-    request.on("error", error => logger.error("Logout error: ", error));
+    request.on("error", (error) => logger.error("Logout error: ", error));
     request.end();
 
     event && event.preventDefault();
@@ -905,7 +919,7 @@ class WindowManager {
 
     const tabs = Tabs.getAll();
 
-    tabs.forEach(tab => {
+    tabs.forEach((tab) => {
       tab.view.webContents.send("themes-change", theme);
     });
 
@@ -923,7 +937,7 @@ class WindowManager {
       return;
     }
 
-    E.shell.openExternal(url);
+    shell.openExternal(url);
   };
 
   private focusMainTab = (): void => {
@@ -934,7 +948,7 @@ class WindowManager {
     this.mainWindow.webContents.send("mainTabFocused");
   };
 
-  private onMainTabWillNavigate = (event: E.Event, url: string): void => {
+  private onMainTabWillNavigate = (event: Event, url: string): void => {
     if (isValidProjectLink(url) || isPrototypeUrl(url)) {
       this.addTab("loadContent.js", url);
 
@@ -955,7 +969,7 @@ class WindowManager {
     }
 
     if (isFigmaDocLink(newUrl)) {
-      E.shell.openExternal(newUrl);
+      shell.openExternal(newUrl);
 
       event.preventDefault();
       return;
@@ -1025,7 +1039,7 @@ class WindowManager {
 
     this.updateBounds();
 
-    views.forEach(tab => {
+    views.forEach((tab) => {
       tab.view.webContents.setZoomFactor(this.figmaUiScale);
     });
   };
@@ -1035,7 +1049,7 @@ class WindowManager {
 
     this.figmaUiScale = +figmaScale.toFixed(2);
 
-    views.forEach(tab => {
+    views.forEach((tab) => {
       tab.view.webContents.setZoomFactor(+figmaScale.toFixed(2));
     });
   };
@@ -1054,7 +1068,7 @@ class WindowManager {
     this.updateBounds();
   };
 
-  private getBounds = (): E.Rectangle => {
+  private getBounds = (): Rectangle => {
     return {
       x: 0,
       y: this.panelHeight,
@@ -1069,7 +1083,7 @@ class WindowManager {
 
     this.mainTab.setBounds(bounds);
 
-    views.forEach(tab => {
+    views.forEach((tab) => {
       tab.view.setBounds(bounds);
     });
   };
@@ -1098,7 +1112,7 @@ class WindowManager {
     }
   };
 
-  private isActive = (view: E.BrowserView): boolean => {
+  private isActive = (view: BrowserView): boolean => {
     if (!view || !view.webContents) {
       return false;
     }
@@ -1106,14 +1120,8 @@ class WindowManager {
     return !view.webContents.isDestroyed();
   };
 
-  private destroyView = (view: E.BrowserView): void => {
+  private destroyView = (view: BrowserView): void => {
     view.webContents.destroy();
-  };
-
-  private installReactDevTools = (): void => {
-    installExtension(REACT_DEVELOPER_TOOLS)
-      .then((name: string) => logger.info(`Added Extension:  ${name}`))
-      .catch((err: Error) => logger.error("An error occurred: ", err));
   };
 }
 

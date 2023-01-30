@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { net } from "electron";
 
 export const Request = (url: string): Promise<Request.Responce> =>
   new Promise((resolve, reject) => {
@@ -7,11 +7,11 @@ export const Request = (url: string): Promise<Request.Responce> =>
       data: "",
     };
 
-    E.net
+    net
       .request(url)
-      .on("response", res => {
+      .on("response", (res) => {
         res.on("error", (error: Error) => reject(error));
-        res.on("data", chunk => (responce.data += chunk.toString()));
+        res.on("data", (chunk) => (responce.data += chunk.toString()));
         res.on("end", () => resolve(responce));
       })
       .on("error", (error: Error) => reject(error))

@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { Rectangle, BrowserView, BrowserViewConstructorOptions } from "electron";
 import * as path from "path";
 
 import { isDev } from "Utils/Common";
@@ -10,13 +10,12 @@ export default class Tabs {
 
   private static tabs: Map<number, TabData> = new Map();
 
-  public static newTab = (url: string, rect: E.Rectangle, preloadScript?: string, save = true): TabData => {
-    const options: E.BrowserViewConstructorOptions = {
+  public static newTab = (url: string, rect: Rectangle, preloadScript?: string, save = true): TabData => {
+    const options: BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,
         webgl: true,
         contextIsolation: false,
-        worldSafeExecuteJavaScript: true,
         zoomFactor: 1,
       },
     };
@@ -24,12 +23,12 @@ export default class Tabs {
     if (preloadScript !== "") {
       options.webPreferences.preload = path.resolve(
         isDev ? `${process.cwd()}/dist/` : `${__dirname}/../`,
-        "renderer/middleware",
+        "renderer",
         preloadScript || "",
       );
     }
 
-    const tab = new E.BrowserView(options);
+    const tab = new BrowserView(options);
 
     tab.setAutoResize({
       width: true,
@@ -49,7 +48,7 @@ export default class Tabs {
       const currentThemeId = storage.get().theme.currentTheme;
       if (currentThemeId !== "0") {
         const wm = WindowManager.instance;
-        const foundTheme = wm.themes.find(theme => theme.id === currentThemeId);
+        const foundTheme = wm.themes.find((theme) => theme.id === currentThemeId);
 
         if (foundTheme) {
           tab.webContents.send("themes-change", foundTheme);
@@ -94,13 +93,13 @@ export default class Tabs {
   };
 
   public static reloadAll = (): void =>
-    Tabs.tabs.forEach(t => (!t.view.webContents.isDestroyed() ? t.view.webContents.reload() : ""));
+    Tabs.tabs.forEach((t) => (!t.view.webContents.isDestroyed() ? t.view.webContents.reload() : ""));
 
   public static getTabByIndex = (index: number): TabData | undefined => {
     let i = 0;
     let foundTab: TabData | undefined;
 
-    Tabs.tabs.forEach(tab => {
+    Tabs.tabs.forEach((tab) => {
       if (index === i) {
         foundTab = tab;
       }

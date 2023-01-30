@@ -1,0 +1,54 @@
+{
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist",
+    "baseUrl": ".",
+    "noImplicitAny": true,
+    "allowJs": false,
+    "target": "esnext",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
+    "allowUnusedLabels": true,
+    "noUnusedLocals": false,
+    "strictNullChecks": false,
+    "lib": [
+      "dom",
+      "es7",
+      "esnext"
+    ],
+    "typeRoots": [
+      "../../node_modules/@types",
+      "types/**/*"
+    ],
+    "paths": {
+      "Components": ["renderer/components"],
+      "Components/*": ["renderer/components/*"],
+      "DesktopAPI": ["DesktopAPI"],
+      "DesktopAPI/*": ["DesktopAPI/*"],
+      "Const": ["../constants"],
+      "Utils": ["../utils"],
+      "Utils/*": ["../utils/*"],
+      "Enums": ["../types/enums.ts"],
+      "Types": ["../types"],
+      "Types/*": ["../types/*"],
+      "*": ["../../node_modules/@types/*"]
+    }
+  },
+  "include": [
+    "../constants/**/*",
+    "../renderer/**/*",
+    "../types/**/*",
+    "../utils/Main/fs.ts",
+    "../utils/Common/*",
+    "../utils/Render/*",
+    "**/*"
+  ]
+}

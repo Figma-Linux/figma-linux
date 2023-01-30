@@ -6,7 +6,7 @@ process.on("uncaughtException", (error: Error) => {
 });
 
 // Catch unhandling rejected promises
-process.on("unhandledRejection", (reason: any) => {
+process.on("unhandledRejection", (reason: Error) => {
   console.error(`unhandledRejection: `, reason);
 });
 

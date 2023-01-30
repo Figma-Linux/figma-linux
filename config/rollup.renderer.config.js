@@ -15,7 +15,9 @@ const postcss = require("rollup-plugin-postcss");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const port = process.env.DEV_PANEL_PORT;
+const panelPort = process.env.DEV_PANEL_PORT;
+const settingsPort = process.env.DEV_SETTINGS_PORT;
+const themeCreatorPort = process.env.DEV_THEME_CREATOR_PORT;
 const production = process.env.NODE_ENV !== "dev";
 const watch = process.env.ROLLUP_WATCH === "true";
 const projectRootDir = path.resolve(__dirname);
@@ -43,6 +45,31 @@ const commonPlugins = [
       },
     ],
   }),
+];
+
+const svelteFrontendPlugins = [
+  svelte({
+    preprocess: sveltePreprocess({
+      sourceMap: !production,
+    }),
+    compilerOptions: {
+      dev: !production,
+    },
+  }),
+  postcss({
+    extract: "base.css",
+  }),
+  css({
+    output: "bundle.css",
+  }),
+  resolve({
+    browser: false,
+    dedupe: ["svelte"],
+  }),
+  commonjs(),
+  ...commonPlugins,
+  watch && livereload("dist"),
+  production && terser(),
 ];
 
 function runElectron() {
@@ -99,33 +126,33 @@ module.exports = [
     },
     external: commonExternal,
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({
-          sourceMap: !production,
-        }),
-        compilerOptions: {
-          dev: !production,
-        },
-      }),
-      postcss({
-        extract: "base.css",
-      }),
-      css({
-        output: "bundle.css",
-      }),
-      resolve({
-        browser: false,
-        dedupe: ["svelte"],
-      }),
-      commonjs(),
-      ...commonPlugins,
-      watch && livereload("dist"),
+      ...svelteFrontendPlugins,
       watch &&
         serve({
-          port,
+          port: settingsPort,
           contentBase: "dist",
         }),
-      production && terser(),
+    ],
+    watch: {
+      clearScreen: false,
+    },
+  },
+  {
+    input: "src/renderer/ThemeCreator/index.ts",
+    output: {
+      sourcemap: !production,
+      format: "cjs",
+      name: "app",
+      file: "dist/renderer/themeCreator.js",
+    },
+    external: commonExternal,
+    plugins: [
+      ...svelteFrontendPlugins,
+      watch &&
+        serve({
+          port: themeCreatorPort,
+          contentBase: "dist",
+        }),
     ],
     watch: {
       clearScreen: false,
@@ -141,20 +168,7 @@ module.exports = [
     },
     external: commonExternal,
     plugins: [
-      svelte({
-        preprocess: sveltePreprocess({
-          sourceMap: !production,
-        }),
-        compilerOptions: {
-          dev: !production,
-        },
-      }),
-      postcss({
-        extract: "base.css",
-      }),
-      css({
-        output: "bundle.css",
-      }),
+      ...svelteFrontendPlugins,
       copy({
         targets: [
           {
@@ -165,22 +179,18 @@ module.exports = [
             src: "src/settings.html",
             dest: "dist",
           },
+          {
+            src: "src/themeCreator.html",
+            dest: "dist",
+          },
         ],
       }),
-      resolve({
-        browser: false,
-        dedupe: ["svelte"],
-      }),
-      commonjs(),
-      ...commonPlugins,
-      watch && livereload("dist"),
+      watch && runElectron(),
       watch &&
         serve({
-          port,
+          port: panelPort,
           contentBase: "dist",
         }),
-      watch && runElectron(),
-      production && terser(),
     ],
     watch: {
       clearScreen: false,

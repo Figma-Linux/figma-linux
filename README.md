@@ -141,8 +141,9 @@ When you do changes in middleware component, You need to rebuild (`npm run build
 Example of **.env** for local development:
 ```
 NODE_ENV=dev
-DEV_PANEL_PORT=3338
-DEV_SETTINGS_PORT=3339
+DEV_PANEL_PORT=3330
+DEV_SETTINGS_PORT=3331
+DEV_THEME_CREATOR_PORT=3332
 ```
 
 

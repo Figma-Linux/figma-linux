@@ -41,6 +41,10 @@ import {
 import {
   panelUrlDev,
   panelUrlProd,
+  settingsUrlDev,
+  settingsUrlProd,
+  themeCreatorUrlDev,
+  themeCreatorUrlProd,
   toggleDetachedDevTools,
   getThemesFromDirectory,
   setMenuFromTemplate,
@@ -834,7 +838,7 @@ class WindowManager {
       vertical: true,
     });
 
-    this.settingsView.webContents.loadURL(isDev ? panelUrlDev : panelUrlProd);
+    this.settingsView.webContents.loadURL(isDev ? settingsUrlDev : settingsUrlProd);
 
     this.settingsView.webContents.on("did-finish-load", () => {
       this.settingsView.webContents.send("renderView", "Settings");
@@ -871,7 +875,7 @@ class WindowManager {
       vertical: true,
     });
 
-    this.themeCreatorView.webContents.loadURL(isDev ? panelUrlDev : panelUrlProd);
+    this.themeCreatorView.webContents.loadURL(isDev ? themeCreatorUrlDev : themeCreatorUrlProd);
 
     this.themeCreatorView.webContents.on("did-finish-load", () => {
       this.themeCreatorView.webContents.send("renderView", "ThemeCreator");

@@ -17,7 +17,6 @@ interface Window
   };
 
   __figmaContent: any;
-  hui: any;
 }
 
 // eslint-disable-next-line no-var

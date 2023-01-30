@@ -3,5 +3,5 @@
 import App from "./App.svelte";
 
 new App({
-  target: document.getElementById("panel"),
+  target: document.getElementById("themeCreator"),
 });

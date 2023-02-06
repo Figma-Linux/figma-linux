@@ -71,7 +71,7 @@ export default class Window {
 
   public handleUrl(path: string) {
     this.tabManager.handleUrl(path);
-    this.setFocusToMainTab(null);
+    this.setFocusToMainTab();
   }
 
   public openUrl(url: string) {
@@ -81,7 +81,7 @@ export default class Window {
       this.tabManager.loadUrlInMainTab(normalizedUrl);
     } else if (isCommunityUrl(url)) {
       this.handleUrl(parse(url).path);
-      this.setFocusToMainTab(null);
+      this.setFocusToMainTab();
     } else if (/figma:\/\//.test(url)) {
       this.addTab(url.replace(/figma:\//, HOMEPAGE));
     } else if (/https?:\/\//.test(url)) {
@@ -230,7 +230,7 @@ export default class Window {
       url: tab.view.webContents.getURL(),
     });
   }
-  public setFocusToMainTab(_: IpcMainEvent) {
+  public setFocusToMainTab() {
     const mainTab = this.tabManager.mainTab;
 
     this.window.setTopBrowserView(mainTab.view);
@@ -310,7 +310,6 @@ export default class Window {
     ipcMain.on("newProject", this.newProject.bind(this));
     ipcMain.on("closeTab", this.closeTab.bind(this));
     ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
-    ipcMain.on("setFocusToMainTab", this.setFocusToMainTab.bind(this));
     ipcMain.on("closeAllTab", this.closeAllTab.bind(this));
     ipcMain.on("setTitle", this.setTabTitle.bind(this));
     ipcMain.on("openMainMenu", this.openMainMenuHandler.bind(this));

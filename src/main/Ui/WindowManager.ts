@@ -208,6 +208,11 @@ export default class WindowManager {
       app.emit("quitApp");
     }
   }
+  private setFocusToMainTab(_: IpcMainEvent) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.setFocusToMainTab();
+  }
   private handleUrl(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -219,6 +224,7 @@ export default class WindowManager {
     ipcMain.on("startAppAuth", this.startAppAuth.bind(this));
     ipcMain.on("finishAppAuth", this.finishAppAuth.bind(this));
     ipcMain.on("windowClose", this.handlerWindowClose.bind(this));
+    ipcMain.on("setFocusToMainTab", this.setFocusToMainTab.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

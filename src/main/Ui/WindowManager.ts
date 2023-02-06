@@ -1,4 +1,12 @@
-import { app, shell, clipboard, ipcMain, IpcMainEvent, WebContents } from "electron";
+import {
+  app,
+  shell,
+  clipboard,
+  ipcMain,
+  IpcMainEvent,
+  IpcMainInvokeEvent,
+  WebContents,
+} from "electron";
 
 import Window from "./Window";
 import { storage } from "Main/Storage";
@@ -165,7 +173,7 @@ export default class WindowManager {
   private openFileBrowser(_: WebContents) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
-    window.setFocusToMainTab(null);
+    window.setFocusToMainTab();
   }
   private reopenClosedTab(_: WebContents) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -213,6 +221,11 @@ export default class WindowManager {
 
     window.setFocusToMainTab();
   }
+  private openTabMenuHandler(_: IpcMainInvokeEvent, tabId: number) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.openTabMenu(tabId);
+  }
   private handleUrl(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -225,6 +238,7 @@ export default class WindowManager {
     ipcMain.on("finishAppAuth", this.finishAppAuth.bind(this));
     ipcMain.on("windowClose", this.handlerWindowClose.bind(this));
     ipcMain.on("setFocusToMainTab", this.setFocusToMainTab.bind(this));
+    ipcMain.on("openTabMenu", this.openTabMenuHandler.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

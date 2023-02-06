@@ -146,7 +146,7 @@ export default class Window {
 
     this.menuManager.openMainMenuHandler(width, this.window);
   }
-  private openTabMenuHandler(_: IpcMainInvokeEvent, tabId: number) {
+  public openTabMenu(tabId: number) {
     const appUrl = this.tabManager.getTabLink(tabId, "app");
     const webUrl = this.tabManager.getTabLink(tabId, "web");
     const close = () => {
@@ -313,7 +313,6 @@ export default class Window {
     ipcMain.on("closeAllTab", this.closeAllTab.bind(this));
     ipcMain.on("setTitle", this.setTabTitle.bind(this));
     ipcMain.on("openMainMenu", this.openMainMenuHandler.bind(this));
-    ipcMain.on("openTabMenu", this.openTabMenuHandler.bind(this));
     ipcMain.on("setPluginMenuData", this.setPluginMenuData.bind(this));
     ipcMain.on("updateActionState", this.updateActionState.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));

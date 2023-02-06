@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { themeApp } from "../Common/Store/Themes";
   import { initCommonIpc } from "../Common/Ipc";
   import { getColorPallet } from "Utils/Render/themes";
@@ -9,8 +8,6 @@
 
   initCommonIpc();
   initIpc();
-  // onMount(() => {
-  // });
 
   let pallet: string[] = [];
 
@@ -18,7 +15,6 @@
     if (!theme) {
       return;
     }
-    console.log("App subscribe, theme: ", theme);
     pallet = getColorPallet(theme);
   });
 </script>

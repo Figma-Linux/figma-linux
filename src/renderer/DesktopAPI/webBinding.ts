@@ -257,7 +257,13 @@ const publicAPI: any = {
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
   openPrototype(args: any) {
-    sendMsgToMain("openFile", "/proto/" + args.fileKey, args.title, "?node-id=" + args.pageId, args.target);
+    sendMsgToMain(
+      "openFile",
+      "/proto/" + args.fileKey,
+      args.title,
+      "?node-id=" + args.pageId,
+      args.target,
+    );
   },
   close(args: any) {
     sendMsgToMain("closeTab", args.suppressReopening);
@@ -386,7 +392,10 @@ const publicAPI: any = {
         } else if (format === "image/svg+xml") {
           data = E.clipboard.readBuffer(format);
           data = data.byteLength > 0 ? data : E.clipboard.readBuffer("Scalable Vector Graphics");
-          data = data.byteLength > 0 ? data : E.clipboard.readBuffer("CorePasteboardFlavorType 0x53564720");
+          data =
+            data.byteLength > 0
+              ? data
+              : E.clipboard.readBuffer("CorePasteboardFlavorType 0x53564720");
 
           if (data.byteLength === 0) {
             const unsafeText = E.clipboard.readText().trim();

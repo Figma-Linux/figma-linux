@@ -7,7 +7,6 @@
   let tabArray: Types.TabFront[] = [];
   let item: HTMLDivElement;
   tabs.subscribe((tabs) => {
-    console.log("tabs: ", tabs);
     tabArray = tabs;
   });
 

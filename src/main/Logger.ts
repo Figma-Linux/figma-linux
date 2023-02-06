@@ -11,7 +11,7 @@ export class Logger {
     if (LOGLEVEL) {
       this.logLevel = this.levels.indexOf(LOGLEVEL);
     } else {
-      this.logLevel = storage.getLogLevel();
+      this.logLevel = storage.settings.app.logLevel;
     }
 
     this.initLoggerEvent();

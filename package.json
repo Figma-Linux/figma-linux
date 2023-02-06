@@ -40,7 +40,7 @@
     "css-vars": "^2.4.0",
     "electron-build-env": "^0.2",
     "figma-linux-rust-binding": "^0.2.7",
-    "lodash": "^4.17.21",
+    "svelte-dnd-action": "^0.9.22",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
@@ -72,9 +72,9 @@
     "rollup": "^3.12.0",
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-css-only": "^4.3.0",
+    "rollup-plugin-dev": "^2.0.4",
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-serve": "^2.0.2",
     "rollup-plugin-svelte": "^7.1.0",
     "svelte-check": "^3.0.3",
     "svelte-preprocess": "^5.0.1",

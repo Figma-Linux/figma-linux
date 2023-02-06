@@ -1,13 +1,25 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { onMount } from "svelte";
+  import { themeApp } from "../Common/Store/Themes";
+  import { getColorPallet } from "Utils/Render/themes";
+  import { initCommonIpc } from "../Common/Ipc";
+  import { initIpc } from "./ipc";
 
-  onMount(() => {
-    console.log("onMount");
-    console.log("E.ipcRenderer: ", ipcRenderer);
+  let pallet: string[] = [];
+
+  themeApp.subscribe((theme) => {
+    if (!theme) {
+      return;
+    }
+    pallet = getColorPallet(theme);
   });
 
-  export const name = "ElectronJS";
+  onMount(() => {
+    initCommonIpc();
+    initIpc();
+  });
 </script>
 
-<p>Hello '{name}'!</p>
+<div id="themeCreator">
+  <p>Theme Creator page</p>
+</div>

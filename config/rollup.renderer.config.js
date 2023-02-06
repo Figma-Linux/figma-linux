@@ -3,7 +3,7 @@ const svelte = require("rollup-plugin-svelte");
 const commonjs = require("@rollup/plugin-commonjs");
 const resolve = require("@rollup/plugin-node-resolve");
 const livereload = require("rollup-plugin-livereload");
-const serve = require("rollup-plugin-serve");
+const dev = require("rollup-plugin-dev");
 const alias = require("@rollup/plugin-alias");
 const terser = require("@rollup/plugin-terser");
 const sveltePreprocess = require("svelte-preprocess");
@@ -33,15 +33,23 @@ const commonPlugins = [
     entries: [
       {
         find: "Types",
-        replacement: path.resolve(projectRootDir, "src/types"),
+        replacement: path.resolve(projectRootDir, "..", "src/types"),
       },
       {
         find: "Const",
-        replacement: path.resolve(projectRootDir, "src/constants"),
+        replacement: path.resolve(projectRootDir, "..", "src/constants"),
       },
       {
         find: "Utils",
-        replacement: path.resolve(projectRootDir, "src/utils"),
+        replacement: path.resolve(projectRootDir, "..", "src/utils"),
+      },
+      {
+        find: "Common",
+        replacement: path.resolve(projectRootDir, "..", "src/renderer/Common"),
+      },
+      {
+        find: "Icons",
+        replacement: path.resolve(projectRootDir, "..", "src/renderer/Common/Icons"),
       },
     ],
   }),
@@ -128,9 +136,14 @@ module.exports = [
     plugins: [
       ...svelteFrontendPlugins,
       watch &&
-        serve({
+        dev({
+          spa: "dist/settings.html",
+          host: "localhost",
           port: settingsPort,
-          contentBase: "dist",
+          proxy: [
+            { from: "/renderer/settings.js", to: `http://localhost:${settingsPort}/dist/renderer/settings.js` },
+            { from: "/renderer/base.css", to: `http://localhost:${settingsPort}/dist/renderer/base.css` },
+          ],
         }),
     ],
     watch: {
@@ -149,9 +162,17 @@ module.exports = [
     plugins: [
       ...svelteFrontendPlugins,
       watch &&
-        serve({
+        dev({
+          spa: "dist/themeCreator.html",
+          host: "localhost",
           port: themeCreatorPort,
-          contentBase: "dist",
+          proxy: [
+            {
+              from: "/renderer/themeCreator.js",
+              to: `http://localhost:${themeCreatorPort}/dist/renderer/themeCreator.js`,
+            },
+            { from: "/renderer/base.css", to: `http://localhost:${themeCreatorPort}/dist/renderer/base.css` },
+          ],
         }),
     ],
     watch: {
@@ -187,9 +208,14 @@ module.exports = [
       }),
       watch && runElectron(),
       watch &&
-        serve({
+        dev({
+          spa: "dist/index.html",
+          host: "localhost",
           port: panelPort,
-          contentBase: "dist",
+          proxy: [
+            { from: "/renderer/panel.js", to: `http://localhost:${panelPort}/dist/renderer/panel.js` },
+            { from: "/renderer/base.css", to: `http://localhost:${panelPort}/dist/renderer/base.css` },
+          ],
         }),
     ],
     watch: {

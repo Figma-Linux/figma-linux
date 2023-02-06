@@ -2,7 +2,7 @@ import * as E from "electron";
 
 import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
 import { isMenuItem } from "Utils/Common";
-import { themes } from "./ThemesManager";
+import { themes } from "./ThemesApplier";
 
 interface IntiApiOptions {
   version: number;
@@ -188,14 +188,14 @@ const initWebBindings = (): void => {
   E.ipcRenderer.on("newFile", () => {
     webPort.postMessage({ name: "newFile", args: {} });
   });
-  E.ipcRenderer.on("handleAction", (event: Event, action: string, source: string) => {
+  E.ipcRenderer.on("handleAction", (_: Event, action: string, source: string) => {
     webPort.postMessage({ name: "handleAction", args: { action, source } });
   });
-  E.ipcRenderer.on("handleUrl", (event: Event, path: string, params: string) => {
+  E.ipcRenderer.on("handleUrl", (_: Event, path: string, params: string) => {
     console.log("handleUrl, url: ", path);
     webPort.postMessage({ name: "handleUrl", args: { path, params } });
   });
-  E.ipcRenderer.on("handlePageCommand", (event: Event, command: string) => {
+  E.ipcRenderer.on("handlePageCommand", (_: Event, command: string) => {
     const fullscreenFocusTargetFocused =
       document.activeElement && document.activeElement.classList.contains("focus-target");
     if (fullscreenFocusTargetFocused) {
@@ -229,7 +229,6 @@ const initWebBindings = (): void => {
 
 const publicAPI: any = {
   setTitle(args: WebApi.SetTitleArgs) {
-    sendMsgToMain("setTabUrl", window.location.href);
     sendMsgToMain("setTitle", args.title);
   },
 
@@ -264,7 +263,7 @@ const publicAPI: any = {
     sendMsgToMain("closeTab", args.suppressReopening);
   },
   setFileKey(args: any) {
-    sendMsgToMain("updateFileKey", args.fileKey);
+    sendMsgToMain("updateFileKey", 1, args.fileKey);
   },
   setLoading(args: any) {
     sendMsgToMain("updateLoadingStatus", args.loading);
@@ -318,6 +317,7 @@ const publicAPI: any = {
   },
 
   async createMultipleNewLocalFileExtensions(args: WebApi.CreateMultipleExtension) {
+    console.log("createMultipleNewLocalFileExtensions, args: ", args);
     const result = await E.ipcRenderer.invoke("createMultipleNewLocalFileExtensions", args);
 
     return { data: result };
@@ -352,12 +352,12 @@ const publicAPI: any = {
   },
 
   async getFonts(args: WebApi.GetFonts) {
-    const fonts = await E.ipcRenderer.invoke("get-fonts");
+    const fonts = await E.ipcRenderer.invoke("getFonts");
     return { data: fonts };
   },
 
   async getFontFile(args: WebApi.GetFontFile) {
-    const fontBuffer = await E.ipcRenderer.invoke("get-font-file", args);
+    const fontBuffer = await E.ipcRenderer.invoke("getFontFile", args);
 
     return { data: fontBuffer, transferList: [fontBuffer] };
   },
@@ -417,7 +417,7 @@ const publicAPI: any = {
   },
 
   setClipboardData(args: WebApi.SetClipboardData) {
-    E.ipcRenderer.send("set-clipboard-data", args);
+    E.ipcRenderer.send("setClipboardData", args);
   },
 
   async writeFiles(args: WebApi.WriteFiles) {

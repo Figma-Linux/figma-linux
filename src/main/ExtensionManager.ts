@@ -6,13 +6,12 @@ import { storage } from "Storage";
 import { logger } from "./Logger";
 
 class ExtensionManager {
-  private extensionMap: Map<number, Extensions.Extension>;
-  private manifestObservers: Array<Extensions.ManifestObserver>;
+  private extensionMap: Map<number, Extensions.Extension> = new Map();
+  private manifestObservers: Array<Extensions.ManifestObserver> = [];
 
   constructor() {
-    this.extensionMap = new Map();
-    this.manifestObservers = [];
     this.reload();
+    this.registerEvents();
   }
 
   public addPath(path: string): Extensions.AddPathReturnValue {
@@ -130,11 +129,11 @@ class ExtensionManager {
   }
 
   save() {
-    storage.saveExtension(this.saveToJson());
+    storage.settings.app.savedExtensions = this.saveToJson();
   }
 
   reload() {
-    const extensions = storage.get().app.savedExtensions;
+    const extensions = storage.settings.app.savedExtensions;
 
     this.loadFromJson(extensions);
   }
@@ -286,6 +285,8 @@ class ExtensionManager {
       this.notifyObservers({ type: "changed", id, localLoadResult: result });
     });
   }
+
+  private registerEvents() {}
 }
 
 export default new ExtensionManager();

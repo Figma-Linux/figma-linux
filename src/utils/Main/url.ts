@@ -8,6 +8,11 @@ export const panelUrlProd = `file://${resolve(__dirname, "../index.html")}`;
 export const settingsUrlProd = `file://${resolve(__dirname, "../settings.html")}`;
 export const themeCreatorUrlProd = `file://${resolve(__dirname, "../themeCreator.html")}`;
 
+export const preloadMainScriptPathDev = `${resolve(process.cwd(), "dist/renderer", "loadMainContent.js")}`;
+export const preloadMainScriptPathProd = `${resolve(__dirname, "../loadMainContent.js")}`;
+export const preloadScriptPathDev = `${resolve(process.cwd(), "dist/renderer", "loadContent.js")}`;
+export const preloadScriptPathProd = `${resolve(__dirname, "../loadContent.js")}`;
+
 export const isFileBrowser = (url: string): boolean => {
   return !/file\/.+/.test(url);
 };

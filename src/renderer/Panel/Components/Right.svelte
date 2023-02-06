@@ -1,0 +1,27 @@
+<script lang="ts">
+  import { ipcRenderer } from "electron";
+  import { Minimize, Maximize, Close, Corner } from "Icons";
+  import { ButtonClose, ButtonControlHover, ButtonWinControl } from "Common/Buttons";
+</script>
+
+<div class="panel-right">
+  <ButtonControlHover onClick={() => ipcRenderer.send("openMainMenu")}>
+    <Corner size="14" />
+  </ButtonControlHover>
+  <ButtonWinControl onClick={() => ipcRenderer.send("window-minimize")}>
+    <Minimize size="16" />
+  </ButtonWinControl>
+  <ButtonWinControl onClick={() => ipcRenderer.send("window-maximize")}>
+    <Maximize size="16" />
+  </ButtonWinControl>
+  <ButtonClose onClick={() => ipcRenderer.send("windowClose")}>
+    <Close size="16" />
+  </ButtonClose>
+</div>
+
+<style>
+  .panel-right {
+    display: flex;
+    align-items: stretch;
+  }
+</style>

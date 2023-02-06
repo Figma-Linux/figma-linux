@@ -10,7 +10,7 @@ export class Provider {
   constructor() {
     let provider: Dialogs.Providers = "Native";
 
-    if (storage.get().app.useZenity) {
+    if (storage.settings.app.useZenity) {
       provider = "Zenity";
     }
 

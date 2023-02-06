@@ -30,6 +30,10 @@
     "paths": {
       "Main": ["src/main"],
       "Main/*": ["src/main/*"],
+      "Icons": ["src/renderer/Common/Icons"],
+      "Icons/*": ["src/renderer/Common/Icons/*"],
+      "Common": ["src/renderer/Common"],
+      "Common/*": ["src/renderer/Common/*"],
       "Components": ["src/renderer/components"],
       "Components/*": ["src/renderer/components/*"],
       "Elements/*": ["src/renderer/elements/*"],

@@ -29,8 +29,10 @@
       "types/**/*"
     ],
     "paths": {
-      "Components": ["renderer/components"],
-      "Components/*": ["renderer/components/*"],
+      "Icons": ["../renderer/Common/Icons"],
+      "Icons/*": ["../renderer/Common/Icons/*"],
+      "Common": ["../renderer/Common"],
+      "Common/*": ["../renderer/Common/*"],
       "DesktopAPI": ["DesktopAPI"],
       "DesktopAPI/*": ["DesktopAPI/*"],
       "Const": ["../constants"],

@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import { LogLevel } from "Types/enums";
 
-export const DEFAULT_SETTINGS: SettingsInterface = {
+export const DEFAULT_SETTINGS: Types.SettingsInterface = {
   clientId: v4(),
   userId: "",
   authedUserIDs: [],
@@ -21,7 +21,7 @@ export const DEFAULT_SETTINGS: SettingsInterface = {
       "/run/host/user-fonts",
       `${process.env.HOME}/.local/share/fonts`,
     ],
-    lastOpenedTabs: [],
+    lastOpenedTabs: {},
     featureFlags: {},
     savedExtensions: [],
   },

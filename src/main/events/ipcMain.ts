@@ -6,7 +6,6 @@ import { MANIFEST_FILE_NAME, FILE_EXTENSION_WHITE_LIST } from "Const";
 import { listenToWebBindingPromise, listenToWebRegisterCallback, access, mkPath } from "Utils/Main";
 import { sanitizeFileName, wait } from "Utils/Common";
 
-import WindowManager from "Main/window/WindowManager";
 import { logger } from "Main/Logger";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
@@ -17,8 +16,7 @@ export const registerIpcMainHandlers = () => {
     const added: any[] = [];
     const existed: any[] = [];
 
-    const windowManager = WindowManager.instance;
-    const dialogResult = await dialog.showOpenDialog(windowManager.mainWindow, data.options);
+    const dialogResult = await dialog.showOpenDialog(null, data.options);
 
     if (!dialogResult || dialogResult.canceled) {
       return { added, existed };
@@ -79,7 +77,7 @@ export const registerIpcMainHandlers = () => {
   });
 
   ipcMain.handle("themesIsDisabled", async () => {
-    return storage.get().app.disableThemes;
+    return storage.settings.app.disableThemes;
   });
 
   listenToWebBindingPromise("openExtensionDirectory", async (webContents: WebContents, id: number) => {
@@ -120,7 +118,7 @@ export const registerIpcMainHandlers = () => {
     }
 
     const dirName = sanitizeFileName(data.dirName);
-    const lastDir = storage.get().app.lastSavedPluginDir;
+    const lastDir = storage.settings.app.lastSavedPluginDir;
     const dir = lastDir ? `${lastDir}/${dirName}` : dirName;
 
     const saveDir = await dialogs.showSaveDialog({
@@ -134,7 +132,7 @@ export const registerIpcMainHandlers = () => {
 
     const basename = path.basename(saveDir);
 
-    storage.setLastPluginDirectory(path.parse(saveDir).dir);
+    storage.settings.app.lastSavedPluginDir = path.parse(saveDir).dir;
 
     if (!basename) {
       throw new Error("Invalid directory name");
@@ -204,7 +202,7 @@ export const registerIpcMainHandlers = () => {
 
     let skipReplaceConfirmation = false;
     let directoryPath = null;
-    const lastDir = storage.get().app.lastExportDir || storage.get().app.exportDir;
+    const lastDir = storage.settings.app.lastExportDir || storage.settings.app.exportDir;
 
     if (files.length === 1 && !files[0].name.includes(path.sep)) {
       const originalFileName = files[0].name.replace(/\//g, "-");
@@ -222,7 +220,7 @@ export const registerIpcMainHandlers = () => {
           skipReplaceConfirmation = true;
         }
 
-        storage.setExportDirectory(path.parse(savePath).dir);
+        storage.settings.app.lastExportDir = path.parse(savePath).dir;
       }
     } else {
       const directories = await dialogs.showOpenDialog({
@@ -235,7 +233,7 @@ export const registerIpcMainHandlers = () => {
         return;
       }
       directoryPath = directories[0];
-      storage.setExportDirectory(directoryPath);
+      storage.settings.app.lastExportDir = directoryPath;
     }
     if (!directoryPath) {
       return;

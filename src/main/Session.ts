@@ -1,10 +1,10 @@
-import { session, Event, Cookie } from "electron";
+import { session, Event, Cookie, app } from "electron";
 
 import * as Const from "Const";
 import { logger } from "./Logger";
 import { isSameCookieDomain } from "Utils/Main";
 
-export class Session {
+export default class Session {
   private _hasFigmaSession: boolean;
   private assessSessionTimer: NodeJS.Timer;
 
@@ -13,9 +13,9 @@ export class Session {
     this.assessSessionTimer = null;
   }
 
-  public hasFigmaSession = (): boolean => {
+  public get hasFigmaSession() {
     return this._hasFigmaSession;
-  };
+  }
 
   public handleAppReady = () => {
     session.defaultSession.setPermissionRequestHandler((_, permission, callback) => {
@@ -45,10 +45,21 @@ export class Session {
       );
   };
 
-  private handleCookiesChanged = (event: Event, cookie: Cookie, cause: string, removed: boolean) => {
+  private handleCookiesChanged = (
+    event: Event,
+    cookie: Cookie,
+    cause: string,
+    removed: boolean,
+  ) => {
     if (isSameCookieDomain(cookie.domain || "", Const.PARSED_HOMEPAGE.hostname || "")) {
       if (cookie.name === Const.FIGMA_SESSION_COOKIE_NAME) {
-        logger.debug(`${cookie.name} cookie changed:`, cause, cookie.name, cookie.domain, removed ? "removed" : "");
+        logger.debug(
+          `${cookie.name} cookie changed:`,
+          cause,
+          cookie.name,
+          cookie.domain,
+          removed ? "removed" : "",
+        );
       }
     }
   };

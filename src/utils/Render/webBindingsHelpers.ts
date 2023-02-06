@@ -6,6 +6,7 @@ export const postCallbackMessageToMainProcess = (channel: string, ...args: any[]
 };
 
 export const sendMsgToMain = (msg: string, ...data: any[]) => {
+  console.log(`sendMsgToMain, msg: "${msg}", args: `, data);
   ipcRenderer.send(msg, ...data);
 };
 

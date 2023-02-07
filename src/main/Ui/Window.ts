@@ -150,7 +150,7 @@ export default class Window {
     const appUrl = this.tabManager.getTabLink(tabId, "app");
     const webUrl = this.tabManager.getTabLink(tabId, "web");
     const close = () => {
-      this.closeTab(null, tabId);
+      this.closeTab(tabId);
     };
 
     this.menuManager.openTabMenuHandler(this.window, appUrl, webUrl, close);
@@ -217,7 +217,7 @@ export default class Window {
       event.reply("windowDidMaximized");
     }
   }
-  public closeTab(_: IpcMainEvent, tabId: number) {
+  public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);
 
     this.window.removeBrowserView(tab.view);
@@ -237,7 +237,7 @@ export default class Window {
     this.tabManager.focusMainTab();
     this.menuManager.updateMainTabState();
   }
-  private setTabFocus(_: IpcMainEvent, tabId: number) {
+  public setTabFocus(tabId: number) {
     const tab = this.tabManager.getById(tabId);
 
     try {
@@ -307,9 +307,6 @@ export default class Window {
     ipcMain.on("window-minimize", this.windowMinimize.bind(this));
     ipcMain.on("window-maximize", this.windowMaimize.bind(this));
     //
-    ipcMain.on("newProject", this.newProject.bind(this));
-    ipcMain.on("closeTab", this.closeTab.bind(this));
-    ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
     ipcMain.on("closeAllTab", this.closeAllTab.bind(this));
     ipcMain.on("setTitle", this.setTabTitle.bind(this));
     ipcMain.on("openMainMenu", this.openMainMenuHandler.bind(this));

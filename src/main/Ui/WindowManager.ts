@@ -153,11 +153,11 @@ export default class WindowManager {
 
     window.newProject();
   }
-  private closeTab(sender: WebContents) {
+  private closeTabFromMenu(sender: WebContents) {
     const window = this.windows.get(this.lastFocusedwindowId);
     const tabId = sender.id;
 
-    window.closeTab(null, tabId);
+    window.closeTab(tabId);
   }
   private chromeGpu(_: WebContents) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -221,10 +221,25 @@ export default class WindowManager {
 
     window.setFocusToMainTab();
   }
-  private openTabMenuHandler(_: IpcMainInvokeEvent, tabId: number) {
+  private openTabMenuHandler(_: IpcMainEvent, tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
     window.openTabMenu(tabId);
+  }
+  private newProject(_: IpcMainEvent) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.newProject();
+  }
+  private closeTab(_: IpcMainEvent, tabId: number) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.closeTab(tabId);
+  }
+  private setTabFocus(_: IpcMainEvent, tabId: number) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.setTabFocus(tabId);
   }
   private handleUrl(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -239,10 +254,13 @@ export default class WindowManager {
     ipcMain.on("windowClose", this.handlerWindowClose.bind(this));
     ipcMain.on("setFocusToMainTab", this.setFocusToMainTab.bind(this));
     ipcMain.on("openTabMenu", this.openTabMenuHandler.bind(this));
+    ipcMain.on("newProject", this.newProject.bind(this));
+    ipcMain.on("closeTab", this.closeTab.bind(this));
+    ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));
-    app.on("closeTab", this.closeTab.bind(this));
+    app.on("closeTab", this.closeTabFromMenu.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));
     app.on("chromeGpu", this.chromeGpu.bind(this));
     app.on("openFileUrlClipboard", this.openFileUrlClipboard.bind(this));

@@ -19,9 +19,20 @@
   }
 
   function onClickTitle(event: MouseEvent, id: number) {
-    console.log("onClickTitle, tab id: ", event.button, id);
     switch (event.button) {
+      // left mouse button
+      case 0: {
+        ipcRenderer.send("setTabFocus", id);
+        break;
+      }
+      // wheel mouse button
       case 1: {
+        tabs.deleteTab(id);
+        ipcRenderer.send("closeTab", id);
+        break;
+      }
+      // right mouse button
+      case 2: {
         ipcRenderer.send("openTabMenu", id);
         break;
       }
@@ -29,7 +40,8 @@
   }
 
   function onClickClose(event: MouseEvent, id: number) {
-    console.log("onClickClose, tab id: ", id);
+    tabs.deleteTab(id);
+    ipcRenderer.send("closeTab", id);
   }
 </script>
 

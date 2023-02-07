@@ -14,13 +14,8 @@
 
   export let onClickTitle = (event: MouseEvent, id: number) => {};
   export let onClickClose = (event: MouseEvent, id: number) => {};
-
-  function handleDndConsider(e: any) {
-    items = e.detail.items;
-  }
-  function handleDndFinalize(e: any) {
-    items = e.detail.items;
-  }
+  export let onDndConsider = (event: any) => {};
+  export let onDndFinalize = (event: any) => {};
 </script>
 
 <section
@@ -33,8 +28,8 @@
     cursorDrop,
     cursorHover,
   }}
-  on:consider={handleDndConsider}
-  on:finalize={handleDndFinalize}
+  on:consider={onDndConsider}
+  on:finalize={onDndFinalize}
 >
   {#each items as item (item.id)}
     <div

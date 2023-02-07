@@ -43,10 +43,17 @@
     tabs.deleteTab(id);
     ipcRenderer.send("closeTab", id);
   }
+
+  function onDndConsider(event: any) {
+    tabArray = event.detail.items;
+  }
+  function onDndFinalize(event: any) {
+    tabs.set(event.detail.items);
+  }
 </script>
 
 <div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler}>
-  <List items={tabArray} {onClickTitle} {onClickClose} />
+  <List items={tabArray} {onClickTitle} {onClickClose} {onDndConsider} {onDndFinalize} />
 </div>
 
 <style>

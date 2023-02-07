@@ -13,7 +13,7 @@ import {
   PermissionRequestHandlerHandlerDetails,
 } from "electron";
 
-import { preloadScriptPathDev, preloadScriptPathProd, toggleDetachedDevTools } from "Utils/Main";
+import { preloadScriptPathDev, preloadScriptPathProd } from "Utils/Main";
 import {
   isDev,
   isValidProjectLink,
@@ -70,8 +70,6 @@ export default class Tab {
     this.id = this.view.webContents.id;
 
     this.setAutosize(true);
-
-    isDev && toggleDetachedDevTools(this.view.webContents);
 
     app.emit("requestBoundsForTabView", this.windowId);
   }

@@ -35,10 +35,4 @@ export function initIpc() {
   ipcRenderer.on("setIsInVoiceCall", (_, data) => {
     tabs.updateTab({ id: data.id, isInVoiceCall: data.isInVoiceCall });
   });
-  ipcRenderer.on("closeTab", (_, data) => {
-    let tabsValue = get(tabs);
-
-    tabs.deleteTab(data.id);
-    tabsValue = get(tabs);
-  });
 }

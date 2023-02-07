@@ -4,6 +4,7 @@
   import { ButtonTabClose } from "Common/Buttons";
   import { Close } from "Icons";
 
+  export let currentTabId: number | undefined;
   export let items: Types.TabFront[] = [];
   const flipDurationMs = 150;
   const constrainAxisY = true;
@@ -34,7 +35,7 @@
   {#each items as item (item.id)}
     <div
       class="panel-tab
-      {false && 'panel-tab__active'}"
+      {currentTabId === item.id ? 'panel-tab__active' : ''}"
       animate:flip={{ duration: flipDurationMs }}
     >
       <div class="text" on:mouseup={(e) => onClickTitle(e, item.id)}>

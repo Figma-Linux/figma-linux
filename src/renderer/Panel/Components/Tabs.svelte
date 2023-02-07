@@ -1,13 +1,17 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
   import type { MouseWheelInputEvent } from "electron";
-  import { tabs } from "../store";
+  import { tabs, currentTab } from "../store";
   import List from "./List.svelte";
 
   let tabArray: Types.TabFront[] = [];
   let item: HTMLDivElement;
+  let currentTabId: number | undefined;
   tabs.subscribe((tabs) => {
     tabArray = tabs;
+  });
+  currentTab.subscribe((id) => {
+    currentTabId = id;
   });
 
   function wheelHandler(e: MouseWheelInputEvent) {
@@ -22,6 +26,7 @@
     switch (event.button) {
       // left mouse button
       case 0: {
+        currentTab.set(id);
         ipcRenderer.send("setTabFocus", id);
         break;
       }
@@ -53,7 +58,14 @@
 </script>
 
 <div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler}>
-  <List items={tabArray} {onClickTitle} {onClickClose} {onDndConsider} {onDndFinalize} />
+  <List
+    items={tabArray}
+    {currentTabId}
+    {onClickTitle}
+    {onClickClose}
+    {onDndConsider}
+    {onDndFinalize}
+  />
 </div>
 
 <style>

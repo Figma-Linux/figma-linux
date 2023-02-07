@@ -7,9 +7,9 @@
   export let items: Types.TabFront[] = [];
   const flipDurationMs = 150;
   const constrainAxisY = true;
-  const cursorStartDrag = "grab";
-  const cursorDragging = "grabbing";
-  const cursorDrop = "grab";
+  const cursorStartDrag = "default";
+  const cursorDragging = "default";
+  const cursorDrop = "default";
   const cursorHover = "default";
 
   export let onClickTitle = (event: MouseEvent, id: number) => {};

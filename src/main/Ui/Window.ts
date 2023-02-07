@@ -160,6 +160,7 @@ export default class Window {
     const tab = this.tabManager.addTab(url, title);
 
     this.window.addBrowserView(tab.view);
+    this.window.setTopBrowserView(this.tabManager.mainTab.view);
 
     this.window.webContents.send("didTabAdd", {
       id: tab.id,

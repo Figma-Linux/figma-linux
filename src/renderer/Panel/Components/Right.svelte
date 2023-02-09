@@ -1,13 +1,13 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
   import { Minimize, Maximize, Close, Corner } from "Icons";
-  import { ButtonClose, ButtonControlHover, ButtonWinControl } from "Common/Buttons";
+  import { ButtonClose, ButtonWinControl } from "Common/Buttons";
 </script>
 
 <div class="panel-right">
-  <ButtonControlHover onClick={() => ipcRenderer.send("openMainMenu")}>
+  <ButtonWinControl onClick={() => ipcRenderer.send("openMainMenu")}>
     <Corner size="14" />
-  </ButtonControlHover>
+  </ButtonWinControl>
   <ButtonWinControl onClick={() => ipcRenderer.send("window-minimize")}>
     <Minimize size="16" />
   </ButtonWinControl>

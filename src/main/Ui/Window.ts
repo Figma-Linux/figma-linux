@@ -144,7 +144,14 @@ export default class Window {
   private openMainMenuHandler() {
     const width = this.window.getBounds().width;
 
-    this.menuManager.openMainMenuHandler(width, this.window);
+    this.menuManager.openMainMenuHandler(
+      width,
+      this.window,
+      this.openMainMenuCloseHandler.bind(this),
+    );
+  }
+  private openMainMenuCloseHandler() {
+    this.window.webContents.send("isMainMenuOpen", false);
   }
   public openTabMenu(tabId: number) {
     const appUrl = this.tabManager.getTabLink(tabId, "app");

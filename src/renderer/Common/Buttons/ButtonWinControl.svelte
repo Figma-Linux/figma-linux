@@ -1,18 +1,18 @@
 <script lang="ts">
   import ButtonControl from "./ButtonControl.svelte";
 
-  export let normalFgColor = "var(--fg-header)";
   export let normalBgColor = "var(--bg-header-control)";
-  export let activeBgColor = "var(--bg-tab-hover)";
+  export let activeBgColor = "var(--bg-header-control-hover)";
   export let hoverBgColor = "var(--bg-header-control-hover)";
+  export let isActive = false;
   export let onClick = (event: MouseEvent) => {};
 </script>
 
 <ButtonControl
-  {normalFgColor}
   {normalBgColor}
   {activeBgColor}
   {hoverBgColor}
+  {isActive}
   {onClick}
   class="button_win_control {$$props.class || ''}"
 >

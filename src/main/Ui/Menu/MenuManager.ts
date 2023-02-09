@@ -1,4 +1,12 @@
-import { app, shell, clipboard, Menu, MenuItem, MenuItemConstructorOptions, BrowserWindow } from "electron";
+import {
+  app,
+  shell,
+  clipboard,
+  Menu,
+  MenuItem,
+  MenuItemConstructorOptions,
+  BrowserWindow,
+} from "electron";
 
 import { storage } from "Main/Storage";
 import { MENU_WIDTH, ACTION_TAB_STATE } from "Const";
@@ -36,15 +44,21 @@ export default class MenuManager {
     });
   }
 
-  public openMainMenuHandler(width: number, window: BrowserWindow) {
+  public openMainMenuHandler(width: number, window: BrowserWindow, callback?: () => void) {
     this.menu.popup({
+      callback,
       window,
       x: width - MENU_WIDTH,
       y: storage.settings.app.panelHeight,
     });
   }
 
-  public openTabMenuHandler(window: BrowserWindow, appUrl: string, webUrl: string, closeCb: () => void) {
+  public openTabMenuHandler(
+    window: BrowserWindow,
+    appUrl: string,
+    webUrl: string,
+    closeCb: () => void,
+  ) {
     const context: MenuItemConstructorOptions[] = [
       {
         id: "copyAppUrl",

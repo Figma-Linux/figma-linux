@@ -2,10 +2,16 @@
   import { ipcRenderer } from "electron";
   import { Minimize, Maximize, Close, Corner } from "Icons";
   import { ButtonClose, ButtonWinControl } from "Common/Buttons";
+  import { isMenuOpen } from "../store";
+
+  function clickMenu() {
+    ipcRenderer.send("openMainMenu");
+    isMenuOpen.toggle();
+  }
 </script>
 
 <div class="panel-right">
-  <ButtonWinControl onClick={() => ipcRenderer.send("openMainMenu")}>
+  <ButtonWinControl isActive={$isMenuOpen} onClick={clickMenu}>
     <Corner size="14" />
   </ButtonWinControl>
   <ButtonWinControl onClick={() => ipcRenderer.send("window-minimize")}>

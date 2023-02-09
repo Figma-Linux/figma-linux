@@ -5,6 +5,7 @@
   export let normalBgColor = "var(--bg-header)";
   export let activeBgColor = "var(--bg-tab-hover)";
   export let hoverBgColor = "var(--bg-tab-hover)";
+  export let isActive = false;
   export let onClick = (event: MouseEvent) => {};
 </script>
 
@@ -13,6 +14,7 @@
   {normalBgColor}
   {activeBgColor}
   {hoverBgColor}
+  {isActive}
   {onClick}
   class="button_control {$$props.class || ''}"
 >

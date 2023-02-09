@@ -1,7 +1,6 @@
-import { get } from "svelte/store";
 import { ipcRenderer } from "electron";
 
-import { currentTab, tabs } from "./store";
+import { currentTab, tabs, isMenuOpen } from "./store";
 
 export function initIpc() {
   ipcRenderer.send("frontReady");
@@ -9,7 +8,6 @@ export function initIpc() {
   ipcRenderer.on("closeAllTabs", () => {
     tabs.set([]);
   });
-
   ipcRenderer.on("didTabAdd", (_, data) => {
     console.log("didTabAdd, data: ", data);
     tabs.addTab({
@@ -34,5 +32,9 @@ export function initIpc() {
   });
   ipcRenderer.on("setIsInVoiceCall", (_, data) => {
     tabs.updateTab({ id: data.id, isInVoiceCall: data.isInVoiceCall });
+  });
+
+  ipcRenderer.on("isMainMenuOpen", (_, isOpen) => {
+    isMenuOpen.set(isOpen);
   });
 }

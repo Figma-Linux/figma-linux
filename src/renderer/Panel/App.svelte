@@ -3,12 +3,14 @@
   import { initCommonIpc } from "../Common/Ipc";
   import { getColorPallet } from "Utils/Render/themes";
   import { initIpc } from "./ipc";
+  import { currentTab } from "./store";
 
   import { Left, Right, Tabs } from "./Components";
 
   initCommonIpc();
   initIpc();
 
+  let currentTabId: number | undefined;
   let pallet: string[] = [];
 
   themeApp.subscribe((theme) => {
@@ -17,11 +19,14 @@
     }
     pallet = getColorPallet(theme);
   });
+  currentTab.subscribe((id) => {
+    currentTabId = id;
+  });
 </script>
 
 <div id="panel" style={pallet.join("; ")}>
-  <Left />
-  <Tabs />
+  <Left {currentTabId} />
+  <Tabs {currentTabId} />
   <Right />
 </div>
 

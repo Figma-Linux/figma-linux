@@ -1,10 +1,11 @@
 <script lang="ts">
   import Button from "./Button.svelte";
 
+  export let isActive: boolean = false;
   export let onClick = (event: MouseEvent) => {};
 </script>
 
-<Button {onClick} class="button_control_home">
+<Button {onClick} {isActive} class="button_control_home">
   <slot />
 </Button>
 

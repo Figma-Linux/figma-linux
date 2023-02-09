@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 function createCurrent() {
-  const { subscribe, set } = writable<number>(0);
+  const { subscribe, set } = writable<number | undefined>();
 
   return {
     subscribe,

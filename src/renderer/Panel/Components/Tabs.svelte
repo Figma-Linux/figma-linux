@@ -4,14 +4,12 @@
   import { tabs, currentTab } from "../store";
   import List from "./List.svelte";
 
+  export let currentTabId: number | undefined;
+
   let tabArray: Types.TabFront[] = [];
   let item: HTMLDivElement;
-  let currentTabId: number | undefined;
   tabs.subscribe((tabs) => {
     tabArray = tabs;
-  });
-  currentTab.subscribe((id) => {
-    currentTabId = id;
   });
 
   function wheelHandler(e: MouseWheelInputEvent) {

@@ -1,17 +1,27 @@
 <script lang="ts">
   import ButtonControl from "./ButtonControl.svelte";
 
+  export let normalFgColor = "var(--fg-header)";
+  export let normalBgColor = "var(--bg-header)";
+  export let activeBgColor = "var(--bg-tab-hover)";
+  export let hoverBgColor = "var(--bg-tab-hover)";
   export let onClick = (event: MouseEvent) => {};
 </script>
 
-<ButtonControl {onClick} class="button_control2 {$$props.class || ''}">
+<ButtonControl
+  {normalFgColor}
+  {normalBgColor}
+  {activeBgColor}
+  {hoverBgColor}
+  {onClick}
+  class="button_control2 {$$props.class || ''}"
+>
   <slot />
 </ButtonControl>
 
 <style>
   :global(.button_control2) {
     padding: 0px 12px;
-    color: var(--fg-header);
     opacity: 0.4;
     transition: all 0.1s ease;
   }

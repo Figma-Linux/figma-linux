@@ -12,6 +12,8 @@
   const cursorDragging = "default";
   const cursorDrop = "default";
   const cursorHover = "default";
+  const normalBgColor = "transparent";
+  const hoverBgColor = "transparent";
 
   export let onClickTitle = (event: MouseEvent, id: number) => {};
   export let onClickClose = (event: MouseEvent, id: number) => {};
@@ -43,7 +45,7 @@
           {item.title}
         </span>
       </div>
-      <ButtonTabClose onClick={(e) => onClickClose(e, item.id)}>
+      <ButtonTabClose {normalBgColor} {hoverBgColor} onClick={(e) => onClickClose(e, item.id)}>
         <Close size="12" />
       </ButtonTabClose>
     </div>

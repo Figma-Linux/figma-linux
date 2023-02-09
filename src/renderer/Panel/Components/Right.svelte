@@ -5,6 +5,10 @@
   import { isMenuOpen } from "../store";
 
   function clickMenu() {
+    if ($isMenuOpen) {
+      return;
+    }
+
     ipcRenderer.send("openMainMenu");
     isMenuOpen.toggle();
   }

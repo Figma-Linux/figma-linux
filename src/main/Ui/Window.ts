@@ -151,7 +151,9 @@ export default class Window {
     );
   }
   private openMainMenuCloseHandler() {
-    this.window.webContents.send("isMainMenuOpen", false);
+    setTimeout(() => {
+      this.window.webContents.send("isMainMenuOpen", false);
+    }, 150);
   }
   public openTabMenu(tabId: number) {
     const appUrl = this.tabManager.getTabLink(tabId, "app");

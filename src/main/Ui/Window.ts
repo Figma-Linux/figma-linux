@@ -239,6 +239,7 @@ export default class Window {
     this.menuManager.updateMainTabState();
   }
   public setTabFocus(tabId: number) {
+    const bounds = this.calcBoundsForTabView();
     const tab = this.tabManager.getById(tabId);
 
     try {
@@ -249,6 +250,7 @@ export default class Window {
     }
 
     this.tabManager.focusTab(tabId);
+    this.tabManager.setBounds(tabId, bounds);
     this.menuManager.updateTabState();
   }
   private setTabTitle(event: IpcMainEvent, title: string) {

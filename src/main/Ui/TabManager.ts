@@ -131,6 +131,11 @@ export default class TabManager {
   public focusTab(id: number) {
     this.lastFocusedTab = id;
   }
+  public setBounds(id: number, bounds: Rectangle) {
+    const tab = this.tabs.get(id);
+
+    tab.setBounds(bounds);
+  }
   public focusMainTab() {
     this.lastFocusedTab = this.mainTab.id;
   }

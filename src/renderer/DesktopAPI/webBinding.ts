@@ -439,9 +439,12 @@ const init = (fileBrowser: boolean): void => {
   window.addEventListener(
     "message",
     (event) => {
+      if (event.data !== "init" || !event.ports || !event.ports.length) {
+        return;
+      }
+
       webPort = event.ports[0];
-      console.log(`window message, webPort: `, webPort, event.data);
-      webPort && (webPort.onmessage = onWebMessage);
+      webPort.onmessage = onWebMessage;
     },
     { once: true },
   );
@@ -455,7 +458,7 @@ const init = (fileBrowser: boolean): void => {
 
   E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("load", () => {
     E.ipcRenderer.invoke("themesIsDisabled").then((disabled) => {
       if (!disabled) {
         setTimeout(() => {

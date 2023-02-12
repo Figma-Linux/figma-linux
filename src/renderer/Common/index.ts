@@ -40,6 +40,10 @@ export { default as Settings } from "./Icons/Settings.svelte";
 export { default as Sync } from "./Icons/Sync.svelte";
 export { default as UnMuted } from "./Icons/UnMuted.svelte";
 
+// TabView
+export { default as TabView } from "./TabView/TabView.svelte";
+export { default as TabViewHeaderItem } from "./TabView/TabViewHeaderItem.svelte";
+
 // Text
 export { default as Text } from "./Text/Text.svelte";
 export { default as HeaderText } from "./Text/HeaderText.svelte";

@@ -26,6 +26,9 @@
 </div>
 
 <style>
+  :global(body) {
+    background-color: rgba(0, 0, 0, 0.3);
+  }
   div {
     display: flex;
     align-items: center;

@@ -4,6 +4,6 @@
 
 <style>
   span {
-    color: var(--bg-header);
+    color: var(--text);
   }
 </style>

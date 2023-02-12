@@ -1,7 +1,46 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
-  import { HeaderModal, HeaderText, Button, CloseModal, FlexGrow } from "Common";
+  import { HeaderModal, Button, CloseModal, FlexGrow } from "Common";
+  import { TabView, TabViewHeaderItem } from "Common/TabView";
+  import General from "./Views/General.svelte";
+  import Themes from "./Views/Themes.svelte";
+  import ThemeCreator from "./Views/ThemeCreator.svelte";
 
+  const items: Types.TabItem[] = [
+    {
+      id: "general",
+      text: "General",
+      itemArgs: {
+        padding: "14px 10px",
+      },
+      item: TabViewHeaderItem,
+      component: General,
+    },
+    {
+      id: "themes",
+      text: "Themes",
+      itemArgs: {
+        padding: "14px 10px",
+      },
+      item: TabViewHeaderItem,
+      component: Themes,
+    },
+    {
+      id: "themeCreator",
+      text: "Theme Creator",
+      itemArgs: {
+        padding: "14px 10px",
+      },
+      item: TabViewHeaderItem,
+      component: ThemeCreator,
+    },
+  ];
+
+  let currentItem = items[0];
+
+  function onTabItemClick(item: Types.TabItem) {
+    currentItem = item;
+  }
   function onSettingsClose() {
     ipcRenderer.send("closeSettingsView");
   }
@@ -10,12 +49,13 @@
 <div>
   <HeaderModal>
     <FlexGrow grow={1}>
-      <HeaderText>Setting page</HeaderText>
+      <TabView {items} initItemId={"general"} onItemClick={onTabItemClick} />
     </FlexGrow>
     <Button size={32} round={3} on:mouseup={onSettingsClose}>
       <CloseModal />
     </Button>
   </HeaderModal>
+  <svelte:component this={currentItem.component} />
 </div>
 
 <style>

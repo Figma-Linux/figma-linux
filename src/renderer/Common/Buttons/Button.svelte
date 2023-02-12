@@ -5,6 +5,7 @@
   export let height = "inherit";
 
   export let padding = "inherit";
+  export let margin = "inherit";
   export let normalFgColor = "var(--fg-header)";
   export let normalBgColor = "var(--bg-header)";
   export let activeBgColor = "var(--bg-tab-hover)";
@@ -23,14 +24,15 @@
   on:mouseup|capture
   class={isActive ? "button__active" : ""}
   style={`
-    --button-padding: ${padding};
-    --button-width: ${width};
-    --button-height: ${height};
-    --button-border-radius: ${round}px;
-    --button-normal-bg-color: ${normalBgColor};
-    --button-hover-bg-color: ${hoverBgColor};
-    --button-active-bg-color: ${activeBgColor};
-    --button-normal-fg-color: ${normalFgColor};
+    --padding: ${padding};
+    --margin: ${margin};
+    --width: ${width};
+    --height: ${height};
+    --border-radius: ${round}px;
+    --normal-bg-color: ${normalBgColor};
+    --hover-bg-color: ${hoverBgColor};
+    --active-bg-color: ${activeBgColor};
+    --normal-fg-color: ${normalFgColor};
   `}
 >
   <slot />
@@ -41,18 +43,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--button-normal-bg-color);
-    color: var(--button-normal-fg-color);
-    border-radius: var(--button-border-radius);
-    width: var(--button-width);
-    height: var(--button-height);
-    padding: var(--button-padding);
+    background-color: var(--normal-bg-color);
+    color: var(--normal-fg-color);
+    border-radius: var(--border-radius);
+    width: var(--width);
+    height: var(--height);
+    padding: var(--padding);
+    margin: var(--margin);
     transition: all 0.08s ease;
   }
   div:hover {
-    background-color: var(--button-hover-bg-color);
+    background-color: var(--hover-bg-color);
   }
   .button__active {
-    background-color: var(--button-active-bg-color);
+    background-color: var(--active-bg-color);
   }
 </style>

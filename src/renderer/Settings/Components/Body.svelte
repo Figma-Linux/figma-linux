@@ -2,11 +2,11 @@
   import { ipcRenderer } from "electron";
   import { HeaderModal, Button, CloseModal, FlexGrow } from "Common";
   import { TabView, TabViewHeaderItem } from "Common/TabView";
-  import General from "./Views/General.svelte";
-  import Themes from "./Views/Themes.svelte";
-  import ThemeCreator from "./Views/ThemeCreator.svelte";
+  import { General } from "./Views/General";
+  import { Themes } from "./Views/Themes";
+  import { ThemeCreator, ThemeCreatorHeaderComponent } from "./Views/ThemeCreator";
 
-  const items: Types.TabItem[] = [
+  const items: Types.SetingsTabItem[] = [
     {
       id: "general",
       text: "General",
@@ -14,7 +14,7 @@
         padding: "14px 10px",
       },
       item: TabViewHeaderItem,
-      component: General,
+      bodyComponent: General,
     },
     {
       id: "themes",
@@ -23,7 +23,7 @@
         padding: "14px 10px",
       },
       item: TabViewHeaderItem,
-      component: Themes,
+      bodyComponent: Themes,
     },
     {
       id: "themeCreator",
@@ -32,13 +32,14 @@
         padding: "14px 10px",
       },
       item: TabViewHeaderItem,
-      component: ThemeCreator,
+      bodyComponent: ThemeCreator,
+      headerComponent: ThemeCreatorHeaderComponent,
     },
   ];
 
   let currentItem = items[0];
 
-  function onTabItemClick(item: Types.TabItem) {
+  function onTabItemClick(item: Types.SetingsTabItem) {
     currentItem = item;
   }
   function onSettingsClose() {
@@ -51,11 +52,12 @@
     <FlexGrow grow={1}>
       <TabView {items} initItemId={"general"} onItemClick={onTabItemClick} />
     </FlexGrow>
+    <svelte:component this={currentItem.headerComponent} />
     <Button size={32} round={3} on:mouseup={onSettingsClose}>
       <CloseModal />
     </Button>
   </HeaderModal>
-  <svelte:component this={currentItem.component} />
+  <svelte:component this={currentItem.bodyComponent} />
 </div>
 
 <style>

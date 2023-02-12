@@ -4,6 +4,10 @@ declare namespace Types {
     text: string;
     itemArgs?: Types.Dic<string>;
     item: ConstructorOfATypedSvelteComponent;
-    component: ConstructorOfATypedSvelteComponent;
+  }
+
+  interface SetingsTabItem extends TabItem {
+    bodyComponent: ConstructorOfATypedSvelteComponent;
+    headerComponent?: ConstructorOfATypedSvelteComponent;
   }
 }

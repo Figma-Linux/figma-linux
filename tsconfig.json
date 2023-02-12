@@ -36,6 +36,8 @@
       "Common/*": ["src/renderer/Common/*"],
       "Components": ["src/renderer/components"],
       "Components/*": ["src/renderer/components/*"],
+      "Containers": ["src/renderer/Common/Containers"],
+      "Containers/*": ["src/renderer/Common/Containers/*"],
       "Elements/*": ["src/renderer/elements/*"],
       "Elements": ["src/renderer/elements"],
       "Store": ["src/renderer/stores"],

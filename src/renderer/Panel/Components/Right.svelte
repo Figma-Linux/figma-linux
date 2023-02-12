@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
   import { Minimize, Maximize, Close, Corner } from "Icons";
-  import { ButtonClose, ButtonWinControl } from "Common/Buttons";
+  import { ButtonWindow } from "Common/Buttons";
   import { isMenuOpen } from "../store";
 
   function clickMenu() {
@@ -15,18 +15,21 @@
 </script>
 
 <div class="panel-right">
-  <ButtonWinControl isActive={$isMenuOpen} onClick={clickMenu}>
+  <ButtonWindow isActive={$isMenuOpen} on:mouseup={clickMenu}>
     <Corner size="14" />
-  </ButtonWinControl>
-  <ButtonWinControl onClick={() => ipcRenderer.send("window-minimize")}>
+  </ButtonWindow>
+  <ButtonWindow on:mouseup={() => ipcRenderer.send("window-minimize")}>
     <Minimize size="16" />
-  </ButtonWinControl>
-  <ButtonWinControl onClick={() => ipcRenderer.send("window-maximize")}>
+  </ButtonWindow>
+  <ButtonWindow on:mouseup={() => ipcRenderer.send("window-maximize")}>
     <Maximize size="16" />
-  </ButtonWinControl>
-  <ButtonClose onClick={() => ipcRenderer.send("windowClose")}>
+  </ButtonWindow>
+  <ButtonWindow
+    hoverBgColor={"var(--bg-window-close)"}
+    on:mouseup={() => ipcRenderer.send("windowClose")}
+  >
     <Close size="16" />
-  </ButtonClose>
+  </ButtonWindow>
 </div>
 
 <style>

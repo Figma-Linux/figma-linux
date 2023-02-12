@@ -181,7 +181,7 @@ export default class Window {
   }
 
   private openSettingsView() {
-    const bounds = this.calcBoundsForTabView();
+    const bounds = this.window.getBounds();
     this.settingsView.updateProps(bounds);
 
     this.window.addBrowserView(this.settingsView.view);
@@ -200,7 +200,7 @@ export default class Window {
     this.settingsView.postClose();
   }
   private openThemeCreatorView() {
-    const bounds = this.calcBoundsForTabView();
+    const bounds = this.window.getBounds();
     this.themeCreatorView.updateProps(bounds);
 
     this.window.addBrowserView(this.themeCreatorView.view);

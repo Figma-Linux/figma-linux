@@ -33,6 +33,8 @@
       "Icons/*": ["../renderer/Common/Icons/*"],
       "Common": ["../renderer/Common"],
       "Common/*": ["../renderer/Common/*"],
+      "Containers": ["../renderer/Common/Containers"],
+      "Containers/*": ["../renderer/Common/Containers/*"],
       "DesktopAPI": ["DesktopAPI"],
       "DesktopAPI/*": ["DesktopAPI/*"],
       "Const": ["../constants"],

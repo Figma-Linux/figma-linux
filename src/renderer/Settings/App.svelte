@@ -4,6 +4,7 @@
   import { getColorPallet } from "Utils/Render/themes";
   import { initCommonIpc } from "../Common/Ipc";
   import { initIpc } from "./ipc";
+  import Body from "./Components/Body.svelte";
 
   let pallet: string[] = [];
 
@@ -21,5 +22,16 @@
 </script>
 
 <div id="settings" style={pallet.join("; ")}>
-  <p>Setting page</p>
+  <Body />
 </div>
+
+<style>
+  div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+</style>

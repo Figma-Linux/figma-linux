@@ -48,6 +48,10 @@ const commonPlugins = [
         replacement: path.resolve(projectRootDir, "..", "src/renderer/Common"),
       },
       {
+        find: "Containers",
+        replacement: path.resolve(projectRootDir, "..", "src/renderer/Common/Containers"),
+      },
+      {
         find: "Icons",
         replacement: path.resolve(projectRootDir, "..", "src/renderer/Common/Icons"),
       },
@@ -141,8 +145,14 @@ module.exports = [
           host: "localhost",
           port: settingsPort,
           proxy: [
-            { from: "/renderer/settings.js", to: `http://localhost:${settingsPort}/dist/renderer/settings.js` },
-            { from: "/renderer/base.css", to: `http://localhost:${settingsPort}/dist/renderer/base.css` },
+            {
+              from: "/renderer/settings.js",
+              to: `http://localhost:${settingsPort}/dist/renderer/settings.js`,
+            },
+            {
+              from: "/renderer/base.css",
+              to: `http://localhost:${settingsPort}/dist/renderer/base.css`,
+            },
           ],
         }),
     ],
@@ -171,7 +181,10 @@ module.exports = [
               from: "/renderer/themeCreator.js",
               to: `http://localhost:${themeCreatorPort}/dist/renderer/themeCreator.js`,
             },
-            { from: "/renderer/base.css", to: `http://localhost:${themeCreatorPort}/dist/renderer/base.css` },
+            {
+              from: "/renderer/base.css",
+              to: `http://localhost:${themeCreatorPort}/dist/renderer/base.css`,
+            },
           ],
         }),
     ],
@@ -213,8 +226,14 @@ module.exports = [
           host: "localhost",
           port: panelPort,
           proxy: [
-            { from: "/renderer/panel.js", to: `http://localhost:${panelPort}/dist/renderer/panel.js` },
-            { from: "/renderer/base.css", to: `http://localhost:${panelPort}/dist/renderer/base.css` },
+            {
+              from: "/renderer/panel.js",
+              to: `http://localhost:${panelPort}/dist/renderer/panel.js`,
+            },
+            {
+              from: "/renderer/base.css",
+              to: `http://localhost:${panelPort}/dist/renderer/base.css`,
+            },
           ],
         }),
     ],

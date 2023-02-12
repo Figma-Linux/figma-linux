@@ -1,7 +1,7 @@
 <script lang="ts">
   import { flip } from "svelte/animate";
   import { dndzone } from "svelte-dnd-action";
-  import { ButtonTabClose } from "Common/Buttons";
+  import { ButtonTool } from "Common/Buttons";
   import { Close } from "Icons";
 
   export let currentTabId: number | undefined;
@@ -45,9 +45,9 @@
           {item.title}
         </span>
       </div>
-      <ButtonTabClose {normalBgColor} {hoverBgColor} onClick={(e) => onClickClose(e, item.id)}>
+      <ButtonTool {normalBgColor} {hoverBgColor} on:mouseup={(e) => onClickClose(e, item.id)}>
         <Close size="12" />
-      </ButtonTabClose>
+      </ButtonTool>
     </div>
   {/each}
 </section>

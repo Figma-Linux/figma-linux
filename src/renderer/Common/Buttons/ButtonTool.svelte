@@ -7,10 +7,7 @@
   export let padding = "inherit";
   export let normalFgColor = "var(--fg-header)";
   export let normalBgColor = "var(--bg-header)";
-  export let activeBgColor = "var(--bg-tab-hover)";
   export let hoverBgColor = "var(--bg-tab-hover)";
-
-  export let isActive = false;
 
   if (size) {
     width = `${size}px`;
@@ -21,7 +18,6 @@
 <div
   on:mousedown|capture
   on:mouseup|capture
-  class={isActive ? "button__active" : ""}
   style={`
     --button-padding: ${padding};
     --button-width: ${width};
@@ -29,7 +25,6 @@
     --button-border-radius: ${round}px;
     --button-normal-bg-color: ${normalBgColor};
     --button-hover-bg-color: ${hoverBgColor};
-    --button-active-bg-color: ${activeBgColor};
     --button-normal-fg-color: ${normalFgColor};
   `}
 >
@@ -47,12 +42,10 @@
     width: var(--button-width);
     height: var(--button-height);
     padding: var(--button-padding);
-    transition: all 0.08s ease;
+    opacity: 0.4;
+    transition: all 0.1s ease;
   }
   div:hover {
-    background-color: var(--button-hover-bg-color);
-  }
-  .button__active {
-    background-color: var(--button-active-bg-color);
+    opacity: 1;
   }
 </style>

@@ -7,7 +7,7 @@
   export let padding = "inherit";
   export let margin = "inherit";
   export let normalFgColor = "var(--fg-header)";
-  export let normalBgColor = "var(--bg-header)";
+  export let normalBgColor = "transparent";
   export let activeBgColor = "var(--bg-tab-hover)";
   export let hoverBgColor = "var(--bg-tab-hover)";
 

@@ -66,6 +66,5 @@
     height: 80vh;
     overflow: hidden;
     background: var(--bg-panel);
-    border: 1px solid var(--borders);
   }
 </style>

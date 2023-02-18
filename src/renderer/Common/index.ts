@@ -40,6 +40,12 @@ export { default as Settings } from "./Icons/Settings.svelte";
 export { default as Sync } from "./Icons/Sync.svelte";
 export { default as UnMuted } from "./Icons/UnMuted.svelte";
 
+// Inputs
+export { default as InputColor } from "./Input/Color.svelte";
+export { default as InputNumeric } from "./Input/Numeric.svelte";
+export { default as InputRange } from "./Input/Range.svelte";
+export { default as InputText } from "./Input/Text.svelte";
+
 // TabView
 export { default as TabView } from "./TabView/TabView.svelte";
 export { default as TabViewHeaderItem } from "./TabView/TabViewHeaderItem.svelte";

@@ -44,6 +44,7 @@
     border: none;
 
     --font-title-size: 14px;
+    --font-tab-view-size: 14px;
     /* --fontSize: 16px;
     --fontSubtitleSize: 18px;
     --fontTitleSize: 22px; */

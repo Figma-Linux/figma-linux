@@ -45,6 +45,7 @@ export { default as InputColor } from "./Input/Color.svelte";
 export { default as InputNumeric } from "./Input/Numeric.svelte";
 export { default as InputRange } from "./Input/Range.svelte";
 export { default as InputText } from "./Input/Text.svelte";
+export { default as CheckBox } from "./Input/CheckBox.svelte";
 
 // TabView
 export { default as TabView } from "./TabView/TabView.svelte";

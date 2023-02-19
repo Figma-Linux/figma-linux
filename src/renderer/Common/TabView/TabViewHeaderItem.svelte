@@ -50,6 +50,7 @@
     transition: all 0.1s ease;
     user-select: none;
     opacity: 0.6;
+    font-size: var(--font-tab-view-size);
   }
   span:hover {
     opacity: 1;

@@ -1,12 +1,4 @@
-import {
-  app,
-  shell,
-  clipboard,
-  ipcMain,
-  IpcMainEvent,
-  IpcMainInvokeEvent,
-  WebContents,
-} from "electron";
+import { app, shell, clipboard, ipcMain, IpcMainEvent, WebContents } from "electron";
 
 import Window from "./Window";
 import { storage } from "Main/Storage";
@@ -180,7 +172,6 @@ export default class WindowManager {
 
     window.restoreClosedTab();
   }
-
   private openDevTools(event: IpcMainEvent, mode: "right" | "bottom" | "undocked" | "detach") {
     if (event.sender) {
       event.sender.openDevTools({ mode });

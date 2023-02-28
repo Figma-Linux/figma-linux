@@ -326,6 +326,10 @@ declare namespace Electron {
       channel: "isMainMenuOpen",
       listener: (event: IpcRendererEvent, isOpen: boolean) => void,
     ): this;
+    on(
+      channel: "loadSettings",
+      listener: (event: IpcRendererEvent, settings: Types.SettingsInterface) => void,
+    ): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -404,6 +408,7 @@ declare namespace Electron {
     send(channel: "syncThemesStart", theme: Themes.Theme): this;
     send(channel: "syncThemesEnd", theme: Themes.Theme): this;
     send(channel: "isMainMenuOpen", isOpen: boolean): this;
+    send(channel: "loadSettings", settings: Types.SettingsInterface): this;
 
     destroy(): void;
   }

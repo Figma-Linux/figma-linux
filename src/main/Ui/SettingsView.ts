@@ -122,10 +122,18 @@ export default class SettingsView {
     storage.settings.theme.currentTheme = theme.id;
   }
 
+  private loadSettings() {
+    this.view.webContents.send("loadSettings", storage.settings);
+  }
+  private handleFrontReady() {
+    this.loadSettings();
+  }
+
   private registerEvents() {
     ipcMain.on("enableColorSpaceSrgbWasChanged", this.enableColorSpaceSrgbChange.bind(this));
     ipcMain.on("disableThemesChanged", this.disableThemesChange.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
+    ipcMain.on("frontReady", this.handleFrontReady.bind(this));
     // TODO: Move to Storage class
     ipcMain.on("saveSettings", this.saveSettings.bind(this));
 

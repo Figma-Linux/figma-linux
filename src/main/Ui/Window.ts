@@ -20,6 +20,8 @@ export default class Window {
 
   private closedTabsHistory: Types.SavedTab[] = [];
 
+  private webViewQueueEvent: Set<Types.WebViewQueueItem> = new Set();
+
   constructor() {
     this.window = new BrowserWindow(WINDOW_DEFAULT_OPTIONS);
     this.tabManager = new TabManager(this.window.id);
@@ -38,6 +40,7 @@ export default class Window {
     isDev && toggleDetachedDevTools(this.window.webContents);
 
     this.registerEvents();
+    this.loadSettings(storage.settings);
   }
 
   public get id() {
@@ -215,6 +218,12 @@ export default class Window {
   private loadCurrentTheme(theme: Themes.Theme) {
     this.window.webContents.send("loadCurrentTheme", theme);
   }
+  public loadSettings(settings: Types.SettingsInterface) {
+    this.webViewQueueEvent.add({
+      id: "loadSettings",
+      args: [settings],
+    });
+  }
   private windowMinimize(_: IpcMainEvent, windowId: number) {
     this.window.minimize();
   }
@@ -310,6 +319,15 @@ export default class Window {
     storage.settings.theme.currentTheme = theme.id;
   }
 
+  private handleFrontReady() {
+    this.handleWebViewEventQueue();
+  }
+  private handleWebViewEventQueue() {
+    for (const event of this.webViewQueueEvent) {
+      this.window.webContents.send(event.id, ...event.args);
+    }
+  }
+
   public close() {
     this.window.close();
   }
@@ -330,6 +348,7 @@ export default class Window {
     ipcMain.on("closeSettingsView", this.closeSettingsView.bind(this));
     ipcMain.on("closeThemeCreatorView", this.closeThemeCreatorView.bind(this));
     ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
+    ipcMain.on("frontReady", this.handleFrontReady.bind(this));
 
     app.on("openSettingsView", this.openSettingsView.bind(this));
     app.on("openThemeCreatorView", this.openThemeCreatorView.bind(this));

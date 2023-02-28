@@ -8,3 +8,10 @@ declare namespace MenuState {
     pluginMenuData?: Menu.MenuItem[];
   }
 }
+
+declare namespace Types {
+  interface WebViewQueueItem {
+    id: string;
+    args: unknown[];
+  }
+}

@@ -11,6 +11,14 @@
   export let activeBgColor = "var(--bg-tab-hover)";
   export let hoverBgColor = "var(--bg-tab-hover)";
 
+  export let normalBorder = "none";
+  export let activeBorder = "none";
+  export let hoverBorder = "none";
+
+  export let normalCursor = "default";
+  export let activeCursor = "default";
+  export let hoverCursor = "default";
+
   export let isActive = false;
 
   if (size) {
@@ -33,6 +41,12 @@
     --hover-bg-color: ${hoverBgColor};
     --active-bg-color: ${activeBgColor};
     --normal-fg-color: ${normalFgColor};
+    --normal-border: ${normalBorder};
+    --active-border: ${activeBorder};
+    --hover-border: ${hoverBorder};
+    --normal-cursor: ${normalCursor};
+    --active-cursor: ${activeCursor};
+    --hover-cursor: ${hoverCursor};
   `}
 >
   <slot />
@@ -45,17 +59,24 @@
     justify-content: center;
     background-color: var(--normal-bg-color);
     color: var(--normal-fg-color);
+    border: var(--normal-border);
+    cursor: var(--normal-cursor);
     border-radius: var(--border-radius);
     width: var(--width);
     height: var(--height);
     padding: var(--padding);
     margin: var(--margin);
     transition: all 0.08s ease;
+    user-select: none;
   }
   div:hover {
+    border: var(--hover-border);
+    cursor: var(--hover-cursor);
     background-color: var(--hover-bg-color);
   }
   .button__active {
+    border: var(--active-border);
+    cursor: var(--active-cursor);
     background-color: var(--active-bg-color);
   }
 </style>

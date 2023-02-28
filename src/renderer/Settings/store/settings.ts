@@ -1,12 +1,12 @@
 import { writable } from "svelte/store";
 
 function createSettings() {
-  const { subscribe, update } = writable<number | undefined>(0);
+  const { subscribe, update, set } = writable<Types.SettingsInterface | undefined>();
 
   return {
+    set,
     subscribe,
     reset: () => update((current) => (current = undefined)),
-    setFocus: (id?: number) => update((current) => (current = id)),
   };
 }
 

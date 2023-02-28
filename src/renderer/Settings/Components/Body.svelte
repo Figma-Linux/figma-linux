@@ -3,8 +3,8 @@
   import { HeaderModal, Button, CloseModal, FlexGrow } from "Common";
   import { TabView, TabViewHeaderItem } from "Common/TabView";
   import { General } from "./Views/General";
-  import { Themes } from "./Views/Themes";
-  import { ThemeCreator, ThemeCreatorHeaderComponent } from "./Views/ThemeCreator";
+  import { Themes, ThemesHeaderComponent } from "./Views/Themes";
+  import { ThemeCreator } from "./Views/ThemeCreator";
 
   const items: Types.SetingsTabItem[] = [
     {
@@ -24,6 +24,7 @@
       },
       item: TabViewHeaderItem,
       bodyComponent: Themes,
+      headerComponent: ThemesHeaderComponent,
     },
     {
       id: "themeCreator",
@@ -33,7 +34,6 @@
       },
       item: TabViewHeaderItem,
       bodyComponent: ThemeCreator,
-      headerComponent: ThemeCreatorHeaderComponent,
     },
   ];
 

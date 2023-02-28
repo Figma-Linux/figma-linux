@@ -8,6 +8,7 @@ export { default as PrimaryButton } from "./Buttons/PrimaryButton.svelte";
 export { default as Container } from "./Containers/Container.svelte";
 export { default as Flex } from "./Containers/Flex.svelte";
 export { default as FlexGrow } from "./Containers/FlexGrow.svelte";
+export { default as DropDown } from "./Containers/DropDown.svelte";
 
 // Header
 export { default as Header } from "./Header/Header.svelte";

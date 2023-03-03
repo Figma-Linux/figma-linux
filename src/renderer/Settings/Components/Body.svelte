@@ -57,7 +57,9 @@
       <CloseModal />
     </Button>
   </HeaderModal>
-  <svelte:component this={currentItem.bodyComponent} />
+  <settingsBody>
+    <svelte:component this={currentItem.bodyComponent} />
+  </settingsBody>
 </div>
 
 <style>
@@ -66,5 +68,23 @@
     height: 80vh;
     overflow: hidden;
     background: var(--bg-panel);
+  }
+  settingsBody {
+    display: block;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    height: calc(80vh - 46px);
+  }
+  settingsBody::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+  }
+  settingsBody::-webkit-scrollbar-corner {
+    display: none;
+  }
+  settingsBody::-webkit-scrollbar-thumb {
+    background: var(--color-scrollbar, rgba(179, 179, 179, 0.5));
+    border-radius: 10px;
   }
 </style>

@@ -3,6 +3,8 @@ export { default as Button } from "./Buttons/Button.svelte";
 export { default as ButtonWindow } from "./Buttons/ButtonWindow.svelte";
 export { default as ButtonTool } from "./Buttons/ButtonTool.svelte";
 export { default as PrimaryButton } from "./Buttons/PrimaryButton.svelte";
+export { default as SecondaryButton } from "./Buttons/SecondaryButton.svelte";
+export { default as TertiaryButton } from "./Buttons/TertiaryButton.svelte";
 
 // Containers
 export { default as Container } from "./Containers/Container.svelte";

@@ -34,10 +34,18 @@ export default class ThemeManager {
     if (!(await access(this.themesDirectory))) {
       await mkPath(this.themesDirectory);
       await this.updateThemesFromRepository();
-      return;
+    } else {
+      await this.loadFromDirectory();
     }
 
-    await this.loadFromDirectory();
+    app.emit("syncThemesEnd", [...this.themes.values()]);
+
+    const currentThemeId = storage.settings.theme.currentTheme;
+    const disableThemes = storage.settings.app.disableThemes;
+
+    if (disableThemes) return;
+
+    app.emit("loadCurrentTheme", this.themes.get(currentThemeId));
   }
 
   public async loadFromDirectory() {
@@ -59,13 +67,6 @@ export default class ThemeManager {
         this.themes.set(theme.id, theme);
       }
     }
-
-    const currentThemeId = storage.settings.theme.currentTheme;
-    const disableThemes = storage.settings.app.disableThemes;
-
-    if (disableThemes) return;
-
-    app.emit("loadCurrentTheme", this.themes.get(currentThemeId));
   }
 
   public async loadCreatorTheme() {

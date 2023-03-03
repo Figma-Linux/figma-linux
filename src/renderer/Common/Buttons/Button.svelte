@@ -7,6 +7,13 @@
   export let padding = "inherit";
   export let margin = "inherit";
   export let normalFgColor = "var(--fg-header)";
+  export let activeFgColor = "var(--fg-header)";
+  export let hoverFgColor = "var(--fg-header)";
+
+  export let normalBgAlpha = "1";
+  export let activeBgAlpha = "1";
+  export let hoverBgAlpha = "1";
+
   export let normalBgColor = "transparent";
   export let activeBgColor = "var(--bg-tab-hover)";
   export let hoverBgColor = "var(--bg-tab-hover)";
@@ -37,13 +44,23 @@
     --width: ${width};
     --height: ${height};
     --border-radius: ${round}px;
+
+    --normal-bg-alpha: ${normalBgAlpha};
+    --active-bg-alpha: ${activeBgAlpha};
+    --hover-bg-alpha: ${hoverBgAlpha};
+
     --normal-bg-color: ${normalBgColor};
     --hover-bg-color: ${hoverBgColor};
     --active-bg-color: ${activeBgColor};
+
     --normal-fg-color: ${normalFgColor};
+    --active-fg-color: ${activeFgColor};
+    --hover-fg-color: ${hoverFgColor};
+
     --normal-border: ${normalBorder};
     --active-border: ${activeBorder};
     --hover-border: ${hoverBorder};
+
     --normal-cursor: ${normalCursor};
     --active-cursor: ${activeCursor};
     --hover-cursor: ${hoverCursor};
@@ -72,11 +89,19 @@
   div:hover {
     border: var(--hover-border);
     cursor: var(--hover-cursor);
+    color: var(--hover-fg-color);
     background-color: var(--hover-bg-color);
+  }
+  div:active {
+    border: var(--active-border);
+    cursor: var(--active-cursor);
+    color: var(--active-fg-color);
+    background-color: var(--active-bg-color);
   }
   .button__active {
     border: var(--active-border);
     cursor: var(--active-cursor);
+    color: var(--active-fg-color);
     background-color: var(--active-bg-color);
   }
 </style>

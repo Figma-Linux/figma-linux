@@ -1,13 +1,11 @@
 <script lang="ts">
   import { InputRange, CheckBox, InputText, ListBox } from "Common/Input";
   import { Text, Label, Flex, FlexGrow, Line } from "Common";
-  import { ButtonTool, PrimaryButton } from "Common/Buttons";
+  import { ButtonTool, SecondaryButton } from "Common/Buttons";
   import { Folder } from "Common/Icons";
 
   import { settings } from "../../../store";
   import DirectoryListItem from "./DirectoryListItem.svelte";
-
-  let checkValue = true;
 
   let figmaUiSclae = 100;
   let tabsUiSclae = 100;
@@ -97,7 +95,7 @@
           </InputText>
         </FlexGrow>
         <Flex width="20px" />
-        <PrimaryButton on:mouseup={onChangeExportPath}>Change</PrimaryButton>
+        <SecondaryButton on:mouseup={onChangeExportPath}>Change</SecondaryButton>
       </Flex>
     </Flex>
   </Flex>
@@ -113,9 +111,9 @@
       <Flex height="10px" />
       <Flex>
         <FlexGrow grow={1} />
-        <PrimaryButton on:mouseup={onClearList}>Clear list</PrimaryButton>
+        <SecondaryButton on:mouseup={onClearList}>Clear list</SecondaryButton>
         <Flex width="10px" />
-        <PrimaryButton on:mouseup={onAddDirectory}>Add directory</PrimaryButton>
+        <SecondaryButton on:mouseup={onAddDirectory}>Add directory</SecondaryButton>
       </Flex>
     </Flex>
     <Flex width="120px" />
@@ -130,20 +128,5 @@
 <style>
   div {
     padding: 32px 32px 8px 32px;
-    scroll-behavior: smooth;
-    overflow-y: auto;
-    height: -webkit-fill-available;
-  }
-  div::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background: transparent;
-  }
-  div::-webkit-scrollbar-corner {
-    display: none;
-  }
-  div::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar, rgba(179, 179, 179, 0.5));
-    border-radius: 10px;
   }
 </style>

@@ -2,7 +2,7 @@ declare namespace Types {
   interface TabItem {
     id: string;
     text: string;
-    itemArgs?: Types.Dic<string>;
+    itemArgs?: Types.Dic<unknown>;
     item: ConstructorOfATypedSvelteComponent;
   }
 

@@ -83,18 +83,6 @@
     width: -webkit-fill-available;
     overflow: hidden;
   }
-  block::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background: transparent;
-  }
-  block::-webkit-scrollbar-corner {
-    display: none;
-  }
-  block::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar, rgba(179, 179, 179, 0.5));
-    border-radius: 10px;
-  }
 
   input {
     display: none;

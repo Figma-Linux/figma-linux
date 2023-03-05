@@ -51,6 +51,7 @@
     user-select: none;
     opacity: 0.6;
     font-size: var(--font-tab-view-size);
+    white-space: nowrap;
   }
   span:hover {
     opacity: 1;

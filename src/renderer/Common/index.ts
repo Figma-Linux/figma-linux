@@ -8,9 +8,11 @@ export { default as TertiaryButton } from "./Buttons/TertiaryButton.svelte";
 
 // Containers
 export { default as Container } from "./Containers/Container.svelte";
+export { default as Grid } from "./Containers/Grid.svelte";
 export { default as Flex } from "./Containers/Flex.svelte";
-export { default as FlexGrow } from "./Containers/FlexGrow.svelte";
+export { default as FlexItem } from "./Containers/FlexItem.svelte";
 export { default as DropDown } from "./Containers/DropDown.svelte";
+export { default as ZoomView } from "./Containers/ZoomView.svelte";
 
 // Header
 export { default as Header } from "./Header/Header.svelte";
@@ -63,3 +65,4 @@ export { default as Label } from "./Text/Label.svelte";
 
 // Other
 export { default as Line } from "./Other/Line.svelte";
+export { default as GlobalStyles } from "./GlobalStyles.svelte";

@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { ipcRenderer } from "electron";
-  import { HeaderModal, Button, CloseModal, FlexGrow } from "Common";
+  import { HeaderModal, Button, CloseModal, FlexItem } from "Common";
   import { TabView, TabViewHeaderItem } from "Common/TabView";
   import { General } from "./Views/General";
   import { Themes, ThemesHeaderComponent } from "./Views/Themes";
   import { ThemeCreator } from "./Views/ThemeCreator";
+  import { modalBounds } from "../store";
 
   const items: Types.SetingsTabItem[] = [
     {
@@ -45,13 +47,20 @@
   function onSettingsClose() {
     ipcRenderer.send("closeSettingsView");
   }
+
+  let modal: HTMLElement;
+  function getModalBounds() {
+    modalBounds.set(modal.getBoundingClientRect());
+  }
+  onMount(getModalBounds);
+  window.addEventListener("resize", getModalBounds);
 </script>
 
-<div>
+<div bind:this={modal}>
   <HeaderModal>
-    <FlexGrow grow={1}>
+    <FlexItem grow={1}>
       <TabView {items} initItemId={"general"} onItemClick={onTabItemClick} />
-    </FlexGrow>
+    </FlexItem>
     <svelte:component this={currentItem.headerComponent} />
     <Button size={32} round={3} on:mouseup={onSettingsClose}>
       <CloseModal />
@@ -74,17 +83,5 @@
     scroll-behavior: smooth;
     overflow-y: auto;
     height: calc(80vh - 46px);
-  }
-  settingsBody::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background: transparent;
-  }
-  settingsBody::-webkit-scrollbar-corner {
-    display: none;
-  }
-  settingsBody::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar, rgba(179, 179, 179, 0.5));
-    border-radius: 10px;
   }
 </style>

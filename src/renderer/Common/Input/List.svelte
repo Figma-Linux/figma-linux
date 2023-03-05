@@ -41,16 +41,4 @@
     overflow-x: auto;
     overflow-y: auto;
   }
-  div::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background: transparent;
-  }
-  div::-webkit-scrollbar-corner {
-    display: none;
-  }
-  div::-webkit-scrollbar-thumb {
-    background: var(--color-scrollbar, rgba(179, 179, 179, 0.5));
-    border-radius: 10px;
-  }
 </style>

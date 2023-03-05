@@ -1,6 +1,6 @@
 <script lang="ts">
   import { InputRange, CheckBox, InputText, ListBox } from "Common/Input";
-  import { Text, Label, Flex, FlexGrow, Line } from "Common";
+  import { Text, Label, Flex, FlexItem, Line } from "Common";
   import { ButtonTool, SecondaryButton } from "Common/Buttons";
   import { Folder } from "Common/Icons";
 
@@ -87,13 +87,13 @@
     <Flex der="column" width="-webkit-fill-available">
       <Label>Export files to</Label>
       <Flex>
-        <FlexGrow grow={1}>
+        <FlexItem grow={1}>
           <InputText bind:value={exportDirectory}>
             <ButtonTool normalBgColor="tarsparent" on:mouseup={onChangeExportPath}>
               <Folder size="20" />
             </ButtonTool>
           </InputText>
-        </FlexGrow>
+        </FlexItem>
         <Flex width="20px" />
         <SecondaryButton on:mouseup={onChangeExportPath}>Change</SecondaryButton>
       </Flex>
@@ -110,7 +110,7 @@
       <ListBox {items} {onItemRemoveClick} height="160px" />
       <Flex height="10px" />
       <Flex>
-        <FlexGrow grow={1} />
+        <FlexItem grow={1} />
         <SecondaryButton on:mouseup={onClearList}>Clear list</SecondaryButton>
         <Flex width="10px" />
         <SecondaryButton on:mouseup={onAddDirectory}>Add directory</SecondaryButton>

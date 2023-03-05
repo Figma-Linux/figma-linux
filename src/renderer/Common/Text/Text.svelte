@@ -14,5 +14,6 @@
   span {
     color: var(--text);
     padding: var(--padding);
+    white-space: nowrap;
   }
 </style>

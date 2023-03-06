@@ -35,23 +35,28 @@
   }
 </script>
 
-<div
+<zoomArea
   bind:this={area}
   on:mousedown={mouseDownHandler}
   on:mouseup={mouseUpHandler}
   on:mousemove={mouseMoveHandler}
   on:mouseleave={mouseUpHandler}
   style={`
-    zoom: ${zoom};
     width: ${width};
     height: ${height};
   `}
 >
-  <slot />
-</div>
+  <div
+    style={`
+      zoom: ${zoom};
+    `}
+  >
+    <slot />
+  </div>
+</zoomArea>
 
 <style>
-  div {
+  zoomArea {
     overflow: auto;
     border: 1px solid var(--borders);
   }

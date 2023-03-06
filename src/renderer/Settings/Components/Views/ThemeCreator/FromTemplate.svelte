@@ -9,7 +9,7 @@
   }
 </script>
 
-<Grid columns="repeat(auto-fit, minmax(200px, 1fr))" gap="3%">
+<Grid columns="repeat(auto-fit, minmax(200px, 1fr))" gap="3%" padding="0 12px 0 0">
   {#each $creatorsThemes as theme (theme.id)}
     <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
   {/each}

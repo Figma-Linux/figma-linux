@@ -19,7 +19,7 @@
   </DropDown>
   <Flex height="20px" />
   <DropDown title="Repository themes" isEmpty={!$themes.length} open={true}>
-    <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin">
+    <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
       {#each $themes as theme (theme.id)}
         <ThemeItem on:applyTheme={applyTheme} {theme} currentThemeId="" />
       {/each}

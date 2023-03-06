@@ -3,6 +3,7 @@
 
   export let width = "auto";
   export let height = "auto";
+  export let padding = "inherit";
   export let columns = "auto";
   export let rows = "auto";
   export let columnGap = "auto";
@@ -19,6 +20,7 @@
   style={`
     --width: ${width};
     --height: ${height};
+    --padding: ${padding};
     --columns: ${columns};
     --rows: ${rows};
     --areas: ${areas};
@@ -39,5 +41,6 @@
     grid-row-gap: var(--grid-row-gap);
     width: var(--width);
     height: var(--height);
+    padding: var(--padding);
   }
 </style>

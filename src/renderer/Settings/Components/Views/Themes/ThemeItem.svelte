@@ -39,7 +39,7 @@
   <div class="themeview_item_tumbl_panel">
     <div>
       <Label padding="0">{theme.name}</Label>
-      <Text>{theme.author}</Text>
+      <Text whiteSpace="wrap">{theme.author}</Text>
     </div>
     <TertiaryButton
       padding="0 10px"

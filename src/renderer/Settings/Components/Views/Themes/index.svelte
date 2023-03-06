@@ -1,6 +1,6 @@
 <script lang="ts">
   import { themes, creatorsThemes } from "../../../store";
-  import { DropDown, Flex } from "Common";
+  import { DropDown, Flex, Grid } from "Common";
 
   import ThemeItem from "./ThemeItem.svelte";
 
@@ -19,31 +19,15 @@
   </DropDown>
   <Flex height="20px" />
   <DropDown title="Repository themes" isEmpty={!$themes.length} open={true}>
-    <themeView>
+    <Grid columns="repeat(auto-fit, minmax(250px, 1fr))" gap="2vmin">
       {#each $themes as theme (theme.id)}
-        <themeItem>
-          <ThemeItem on:applyTheme={applyTheme} {theme} currentThemeId="" />
-        </themeItem>
+        <ThemeItem on:applyTheme={applyTheme} {theme} currentThemeId="" />
       {/each}
-    </themeView>
+    </Grid>
   </DropDown>
-  <Flex height="50px" />
 </div>
 
 <style>
-  themeView {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: stretch;
-    padding: 10px 0 0 0;
-  }
-  themeItem {
-    display: block;
-    flex: 1;
-    min-width: 300px;
-    max-width: 600px;
-  }
   div {
     padding: 32px 32px 8px 32px;
   }

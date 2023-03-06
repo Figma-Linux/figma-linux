@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { ipcRenderer } from "electron";
   import { onMount } from "svelte";
   import { themeApp } from "../Common/Store/Themes";
   import { getColorPallet } from "Utils/Render/themes";
@@ -19,9 +20,13 @@
     initCommonIpc();
     initIpc();
   });
+
+  function onCloseModalHandler(event: MouseEvent) {
+    ipcRenderer.send("closeSettingsView");
+  }
 </script>
 
-<div id="settings" style={pallet.join("; ")}>
+<div on:mouseup|self={onCloseModalHandler} id="settings" style={pallet.join("; ")}>
   <Body />
 </div>
 

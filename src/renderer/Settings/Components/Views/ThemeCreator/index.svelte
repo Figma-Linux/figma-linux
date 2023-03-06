@@ -73,9 +73,9 @@
       <HeaderModal>
         <TabView {items} initItemId={"ColorPalette"} onItemClick={onTabItemClick} />
       </HeaderModal>
-      <Flex height={`${zoomViewHeight + 100}px`} overflow="auto">
+      <div style={`height: ${zoomViewHeight + 100}px; overflow: auto;`}>
         <svelte:component this={currentItem.bodyComponent} theme={DEFAULT_THEME} />
-      </Flex>
+      </div>
     </Flex>
   </Flex>
 </div>

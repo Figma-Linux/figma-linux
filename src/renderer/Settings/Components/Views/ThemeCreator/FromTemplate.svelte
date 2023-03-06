@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Grid } from "Common";
   import { creatorsThemes, themes } from "../../../store";
 
   import ThemeItem from "./ThemeItem.svelte";
@@ -8,32 +9,11 @@
   }
 </script>
 
-<div>
+<Grid columns="repeat(auto-fit, minmax(200px, 1fr))" gap="3%">
   {#each $creatorsThemes as theme (theme.id)}
-    <themeItem>
-      <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
-    </themeItem>
+    <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
   {/each}
   {#each $themes as theme (theme.id)}
-    <themeItem>
-      <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
-    </themeItem>
+    <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
   {/each}
-</div>
-
-<style>
-  div {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    align-items: stretch;
-    align-content: baseline;
-  }
-  themeItem {
-    display: block;
-    flex: 1;
-    min-width: 160px;
-    max-width: 300px;
-    height: auto;
-  }
-</style>
+</Grid>

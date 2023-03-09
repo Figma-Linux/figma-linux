@@ -1,6 +1,6 @@
 import { ipcRenderer } from "electron";
 
-import { currentTab, tabs, isMenuOpen } from "./store";
+import { currentTab, tabs, isMenuOpen, panelZoom } from "./store";
 
 export function initIpc() {
   ipcRenderer.send("frontReady");
@@ -9,7 +9,6 @@ export function initIpc() {
     tabs.set([]);
   });
   ipcRenderer.on("didTabAdd", (_, data) => {
-    console.log("didTabAdd, data: ", data);
     tabs.addTab({
       id: data.id,
       url: data.url,
@@ -36,5 +35,11 @@ export function initIpc() {
 
   ipcRenderer.on("isMainMenuOpen", (_, isOpen) => {
     isMenuOpen.set(isOpen);
+  });
+  ipcRenderer.on("setPanelScale", (_, scale: number) => {
+    panelZoom.set(scale);
+  });
+  ipcRenderer.on("loadSettings", (_, settings: Types.SettingsInterface) => {
+    panelZoom.set(settings.ui.scalePanel);
   });
 }

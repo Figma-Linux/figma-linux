@@ -74,7 +74,7 @@ export default class Tab {
     app.emit("requestBoundsForTabView", this.windowId);
   }
 
-  private updateScale(_: IpcMainEvent, scale: number) {
+  public updateScale(scale: number) {
     this.view.webContents.setZoomFactor(scale);
   }
   private updateFileKey(event: IpcMainEvent, windowId: number, key: string) {
@@ -89,7 +89,13 @@ export default class Tab {
 
     this.fileKey = key;
   }
+  public reloadCurrentTheme() {
+    app.emit("reloadCurrentTheme");
+  }
 
+  private onDomReady(event: any) {
+    this.reloadCurrentTheme();
+  }
   private onMainWindowWillNavigate(event: any, newUrl: string) {
     const currentUrl = event.sender.getURL();
 
@@ -204,10 +210,10 @@ export default class Tab {
   }
 
   private registerEvents() {
-    ipcMain.on("updateFigmaUiScale", this.updateScale.bind(this));
     ipcMain.on("updateFileKey", this.updateFileKey.bind(this));
 
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
+    this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));
 
     this.view.webContents.session.setPermissionRequestHandler(this.permissionHandler.bind(this));

@@ -7,9 +7,7 @@ export function initIpc() {
   ipcRenderer.on("themesLoaded", (_: IpcRendererEvent, themes: Themes.Theme[]) => {
     themesStore.set(themes);
   });
-  ipcRenderer.on("loadSettings", (_: IpcRendererEvent, settings: Types.SettingsInterface) => {
-    settingsStore.set(settings);
-  });
+  settingsStore.set(ipcRenderer.sendSync("getSettings"));
 
   ipcRenderer.send("frontReady");
 }

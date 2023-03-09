@@ -31,7 +31,9 @@ export const registerIpcMainHandlers = () => {
         let fileNames = await fs.promises.readdir(entryPath);
         fileNames = fileNames.filter((name) => name[0] !== ".");
 
-        await Promise.all(fileNames.map((name) => processEntry(path.resolve(entryPath, name), depth - 1, false)));
+        await Promise.all(
+          fileNames.map((name) => processEntry(path.resolve(entryPath, name), depth - 1, false)),
+        );
       } else if (path.basename(entryPath) === MANIFEST_FILE_NAME) {
         const res = Ext.addPath(entryPath);
 
@@ -80,9 +82,12 @@ export const registerIpcMainHandlers = () => {
     return storage.settings.app.disableThemes;
   });
 
-  listenToWebBindingPromise("openExtensionDirectory", async (webContents: WebContents, id: number) => {
-    console.error("TODO");
-  });
+  listenToWebBindingPromise(
+    "openExtensionDirectory",
+    async (webContents: WebContents, id: number) => {
+      console.error("TODO");
+    },
+  );
 
   ipcMain.handle("writeNewExtensionToDisk", async (sender, data) => {
     let manifest: Extensions.ManifestFile | null = null;
@@ -122,7 +127,9 @@ export const registerIpcMainHandlers = () => {
     const dir = lastDir ? `${lastDir}/${dirName}` : dirName;
 
     const saveDir = await dialogs.showSaveDialog({
-      title: manifest.name ? "Choose plugin directory location" : "Choose plugin name and directory location",
+      title: manifest.name
+        ? "Choose plugin directory location"
+        : "Choose plugin name and directory location",
       defaultPath: dir,
     });
 
@@ -152,9 +159,14 @@ export const registerIpcMainHandlers = () => {
     const saveFilesPromises = [];
     for (const file of data.files) {
       const filePath = path.join(saveDir, file.name);
-      const promise = fs.promises.writeFile(filePath, file.content, { encoding: "utf8" }).catch((error) => {
-        logger.error(`Cannot save file: ${filePath} for extension: "${manifest.name}", error:\n`, error);
-      });
+      const promise = fs.promises
+        .writeFile(filePath, file.content, { encoding: "utf8" })
+        .catch((error) => {
+          logger.error(
+            `Cannot save file: ${filePath} for extension: "${manifest.name}", error:\n`,
+            error,
+          );
+        });
       saveFilesPromises.push(promise);
     }
 
@@ -182,15 +194,6 @@ export const registerIpcMainHandlers = () => {
 
   ipcMain.handle("add-font-directories", async () => {
     return dialogs.showOpenDialog({ properties: ["openDirectory", "multiSelections"] });
-  });
-  ipcMain.handle("select-export-directory", async () => {
-    const directories = await dialogs.showOpenDialog({ properties: ["openDirectory"] });
-
-    if (!directories) {
-      return null;
-    }
-
-    return directories[0];
   });
 
   ipcMain.handle("writeFiles", async (sender, data) => {
@@ -271,7 +274,9 @@ export const registerIpcMainHandlers = () => {
           single
             ? `"${files[0].name}" already exists`
             : `${filesToBeReplaced} files including "${files[0].name}" already exist`
-        }. Replacing ${single ? "it" : "them"} will overwrite ${single ? "its" : "their"} existing contents.`,
+        }. Replacing ${single ? "it" : "them"} will overwrite ${
+          single ? "its" : "their"
+        } existing contents.`,
         textOkButton: "Replace",
       });
       if (selectedID !== 0) {

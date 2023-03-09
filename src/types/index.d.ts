@@ -28,7 +28,6 @@ declare namespace Electron {
     ): this;
     on(event: "log", listener: (data: any) => void): this;
     on(event: "signOut", listener: () => void): this;
-    on(event: "set-default-theme", listener: () => void): this;
     on(event: "themes-add-repository", listener: () => void): this;
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggleSettingsDeveloperTools", listener: () => void): this;
@@ -51,6 +50,7 @@ declare namespace Electron {
     on(event: "requestBoundsForTabView", listener: (windowId: number) => void): this;
     on(event: "relaunchApp", listener: () => void): this;
     on(event: "quitApp", listener: () => void): this;
+    on(event: "reloadCurrentTheme", listener: () => void): this;
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
@@ -64,7 +64,6 @@ declare namespace Electron {
     emit(event: "os-menu-invalidated", dependencies: MenuState.MenuStateParams): boolean;
     emit(event: "log", data: any): boolean;
     emit(event: "signOut"): boolean;
-    emit(event: "set-default-theme"): boolean;
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggleSettingsDeveloperTools"): boolean;
@@ -84,6 +83,7 @@ declare namespace Electron {
     emit(event: "requestBoundsForTabView", windowId: number): void;
     emit(event: "relaunchApp"): void;
     emit(event: "quitApp"): void;
+    emit(event: "reloadCurrentTheme"): void;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -105,7 +105,10 @@ declare namespace Electron {
     on(channel: "setFocusToMainTab", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "setTabFocus", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "closeTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
-    on(channel: "closeSettingsView", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(
+      channel: "closeSettingsView",
+      listener: (event: IpcMainInvokeEvent, settings: Types.SettingsInterface) => void,
+    ): this;
     on(channel: "closeThemeCreatorView", listener: (event: IpcMainInvokeEvent) => void): this;
     on(
       channel: "themeCreatorExportTheme",
@@ -186,11 +189,6 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, visible: boolean) => void,
     ): this;
     on(
-      channel: "themeChange",
-      listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
-    ): this;
-    on(channel: "set-default-theme", listener: (event: IpcMainInvokeEvent) => void): this;
-    on(
       channel: "saveCreatorTheme",
       listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
     ): this;
@@ -212,6 +210,7 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
     ): this;
     on(channel: "windowClose", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "changeTheme", listener: (event: IpcMainEvent, theme: Themes.Theme) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -270,7 +269,7 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent) => Promise<string[] | null>,
     ): void;
     handle(
-      channel: "select-export-directory",
+      channel: "selectExportDirectory",
       listener: (event: IpcMainInvokeEvent) => Promise<string | null>,
     ): void;
   }
@@ -282,7 +281,7 @@ declare namespace Electron {
       listener: (event: IpcRendererEvent, visible: boolean) => void,
     ): this;
     on(
-      channel: "updatePanelScale",
+      channel: "setPanelScale",
       listener: (event: IpcRendererEvent, scale: number, height: number) => void,
     ): this;
     on(channel: "updateUiScale", listener: (event: IpcRendererEvent, scale: number) => void): this;
@@ -305,11 +304,6 @@ declare namespace Electron {
       channel: "setIsInVoiceCall",
       listener: (event: IpcRendererEvent, data: { id: number; isInVoiceCall: boolean }) => void,
     ): this;
-    on(
-      channel: "themeChange",
-      listener: (event: IpcRendererEvent, theme: Themes.Theme) => void,
-    ): this;
-    on(channel: "set-default-theme", listener: (event: IpcRendererEvent) => void): this;
     on(
       channel: "loadCreatorTheme",
       listener: (event: IpcRendererEvent, theme: Themes.Theme) => void,
@@ -340,13 +334,12 @@ declare namespace Electron {
     send(channel: "updateFileKey", windowId: number, key: string): this;
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
-    send(channel: "closeSettingsView"): this;
+    send(channel: "closeSettingsView", settings: Types.SettingsInterface): this;
     send(channel: "closeThemeCreatorView"): this;
     send(channel: "themeCreatorExportTheme", theme: Themes.Theme): this;
     send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
     send(channel: "disableThemesChanged", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
-    send(channel: "updatePanelScale", scale: number): this;
     send(channel: "log-debug", ...args: any[]): this;
     send(channel: "log-info", ...args: any[]): this;
     send(channel: "log-error", ...args: any[]): this;
@@ -357,8 +350,6 @@ declare namespace Electron {
     send(channel: "newProject"): this;
     send(channel: "appExit"): this;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;
-    send(channel: "themeChange", theme: Themes.Theme): this;
-    send(channel: "set-default-theme"): this;
     send(channel: "saveCreatorTheme", theme: Themes.Theme): this;
     send(channel: "syncThemes"): this;
     send(channel: "setClipboardData", data: WebApi.SetClipboardData): this;
@@ -368,6 +359,8 @@ declare namespace Electron {
     send(channed: "windowDidRestored"): this;
     send(channed: "changeTheme", theme: Themes.Theme): this;
     send(channed: "windowClose"): this;
+
+    sendSync(channed: "getSettings"): Types.SettingsInterface;
 
     invoke(
       channel: "writeNewExtensionToDisk",
@@ -386,14 +379,15 @@ declare namespace Electron {
     invoke(channel: "getFonts"): Promise<FontsMap>;
     invoke(channel: "getFontFile", data: WebApi.GetFontFile): Promise<Buffer>;
     invoke(channel: "add-font-directories"): Promise<string[] | null>;
-    invoke(channel: "select-export-directory"): Promise<string | null>;
+    invoke(channel: "selectExportDirectory"): Promise<string | null>;
+    invoke(channel: "updatePanelScale", scale: number): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {
     send(channel: "renderView", view: Types.View): void;
     send(channel: "themesLoaded", themes: Themes.Theme[]): void;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): void;
-    send(channel: "updatePanelScale", scale: number, height: number): void;
+    send(channel: "setPanelScale", scale: number, height: number): void;
     send(channel: "updateUiScale", scale: number): void;
     send(channel: "closeAllTab"): void;
     send(channel: "setTitle", data: { id: number; title: string }): void;
@@ -402,7 +396,6 @@ declare namespace Electron {
     send(channel: "focusTab", tabId: number): this;
     send(channel: "setUsingMicrophone", data: { id: number; isUsingMicrophone: boolean }): this;
     send(channel: "setIsInVoiceCall", data: { id: number; isInVoiceCall: boolean }): this;
-    send(channel: "themeChange", theme: Themes.Theme): this;
     send(channel: "loadCreatorTheme", theme: Themes.Theme): this;
     send(channel: "loadCurrentTheme", theme: Themes.Theme): this;
     send(channel: "syncThemesStart", theme: Themes.Theme): this;

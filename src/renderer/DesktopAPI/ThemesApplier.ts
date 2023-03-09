@@ -18,11 +18,9 @@ export class ThemesApplier {
   }
 
   private registerEvents() {
-    E.ipcRenderer.on("themeChange", (_, theme) => {
+    E.ipcRenderer.on("loadCurrentTheme", (_, theme) => {
+      console.log("loadCurrentTheme, theme: ", theme);
       this.changePalette(theme);
-    });
-    E.ipcRenderer.on("set-default-theme", () => {
-      this.changePalette(DEFAULT_THEME);
     });
   }
 
@@ -65,9 +63,15 @@ export class ThemesApplier {
       const value = this.currentTheme.palette[key];
       document.body.style.setProperty(`--${key}`, value);
 
+      if (key === "bg-header-control") {
+        document.body.style.setProperty("--color-bg-toolbar-secondary", value);
+        document.body.style.setProperty("--bg-overlay-active", value);
+        document.body.style.setProperty("--color-bg-toolbar-tertiary", value);
+      }
       if (key === "bg-toolbar-active") {
         document.body.style.setProperty("--bg-primary-btn", value);
         document.body.style.setProperty("--bg-overlay-active", value);
+        document.body.style.setProperty("--color-border-toolbar-selected", value);
       }
       if (key === "fg-overlay") {
         document.body.style.setProperty("--fg-overlay", value);
@@ -85,6 +89,20 @@ export class ThemesApplier {
       }
       if (key === "borders") {
         document.body.style.setProperty("--fg-overlay-sep", value);
+        document.body.style.setProperty("--color-border-toolbar", value);
+      }
+      if (key === "text") {
+        document.body.style.setProperty("--color-icon", value);
+        document.body.style.setProperty("--color-icon-brand", value);
+        document.body.style.setProperty("--color-icon-tertiary", value);
+      }
+      if (key === "text-active") {
+        document.body.style.setProperty("--color-icon-hover", value);
+        document.body.style.setProperty("--color-text-secondary-hover", value);
+      }
+      if (key === "bg-panel-hover") {
+        document.body.style.setProperty("--color-bg-pressed", value);
+        document.body.style.setProperty("--color-bg-tertiary", value);
       }
     }
 
@@ -172,7 +190,7 @@ export class ThemesApplier {
           cssRule.style["fill"] = `var(--text-active)`;
         }
         if (
-          /new_file_creation_topbar--importIcon|option_button--_optionButton|raw_components--_iconButton|object_row--layerIcon|segmented_control--icon/.test(
+          /new_file_creation_topbar--importIcon|close_button--closeX|new_file_creation_topbar--plusIcon|new_file_creation_topbar--importIcon|option_button--_optionButton|raw_components--_iconButton|object_row--layerIcon|segmented_control--icon/.test(
             cssRule.selectorText,
           )
         ) {

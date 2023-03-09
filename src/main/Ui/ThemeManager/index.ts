@@ -195,10 +195,15 @@ export default class ThemeManager {
     this.saveCreatorTheme(theme);
     this.creatorTheme = theme;
   }
+  private async reloadCurrentTheme() {
+    app.emit("loadCurrentTheme", this.themes.get(storage.settings.theme.currentTheme));
+  }
 
   private registerEvents() {
     ipcMain.on("syncThemes", this.syncThemes.bind(this));
     ipcMain.on("saveCreatorTheme", this.handlerSaveCreatorTheme.bind(this));
     ipcMain.on("themeCreatorExportTheme", this.exportCreatorTheme.bind(this));
+
+    app.on("reloadCurrentTheme", this.reloadCurrentTheme.bind(this));
   }
 }

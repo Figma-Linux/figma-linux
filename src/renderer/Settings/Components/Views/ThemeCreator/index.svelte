@@ -2,14 +2,14 @@
   import { Text, Label, Flex, ZoomView, HeaderModal } from "Common";
   import { TabView, TabViewHeaderItem } from "Common/TabView";
   import { InputText, InputRange } from "Common/Input";
-  import { DEFAULT_THEME } from "Const";
+  import { getColorPallet } from "Utils/Render";
   import { creatorTheme, modalBounds } from "../../../store";
 
   import Preview from "./Preview.svelte";
   import ColorPalette from "./ColorPalette.svelte";
   import FromTemplate from "./FromTemplate.svelte";
 
-  $: zoomViewHeight = $modalBounds.height - 240;
+  $: zoomViewHeight = $modalBounds.height - 236;
 
   let textValue = "";
   let zoom = 1;
@@ -59,22 +59,24 @@
       <Flex height="20px" />
       <Flex der="column">
         <ZoomView bind:zoom height={`${zoomViewHeight}px`}>
-          <Preview />
+          <div style={getColorPallet($creatorTheme).join(";")}>
+            <Preview />
+          </div>
         </ZoomView>
         <Flex height="10px" />
-        <InputRange bind:value={zoom} />
+        <InputRange bind:value={zoom} min={0.2} max={1.5} step={0.05} />
         <Flex der="column" align="center">
-          <Text padding="8px 0 0 0">{zoom}%</Text>
+          <Text padding="8px 0 0 0">{Math.floor(zoom * 100)}%</Text>
         </Flex>
       </Flex>
     </Flex>
     <Flex width="120px" />
     <Flex der="column" justifyItems="stretch" width="-webkit-fill-available">
-      <HeaderModal>
+      <HeaderModal bgColor="var(--bg-panel)">
         <TabView {items} initItemId={"ColorPalette"} onItemClick={onTabItemClick} />
       </HeaderModal>
       <tabBody style={`height: ${zoomViewHeight + 100}px; overflow: auto;`}>
-        <svelte:component this={currentItem.bodyComponent} theme={DEFAULT_THEME} />
+        <svelte:component this={currentItem.bodyComponent} bind:creatorTheme={$creatorTheme} />
       </tabBody>
     </Flex>
   </Flex>

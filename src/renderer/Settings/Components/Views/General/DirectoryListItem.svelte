@@ -9,7 +9,7 @@
 
 <div>
   <ButtonTool normalBgColor="tarsparent" on:mouseup={onItemRemoveClick}>
-    <Close size="16" />
+    <Close color="var(--text)" size="16" />
   </ButtonTool>
   <Flex width="10px" />
   <Text on:mouseup={onItemClick}>{text}</Text>

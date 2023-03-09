@@ -6,11 +6,11 @@
   export let height = "inherit";
 
   export let padding = "inherit";
-  export let normalFgColor = "var(--fg-header)";
+  export let normalFgColor = "var(--text)";
   export let normalBgColor = "transparent";
-  export let activeFgColor = "var(--fg-tab-hover)";
+  export let activeFgColor = "var(--text-active)";
   export let activeBgColor = "transparent";
-  export let hoverFgColor = "var(--fg-tab-hover)";
+  export let hoverFgColor = "var(--text-active)";
   export let hoverBgColor = "transparent";
 
   export let isActive = false;

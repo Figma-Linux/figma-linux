@@ -7,7 +7,7 @@ import ThemeCreatorView from "./ThemeCreatorView";
 import SettingsView from "./SettingsView";
 import TabManager from "./TabManager";
 
-import { HOMEPAGE, WINDOW_DEFAULT_OPTIONS } from "Const";
+import { HOMEPAGE, WINDOW_DEFAULT_OPTIONS, TOPPANELHEIGHT } from "Const";
 import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl } from "Utils/Common";
 import { panelUrlDev, panelUrlProd, toggleDetachedDevTools } from "Utils/Main";
 
@@ -40,7 +40,6 @@ export default class Window {
     isDev && toggleDetachedDevTools(this.window.webContents);
 
     this.registerEvents();
-    this.loadSettings(storage.settings);
   }
 
   public get id() {
@@ -99,18 +98,18 @@ export default class Window {
 
     this.updatePanelScale(event, scale);
   }
-  public updatePanelScale(_: IpcMainEvent, scale: number) {
+  private updatePanelScale(_: IpcMainEvent, scale: number) {
     const panelScale = +scale.toFixed(2);
-    let panelHeight = storage.settings.app.panelHeight;
 
-    panelHeight = Math.floor(panelHeight * panelScale);
-
+    storage.settings.app.panelHeight = Math.floor(TOPPANELHEIGHT * panelScale);
     storage.settings.ui.scalePanel = panelScale;
-    storage.settings.app.panelHeight = panelHeight;
 
-    this.window.webContents.send("updatePanelScale", panelScale, panelHeight);
+    this.window.webContents.send("setPanelScale", panelScale, storage.settings.app.panelHeight);
 
     this.updateTabsBounds();
+  }
+  private updateFigmaUiScale(_: IpcMainEvent, scale: number) {
+    this.tabManager.updateScaleAll(scale);
   }
   public updateTabsBounds() {
     const bounds = this.calcBoundsForTabView();
@@ -191,7 +190,7 @@ export default class Window {
 
     isDev && toggleDetachedDevTools(this.settingsView.view.webContents);
   }
-  private closeSettingsView(_: IpcMainInvokeEvent) {
+  public closeSettingsView() {
     if (!this.settingsView.view) {
       return;
     }
@@ -217,12 +216,6 @@ export default class Window {
   }
   private loadCurrentTheme(theme: Themes.Theme) {
     this.window.webContents.send("loadCurrentTheme", theme);
-  }
-  public loadSettings(settings: Types.SettingsInterface) {
-    this.webViewQueueEvent.add({
-      id: "loadSettings",
-      args: [settings],
-    });
   }
   private windowMinimize(_: IpcMainEvent, windowId: number) {
     this.window.minimize();
@@ -320,7 +313,8 @@ export default class Window {
   }
 
   private handleFrontReady() {
-    this.handleWebViewEventQueue();
+    this.window.webContents.send("loadSettings", storage.settings);
+    this.showHandler(null);
   }
   private handleWebViewEventQueue() {
     for (const event of this.webViewQueueEvent) {
@@ -343,12 +337,13 @@ export default class Window {
     ipcMain.on("setPluginMenuData", this.setPluginMenuData.bind(this));
     ipcMain.on("updateActionState", this.updateActionState.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
-    ipcMain.on("updatePanelScale", this.updatePanelScale.bind(this));
     ipcMain.on("openFile", this.openFile.bind(this));
-    ipcMain.on("closeSettingsView", this.closeSettingsView.bind(this));
     ipcMain.on("closeThemeCreatorView", this.closeThemeCreatorView.bind(this));
     ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
     ipcMain.on("frontReady", this.handleFrontReady.bind(this));
+
+    ipcMain.handle("updatePanelScale", this.updatePanelScale.bind(this));
+    ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
 
     app.on("openSettingsView", this.openSettingsView.bind(this));
     app.on("openThemeCreatorView", this.openThemeCreatorView.bind(this));

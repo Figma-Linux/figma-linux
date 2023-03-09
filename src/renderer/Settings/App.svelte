@@ -1,11 +1,15 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
-  import { onMount } from "svelte";
   import { themeApp } from "../Common/Store/Themes";
   import { getColorPallet } from "Utils/Render/themes";
   import { initCommonIpc } from "../Common/Ipc";
   import { initIpc } from "./ipc";
+  import { settings } from "./store";
+
   import Body from "./Components/Body.svelte";
+
+  initCommonIpc();
+  initIpc();
 
   let pallet: string[] = [];
 
@@ -16,18 +20,13 @@
     pallet = getColorPallet(theme);
   });
 
-  onMount(() => {
-    initCommonIpc();
-    initIpc();
-  });
-
-  function onCloseModalHandler(event: MouseEvent) {
-    ipcRenderer.send("closeSettingsView");
+  function onCloseModalHandler(event: SvelteEvents.Empty) {
+    ipcRenderer.send("closeSettingsView", $settings);
   }
 </script>
 
-<div on:mouseup|self={onCloseModalHandler} id="settings" style={pallet.join("; ")}>
-  <Body />
+<div on:mousedown|self={onCloseModalHandler} id="settings" style={pallet.join("; ")}>
+  <Body on:closeSettings={onCloseModalHandler} />
 </div>
 
 <style>

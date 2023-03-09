@@ -81,6 +81,10 @@ export default class TabManager {
       !t.view.webContents.isDestroyed() ? t.view.webContents.reload() : "",
     );
   }
+  public updateScaleAll(scale: number) {
+    this.mainTab.updateScale(scale);
+    this.tabs.forEach((t) => t.updateScale(scale));
+  }
 
   public getTabByIndex(index: number) {
     let i = 0;
@@ -208,12 +212,24 @@ export default class TabManager {
     tab.view.webContents.send("handlePluginMenuAction", pluginMenuAction);
   }
 
+  private loadCurrentTheme(theme: Themes.Theme) {
+    this.mainTab.loadTheme(theme);
+    this.tabs.forEach((t) => t.view.webContents.send("loadCurrentTheme", theme));
+  }
+  private changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
+    this.loadCurrentTheme(theme);
+
+    storage.settings.theme.currentTheme = theme.id;
+  }
+
   private registerEvents() {
+    ipcMain.on("changeTheme", this.changeTheme.bind(this));
     ipcMain.on("setUsingMicrophone", this.setUsingMicrophone.bind(this));
     ipcMain.on("requestMicrophonePermission", this.requestMicrophonePermission.bind(this));
     ipcMain.on("setIsInVoiceCall", this.setIsInVoiceCall.bind(this));
 
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
     app.on("handlePluginMenuAction", this.handlePluginMenuAction.bind(this));
+    app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));
   }
 }

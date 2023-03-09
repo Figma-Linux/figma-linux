@@ -85,8 +85,14 @@ export default class MainTab {
     app.emit("requestBoundsForTabView", this.windowId);
   }
 
-  private updateScale(_: IpcMainEvent, scale: number) {
-    this.view.webContents.send("updateUiScale", scale);
+  public updateScale(scale: number) {
+    this.view.webContents.setZoomFactor(scale);
+  }
+  public reloadCurrentTheme() {
+    app.emit("reloadCurrentTheme");
+  }
+  public loadTheme(theme: Themes.Theme) {
+    this.view.webContents.send("loadCurrentTheme", theme);
   }
 
   private onMainTabWillNavigate(event: Event, url: string) {
@@ -95,6 +101,9 @@ export default class MainTab {
 
       event.preventDefault();
     }
+  }
+  private onDomReady(event: any) {
+    this.reloadCurrentTheme();
   }
   private onMainWindowWillNavigate(event: any, newUrl: string) {
     const currentUrl = event.sender.getURL();
@@ -151,10 +160,9 @@ export default class MainTab {
   }
 
   private registerEvents() {
-    ipcMain.on("updateFigmaUiScale", this.updateScale.bind(this));
-
     this.view.webContents.on("will-navigate", this.onMainTabWillNavigate.bind(this));
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
+    this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));
   }
 }

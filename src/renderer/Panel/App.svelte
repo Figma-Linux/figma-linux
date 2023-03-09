@@ -3,7 +3,7 @@
   import { initCommonIpc } from "../Common/Ipc";
   import { getColorPallet } from "Utils/Render/themes";
   import { initIpc } from "./ipc";
-  import { currentTab } from "./store";
+  import { currentTab, panelZoom } from "./store";
 
   import { Left, Right, Tabs } from "./Components";
 
@@ -24,7 +24,7 @@
   });
 </script>
 
-<div id="panel" style={pallet.join("; ")}>
+<div id="panel" style={`zoom: ${$panelZoom}; ${pallet.join("; ")}`}>
   <Left {currentTabId} />
   <Tabs {currentTabId} />
   <Right />

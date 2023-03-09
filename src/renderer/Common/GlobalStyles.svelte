@@ -1,4 +1,9 @@
 <style global>
+  *::placeholder {
+    color: var(--text);
+    opacity: 0.6;
+  }
+
   *::-webkit-scrollbar {
     width: 8px;
     height: 8px;

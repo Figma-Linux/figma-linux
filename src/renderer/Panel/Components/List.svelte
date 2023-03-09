@@ -45,7 +45,12 @@
           {item.title}
         </span>
       </div>
-      <ButtonTool {normalBgColor} {hoverBgColor} on:mouseup={(e) => onClickClose(e, item.id)}>
+      <ButtonTool
+        padding="0 7px"
+        {normalBgColor}
+        {hoverBgColor}
+        on:mouseup={(e) => onClickClose(e, item.id)}
+      >
         <Close size="12" />
       </ButtonTool>
     </div>

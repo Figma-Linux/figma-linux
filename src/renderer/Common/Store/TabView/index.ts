@@ -1,12 +1,19 @@
 import { writable } from "svelte/store";
 
 function createTabView() {
-  const { subscribe, update, set } = writable<string | undefined>();
+  const { subscribe, update, set } = writable<Types.Dic<string>>({});
+  let id = 0;
 
   return {
-    set,
+    update,
     subscribe,
-    reset: () => set(undefined),
+    createId: () => id++,
+    set: (id: number | string, item: string) =>
+      update((store) => {
+        store[id] = item;
+        store = store;
+        return store;
+      }),
   };
 }
 

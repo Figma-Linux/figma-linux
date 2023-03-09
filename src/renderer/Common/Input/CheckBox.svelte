@@ -97,7 +97,7 @@
     display: none;
   }
 
-  div.disabled {
+  /* div.disabled {
     position: relative;
   }
   div.disabled > label {
@@ -105,9 +105,9 @@
   }
   div.disabled > label:hover {
     cursor: default;
-  }
+  } */
 
-  div.disabled > label > span:hover::before {
+  /* div.disabled > label > span:hover::before {
     box-shadow: 0 0 0px 0px transparent;
   }
 
@@ -138,5 +138,5 @@
 
   div.disabled > label > input[type="checkbox"] {
     display: none;
-  }
+  } */
 </style>

@@ -4,16 +4,19 @@
 
   import ThemeItem from "./ThemeItem.svelte";
 
+  export let creatorTheme: Themes.Theme;
+
   function onApplyTemplate(event: CustomEvent<SvelteEvents.ApplyTheme>) {
-    console.log("onApplyTemplate, themeId: ", event.detail.themeId);
+    const themeId = event.detail.themeId;
+
+    creatorTheme = structuredClone(
+      [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
+    );
   }
 </script>
 
-<Grid columns="repeat(auto-fit, minmax(200px, 1fr))" gap="3%" padding="0 12px 0 0">
-  {#each $creatorsThemes as theme (theme.id)}
-    <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
-  {/each}
-  {#each $themes as theme (theme.id)}
+<Grid columns="repeat(auto-fit, minmax(200px, 1fr))" gap="2vmin" padding="0 12px 0 0">
+  {#each [...$creatorsThemes, ...$themes] as theme (theme.id)}
     <ThemeItem bind:theme on:applyTemplate={onApplyTemplate} />
   {/each}
 </Grid>

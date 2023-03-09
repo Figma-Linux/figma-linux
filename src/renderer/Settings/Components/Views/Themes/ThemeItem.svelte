@@ -43,6 +43,7 @@
     </div>
     <TertiaryButton
       padding="0 10px"
+      isActive={currentThemeId === theme.id}
       on:mouseup={() => dispatch("applyTheme", { themeId: theme.id })}
     >
       {currentThemeId === theme.id ? "Applied" : "Apply"}

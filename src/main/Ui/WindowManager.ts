@@ -2,6 +2,7 @@ import { app, shell, clipboard, ipcMain, IpcMainEvent, WebContents } from "elect
 
 import Window from "./Window";
 import { storage } from "Main/Storage";
+import { dialogs } from "Main/Dialogs";
 import { HOMEPAGE } from "Const";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
 import { registerIpcMainHandlers } from "Main/events";
@@ -232,6 +233,23 @@ export default class WindowManager {
 
     window.setTabFocus(tabId);
   }
+  private async selectExportDirectory(_: IpcMainEvent) {
+    const directories = await dialogs.showOpenDialog({ properties: ["openDirectory"] });
+
+    if (!directories) {
+      return null;
+    }
+
+    return directories[0];
+  }
+  public closeSettingsView(_: IpcMainEvent, settings: Types.SettingsInterface) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    storage.settings = settings;
+    storage.save();
+
+    window.closeSettingsView();
+  }
   private handleUrl(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -239,6 +257,8 @@ export default class WindowManager {
   }
 
   private registerEvents() {
+    ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
+
     ipcMain.on("openDevTools", this.openDevTools.bind(this));
     ipcMain.on("startAppAuth", this.startAppAuth.bind(this));
     ipcMain.on("finishAppAuth", this.finishAppAuth.bind(this));
@@ -248,6 +268,7 @@ export default class WindowManager {
     ipcMain.on("newProject", this.newProject.bind(this));
     ipcMain.on("closeTab", this.closeTab.bind(this));
     ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
+    ipcMain.on("closeSettingsView", this.closeSettingsView.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

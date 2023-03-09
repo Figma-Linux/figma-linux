@@ -10,7 +10,7 @@
   const dispatch = createEventDispatcher();
 </script>
 
-<div on:mouseup={() => dispatch("applyTemplate", { themeId: theme.id })}>
+<div on:mousedown={() => dispatch("applyTemplate", { themeId: theme.id })}>
   <div class="themeview_item_tumbl" style={getColorPallet(theme).join(";")}>
     <div class="themeview_item_tumbl_top" />
     <div class="themeview_item_tumbl_toolpanel">
@@ -42,6 +42,9 @@
     height: 159px;
     border: 1px solid var(--borders);
     border-radius: 6px 6px 0 0;
+  }
+  .themeview_item_tumbl:hover {
+    cursor: pointer;
   }
   .themeview_item_tumbl_top {
     height: 8px;

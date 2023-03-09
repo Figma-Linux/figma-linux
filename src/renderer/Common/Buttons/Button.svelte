@@ -6,9 +6,9 @@
 
   export let padding = "inherit";
   export let margin = "inherit";
-  export let normalFgColor = "var(--fg-header)";
-  export let activeFgColor = "var(--fg-header)";
-  export let hoverFgColor = "var(--fg-header)";
+  export let normalFgColor = "var(--text)";
+  export let activeFgColor = "var(--text-active)";
+  export let hoverFgColor = "var(--text-active)";
 
   export let normalBgAlpha = "1";
   export let activeBgAlpha = "1";
@@ -99,6 +99,12 @@
     background-color: var(--active-bg-color);
   }
   .button__active {
+    border: var(--active-border);
+    cursor: var(--active-cursor);
+    color: var(--active-fg-color);
+    background-color: var(--active-bg-color);
+  }
+  .button__active:hover {
     border: var(--active-border);
     cursor: var(--active-cursor);
     color: var(--active-fg-color);

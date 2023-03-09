@@ -11,8 +11,10 @@
 
   export let onItemClick = (item: Types.TabItem) => {};
 
+  const id = items.map((i) => i.id).join(".");
+
   if (initItemId) {
-    tabView.set(initItemId);
+    tabView.set(id, initItemId);
   }
 </script>
 
@@ -29,11 +31,11 @@
   {#each items as item (item.id)}
     <svelte:component
       this={item.item}
-      isActive={item.id === $tabView}
+      isActive={item.id === $tabView[id]}
       text={item.text}
       {...item.itemArgs}
       on:mouseup={() => {
-        tabView.set(item.id);
+        tabView.set(id, item.id);
         onItemClick(item);
       }}
     />

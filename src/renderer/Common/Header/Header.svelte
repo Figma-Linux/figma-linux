@@ -1,4 +1,12 @@
-<div>
+<script lang="ts">
+  export let bgColor = "var(--bg-header)";
+</script>
+
+<div
+  style={`
+    --bg-color: ${bgColor};
+  `}
+>
   <slot />
 </div>
 
@@ -6,6 +14,6 @@
   div {
     display: flex;
     align-items: center;
-    background-color: var(--bg-header);
+    background-color: var(--bg-color);
   }
 </style>

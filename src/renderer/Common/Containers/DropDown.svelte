@@ -16,6 +16,10 @@
   });
 
   function calcHeight() {
+    if (!content) {
+      return;
+    }
+
     const bounds = content.getBoundingClientRect();
 
     if (!isEmpty) {

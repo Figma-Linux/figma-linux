@@ -49,15 +49,19 @@ export class Storage {
     this.writeSync(this.settings);
   }
 
-  public setFeatureFlags = (_: IpcMainEvent, data: { featureFlags: Types.FeatureFlags }): void => {
+  public setFeatureFlags(_: IpcMainEvent, data: { featureFlags: Types.FeatureFlags }) {
     this.settings.app.featureFlags = {
       ...this.settings.app.featureFlags,
       ...data.featureFlags,
     };
-  };
+  }
+  public getSettings(event: IpcMainEvent) {
+    event.returnValue = this.settings;
+  }
 
   private registerEvents() {
     ipcMain.on("setFeatureFlags", this.setFeatureFlags.bind(this));
+    ipcMain.on("getSettings", this.getSettings.bind(this));
   }
 }
 

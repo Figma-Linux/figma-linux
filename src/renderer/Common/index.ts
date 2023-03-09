@@ -7,7 +7,7 @@ export { default as SecondaryButton } from "./Buttons/SecondaryButton.svelte";
 export { default as TertiaryButton } from "./Buttons/TertiaryButton.svelte";
 
 // Containers
-export { default as Container } from "./Containers/Container.svelte";
+export { default as Spiner } from "./Containers/Spiner.svelte";
 export { default as Grid } from "./Containers/Grid.svelte";
 export { default as Flex } from "./Containers/Flex.svelte";
 export { default as FlexItem } from "./Containers/FlexItem.svelte";

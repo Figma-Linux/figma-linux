@@ -1,5 +1,5 @@
 import { app, ipcMain, IpcMainEvent } from "electron";
-import * as Azip from "adm-zip";
+import Azip from "adm-zip";
 import * as fs from "fs";
 import * as path from "path";
 import { dialogs } from "Main/Dialogs";
@@ -117,7 +117,7 @@ export default class ThemeManager {
           const themeData = JSON.parse(themeJson) as Themes.Theme;
           const themeId = path.parse(filePath).name;
           const theme: Themes.Theme = {
-            ...themeData,
+            ...this.translatePaletteToKebabCase(themeData),
             id: themeId,
           };
 

@@ -1,21 +1,14 @@
 <script lang="ts">
-  export let isSpinner = false;
-
-  const classes = ["icon"];
-
-  isSpinner && classes.push("spin");
+  export let spin = false;
 </script>
 
-<div class={classes.join(" ")}>
+<div class={spin ? "spin" : ""}>
   <slot />
 </div>
 
 <style>
-  .icon {
-    padding: 9px;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
+  div {
+    display: flex;
   }
 
   @keyframes spin {

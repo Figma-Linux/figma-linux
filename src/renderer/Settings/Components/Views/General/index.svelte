@@ -54,7 +54,7 @@
     <Flex der="column" width="-webkit-fill-available">
       <Label>Scale UI</Label>
       <InputRange bind:value={$settings.ui.scaleFigmaUI} min={0.5} max={1.5} step={0.05} />
-      <Flex der="column" align="center">
+      <Flex der="column" alignItems="center" justifyContent="center">
         <Text padding="8px 0 0 0">{Math.floor($settings.ui.scaleFigmaUI * 100)}%</Text>
       </Flex>
     </Flex>
@@ -62,7 +62,7 @@
     <Flex der="column" width="-webkit-fill-available">
       <Label>Scale Tabs</Label>
       <InputRange bind:value={$settings.ui.scalePanel} min={0.5} max={1.5} step={0.05} />
-      <Flex der="column" align="center">
+      <Flex der="column" alignItems="center" justifyContent="center">
         <Text padding="8px 0 0 0">{Math.floor($settings.ui.scalePanel * 100)}%</Text>
       </Flex>
     </Flex>

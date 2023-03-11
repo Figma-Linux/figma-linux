@@ -9,13 +9,13 @@
 
 <div
   style={`
-  --checkSize: ${checkSize};
-  --checkWidth: ${checkWidth};
-  --checkBorder: ${checkBorder};
-`}
+    --checkSize: ${checkSize};
+    --checkWidth: ${checkWidth};
+    --checkBorder: ${checkBorder};
+  `}
 >
   <label>
-    <input on:change bind:checked type="checkbox" title="sdadad" />
+    <input on:change bind:checked type="checkbox" />
     <span>{text}</span>
   </label>
 </div>

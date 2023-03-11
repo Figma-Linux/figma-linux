@@ -2,6 +2,8 @@
   import Button from "./Button.svelte";
 
   export let padding = "0 7px";
+  export let width = "auto";
+  export let height = "36px";
   export let normalFgColor = "var(--text)";
   export let hoverFgColor = "var(--text-active)";
   export let normalBgColor = "transparent";
@@ -20,6 +22,8 @@
 
 <Button
   {padding}
+  {width}
+  {height}
   {normalFgColor}
   {hoverFgColor}
   {normalBgColor}
@@ -33,7 +37,6 @@
   {activeCursor}
   {hoverCursor}
   round={3}
-  height="36px"
   on:mousedown
   on:mouseup
 >

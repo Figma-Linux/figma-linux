@@ -2,18 +2,33 @@
   import { createEventDispatcher } from "svelte";
   import { getColorPallet } from "Utils/Render";
 
-  import { Text, Label } from "Common";
-  import { PrimaryButton, TertiaryButton } from "Common/Buttons";
-  import { Burger, Hand, Component } from "Common/Icons";
+  import { Text, Label, Flex, FlexItem, Rotate } from "Common";
+  import { PrimaryButton, TertiaryButton, ButtonTool } from "Common/Buttons";
+  import {
+    Burger,
+    Hand,
+    Component,
+    Download,
+    Pencil2,
+    RadioNormal,
+    RadioChecked,
+  } from "Common/Icons";
 
   export let currentThemeId: string;
   export let theme: Themes.Theme;
+
+  let radio: ConstructorOfATypedSvelteComponent;
+  $: radio = currentThemeId === theme.id ? RadioChecked : RadioNormal;
 
   const dispatch = createEventDispatcher();
 </script>
 
 <div>
-  <div class="themeview_item_tumbl" style={getColorPallet(theme).join(";")}>
+  <div
+    class="themeview_item_tumbl"
+    on:mouseup={() => dispatch("applyTheme", { themeId: theme.id })}
+    style={getColorPallet(theme).join(";")}
+  >
     <div class="themeview_item_tumbl_top" />
     <div class="themeview_item_tumbl_toolpanel">
       <div>
@@ -36,19 +51,46 @@
       <div class="themeview_item_tumbl_body_right" />
     </div>
   </div>
-  <div class="themeview_item_tumbl_panel">
-    <div>
-      <Label padding="0">{theme.name}</Label>
-      <Text whiteSpace="wrap">{theme.author}</Text>
-    </div>
-    <TertiaryButton
-      padding="0 10px"
-      isActive={currentThemeId === theme.id}
-      on:mouseup={() => dispatch("applyTheme", { themeId: theme.id })}
-    >
-      {currentThemeId === theme.id ? "Applied" : "Apply"}
-    </TertiaryButton>
-  </div>
+  <Flex
+    padding="14px"
+    lborder="1px solid var(--borders)"
+    rborder="1px solid var(--borders)"
+    bborder="1px solid var(--borders)"
+    bradius="0 0 6px 6px"
+  >
+    <FlexItem grow={2}>
+      <Flex der="column">
+        <Label padding="0">{theme.name}</Label>
+        <Text whiteSpace="wrap">{theme.author}</Text>
+      </Flex>
+    </FlexItem>
+    <FlexItem grow={1}>
+      <Flex alignItems="center" justifyContent="end" height="100%">
+        <ButtonTool
+          normalBgColor="tarsparent"
+          on:mouseup={() => dispatch("editTheme", { themeId: theme.id })}
+        >
+          <Pencil2 color="var(--text)" size="16" />
+        </ButtonTool>
+        <Flex width="10px" />
+        <ButtonTool
+          normalBgColor="tarsparent"
+          on:mouseup={() => dispatch("useColorPalette", { themeId: theme.id })}
+        >
+          <Rotate deg={-90}>
+            <Download color="var(--text)" size="16" />
+          </Rotate>
+        </ButtonTool>
+        <Flex width="10px" />
+        <ButtonTool
+          normalBgColor="tarsparent"
+          on:mouseup={() => dispatch("applyTheme", { themeId: theme.id })}
+        >
+          <svelte:component this={radio} color="var(--text)" />
+        </ButtonTool>
+      </Flex>
+    </FlexItem>
+  </Flex>
 </div>
 
 <style>
@@ -57,6 +99,9 @@
     height: 159px;
     border: 1px solid var(--borders);
     border-radius: 6px 6px 0 0;
+  }
+  .themeview_item_tumbl:hover {
+    cursor: pointer;
   }
   .themeview_item_tumbl_top {
     height: 8px;
@@ -108,23 +153,5 @@
   .themeview_item_tumbl_body_right {
     border-left: 1px solid var(--borders);
     background-color: var(--bg-panel);
-  }
-  .themeview_item_tumbl_panel {
-    display: flex;
-    justify-content: space-between;
-    padding: 14px;
-    border-radius: 0 0 6px 6px;
-    border-left: 1px solid var(--borders);
-    border-right: 1px solid var(--borders);
-    border-bottom: 1px solid var(--borders);
-  }
-  .themeview_item_tumbl_panel > div {
-    display: flex;
-  }
-  .themeview_item_tumbl_panel > div:nth-child(1) {
-    flex-direction: column;
-  }
-  .themeview_item_tumbl_panel > div:nth-child(2) {
-    align-self: center;
   }
 </style>

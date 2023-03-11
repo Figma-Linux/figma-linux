@@ -4,7 +4,7 @@
   import { TabView, TabViewHeaderItem } from "Common/TabView";
   import { General } from "./Views/General";
   import { Themes, ThemesHeaderComponent } from "./Views/Themes";
-  import { ThemeCreator } from "./Views/ThemeCreator";
+  import { ThemeCreator, ThemeCreatorHeaderComponent } from "./Views/ThemeCreator";
   import { modalBounds } from "../store";
 
   const dispatch = createEventDispatcher();
@@ -37,6 +37,7 @@
       },
       item: TabViewHeaderItem,
       bodyComponent: ThemeCreator,
+      headerComponent: ThemeCreatorHeaderComponent,
     },
   ];
 

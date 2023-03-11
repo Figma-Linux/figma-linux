@@ -1,9 +1,9 @@
 <script lang="ts">
-  export let width = "inherit";
-  export let padding = "inherit";
+  export let width = "auto";
+  export let padding = "auto";
   export let whiteSpace = "nowrap";
-  export let overflow = "inherit";
-  export let textOverflow = "inherit";
+  export let overflow = "auto";
+  export let textOverflow = "auto";
 </script>
 
 <span

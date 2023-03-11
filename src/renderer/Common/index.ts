@@ -13,6 +13,7 @@ export { default as Flex } from "./Containers/Flex.svelte";
 export { default as FlexItem } from "./Containers/FlexItem.svelte";
 export { default as DropDown } from "./Containers/DropDown.svelte";
 export { default as ZoomView } from "./Containers/ZoomView.svelte";
+export { default as Rotate } from "./Containers/Rotate.svelte";
 
 // Header
 export { default as Header } from "./Header/Header.svelte";
@@ -40,11 +41,15 @@ export { default as MenuCorner } from "./Icons/MenuCorner.svelte";
 export { default as Minimize } from "./Icons/Minimize.svelte";
 export { default as Muted } from "./Icons/Muted.svelte";
 export { default as Pencil } from "./Icons/Pencil.svelte";
+export { default as Pencil2 } from "./Icons/Pencil2.svelte";
 export { default as Plus } from "./Icons/Plus.svelte";
 export { default as Restore } from "./Icons/Restore.svelte";
 export { default as Settings } from "./Icons/Settings.svelte";
 export { default as Sync } from "./Icons/Sync.svelte";
 export { default as UnMuted } from "./Icons/UnMuted.svelte";
+export { default as Download } from "./Icons/Download.svelte";
+export { default as RadioNormal } from "./Icons/RadioNormal.svelte";
+export { default as RadioChecked } from "./Icons/RadioChecked.svelte";
 
 // Inputs
 export { default as InputColor } from "./Input/Color.svelte";

@@ -2,6 +2,7 @@
   import { tabView } from "../Store/TabView";
 
   export let items: Types.TabItem[] = [];
+  export let currentId = "";
   export let initItemId: string | undefined = undefined;
 
   export let padding = "inherit";
@@ -15,7 +16,10 @@
 
   if (initItemId) {
     tabView.set(id, initItemId);
+    currentId = initItemId;
   }
+
+  $: tabView.set(id, currentId);
 </script>
 
 <div
@@ -35,6 +39,7 @@
       text={item.text}
       {...item.itemArgs}
       on:mouseup={() => {
+        currentId = item.id;
         tabView.set(id, item.id);
         onItemClick(item);
       }}

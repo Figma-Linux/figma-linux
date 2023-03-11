@@ -42,9 +42,14 @@
   ];
 
   let currentItem = items[0];
+  let currentId = currentItem.id;
 
   function onTabItemClick(item: Types.SetingsTabItem) {
     currentItem = item;
+  }
+  function onSetTabViewIndex(event: CustomEvent<SvelteEvents.SetSettingsTabViewIndex>) {
+    currentItem = items[event.detail.index];
+    currentId = currentItem.id;
   }
 
   let modal: HTMLElement;
@@ -61,7 +66,7 @@
 <div bind:this={modal}>
   <HeaderModal bgColor="var(--bg-panel)">
     <FlexItem grow={1}>
-      <TabView {items} initItemId={"general"} onItemClick={onTabItemClick} />
+      <TabView {items} bind:currentId initItemId={"general"} onItemClick={onTabItemClick} />
     </FlexItem>
     <svelte:component this={currentItem.headerComponent} />
     <Button
@@ -74,7 +79,10 @@
     </Button>
   </HeaderModal>
   <settingsBody>
-    <svelte:component this={currentItem.bodyComponent} />
+    <svelte:component
+      this={currentItem.bodyComponent}
+      on:setSettingsTabViewIndex={onSetTabViewIndex}
+    />
   </settingsBody>
 </div>
 

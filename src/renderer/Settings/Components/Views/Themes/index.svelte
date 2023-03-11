@@ -1,11 +1,14 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
-  import { themes, creatorsThemes, settings } from "../../../store";
+  import { createEventDispatcher } from "svelte";
+  import { themes, creatorsThemes, creatorTheme, settings } from "../../../store";
   import { DropDown, Flex, Grid } from "Common";
 
   import ThemeItem from "./ThemeItem.svelte";
 
-  function applyTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
+  const dispatch = createEventDispatcher();
+
+  function onApplyTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
     const themeId = event.detail.themeId;
     const theme: Themes.Theme = structuredClone(
       [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
@@ -14,6 +17,19 @@
     ipcRenderer.send("changeTheme", theme);
     $settings.theme.currentTheme = themeId;
   }
+  function onEditTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
+    // TODO:
+  }
+  function onUseColorPalette(event: CustomEvent<SvelteEvents.ApplyTheme>) {
+    const themeId = event.detail.themeId;
+    const theme: Themes.Theme = structuredClone(
+      [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
+    );
+
+    $creatorTheme = theme;
+
+    dispatch("setSettingsTabViewIndex", { index: 2 });
+  }
 </script>
 
 <div>
@@ -21,7 +37,9 @@
     <themeView>
       {#each $creatorsThemes as theme (theme.id)}
         <ThemeItem
-          on:applyTheme={applyTheme}
+          on:applyTheme={onApplyTheme}
+          on:editTheme={onEditTheme}
+          on:useColorPalette={onUseColorPalette}
           {theme}
           canEdit
           bind:currentThemeId={$settings.theme.currentTheme}
@@ -34,7 +52,8 @@
     <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
       {#each $themes as theme (theme.id)}
         <ThemeItem
-          on:applyTheme={applyTheme}
+          on:applyTheme={onApplyTheme}
+          on:useColorPalette={onUseColorPalette}
           {theme}
           bind:currentThemeId={$settings.theme.currentTheme}
         />

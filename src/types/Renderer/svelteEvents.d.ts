@@ -4,4 +4,7 @@ declare namespace SvelteEvents {
   interface ApplyTheme {
     themeId: string;
   }
+  interface SetSettingsTabViewIndex {
+    index: number;
+  }
 }

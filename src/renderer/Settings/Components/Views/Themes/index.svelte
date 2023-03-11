@@ -23,6 +23,7 @@
         <ThemeItem
           on:applyTheme={applyTheme}
           {theme}
+          canEdit
           bind:currentThemeId={$settings.theme.currentTheme}
         />
       {/each}

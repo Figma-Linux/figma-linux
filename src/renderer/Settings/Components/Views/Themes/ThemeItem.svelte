@@ -3,7 +3,7 @@
   import { getColorPallet } from "Utils/Render";
 
   import { Text, Label, Flex, FlexItem, Rotate } from "Common";
-  import { PrimaryButton, TertiaryButton, ButtonTool } from "Common/Buttons";
+  import { PrimaryButton, ButtonTool } from "Common/Buttons";
   import {
     Burger,
     Hand,
@@ -14,6 +14,7 @@
     RadioChecked,
   } from "Common/Icons";
 
+  export let canEdit = false;
   export let currentThemeId: string;
   export let theme: Themes.Theme;
 
@@ -66,12 +67,14 @@
     </FlexItem>
     <FlexItem grow={1}>
       <Flex alignItems="center" justifyContent="end" height="100%">
-        <ButtonTool
-          normalBgColor="tarsparent"
-          on:mouseup={() => dispatch("editTheme", { themeId: theme.id })}
-        >
-          <Pencil2 color="var(--text)" size="16" />
-        </ButtonTool>
+        {#if canEdit}
+          <ButtonTool
+            normalBgColor="tarsparent"
+            on:mouseup={() => dispatch("editTheme", { themeId: theme.id })}
+          >
+            <Pencil2 color="var(--text)" size="16" />
+          </ButtonTool>
+        {/if}
         <Flex width="10px" />
         <ButtonTool
           normalBgColor="tarsparent"

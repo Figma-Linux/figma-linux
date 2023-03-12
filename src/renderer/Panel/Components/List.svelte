@@ -76,7 +76,7 @@
     user-select: none;
     padding: 0 0 0 12px;
     color: var(--fg-tab);
-    font-size: var(--font-title-size);
+    font-size: var(--text-size-tab);
     outline: none !important;
   }
   span {

@@ -4,10 +4,12 @@
   export let whiteSpace = "nowrap";
   export let overflow = "auto";
   export let textOverflow = "auto";
+  export let size = "auto";
 </script>
 
 <span
   style={`
+    --size: ${size};
     --width: ${width};
     --padding: ${padding};
     --overflow: ${overflow};
@@ -26,5 +28,6 @@
     overflow: var(--overflow);
     white-space: var(--whiteSpace);
     text-overflow: var(--textOverflow);
+    font-size: var(--size);
   }
 </style>

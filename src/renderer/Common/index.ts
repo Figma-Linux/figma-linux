@@ -36,6 +36,7 @@ export { default as Github } from "./Icons/Github.svelte";
 export { default as Hand } from "./Icons/Hand.svelte";
 export { default as Home } from "./Icons/Home.svelte";
 export { default as Main } from "./Icons/Main.svelte";
+export { default as Menu } from "./Icons/Menu.svelte";
 export { default as Maximize } from "./Icons/Maximize.svelte";
 export { default as MenuCorner } from "./Icons/MenuCorner.svelte";
 export { default as Minimize } from "./Icons/Minimize.svelte";
@@ -44,6 +45,9 @@ export { default as Pencil } from "./Icons/Pencil.svelte";
 export { default as Pencil2 } from "./Icons/Pencil2.svelte";
 export { default as Plus } from "./Icons/Plus.svelte";
 export { default as Restore } from "./Icons/Restore.svelte";
+export { default as Reset } from "./Icons/Reset.svelte";
+export { default as Save } from "./Icons/Save.svelte";
+export { default as Save2 } from "./Icons/Save2.svelte";
 export { default as Settings } from "./Icons/Settings.svelte";
 export { default as Sync } from "./Icons/Sync.svelte";
 export { default as UnMuted } from "./Icons/UnMuted.svelte";
@@ -70,4 +74,5 @@ export { default as Label } from "./Text/Label.svelte";
 
 // Other
 export { default as Line } from "./Other/Line.svelte";
+export { default as Popup } from "./Other/Popup.svelte";
 export { default as GlobalStyles } from "./GlobalStyles.svelte";

@@ -3,6 +3,7 @@
   import { InputRange, CheckBox, InputText, ListBox } from "Common/Input";
   import { Text, Label, Flex, FlexItem, Line } from "Common";
   import { ButtonTool, SecondaryButton } from "Common/Buttons";
+  import { TOPPANELHEIGHT } from "Const";
   import { Folder } from "Common/Icons";
   import { settings } from "../../../store";
 
@@ -46,6 +47,7 @@
   }
   $: {
     ipcRenderer.invoke("updatePanelScale", $settings.ui.scalePanel);
+    $settings.app.panelHeight = Math.floor(TOPPANELHEIGHT * $settings.ui.scalePanel);
   }
 </script>
 

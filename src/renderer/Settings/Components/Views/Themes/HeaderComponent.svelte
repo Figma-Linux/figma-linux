@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
-  import { Button, Sync, Spiner } from "Common";
+  import { Flex, Button, Sync, Spiner } from "Common";
 
   import { themesLoaded } from "../../../store";
 
@@ -10,17 +10,20 @@
   }
 </script>
 
-<Button
-  on:mouseup={onThemeSync}
-  size={32}
-  round={3}
-  margin={"0 4px 0 0"}
-  hoverBgColor="var(--borders)"
->
-  <Spiner spin={!$themesLoaded}>
-    <Sync color="var(--text)" />
-  </Spiner>
-</Button>
+<Flex>
+  <Button
+    on:mouseup={onThemeSync}
+    size={32}
+    round={3}
+    margin={"0 4px 0 0"}
+    hoverBgColor="var(--borders)"
+  >
+    <Spiner spin={!$themesLoaded}>
+      <Sync color="var(--text)" />
+    </Spiner>
+  </Button>
+  <Flex width="10px" />
+</Flex>
 
 <style>
 </style>

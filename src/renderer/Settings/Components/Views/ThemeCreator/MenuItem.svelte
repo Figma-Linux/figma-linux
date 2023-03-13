@@ -2,18 +2,25 @@
   import { Text, Flex, Button } from "Common";
 
   export let text: string;
+  export let disabled: boolean | undefined;
   export let Icon: ConstructorOfATypedSvelteComponent;
 
   export let onItemClick = () => {};
   export let onItemRemoveClick = () => {};
+
+  let color = "var(--fg-overlay)";
+
+  if (typeof disabled === "boolean" && disabled) {
+    color = "var(--text-disabled)";
+  }
 </script>
 
-<Button on:mouseup={onItemClick}>
+<Button {disabled} disabledBgColor="transparent" on:buttonClick={onItemClick}>
   <Flex alignItems="center" padding="6px 0" width="-webkit-fill-available">
     <Flex width="14px" />
-    <Icon />
+    <Icon {color} />
     <Flex width="8px" />
-    <Text size="var(--text-size-popup)">{text}</Text>
+    <Text size="var(--text-size-popup)" {color} {disabled}>{text}</Text>
     <Flex width="20px" />
   </Flex>
 </Button>

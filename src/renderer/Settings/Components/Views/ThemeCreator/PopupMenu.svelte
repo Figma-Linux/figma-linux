@@ -8,7 +8,7 @@
 
   let isOpen = false;
 
-  const items: Types.ThemeCreatorPopupMenuItem[] = [
+  let items: Types.ThemeCreatorPopupMenuItem[] = [
     {
       id: "reset",
       text: "Reset",
@@ -21,6 +21,7 @@
     {
       id: "save",
       text: "Save",
+      disabled: true,
       itemArgs: {
         Icon: Save2,
       },
@@ -49,7 +50,10 @@
 
   function onItemClick(item: Types.ThemeCreatorPopupMenuItem) {
     item.handler();
-    isOpen = false;
+
+    if (!item.disabled) {
+      isOpen = false;
+    }
   }
 
   function onReset() {
@@ -71,7 +75,7 @@
 <Popup bind:isOpen bradius="3px">
   <slot slot="popupButon" />
 
-  <ListBox {items} slot="popupBody" border="0" padding="0" bradius="0" {onItemClick} />
+  <ListBox bind:items slot="popupBody" border="0" padding="0" bradius="0" {onItemClick} />
 </Popup>
 
 <style>

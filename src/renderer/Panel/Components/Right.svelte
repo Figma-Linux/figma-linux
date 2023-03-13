@@ -15,18 +15,18 @@
 </script>
 
 <div class="panel-right">
-  <ButtonWindow isActive={$isMenuOpen} on:mouseup={clickMenu}>
+  <ButtonWindow isActive={$isMenuOpen} on:buttonClick={clickMenu}>
     <Corner size="14" />
   </ButtonWindow>
-  <ButtonWindow on:mouseup={() => ipcRenderer.send("window-minimize")}>
+  <ButtonWindow on:buttonClick={() => ipcRenderer.send("window-minimize")}>
     <Minimize size="16" />
   </ButtonWindow>
-  <ButtonWindow on:mouseup={() => ipcRenderer.send("window-maximize")}>
+  <ButtonWindow on:buttonClick={() => ipcRenderer.send("window-maximize")}>
     <Maximize size="16" />
   </ButtonWindow>
   <ButtonWindow
     hoverBgColor={"var(--bg-window-close)"}
-    on:mouseup={() => ipcRenderer.send("windowClose")}
+    on:buttonClick={() => ipcRenderer.send("windowClose")}
   >
     <Close size="16" />
   </ButtonWindow>

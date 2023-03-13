@@ -70,7 +70,7 @@
         {#if canEdit}
           <ButtonTool
             normalBgColor="tarsparent"
-            on:mouseup={() => dispatch("editTheme", { themeId: theme.id })}
+            on:buttonClick={() => dispatch("editTheme", { themeId: theme.id })}
           >
             <Pencil2 color="var(--text)" size="16" />
           </ButtonTool>
@@ -78,7 +78,7 @@
         <Flex width="10px" />
         <ButtonTool
           normalBgColor="tarsparent"
-          on:mouseup={() => dispatch("useColorPalette", { themeId: theme.id })}
+          on:buttonClick={() => dispatch("useColorPalette", { themeId: theme.id })}
         >
           <Rotate deg={-90}>
             <Download color="var(--text)" size="16" />
@@ -87,7 +87,7 @@
         <Flex width="10px" />
         <ButtonTool
           normalBgColor="tarsparent"
-          on:mouseup={() => dispatch("applyTheme", { themeId: theme.id })}
+          on:buttonClick={() => dispatch("applyTheme", { themeId: theme.id })}
         >
           <svelte:component this={radio} color="var(--text)" />
         </ButtonTool>

@@ -8,7 +8,7 @@
 </script>
 
 <div>
-  <ButtonTool normalBgColor="tarsparent" on:mouseup={onItemRemoveClick}>
+  <ButtonTool normalBgColor="tarsparent" on:buttonClick={onItemRemoveClick}>
     <Close color="var(--text)" size="16" />
   </ButtonTool>
   <Flex width="10px" />

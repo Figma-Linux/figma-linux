@@ -4,7 +4,7 @@
 
   import { themesLoaded } from "../../../store";
 
-  function onThemeSync(event: MouseEvent) {
+  function onThemeSync(event: CustomEvent) {
     ipcRenderer.send("syncThemes");
     themesLoaded.set(false);
   }
@@ -12,7 +12,7 @@
 
 <Flex>
   <Button
-    on:mouseup={onThemeSync}
+    on:buttonClick={onThemeSync}
     size={32}
     round={3}
     margin={"0 4px 0 0"}

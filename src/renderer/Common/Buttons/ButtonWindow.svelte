@@ -8,6 +8,6 @@
   export let isActive = false;
 </script>
 
-<Button {padding} {normalBgColor} {activeBgColor} {hoverBgColor} {isActive} on:mousedown on:mouseup>
+<Button {padding} {normalBgColor} {activeBgColor} {hoverBgColor} {isActive} on:buttonClick>
   <slot />
 </Button>

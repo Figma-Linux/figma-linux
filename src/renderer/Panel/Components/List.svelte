@@ -16,7 +16,7 @@
   const hoverBgColor = "transparent";
 
   export let onClickTitle = (event: MouseEvent, id: number) => {};
-  export let onClickClose = (event: MouseEvent, id: number) => {};
+  export let onClickClose = (event: CustomEvent, id: number) => {};
   export let onDndConsider = (event: any) => {};
   export let onDndFinalize = (event: any) => {};
 </script>
@@ -49,7 +49,7 @@
         padding="0 7px"
         {normalBgColor}
         {hoverBgColor}
-        on:mouseup={(e) => onClickClose(e, item.id)}
+        on:buttonClick={(e) => onClickClose(e, item.id)}
       >
         <Close size="12" />
       </ButtonTool>

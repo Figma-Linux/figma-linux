@@ -37,8 +37,7 @@
   {activeCursor}
   {hoverCursor}
   round={3}
-  on:mousedown
-  on:mouseup
+  on:buttonClick
 >
   <slot />
 </Button>

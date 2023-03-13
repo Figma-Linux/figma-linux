@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
   export let round: number = 0;
   export let size: number | undefined = undefined;
   export let width = "inherit";
@@ -15,8 +19,9 @@
   export let hoverBgAlpha = "1";
 
   export let normalBgColor = "transparent";
-  export let activeBgColor = "var(--bg-tab-hover)";
   export let hoverBgColor = "var(--bg-tab-hover)";
+  export let activeBgColor = "var(--bg-tab-hover)";
+  export let disabledBgColor = "var(--borders)";
 
   export let normalBorder = "none";
   export let activeBorder = "none";
@@ -27,17 +32,26 @@
   export let hoverCursor = "default";
 
   export let isActive = false;
+  export let disabled: boolean | undefined = false;
 
   if (size) {
     width = `${size}px`;
     height = `${size}px`;
   }
+
+  function clickHandler(event: MouseEvent) {
+    if (!disabled) {
+      dispatch("buttonClick");
+    }
+  }
 </script>
 
 <div
-  on:mousedown|capture
-  on:mouseup|capture
-  class={isActive ? "button__active" : ""}
+  on:mouseup|capture={clickHandler}
+  class={`
+    ${isActive ? "button__active " : ""}
+    ${disabled ? "button__disabled" : ""}
+  `}
   style={`
     --padding: ${padding};
     --margin: ${margin};
@@ -52,6 +66,7 @@
     --normal-bg-color: ${normalBgColor};
     --hover-bg-color: ${hoverBgColor};
     --active-bg-color: ${activeBgColor};
+    --disabled-bg-color: ${disabledBgColor};
 
     --normal-fg-color: ${normalFgColor};
     --active-fg-color: ${activeFgColor};
@@ -109,5 +124,14 @@
     cursor: var(--active-cursor);
     color: var(--active-fg-color);
     background-color: var(--active-bg-color);
+  }
+
+  .button__disabled {
+    user-select: none;
+    background-color: var(--disabled-bg-color);
+  }
+  .button__disabled:hover {
+    user-select: none;
+    background-color: var(--disabled-bg-color);
   }
 </style>

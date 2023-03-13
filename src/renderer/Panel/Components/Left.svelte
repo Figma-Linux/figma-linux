@@ -25,11 +25,11 @@
     hoverBgColor={"var(--bg-tab-hover)"}
     activeBgColor={"var(--bg-tab-hover)"}
     {isActive}
-    on:mouseup={onClickHome}
+    on:buttonClick={onClickHome}
   >
     <Figma size="22" />
   </ButtonWindow>
-  <ButtonTool padding={"0px 8px"} on:mouseup={onClickNewProject}>
+  <ButtonTool padding={"0px 8px"} on:buttonClick={onClickNewProject}>
     <Plus size="15" />
   </ButtonTool>
 </div>

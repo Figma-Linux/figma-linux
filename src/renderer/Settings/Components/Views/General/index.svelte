@@ -16,7 +16,7 @@
     item: DirectoryListItem,
   }));
 
-  async function onChangeExportPath(event: MouseEvent) {
+  async function onChangeExportPath(event: CustomEvent) {
     const directory = await ipcRenderer.invoke("selectExportDirectory");
 
     if (!directory) {
@@ -28,7 +28,7 @@
   function onItemRemoveClick(item: Types.TabItem) {
     $settings.app.fontDirs = items.filter((dir) => dir.id !== item.id).map((item) => item.id);
   }
-  async function onAddDirectory(event: MouseEvent) {
+  async function onAddDirectory(event: CustomEvent) {
     const directory = await ipcRenderer.invoke("selectExportDirectory");
 
     if (!directory) {
@@ -38,7 +38,7 @@
     $settings.app.fontDirs.push(directory);
     $settings.app.fontDirs = $settings.app.fontDirs;
   }
-  function onClearList(event: MouseEvent) {
+  function onClearList(event: CustomEvent) {
     $settings.app.fontDirs = [];
   }
 
@@ -89,13 +89,13 @@
       <Flex>
         <FlexItem grow={1}>
           <InputText bind:value={$settings.app.exportDir}>
-            <ButtonTool normalBgColor="tarsparent" on:mouseup={onChangeExportPath}>
+            <ButtonTool normalBgColor="tarsparent" on:buttonClick={onChangeExportPath}>
               <Folder color="var(--text)" size="18" />
             </ButtonTool>
           </InputText>
         </FlexItem>
         <Flex width="20px" />
-        <SecondaryButton on:mouseup={onChangeExportPath}>Change</SecondaryButton>
+        <SecondaryButton on:buttonClick={onChangeExportPath}>Change</SecondaryButton>
       </Flex>
     </Flex>
   </Flex>

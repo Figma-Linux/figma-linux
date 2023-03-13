@@ -53,7 +53,11 @@ export default class ThemeManager {
 
     if (disableThemes) return;
 
-    const currentTheme = this.themes.get(currentThemeId) || this.creatorThemes.get(currentThemeId);
+    let currentTheme = this.themes.get(currentThemeId) || this.creatorThemes.get(currentThemeId);
+
+    if (currentThemeId === DEFAULT_THEME.id) {
+      currentTheme = DEFAULT_THEME;
+    }
 
     app.emit("loadCurrentTheme", currentTheme);
   }

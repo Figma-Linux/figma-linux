@@ -53,7 +53,9 @@ export default class ThemeManager {
 
     if (disableThemes) return;
 
-    app.emit("loadCurrentTheme", this.themes.get(currentThemeId));
+    const currentTheme = this.themes.get(currentThemeId) || this.creatorThemes.get(currentThemeId);
+
+    app.emit("loadCurrentTheme", currentTheme);
   }
 
   public async loadFromDirectory(outputMap: Map<string, Themes.Theme>, dir = this.themesDirectory) {

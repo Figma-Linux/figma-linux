@@ -14,7 +14,6 @@ export function initIpc() {
     themesLoaded.set(true);
   });
   ipcRenderer.on("loadCreatorThemes", (_: IpcRendererEvent, themes: Themes.Theme[]) => {
-    console.log("loadCreatorThemes, themes: ", themes);
     creatorsThemes.set(themes);
   });
   settingsStore.set(ipcRenderer.sendSync("getSettings"));

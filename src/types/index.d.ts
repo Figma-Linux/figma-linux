@@ -117,6 +117,10 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
     ): this;
     on(
+      channel: "themeCreatorAddTheme",
+      listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
+    ): this;
+    on(
       channel: "enableColorSpaceSrgbWasChanged",
       listener: (event: IpcMainInvokeEvent, enabled: boolean) => void,
     ): this;
@@ -343,6 +347,7 @@ declare namespace Electron {
     send(channel: "closeSettingsView", settings: Types.SettingsInterface): this;
     send(channel: "closeThemeCreatorView"): this;
     send(channel: "themeCreatorExportTheme", theme: Themes.Theme): this;
+    send(channel: "themeCreatorAddTheme", theme: Themes.Theme): this;
     send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
     send(channel: "disableThemesChanged", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;

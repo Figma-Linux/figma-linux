@@ -48,6 +48,15 @@
     },
   ];
 
+  $: {
+    items = items.map((item) => {
+      if (item.id === "save") {
+        item.disabled = $creatorTheme.state !== "edit";
+      }
+      return item;
+    });
+  }
+
   function onItemClick(item: Types.ThemeCreatorPopupMenuItem) {
     item.handler();
 
@@ -60,15 +69,18 @@
     console.log("onReset");
   }
   function onSave() {
-    console.log("onSave");
+    // TODO: check name and author
+    ipcRenderer.send("themeCreatorAddTheme", $creatorTheme.theme);
+
+    creatorTheme.reset();
   }
   function onAddToThemes() {
     // TODO: check name and author
-    ipcRenderer.send("themeCreatorAddTheme", $creatorTheme);
+    ipcRenderer.send("themeCreatorAddTheme", $creatorTheme.theme);
   }
   function onExport() {
     // TODO: check name and author
-    ipcRenderer.send("themeCreatorExportTheme", $creatorTheme);
+    ipcRenderer.send("themeCreatorExportTheme", $creatorTheme.theme);
   }
 </script>
 

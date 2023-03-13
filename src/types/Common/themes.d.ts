@@ -6,11 +6,15 @@ declare namespace Themes {
   }
 
   interface Theme {
+    id: string;
     name: string;
     author: string;
-    id: string;
-    url?: string;
     palette: Palette;
+  }
+
+  interface CreatorThemeStore {
+    state: "new" | "edit";
+    theme: Theme;
   }
 
   interface Palette {

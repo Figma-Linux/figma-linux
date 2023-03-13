@@ -25,7 +25,7 @@
       this={item.item}
       text={item.text}
       {...item.itemArgs}
-      disabled={item.disabled}
+      bind:disabled={item.disabled}
       onItemRemoveClick={() => {
         onItemRemoveClick(item);
       }}

@@ -148,7 +148,7 @@ export default class ThemeManager {
 
     delete themeData.id;
 
-    const themeId = theme.name.replaceAll(/\s/, "_");
+    const themeId = theme.name.replace(/\s/g, "_");
     const themeName = `${themeId}.json`;
     const filepath = path.resolve(this.creatorThemeThemesDirectory, themeName);
 
@@ -157,7 +157,7 @@ export default class ThemeManager {
       id: themeId,
     });
 
-    app.emit("loadCreatorThemes", this.creatorThemes);
+    app.emit("loadCreatorThemes", [...this.creatorThemes.values()]);
 
     return this.writeThemeFile(filepath, themeData);
   }
@@ -170,7 +170,7 @@ export default class ThemeManager {
 
     delete themeData.id;
 
-    const themeName = `${theme.name.replaceAll(/\s/, "_")}.json`;
+    const themeName = `${theme.name.replace(/\s/g, "_")}.json`;
     const lastDir = storage.settings.app.exportDir;
     const dir = lastDir ? `${lastDir}/${themeName}` : themeName;
 

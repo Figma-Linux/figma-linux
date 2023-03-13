@@ -18,18 +18,18 @@
       <Flex>
         <Flex der="column" width="-webkit-fill-available">
           <Label>Enter name of new theme</Label>
-          <InputText bind:value={$creatorTheme.name} placeholder="Theme name" />
+          <InputText bind:value={$creatorTheme.theme.name} placeholder="Theme name" />
         </Flex>
         <Flex width="120px" />
         <Flex der="column" width="-webkit-fill-available">
           <Label>Enter your name as author</Label>
-          <InputText bind:value={$creatorTheme.author} placeholder="Author name" />
+          <InputText bind:value={$creatorTheme.theme.author} placeholder="Author name" />
         </Flex>
       </Flex>
       <Flex height="20px" />
       <Flex der="column">
         <ZoomView bind:zoom height={`${zoomViewHeight}px`}>
-          <div style={getColorPallet($creatorTheme).join(";")}>
+          <div style={getColorPallet($creatorTheme.theme).join(";")}>
             <Preview />
           </div>
         </ZoomView>
@@ -44,7 +44,7 @@
     <Flex der="column" justifyItems="stretch" width="-webkit-fill-available">
       <Label>Color Palette</Label>
       <colorPaletteDiv style={`height: ${zoomViewHeight + 90}px; overflow: auto;`}>
-        <ColorPalette bind:creatorTheme={$creatorTheme} />
+        <ColorPalette bind:creatorTheme={$creatorTheme.theme} />
       </colorPaletteDiv>
     </Flex>
   </Grid>

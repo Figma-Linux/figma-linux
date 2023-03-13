@@ -197,6 +197,9 @@ export class ThemesApplier {
           cssRule.style["color"] = `var(--text-active)`;
           cssRule.style["fill"] = `var(--text-active)`;
         }
+        if (/optionDisabled/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`${cssRule.selectorText} { color: var(--text-disabled); }`);
+        }
         if (/.text--_negText/.test(cssRule.selectorText)) {
           additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
         }

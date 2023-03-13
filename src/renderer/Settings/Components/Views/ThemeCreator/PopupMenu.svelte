@@ -66,7 +66,7 @@
   }
 
   function onReset() {
-    console.log("onReset");
+    creatorTheme.reset();
   }
   function onSave() {
     // TODO: check name and author

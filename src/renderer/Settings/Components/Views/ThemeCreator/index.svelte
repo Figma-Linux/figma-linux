@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Text, Label, Flex, Grid, ZoomView, HeaderModal } from "Common";
+  import { Text, Label, Flex, Grid, ZoomView } from "Common";
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
   import { creatorTheme, modalBounds } from "../../../store";
@@ -9,7 +9,6 @@
 
   $: zoomViewHeight = $modalBounds.height - 238;
 
-  let textValue = "";
   let zoom = 1;
 </script>
 
@@ -19,12 +18,12 @@
       <Flex>
         <Flex der="column" width="-webkit-fill-available">
           <Label>Enter name of new theme</Label>
-          <InputText bind:value={textValue} placeholder="Theme name" />
+          <InputText bind:value={$creatorTheme.name} placeholder="Theme name" />
         </Flex>
         <Flex width="120px" />
         <Flex der="column" width="-webkit-fill-available">
           <Label>Enter your name as author</Label>
-          <InputText bind:value={textValue} placeholder="Author name" />
+          <InputText bind:value={$creatorTheme.author} placeholder="Author name" />
         </Flex>
       </Flex>
       <Flex height="20px" />

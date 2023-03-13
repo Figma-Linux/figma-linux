@@ -1,15 +1,21 @@
 <script lang="ts">
+  import { ipcRenderer } from "electron";
   import { Popup, ListBox } from "Common";
   import { Download, Plus, Reset, Save2 } from "Common/Icons";
+  import { creatorTheme } from "../../../store";
+
   import MenuItem from "./MenuItem.svelte";
 
-  const items = [
+  let isOpen = false;
+
+  const items: Types.ThemeCreatorPopupMenuItem[] = [
     {
       id: "reset",
       text: "Reset",
       itemArgs: {
         Icon: Reset,
       },
+      handler: onReset,
       item: MenuItem,
     },
     {
@@ -18,6 +24,7 @@
       itemArgs: {
         Icon: Save2,
       },
+      handler: onSave,
       item: MenuItem,
     },
     {
@@ -26,6 +33,7 @@
       itemArgs: {
         Icon: Plus,
       },
+      handler: onAddToThemes,
       item: MenuItem,
     },
     {
@@ -34,31 +42,36 @@
       itemArgs: {
         Icon: Download,
       },
+      handler: onExport,
       item: MenuItem,
     },
   ];
 
-  function onReset(event: MouseEvent) {
+  function onItemClick(item: Types.ThemeCreatorPopupMenuItem) {
+    item.handler();
+    isOpen = false;
+  }
+
+  function onReset() {
     console.log("onReset");
   }
-  function onSave(event: MouseEvent) {
+  function onSave() {
     console.log("onSave");
   }
-  function onAddToThemes(event: MouseEvent) {
-    console.log("onAddToThemes");
+  function onAddToThemes() {
+    // TODO: check name and author
+    ipcRenderer.send("themeCreatorAddTheme", $creatorTheme);
   }
-  function onExport(event: MouseEvent) {
-    console.log("onExport");
-  }
-  function onMenu(event: MouseEvent) {
-    console.log("onMenu");
+  function onExport() {
+    // TODO: check name and author
+    ipcRenderer.send("themeCreatorExportTheme", $creatorTheme);
   }
 </script>
 
-<Popup bradius="3px">
+<Popup bind:isOpen bradius="3px">
   <slot slot="popupButon" />
 
-  <ListBox {items} slot="popupBody" border="0" padding="0" bradius="0" />
+  <ListBox {items} slot="popupBody" border="0" padding="0" bradius="0" {onItemClick} />
 </Popup>
 
 <style>

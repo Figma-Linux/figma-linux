@@ -47,6 +47,7 @@ declare namespace Electron {
     on(event: "syncThemesEnd", listener: (themes: Themes.Theme[]) => void): this;
     on(event: "loadCreatorTheme", listener: (themes: Themes.Theme) => void): this;
     on(event: "loadCurrentTheme", listener: (themes: Themes.Theme) => void): this;
+    on(event: "loadCreatorThemes", listener: (themes: Themes.Theme[]) => void): this;
     on(event: "requestBoundsForTabView", listener: (windowId: number) => void): this;
     on(event: "relaunchApp", listener: () => void): this;
     on(event: "quitApp", listener: () => void): this;
@@ -80,6 +81,7 @@ declare namespace Electron {
     emit(event: "syncThemesEnd", themes: Themes.Theme[]): void;
     emit(event: "loadCreatorTheme", themes: Themes.Theme): void;
     emit(event: "loadCurrentTheme", themes: Themes.Theme): void;
+    emit(event: "loadCreatorThemes", themes: Themes.Theme[]): void;
     emit(event: "requestBoundsForTabView", windowId: number): void;
     emit(event: "relaunchApp"): void;
     emit(event: "quitApp"): void;
@@ -312,6 +314,10 @@ declare namespace Electron {
       channel: "loadCurrentTheme",
       listener: (event: IpcRendererEvent, theme: Themes.Theme) => void,
     ): this;
+    on(
+      channel: "loadCreatorThemes",
+      listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void,
+    ): this;
     on(channel: "syncThemesStart", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "syncThemesEnd", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "windowDidMaximized", listener: (event: IpcRendererEvent) => void): this;
@@ -398,6 +404,7 @@ declare namespace Electron {
     send(channel: "setIsInVoiceCall", data: { id: number; isInVoiceCall: boolean }): this;
     send(channel: "loadCreatorTheme", theme: Themes.Theme): this;
     send(channel: "loadCurrentTheme", theme: Themes.Theme): this;
+    send(channel: "loadCreatorThemes", themes: Themes.Theme[]): this;
     send(channel: "syncThemesStart", theme: Themes.Theme): this;
     send(channel: "syncThemesEnd", theme: Themes.Theme): this;
     send(channel: "isMainMenuOpen", isOpen: boolean): this;

@@ -12,15 +12,20 @@ import { mkPath, access, downloadFile } from "Utils/Main";
 import ThemeValidator from "./ThemeValidator";
 
 export default class ThemeManager {
+  private creatorThemes: Map<string, Themes.Theme> = new Map();
   private themes: Map<string, Themes.Theme> = new Map();
   private creatorTheme: Themes.Theme;
   private themesDirectory: string;
   private creatorThemeDirectory: string;
+  private creatorThemeThemesDirectory: string;
   private creatorThemeFileName: string;
 
   constructor(private validator: ThemeValidator) {
-    this.themesDirectory = path.resolve(app.getPath("userData"), "Themes");
-    this.creatorThemeDirectory = path.resolve(app.getPath("userData"), "ThemeCreator");
+    const userData = app.getPath("userData");
+
+    this.themesDirectory = path.resolve(userData, "Themes");
+    this.creatorThemeDirectory = path.resolve(userData, "ThemeCreator");
+    this.creatorThemeThemesDirectory = path.resolve(userData, "ThemeCreator", "Themes");
     this.creatorThemeFileName = "theme.json";
     this.creatorTheme = {
       ...DEFAULT_THEME,
@@ -35,10 +40,13 @@ export default class ThemeManager {
       await mkPath(this.themesDirectory);
       await this.updateThemesFromRepository();
     } else {
-      await this.loadFromDirectory();
+      await this.loadFromDirectory(this.themes);
     }
 
+    await this.loadFromDirectory(this.creatorThemes, this.creatorThemeThemesDirectory);
+
     app.emit("syncThemesEnd", [...this.themes.values()]);
+    app.emit("loadCreatorThemes", [...this.creatorThemes.values()]);
 
     const currentThemeId = storage.settings.theme.currentTheme;
     const disableThemes = storage.settings.app.disableThemes;
@@ -48,11 +56,11 @@ export default class ThemeManager {
     app.emit("loadCurrentTheme", this.themes.get(currentThemeId));
   }
 
-  public async loadFromDirectory() {
-    const files = await fs.promises.readdir(this.themesDirectory);
+  public async loadFromDirectory(outputMap: Map<string, Themes.Theme>, dir = this.themesDirectory) {
+    const files = await fs.promises.readdir(dir);
 
     for (const fileName of files) {
-      const fullFilePath = path.resolve(this.themesDirectory, fileName);
+      const fullFilePath = path.resolve(dir, fileName);
       const themeFile = await this.readThemeFile(fullFilePath);
 
       if (this.validator.isValidThemeFile(fullFilePath, themeFile)) {
@@ -64,7 +72,7 @@ export default class ThemeManager {
           await this.writeThemeFile(fullFilePath, theme);
         }
 
-        this.themes.set(theme.id, theme);
+        outputMap.set(theme.id, theme);
       }
     }
   }
@@ -131,6 +139,28 @@ export default class ThemeManager {
     }
   }
 
+  private async addCreatorTheme(_: IpcMainEvent, theme: Themes.Theme): Promise<void> {
+    const themeData = this.translatePaletteToCamelCase(theme);
+
+    if (!this.validator.isValidThemePalette(themeData)) {
+      return;
+    }
+
+    delete themeData.id;
+
+    const themeId = theme.name.replaceAll(/\s/, "_");
+    const themeName = `${themeId}.json`;
+    const filepath = path.resolve(this.creatorThemeThemesDirectory, themeName);
+
+    this.creatorThemes.set(themeId, {
+      ...theme,
+      id: themeId,
+    });
+
+    app.emit("loadCreatorThemes", this.creatorThemes);
+
+    return this.writeThemeFile(filepath, themeData);
+  }
   private async exportCreatorTheme(_: IpcMainEvent, theme: Themes.Theme): Promise<void> {
     const themeData = this.translatePaletteToCamelCase(theme);
 
@@ -140,7 +170,7 @@ export default class ThemeManager {
 
     delete themeData.id;
 
-    const themeName = `${theme.name.replace(/\s/, "_")}.json`;
+    const themeName = `${theme.name.replaceAll(/\s/, "_")}.json`;
     const lastDir = storage.settings.app.exportDir;
     const dir = lastDir ? `${lastDir}/${themeName}` : themeName;
 
@@ -202,6 +232,7 @@ export default class ThemeManager {
   private registerEvents() {
     ipcMain.on("syncThemes", this.syncThemes.bind(this));
     ipcMain.on("saveCreatorTheme", this.handlerSaveCreatorTheme.bind(this));
+    ipcMain.on("themeCreatorAddTheme", this.addCreatorTheme.bind(this));
     ipcMain.on("themeCreatorExportTheme", this.exportCreatorTheme.bind(this));
 
     app.on("reloadCurrentTheme", this.reloadCurrentTheme.bind(this));

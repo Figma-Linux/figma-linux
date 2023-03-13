@@ -10,4 +10,8 @@ declare namespace Types {
     bodyComponent: ConstructorOfATypedSvelteComponent;
     headerComponent?: ConstructorOfATypedSvelteComponent;
   }
+
+  interface ThemeCreatorPopupMenuItem extends TabItem {
+    handler: () => void;
+  }
 }

@@ -34,30 +34,44 @@
 
 <div>
   <DropDown title="ThemeCreator's themes" isEmpty={!$creatorsThemes.length} open={false}>
-    <themeView>
-      {#each $creatorsThemes as theme (theme.id)}
-        <ThemeItem
-          on:applyTheme={onApplyTheme}
-          on:editTheme={onEditTheme}
-          on:useColorPalette={onUseColorPalette}
-          {theme}
-          canEdit
-          bind:currentThemeId={$settings.theme.currentTheme}
-        />
-      {/each}
-    </themeView>
+    <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
+      {#if $creatorsThemes.length > 0}
+        {#each $creatorsThemes as theme (theme.id)}
+          <ThemeItem
+            on:applyTheme={onApplyTheme}
+            on:editTheme={onEditTheme}
+            on:useColorPalette={onUseColorPalette}
+            {theme}
+            canEdit
+            bind:currentThemeId={$settings.theme.currentTheme}
+          />
+        {/each}
+        {#if $creatorsThemes.length < 6}
+          {#each Array(6 - $creatorsThemes.length) as _, i (i)}
+            <themeFake />
+          {/each}
+        {/if}
+      {/if}
+    </Grid>
   </DropDown>
   <Flex height="20px" />
   <DropDown title="Repository themes" isEmpty={!$themes.length} open={true}>
     <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
-      {#each $themes as theme (theme.id)}
-        <ThemeItem
-          on:applyTheme={onApplyTheme}
-          on:useColorPalette={onUseColorPalette}
-          {theme}
-          bind:currentThemeId={$settings.theme.currentTheme}
-        />
-      {/each}
+      {#if $themes.length > 0}
+        {#each $themes as theme (theme.id)}
+          <ThemeItem
+            on:applyTheme={onApplyTheme}
+            on:useColorPalette={onUseColorPalette}
+            {theme}
+            bind:currentThemeId={$settings.theme.currentTheme}
+          />
+        {/each}
+        {#if $themes.length < 6}
+          {#each Array(6 - $themes.length) as _, i (i)}
+            <themeFake />
+          {/each}
+        {/if}
+      {/if}
     </Grid>
   </DropDown>
 </div>
@@ -65,5 +79,8 @@
 <style>
   div {
     padding: 32px 32px 8px 32px;
+  }
+  themeFake {
+    display: block;
   }
 </style>

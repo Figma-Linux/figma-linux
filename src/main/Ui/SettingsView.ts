@@ -116,6 +116,9 @@ export default class SettingsView {
   private loadCurrentTheme(theme: Themes.Theme) {
     this.view.webContents.send("loadCurrentTheme", theme);
   }
+  private loadCreatorThemes(themes: Themes.Theme[]) {
+    this.view.webContents.send("loadCreatorThemes", themes);
+  }
   private changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
     this.loadCurrentTheme(theme);
 
@@ -141,5 +144,6 @@ export default class SettingsView {
     app.on("syncThemesStart", this.syncThemesStart.bind(this));
     app.on("syncThemesEnd", this.syncThemesEnd.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));
+    app.on("loadCreatorThemes", this.loadCreatorThemes.bind(this));
   }
 }

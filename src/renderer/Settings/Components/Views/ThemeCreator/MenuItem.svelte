@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { Text, Flex, Pencil, Button } from "Common";
+  import { Text, Flex, Button } from "Common";
 
   export let text: string;
   export let Icon: ConstructorOfATypedSvelteComponent;
+
+  export let onItemClick = () => {};
+  export let onItemRemoveClick = () => {};
 </script>
 
-<Button>
+<Button on:mouseup={onItemClick}>
   <Flex alignItems="center" padding="6px 0" width="-webkit-fill-available">
     <Flex width="14px" />
     <Icon />

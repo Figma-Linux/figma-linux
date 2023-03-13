@@ -77,9 +77,9 @@
   style={`
     opacity: ${isOpen ? 1 : 0};
     user-select: ${isOpen ? "all" : "none"};
-    z-index: ${isOpen ? "9999" : "-9999"};
+    z-index: ${isOpen ? "9998" : "-9999"};
     left: ${x}px;
-    top: ${y + 4}px;
+    top: ${y + 3}px;
     --width: ${width};
     --height: ${height};
     --padding: ${padding};
@@ -104,6 +104,9 @@
     border: var(--border);
     border-radius: var(--bradius);
     background-color: var(--bgColor);
+    box-shadow: 0px 10px 16px rgb(0 0 0 / 35%), 0px 2px 5px rgb(0 0 0 / 35%),
+      inset 0px 0.5px 0px rgb(0 0 0 / 8%), inset 0px 0px 0.5px rgb(0 0 0 / 35%),
+      0px 2px 14px rgb(0 0 0 / 15%), 0px 0px 0px 0.5px rgb(0 0 0 / 20%);
   }
 
   corner {
@@ -113,9 +116,9 @@
     transform: rotate(45deg);
     z-index: 9999;
     background-color: var(--bg-overlay);
-    box-shadow: 0px 10px 16px rgba(0, 0, 0, 0.35), 0px 2px 5px rgba(0, 0, 0, 0.35),
-      inset 0px 0.5px 0px rgba(255, 255, 255, 0.08), inset 0px 0px 0.5px rgba(255, 255, 255, 0.35),
-      0px 2px 14px rgba(0, 0, 0, 0.15), 0px 0px 0px 0.5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 10px 16px rgb(0 0 0 / 35%), 0px 2px 5px rgb(0 0 0 / 35%),
+      inset 0px 0.5px 0px rgb(0 0 0 / 8%), inset 0px 0px 0.5px rgb(0 0 0 / 35%),
+      0px 2px 14px rgb(0 0 0 / 15%), 0px 0px 0px 0.5px rgb(0 0 0 / 20%);
     border: var(--border);
     clip-path: polygon(0px 8px, 8px 0px, 0px 0px);
   }

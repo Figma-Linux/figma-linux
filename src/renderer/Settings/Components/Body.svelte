@@ -72,7 +72,7 @@
     <Button
       size={32}
       round={3}
-      on:mousedown={() => dispatch("closeSettings")}
+      on:buttonClick={() => dispatch("closeSettings")}
       hoverBgColor="var(--borders)"
     >
       <CloseModal color="var(--text)" />

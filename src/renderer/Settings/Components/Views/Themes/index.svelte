@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { themes, creatorsThemes, creatorTheme, settings } from "../../../store";
   import { DropDown, Flex, Grid } from "Common";
+  import { DEFAULT_THEME } from "Const";
 
   import ThemeItem from "./ThemeItem.svelte";
 
@@ -16,6 +17,13 @@
 
     ipcRenderer.send("changeTheme", theme);
     $settings.theme.currentTheme = themeId;
+  }
+  function onDeleteTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
+    const themeId = event.detail.themeId;
+
+    ipcRenderer.send("themeCreatorRemoveTheme", themeId);
+
+    onApplyTheme(new CustomEvent("applyTheme", { detail: { themeId: DEFAULT_THEME.id } }));
   }
   function onEditTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
     const themeId = event.detail.themeId;
@@ -46,10 +54,12 @@
       {#if $creatorsThemes.length > 0}
         {#each $creatorsThemes as theme (theme.id)}
           <ThemeItem
+            on:deleteTheme={onDeleteTheme}
             on:editTheme={onEditTheme}
             on:useColorPalette={onUseColorPalette}
             on:applyTheme={onApplyTheme}
             {theme}
+            canDelete
             canEdit
             bind:currentThemeId={$settings.theme.currentTheme}
           />

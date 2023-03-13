@@ -1,4 +1,5 @@
 import { writable } from "svelte/store";
+import { DEFAULT_THEME } from "Const";
 
 function createThemeApp() {
   const { subscribe, set } = writable<Themes.Theme>();
@@ -6,6 +7,7 @@ function createThemeApp() {
   return {
     subscribe,
     set,
+    reset: () => set(DEFAULT_THEME),
   };
 }
 

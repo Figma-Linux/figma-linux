@@ -25,7 +25,7 @@
       itemArgs: {
         Icon: Save2,
       },
-      handler: onSave,
+      handler: onAddToThemes,
       item: MenuItem,
     },
     {
@@ -68,15 +68,10 @@
   function onReset() {
     creatorTheme.reset();
   }
-  function onSave() {
-    // TODO: check name and author
+  function onAddToThemes() {
     ipcRenderer.send("themeCreatorAddTheme", $creatorTheme.theme);
 
     creatorTheme.reset();
-  }
-  function onAddToThemes() {
-    // TODO: check name and author
-    ipcRenderer.send("themeCreatorAddTheme", $creatorTheme.theme);
   }
   function onExport() {
     // TODO: check name and author

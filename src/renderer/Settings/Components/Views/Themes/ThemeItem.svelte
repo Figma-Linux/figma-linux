@@ -12,9 +12,11 @@
     Pencil2,
     RadioNormal,
     RadioChecked,
+    Delete,
   } from "Common/Icons";
 
   export let canEdit = false;
+  export let canDelete = false;
   export let currentThemeId: string;
   export let theme: Themes.Theme;
 
@@ -91,6 +93,15 @@
         >
           <svelte:component this={radio} color="var(--text)" />
         </ButtonTool>
+        {#if canDelete}
+          <Flex width="20px" />
+          <ButtonTool
+            normalBgColor="tarsparent"
+            on:buttonClick={() => dispatch("deleteTheme", { themeId: theme.id })}
+          >
+            <Delete color="var(--text)" size="18" />
+          </ButtonTool>
+        {/if}
       </Flex>
     </FlexItem>
   </Flex>

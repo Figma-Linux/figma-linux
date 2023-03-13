@@ -141,6 +141,16 @@ export default class ThemeManager {
     }
   }
 
+  private async removeCreatorTheme(_: IpcMainEvent, themeId: string): Promise<void> {
+    const themeName = `${themeId}.json`;
+    const filepath = path.resolve(this.creatorThemeThemesDirectory, themeName);
+
+    this.creatorThemes.delete(themeId);
+
+    app.emit("loadCreatorThemes", [...this.creatorThemes.values()]);
+
+    return fs.promises.unlink(filepath);
+  }
   private async addCreatorTheme(_: IpcMainEvent, theme: Themes.Theme): Promise<void> {
     const themeData = this.translatePaletteToCamelCase(theme);
 
@@ -235,6 +245,7 @@ export default class ThemeManager {
     ipcMain.on("syncThemes", this.syncThemes.bind(this));
     ipcMain.on("saveCreatorTheme", this.handlerSaveCreatorTheme.bind(this));
     ipcMain.on("themeCreatorAddTheme", this.addCreatorTheme.bind(this));
+    ipcMain.on("themeCreatorRemoveTheme", this.removeCreatorTheme.bind(this));
     ipcMain.on("themeCreatorExportTheme", this.exportCreatorTheme.bind(this));
 
     app.on("reloadCurrentTheme", this.reloadCurrentTheme.bind(this));

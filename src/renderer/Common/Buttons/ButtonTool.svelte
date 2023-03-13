@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
   export let round: number = 0;
   export let size: number | undefined = undefined;
   export let width = "auto";
@@ -14,15 +18,22 @@
   export let normalOpacity = 0.4;
   export let hoverOpacity = 1;
 
+  export let disabled: boolean | undefined = false;
+
   if (size) {
     width = `${size}px`;
     height = `${size}px`;
   }
+
+  function clickHandler(event: MouseEvent) {
+    if (!disabled) {
+      dispatch("buttonClick");
+    }
+  }
 </script>
 
 <div
-  on:mousedown|capture
-  on:mouseup|capture
+  on:mouseup|capture={clickHandler}
   style={`
     --padding: ${padding};
     --width: ${width};

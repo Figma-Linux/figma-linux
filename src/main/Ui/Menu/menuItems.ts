@@ -110,13 +110,6 @@ const HELP_MENU = {
         app.emit("toggleSettingsDeveloperTools");
       },
     },
-    {
-      label: "Toggle Theme Creator Developer Tools",
-      accelerator: "Shift+Ctrl+Alt+T",
-      click() {
-        app.emit("toggleCreatorDeveloperTools");
-      },
-    },
     // TODO: fix
     // item("GPU", "", { id: "chromeGpu", click: commandToMainProcess }),
   ],

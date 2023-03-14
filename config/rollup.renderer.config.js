@@ -17,7 +17,6 @@ dotenv.config();
 
 const panelPort = process.env.DEV_PANEL_PORT;
 const settingsPort = process.env.DEV_SETTINGS_PORT;
-const themeCreatorPort = process.env.DEV_THEME_CREATOR_PORT;
 const production = process.env.NODE_ENV !== "dev";
 const watch = process.env.ROLLUP_WATCH === "true";
 const projectRootDir = path.resolve(__dirname);
@@ -152,38 +151,6 @@ module.exports = [
             {
               from: "/renderer/base.css",
               to: `http://localhost:${settingsPort}/dist/renderer/base.css`,
-            },
-          ],
-        }),
-    ],
-    watch: {
-      clearScreen: false,
-    },
-  },
-  {
-    input: "src/renderer/ThemeCreator/index.ts",
-    output: {
-      sourcemap: !production,
-      format: "cjs",
-      name: "app",
-      file: "dist/renderer/themeCreator.js",
-    },
-    external: commonExternal,
-    plugins: [
-      ...svelteFrontendPlugins,
-      watch &&
-        dev({
-          spa: "dist/themeCreator.html",
-          host: "localhost",
-          port: themeCreatorPort,
-          proxy: [
-            {
-              from: "/renderer/themeCreator.js",
-              to: `http://localhost:${themeCreatorPort}/dist/renderer/themeCreator.js`,
-            },
-            {
-              from: "/renderer/base.css",
-              to: `http://localhost:${themeCreatorPort}/dist/renderer/base.css`,
             },
           ],
         }),

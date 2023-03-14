@@ -1,9 +1,8 @@
 import { parse } from "url";
-import { app, ipcMain, BrowserWindow, IpcMainEvent, IpcMainInvokeEvent, Rectangle } from "electron";
+import { app, ipcMain, BrowserWindow, IpcMainEvent, Rectangle } from "electron";
 import { storage } from "Main/Storage";
 import { logger } from "Main/Logger";
 import MenuManager from "./Menu/MenuManager";
-import ThemeCreatorView from "./ThemeCreatorView";
 import SettingsView from "./SettingsView";
 import TabManager from "./TabManager";
 
@@ -16,7 +15,6 @@ export default class Window {
   private tabManager: TabManager;
   private menuManager: MenuManager;
   private settingsView: SettingsView;
-  private themeCreatorView: ThemeCreatorView;
 
   private closedTabsHistory: Types.SavedTab[] = [];
 
@@ -27,7 +25,6 @@ export default class Window {
     this.tabManager = new TabManager(this.window.id);
     this.menuManager = new MenuManager();
     this.settingsView = new SettingsView();
-    this.themeCreatorView = new ThemeCreatorView();
 
     this.window.addBrowserView(this.tabManager.mainTab.view);
     this.window.setTopBrowserView(this.tabManager.mainTab.view);
@@ -201,19 +198,6 @@ export default class Window {
 
     this.settingsView.postClose();
   }
-  private openThemeCreatorView() {
-    const bounds = this.window.getBounds();
-    this.themeCreatorView.updateProps(bounds);
-
-    this.window.addBrowserView(this.themeCreatorView.view);
-
-    isDev && toggleDetachedDevTools(this.themeCreatorView.view.webContents);
-  }
-  private closeThemeCreatorView(_: IpcMainEvent) {
-    this.themeCreatorView.closeDevTools();
-
-    this.window.removeBrowserView(this.themeCreatorView.view);
-  }
   private loadCurrentTheme(theme: Themes.Theme) {
     this.window.webContents.send("loadCurrentTheme", theme);
   }
@@ -338,7 +322,6 @@ export default class Window {
     ipcMain.on("updateActionState", this.updateActionState.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
     ipcMain.on("openFile", this.openFile.bind(this));
-    ipcMain.on("closeThemeCreatorView", this.closeThemeCreatorView.bind(this));
     ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
     ipcMain.on("frontReady", this.handleFrontReady.bind(this));
 
@@ -346,7 +329,6 @@ export default class Window {
     ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
 
     app.on("openSettingsView", this.openSettingsView.bind(this));
-    app.on("openThemeCreatorView", this.openThemeCreatorView.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));
 
     this.window.on("show", this.showHandler.bind(this));

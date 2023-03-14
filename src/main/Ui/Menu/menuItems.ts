@@ -150,12 +150,6 @@ export const getMenuTemplate = (pluginMenuItems?: any[]): MenuItemConstructorOpt
   }
 
   menu.push({
-    label: "Theme Creator",
-    click: () => {
-      app.emit("openThemeCreatorView");
-    },
-  });
-  menu.push({
     label: "Settings",
     click: () => {
       app.emit("openSettingsView");

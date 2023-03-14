@@ -40,7 +40,6 @@ declare namespace Electron {
     on(event: "handleUrl", listener: (url: string) => void): this;
     on(event: "openUrlInNewTab", listener: (url: string) => void): this;
     on(event: "openSettingsView", listener: () => void): this;
-    on(event: "openThemeCreatorView", listener: () => void): this;
     on(event: "windowClose", listener: (windowId: number) => void): this;
     on(event: "windowFocus", listener: (windowId: number) => void): this;
     on(event: "syncThemesStart", listener: () => void): this;
@@ -74,7 +73,6 @@ declare namespace Electron {
     emit(event: "handleUrl", url: string): boolean;
     emit(event: "openUrlInNewTab", url: string): boolean;
     emit(event: "openSettingsView"): boolean;
-    emit(event: "openThemeCreatorView"): boolean;
     emit(event: "windowClose", windowId: number): void;
     emit(event: "windowFocus", windowId: number): void;
     emit(event: "syncThemesStart"): void;
@@ -111,7 +109,6 @@ declare namespace Electron {
       channel: "closeSettingsView",
       listener: (event: IpcMainInvokeEvent, settings: Types.SettingsInterface) => void,
     ): this;
-    on(channel: "closeThemeCreatorView", listener: (event: IpcMainInvokeEvent) => void): this;
     on(
       channel: "themeCreatorExportTheme",
       listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
@@ -349,7 +346,6 @@ declare namespace Electron {
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
     send(channel: "closeSettingsView", settings: Types.SettingsInterface): this;
-    send(channel: "closeThemeCreatorView"): this;
     send(channel: "themeCreatorExportTheme", theme: Themes.Theme): this;
     send(channel: "themeCreatorAddTheme", theme: Themes.Theme): this;
     send(channel: "themeCreatorRemoveTheme", themeId: string): this;

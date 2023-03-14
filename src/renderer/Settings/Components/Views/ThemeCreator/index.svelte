@@ -12,21 +12,22 @@
   $: zoomViewHeight = $modalBounds.height - 238;
 
   let zoom = 1;
-  let webview: any;
+  let webviews: any[] = [];
 
   onMount(() => {
-    webview.addEventListener("dom-ready", () => {
-      webview.openDevTools();
-      setTimeout(() => {
-        webview.send("getThemeCreatorPalette", $creatorTheme.theme.palette);
+    webviews.forEach((webview, index) => {
+      webview.addEventListener("dom-ready", () => {
+        setTimeout(() => {
+          webview.send("getThemeCreatorPalette", $creatorTheme.theme.palette);
 
-        creatorTheme.subscribe((store) => {
-          if (!webview) {
-            return;
-          }
-          webview.send("getThemeCreatorPalette", store.theme.palette);
-        });
-      }, 1000);
+          creatorTheme.subscribe((store) => {
+            if (webviews.length === 0 || !webviews[index]) {
+              return;
+            }
+            webview.send("getThemeCreatorPalette", store.theme.palette);
+          });
+        }, 1000);
+      });
     });
   });
 </script>
@@ -50,24 +51,13 @@
         <ZoomView bind:zoom height={`${zoomViewHeight}px`}>
           <iframeView>
             <webview
-              bind:this={webview}
+              bind:this={webviews[0]}
               preload={`file://${resolve(
                 process.cwd(),
                 "dist/renderer",
                 "themePreviewPreload.js",
               )}`}
               style={`
-                ${getColorPallet($creatorTheme.theme).join(";")};
-                width: 1099px;
-                height: 609px;
-              `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <!-- <webview
-              preload={`file://${resolve(process.cwd(), "dist/renderer", "themePreviewPreload.js")}`}
-              style={`
-                ${getColorPallet($creatorTheme.theme).join(";")};
                 width: 1099px;
                 height: 609px;
               `}
@@ -75,9 +65,13 @@
               src="https://www.figma.com/files/recent"
             />
             <webview
-              preload={`file://${resolve(process.cwd(), "dist/renderer", "themePreviewPreload.js")}`}
+              bind:this={webviews[1]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
               style={`
-                ${getColorPallet($creatorTheme.theme).join(";")};
                 width: 1099px;
                 height: 609px;
               `}
@@ -85,15 +79,33 @@
               src="https://www.figma.com/files/recent"
             />
             <webview
-              preload={`file://${resolve(process.cwd(), "dist/renderer", "themePreviewPreload.js")}`}
+              bind:this={webviews[2]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
               style={`
-                ${getColorPallet($creatorTheme.theme).join(";")};
                 width: 1099px;
                 height: 609px;
               `}
               title="Figma recent files"
               src="https://www.figma.com/files/recent"
-            /> -->
+            />
+            <webview
+              bind:this={webviews[3]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
+              style={`
+                width: 1099px;
+                height: 609px;
+              `}
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
           </iframeView>
           <!-- <div style={getColorPallet($creatorTheme.theme).join(";")}>
             <Preview />
@@ -127,5 +139,6 @@
     display: grid;
     grid-template-columns: auto auto;
     gap: 2vmin;
+    padding: 20px;
   }
 </style>

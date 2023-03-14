@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+  import { resolve } from "path";
   import { Text, Label, Flex, Grid, ZoomView } from "Common";
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
@@ -10,6 +12,23 @@
   $: zoomViewHeight = $modalBounds.height - 238;
 
   let zoom = 1;
+  let webview: any;
+
+  onMount(() => {
+    webview.addEventListener("dom-ready", () => {
+      webview.openDevTools();
+      setTimeout(() => {
+        webview.send("getThemeCreatorPalette", $creatorTheme.theme.palette);
+
+        creatorTheme.subscribe((store) => {
+          if (!webview) {
+            return;
+          }
+          webview.send("getThemeCreatorPalette", store.theme.palette);
+        });
+      }, 1000);
+    });
+  });
 </script>
 
 <div>
@@ -29,9 +48,56 @@
       <Flex height="20px" />
       <Flex der="column">
         <ZoomView bind:zoom height={`${zoomViewHeight}px`}>
-          <div style={getColorPallet($creatorTheme.theme).join(";")}>
+          <iframeView>
+            <webview
+              bind:this={webview}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
+              style={`
+                ${getColorPallet($creatorTheme.theme).join(";")};
+                width: 1099px;
+                height: 609px;
+              `}
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+            <!-- <webview
+              preload={`file://${resolve(process.cwd(), "dist/renderer", "themePreviewPreload.js")}`}
+              style={`
+                ${getColorPallet($creatorTheme.theme).join(";")};
+                width: 1099px;
+                height: 609px;
+              `}
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+            <webview
+              preload={`file://${resolve(process.cwd(), "dist/renderer", "themePreviewPreload.js")}`}
+              style={`
+                ${getColorPallet($creatorTheme.theme).join(";")};
+                width: 1099px;
+                height: 609px;
+              `}
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+            <webview
+              preload={`file://${resolve(process.cwd(), "dist/renderer", "themePreviewPreload.js")}`}
+              style={`
+                ${getColorPallet($creatorTheme.theme).join(";")};
+                width: 1099px;
+                height: 609px;
+              `}
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            /> -->
+          </iframeView>
+          <!-- <div style={getColorPallet($creatorTheme.theme).join(";")}>
             <Preview />
-          </div>
+          </div> -->
         </ZoomView>
         <Flex height="10px" />
         <InputRange bind:value={zoom} min={0.2} max={1.5} step={0.05} />
@@ -56,5 +122,10 @@
   }
   colorPaletteDiv {
     display: block;
+  }
+  iframeView {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2vmin;
   }
 </style>

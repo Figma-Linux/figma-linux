@@ -128,6 +128,17 @@ module.exports = [
     plugins: [...commonPlugins],
   },
   {
+    input: "src/renderer/DesktopAPI/themePreviewPreload.ts",
+    output: {
+      sourcemap: !production,
+      format: "cjs",
+      name: "app",
+      file: "dist/renderer/themePreviewPreload.js",
+    },
+    external: commonExternal,
+    plugins: [...commonPlugins],
+  },
+  {
     input: "src/renderer/Settings/index.ts",
     output: {
       sourcemap: !production,

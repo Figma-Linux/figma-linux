@@ -19,8 +19,12 @@ export class ThemesApplier {
 
   private registerEvents() {
     E.ipcRenderer.on("loadCurrentTheme", (_, theme) => {
-      console.log("loadCurrentTheme, theme: ", theme);
       this.changePalette(theme);
+    });
+  }
+  public registerEventsForPreview() {
+    E.ipcRenderer.on("getThemeCreatorPalette", (_, palette: Themes.Palette) => {
+      this.applyPalette(palette);
     });
   }
 
@@ -57,10 +61,13 @@ export class ThemesApplier {
   }
 
   private setThemeVariables() {
-    const keys = Object.keys(this.currentTheme.palette);
+    this.applyPalette(this.currentTheme.palette);
+  }
+  private applyPalette(palette: Themes.Palette) {
+    const keys = Object.keys(palette);
 
     for (const key of keys) {
-      const value = this.currentTheme.palette[key];
+      const value = palette[key];
       document.body.style.setProperty(`--${key}`, value);
 
       if (key === "bg-header-control") {
@@ -72,6 +79,10 @@ export class ThemesApplier {
         document.body.style.setProperty("--bg-primary-btn", value);
         document.body.style.setProperty("--bg-overlay-active", value);
         document.body.style.setProperty("--color-border-toolbar-selected", value);
+        document.body.style.setProperty("--color-bg-toolbar-selected", value);
+      }
+      if (key === "bg-toolbar-hover") {
+        document.body.style.setProperty("--color-bg-toolbar-hover", value);
       }
       if (key === "fg-overlay") {
         document.body.style.setProperty("--fg-overlay", value);
@@ -126,7 +137,7 @@ export class ThemesApplier {
     document.body.style.setProperty("--color-bg-tooltip", "var(--bg-overlay)");
   }
 
-  init(): void {
+  public init() {
     const figmaCoreStylesheet = this.getCoreStylesheet();
 
     if (!figmaCoreStylesheet) {

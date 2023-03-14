@@ -16,6 +16,7 @@ export default class SettingsView {
         nodeIntegration: true,
         contextIsolation: false,
         experimentalFeatures: false,
+        webviewTag: true,
       },
     });
 

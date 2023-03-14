@@ -38,12 +38,14 @@ export default class ThemeManager {
   public async loadThemes() {
     if (!(await access(this.themesDirectory))) {
       await mkPath(this.themesDirectory);
-      await this.updateThemesFromRepository();
-    } else {
-      await this.loadFromDirectory(this.themes);
     }
 
-    await this.loadFromDirectory(this.creatorThemes, this.creatorThemeThemesDirectory);
+    await this.syncThemesFromRepository();
+
+    await Promise.all([
+      this.loadFromDirectory(this.themes),
+      this.loadFromDirectory(this.creatorThemes, this.creatorThemeThemesDirectory),
+    ]);
 
     app.emit("syncThemesEnd", [...this.themes.values()]);
     app.emit("loadCreatorThemes", [...this.creatorThemes.values()]);
@@ -116,7 +118,7 @@ export default class ThemeManager {
     return this.writeThemeFile(filePath, theme);
   }
 
-  public async updateThemesFromRepository() {
+  public async syncThemesFromRepository() {
     await downloadFile(DOWNLOAD_ZIP_URI, DOWNLOAD_ZIP_PATH);
 
     const zip = new Azip(DOWNLOAD_ZIP_PATH);
@@ -134,8 +136,6 @@ export default class ThemeManager {
             ...this.translatePaletteToKebabCase(themeData),
             id: themeId,
           };
-
-          this.themes.set(themeId, theme);
 
           await this.writeThemeFile(filePath, theme);
         } catch (error) {
@@ -231,7 +231,8 @@ export default class ThemeManager {
 
     app.emit("syncThemesStart");
 
-    await this.updateThemesFromRepository();
+    await this.syncThemesFromRepository();
+    await this.loadFromDirectory(this.themes);
 
     app.emit("syncThemesEnd", [...this.themes.values()]);
 

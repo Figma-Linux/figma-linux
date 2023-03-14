@@ -49,7 +49,11 @@
 </script>
 
 <div>
-  <DropDown title="ThemeCreator's themes" isEmpty={$creatorsThemes.length === 0} open={false}>
+  <DropDown
+    title="ThemeCreator's themes"
+    isEmpty={$creatorsThemes.length === 0}
+    bind:open={$settings.app.creatorsThemesDropdownOpen}
+  >
     <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
       {#if $creatorsThemes.length > 0}
         {#each $creatorsThemes as theme (theme.id)}
@@ -73,7 +77,11 @@
     </Grid>
   </DropDown>
   <Flex height="20px" />
-  <DropDown title="Repository themes" isEmpty={$themes.length === 0} open={true}>
+  <DropDown
+    title="Repository themes"
+    isEmpty={$themes.length === 0}
+    bind:open={$settings.app.themeDropdownOpen}
+  >
     <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
       {#if $themes.length > 0}
         {#each $themes as theme (theme.id)}

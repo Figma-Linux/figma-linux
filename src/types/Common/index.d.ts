@@ -67,6 +67,8 @@ declare namespace Types {
       savedExtensions: Extensions.ExtensionJson[];
       lastSavedPluginDir?: string;
       lastExportDir?: string;
+      themeDropdownOpen: boolean;
+      creatorsThemesDropdownOpen: boolean;
     };
     ui: {
       scalePanel: number;

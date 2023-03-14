@@ -2,7 +2,7 @@ import { writable } from "svelte/store";
 import { DEFAULT_THEME } from "Const";
 
 function createCreatorTheme() {
-  const { subscribe, set, update } = writable<Themes.CreatorThemeStore>({
+  const { subscribe, set, update } = writable<Store.CreatorThemeStore>({
     state: "new",
     theme: DEFAULT_THEME,
   });

@@ -23,6 +23,8 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
     lastOpenedTabs: {},
     featureFlags: {},
     savedExtensions: [],
+    themeDropdownOpen: true,
+    creatorsThemesDropdownOpen: false,
   },
   theme: {
     currentTheme: "0",

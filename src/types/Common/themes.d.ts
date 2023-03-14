@@ -12,11 +12,6 @@ declare namespace Themes {
     palette: Palette;
   }
 
-  interface CreatorThemeStore {
-    state: "new" | "edit";
-    theme: Theme;
-  }
-
   interface Palette {
     /**
      * text color

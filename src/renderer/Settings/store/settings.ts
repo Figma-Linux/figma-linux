@@ -5,7 +5,15 @@ function createSettings() {
   const { subscribe, update, set } = writable<Types.SettingsInterface>();
 
   return {
-    set,
+    set: (settings: Types.SettingsInterface) =>
+      set({
+        ...settings,
+        app: {
+          ...settings.app,
+          themeDropdownOpen: settings.app.themeDropdownOpen ?? true,
+          creatorsThemesDropdownOpen: settings.app.creatorsThemesDropdownOpen ?? false,
+        },
+      }),
     subscribe,
     reset: () => update((current) => (current = DEFAULT_SETTINGS)),
   };

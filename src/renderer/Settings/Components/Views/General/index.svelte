@@ -9,6 +9,8 @@
 
   import DirectoryListItem from "./DirectoryListItem.svelte";
 
+  export let zIndex: number;
+
   let items: Types.TabItem[] = [];
   $: items = $settings.app.fontDirs.map((dir) => ({
     id: dir,
@@ -51,7 +53,7 @@
   }
 </script>
 
-<div>
+<div style={`z-index: ${zIndex}`}>
   <Flex>
     <Flex der="column" width="-webkit-fill-available">
       <Label>Scale UI</Label>
@@ -127,6 +129,9 @@
 
 <style>
   div {
+    position: absolute;
+    background-color: var(--bg-panel);
+    width: -webkit-fill-available;
     padding: 32px 32px 8px 32px;
   }
 </style>

@@ -79,10 +79,13 @@
     </Button>
   </HeaderModal>
   <settingsBody>
-    <svelte:component
-      this={currentItem.bodyComponent}
-      on:setSettingsTabViewIndex={onSetTabViewIndex}
-    />
+    {#each items as item (item.id)}
+      <svelte:component
+        this={item.bodyComponent}
+        zIndex={item.id === currentItem.id ? 2 : 0}
+        on:setSettingsTabViewIndex={onSetTabViewIndex}
+      />
+    {/each}
   </settingsBody>
 </div>
 
@@ -94,6 +97,7 @@
     background: var(--bg-panel);
   }
   settingsBody {
+    position: relative;
     display: block;
     scroll-behavior: smooth;
     overflow-y: auto;

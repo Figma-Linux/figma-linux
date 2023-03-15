@@ -1,11 +1,13 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
   import { createEventDispatcher } from "svelte";
-  import { themes, creatorsThemes, creatorTheme, settings } from "../../../store";
+  import { themes, creatorsThemes, creatorTheme, settings, modalBounds } from "../../../store";
   import { DropDown, Flex, Grid } from "Common";
   import { DEFAULT_THEME } from "Const";
 
   import ThemeItem from "./ThemeItem.svelte";
+
+  export let zIndex: number;
 
   const dispatch = createEventDispatcher();
 
@@ -46,9 +48,16 @@
 
     dispatch("setSettingsTabViewIndex", { index: 2 });
   }
+
+  let zoomViewHeight: number;
+  $: {
+    if ($modalBounds) {
+      zoomViewHeight = $modalBounds.height - 94;
+    }
+  }
 </script>
 
-<div>
+<div style={`z-index: ${zIndex}; height: ${zoomViewHeight}px;`}>
   <DropDown
     title="ThemeCreator's themes"
     isEmpty={$creatorsThemes.length === 0}
@@ -104,6 +113,10 @@
 
 <style>
   div {
+    position: absolute;
+    width: -webkit-fill-available;
+    background-color: var(--bg-panel);
+    overflow: auto;
     padding: 32px 32px 8px 32px;
   }
   themeFake {

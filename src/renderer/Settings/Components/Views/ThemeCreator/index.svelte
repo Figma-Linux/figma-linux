@@ -10,7 +10,14 @@
   import Preview from "./Preview.svelte";
   import ColorPalette from "./ColorPalette.svelte";
 
-  $: zoomViewHeight = $modalBounds.height - 238;
+  export let zIndex: number;
+
+  let zoomViewHeight: number;
+  $: {
+    if ($modalBounds) {
+      zoomViewHeight = $modalBounds.height - 238;
+    }
+  }
 
   let webviews: any[] = [];
 
@@ -33,7 +40,7 @@
   });
 </script>
 
-<div>
+<div style={`z-index: ${zIndex}`}>
   <Grid columns="1fr 2vmin 35vmin">
     <Flex der="column">
       <Flex>
@@ -153,6 +160,9 @@
 
 <style>
   div {
+    position: absolute;
+    background-color: var(--bg-panel);
+    width: -webkit-fill-available;
     padding: 32px 32px 8px 32px;
   }
   colorPaletteDiv {

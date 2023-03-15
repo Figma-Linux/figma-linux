@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { resolve } from "path";
-  import { Text, Label, Flex, Grid, ZoomView } from "Common";
+  import { Text, Label, Flex, Grid, ZoomView, ButtonTool } from "Common";
+  import { RadioNormal, RadioChecked } from "Common/Icons";
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
   import { creatorTheme, modalBounds } from "../../../store";
@@ -48,7 +49,23 @@
       </Flex>
       <Flex height="20px" />
       <Flex der="column">
-        <ZoomView bind:zoom height={`${zoomViewHeight}px`}>
+        <ZoomView
+          bind:zoom
+          bind:isMaskActive={$creatorTheme.previewMaskVisible}
+          height={`${zoomViewHeight}px`}
+        >
+          <toolBar slot="toolBar">
+            <ButtonTool
+              normalBgColor="tarsparent"
+              on:buttonClick={creatorTheme.togglePreviewVisible}
+            >
+              {#if $creatorTheme.previewMaskVisible}
+                <RadioChecked size="14" />
+              {:else}
+                <RadioNormal size="14" />
+              {/if}
+            </ButtonTool>
+          </toolBar>
           <iframeView>
             <webview
               bind:this={webviews[0]}
@@ -58,6 +75,7 @@
                 "themePreviewPreload.js",
               )}`}
               style={`
+                user-select: none;
                 width: 1099px;
                 height: 609px;
               `}
@@ -72,6 +90,7 @@
                 "themePreviewPreload.js",
               )}`}
               style={`
+                user-select: none;
                 width: 1099px;
                 height: 609px;
               `}
@@ -86,6 +105,7 @@
                 "themePreviewPreload.js",
               )}`}
               style={`
+                user-select: none;
                 width: 1099px;
                 height: 609px;
               `}
@@ -100,6 +120,7 @@
                 "themePreviewPreload.js",
               )}`}
               style={`
+                user-select: none;
                 width: 1099px;
                 height: 609px;
               `}
@@ -140,5 +161,11 @@
     grid-template-columns: auto auto;
     gap: 2vmin;
     padding: 20px;
+  }
+  toolBar {
+    display: flex;
+    background-color: var(--bg-panel);
+    padding: 6px;
+    border-radius: 3px;
   }
 </style>

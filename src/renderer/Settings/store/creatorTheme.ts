@@ -4,6 +4,7 @@ import { DEFAULT_THEME } from "Const";
 function createCreatorTheme() {
   const { subscribe, set, update } = writable<Store.CreatorThemeStore>({
     state: "new",
+    previewMaskVisible: true,
     theme: DEFAULT_THEME,
   });
 
@@ -14,25 +15,34 @@ function createCreatorTheme() {
     reset: () =>
       update(() => ({
         state: "new",
+        previewMaskVisible: true,
         theme: DEFAULT_THEME,
       })),
     setTheme: (theme: Themes.Theme) =>
       update((store) => ({
         state: store.state,
+        previewMaskVisible: store.previewMaskVisible,
         theme,
       })),
     setPaletteTheme: (theme: Themes.Theme) =>
       update((store) => ({
         state: "new",
+        previewMaskVisible: store.previewMaskVisible,
         theme: {
           ...store.theme,
           palette: theme.palette,
         },
       })),
     setEditTheme: (theme: Themes.Theme) =>
-      update(() => ({
+      update((store) => ({
         state: "edit",
+        previewMaskVisible: store.previewMaskVisible,
         theme,
+      })),
+    togglePreviewVisible: () =>
+      update((store) => ({
+        ...store,
+        previewMaskVisible: !store.previewMaskVisible,
       })),
   };
 }

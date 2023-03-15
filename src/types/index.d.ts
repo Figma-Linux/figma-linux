@@ -216,6 +216,7 @@ declare namespace Electron {
     ): this;
     on(channel: "windowClose", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "changeTheme", listener: (event: IpcMainEvent, theme: Themes.Theme) => void): this;
+    on(channel: "toggleThemeCreatorPreviewMask", listener: (event: IpcMainEvent) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -300,6 +301,7 @@ declare namespace Electron {
       channel: "themesLoaded",
       listener: (event: IpcRendererEvent, themes: Themes.Theme[]) => void,
     ): this;
+    on(channel: "toggleThemeCreatorPreviewMask", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "focusTab", listener: (event: IpcRendererEvent, tabId: number) => void): this;
     on(
       channel: "setUsingMicrophone",
@@ -373,6 +375,7 @@ declare namespace Electron {
     send(channed: "windowDidRestored"): this;
     send(channed: "changeTheme", theme: Themes.Theme): this;
     send(channed: "windowClose"): this;
+    send(channed: "toggleThemeCreatorPreviewMask"): this;
 
     sendSync(channed: "getSettings"): Types.SettingsInterface;
 
@@ -400,6 +403,7 @@ declare namespace Electron {
   interface WebContents extends NodeJS.EventEmitter {
     send(channel: "renderView", view: Types.View): void;
     send(channel: "themesLoaded", themes: Themes.Theme[]): void;
+    send(channel: "toggleThemeCreatorPreviewMask"): void;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): void;
     send(channel: "setPanelScale", scale: number, height: number): void;
     send(channel: "updateUiScale", scale: number): void;

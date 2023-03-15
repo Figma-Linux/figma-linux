@@ -12,4 +12,12 @@ import { themes } from "./ThemesApplier";
       }
     });
   });
+
+  function keydownHandler(event: KeyboardEvent) {
+    if (event.code === "ControlLeft") {
+      ipcRenderer.send("toggleThemeCreatorPreviewMask");
+    }
+  }
+
+  document.addEventListener("keydown", keydownHandler);
 })();

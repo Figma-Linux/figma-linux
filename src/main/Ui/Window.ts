@@ -95,6 +95,10 @@ export default class Window {
 
     this.updatePanelScale(event, scale);
   }
+  public toggleThemeCreatorPreviewMask() {
+    this.settingsView.toggleThemeCreatorPreviewMask();
+  }
+
   private updatePanelScale(_: IpcMainEvent, scale: number) {
     const panelScale = +scale.toFixed(2);
 

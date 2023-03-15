@@ -83,6 +83,10 @@ export default class SettingsView {
     });
   }
 
+  public toggleThemeCreatorPreviewMask() {
+    this.view.webContents.send("toggleThemeCreatorPreviewMask");
+  }
+
   private enableColorSpaceSrgbChange(_: IpcMainEvent, enabled: boolean) {
     const previousValue = storage.settings.app.enableColorSpaceSrgb;
 

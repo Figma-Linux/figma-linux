@@ -6,6 +6,7 @@ import {
   settings as settingsStore,
   themesLoaded,
   creatorsThemes,
+  creatorTheme,
 } from "./store";
 
 export function initIpc() {
@@ -15,6 +16,9 @@ export function initIpc() {
   });
   ipcRenderer.on("loadCreatorThemes", (_: IpcRendererEvent, themes: Themes.Theme[]) => {
     creatorsThemes.set(themes);
+  });
+  ipcRenderer.on("toggleThemeCreatorPreviewMask", (_: IpcRendererEvent) => {
+    creatorTheme.togglePreviewVisible();
   });
   settingsStore.set(ipcRenderer.sendSync("getSettings"));
 

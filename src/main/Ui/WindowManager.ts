@@ -255,6 +255,11 @@ export default class WindowManager {
 
     window.handleUrl(path);
   }
+  private toggleThemeCreatorPreviewMask(path: string) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.toggleThemeCreatorPreviewMask();
+  }
 
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
@@ -269,6 +274,7 @@ export default class WindowManager {
     ipcMain.on("closeTab", this.closeTab.bind(this));
     ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
     ipcMain.on("closeSettingsView", this.closeSettingsView.bind(this));
+    ipcMain.on("toggleThemeCreatorPreviewMask", this.toggleThemeCreatorPreviewMask.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

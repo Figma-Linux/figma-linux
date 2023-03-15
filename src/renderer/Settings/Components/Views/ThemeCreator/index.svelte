@@ -12,7 +12,6 @@
 
   $: zoomViewHeight = $modalBounds.height - 238;
 
-  let zoom = 1;
   let webviews: any[] = [];
 
   onMount(() => {
@@ -26,6 +25,7 @@
               return;
             }
             webview.send("getThemeCreatorPalette", store.theme.palette);
+            webview.send("changeZoomFactor", store.zoom);
           });
         }, 1000);
       });
@@ -50,7 +50,9 @@
       <Flex height="20px" />
       <Flex der="column">
         <ZoomView
-          bind:zoom
+          minZoom={0.2}
+          maxZoom={1.5}
+          bind:zoom={$creatorTheme.zoom}
           bind:isMaskActive={$creatorTheme.previewMaskVisible}
           height={`${zoomViewHeight}px`}
         >
@@ -133,9 +135,9 @@
           </div> -->
         </ZoomView>
         <Flex height="10px" />
-        <InputRange bind:value={zoom} min={0.2} max={1.5} step={0.05} />
+        <InputRange bind:value={$creatorTheme.zoom} min={0.2} max={1.5} step={0.05} />
         <Flex der="column" alignItems="center" justifyContent="center">
-          <Text padding="8px 0 0 0">{Math.floor(zoom * 100)}%</Text>
+          <Text padding="8px 0 0 0">{Math.floor($creatorTheme.zoom * 100)}%</Text>
         </Flex>
       </Flex>
     </Flex>

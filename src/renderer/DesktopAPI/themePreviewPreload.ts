@@ -13,6 +13,10 @@ import { themes } from "./ThemesApplier";
     });
   });
 
+  ipcRenderer.on("changeZoomFactor", (_, zoom) => {
+    document.body.style.zoom = zoom;
+  });
+
   function keydownHandler(event: KeyboardEvent) {
     if (event.code === "ControlLeft") {
       ipcRenderer.send("toggleThemeCreatorPreviewMask");

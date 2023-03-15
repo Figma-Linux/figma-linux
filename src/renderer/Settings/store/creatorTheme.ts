@@ -5,6 +5,7 @@ function createCreatorTheme() {
   const { subscribe, set, update } = writable<Store.CreatorThemeStore>({
     state: "new",
     previewMaskVisible: true,
+    zoom: 1,
     theme: DEFAULT_THEME,
   });
 
@@ -16,18 +17,18 @@ function createCreatorTheme() {
       update(() => ({
         state: "new",
         previewMaskVisible: true,
+        zoom: 1,
         theme: DEFAULT_THEME,
       })),
     setTheme: (theme: Themes.Theme) =>
       update((store) => ({
-        state: store.state,
-        previewMaskVisible: store.previewMaskVisible,
+        ...store,
         theme,
       })),
     setPaletteTheme: (theme: Themes.Theme) =>
       update((store) => ({
+        ...store,
         state: "new",
-        previewMaskVisible: store.previewMaskVisible,
         theme: {
           ...store.theme,
           palette: theme.palette,
@@ -35,8 +36,8 @@ function createCreatorTheme() {
       })),
     setEditTheme: (theme: Themes.Theme) =>
       update((store) => ({
+        ...store,
         state: "edit",
-        previewMaskVisible: store.previewMaskVisible,
         theme,
       })),
     togglePreviewVisible: () =>

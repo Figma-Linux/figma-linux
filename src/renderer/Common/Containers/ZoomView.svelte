@@ -1,7 +1,11 @@
 <script lang="ts">
+  import type { MouseWheelInputEvent } from "electron";
+  import { values } from "lodash";
   import { onMount, onDestroy } from "svelte";
 
   export let zoom: number;
+  export let minZoom: number;
+  export let maxZoom: number;
   export let width = "auto";
   export let height = "auto";
   export let isMaskActive = true;
@@ -74,6 +78,12 @@
     area.style.cursor = "default";
   }
 
+  function mouseWheelHandler(event: MouseWheelInputEvent) {
+    (event as any).preventDefault();
+
+    zoom += event.deltaY > 0 ? (zoom <= minZoom ? 0 : -0.05) : zoom >= maxZoom ? 0 : 0.05;
+  }
+
   function keydownHandler(event: KeyboardEvent) {
     if (event.code === "ControlLeft") {
       isMaskActive = !isMaskActive;
@@ -94,6 +104,7 @@
   on:mouseup={mouseUpHandler}
   on:mousemove={mouseMoveHandler}
   on:mouseleave={mouseLeaveHandler}
+  on:mousewheel={mouseWheelHandler}
   style={`
     width: ${width};
     height: ${height};

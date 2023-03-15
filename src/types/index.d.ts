@@ -339,6 +339,10 @@ declare namespace Electron {
       channel: "getThemeCreatorPalette",
       listener: (event: IpcRendererEvent, palette: Themes.Palette) => void,
     ): this;
+    on(
+      channel: "changeZoomFactor",
+      listener: (event: IpcRendererEvent, zoom: number) => void,
+    ): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -422,6 +426,7 @@ declare namespace Electron {
     send(channel: "isMainMenuOpen", isOpen: boolean): this;
     send(channel: "loadSettings", settings: Types.SettingsInterface): this;
     send(channel: "getThemeCreatorPalette", palette: Themes.Palette): this;
+    send(channel: "changeZoomFactor", zoom: number): this;
 
     destroy(): void;
   }

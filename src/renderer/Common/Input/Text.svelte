@@ -9,8 +9,6 @@
   function onChangeHandler() {
     isValidValue = validator(value);
   }
-
-  isValidValue = validator(value);
 </script>
 
 <div class={`${!isValidValue ? "input_error" : ""}`}>
@@ -23,6 +21,7 @@
     type="text"
     {placeholder}
     on:change={onChangeHandler}
+    on:focusout={onChangeHandler}
   />
 </div>
 

@@ -164,6 +164,7 @@
     background-color: var(--bg-panel);
     width: -webkit-fill-available;
     padding: 32px 32px 8px 32px;
+    user-select: none;
   }
   colorPaletteDiv {
     display: block;

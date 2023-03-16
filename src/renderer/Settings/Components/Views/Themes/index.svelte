@@ -118,6 +118,7 @@
     background-color: var(--bg-panel);
     overflow: auto;
     padding: 32px 32px 8px 32px;
+    user-select: none;
   }
   themeFake {
     display: block;

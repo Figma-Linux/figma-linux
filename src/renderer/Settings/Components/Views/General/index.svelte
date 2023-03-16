@@ -113,9 +113,9 @@
       <Flex height="10px" />
       <Flex>
         <FlexItem grow={1} />
-        <SecondaryButton on:mouseup={onClearList}>Clear list</SecondaryButton>
+        <SecondaryButton on:buttonClick={onClearList}>Clear list</SecondaryButton>
         <Flex width="10px" />
-        <SecondaryButton on:mouseup={onAddDirectory}>Add directory</SecondaryButton>
+        <SecondaryButton on:buttonClick={onAddDirectory}>Add directory</SecondaryButton>
       </Flex>
     </Flex>
     <!-- <Flex width="120px" /> -->
@@ -133,5 +133,6 @@
     background-color: var(--bg-panel);
     width: -webkit-fill-available;
     padding: 32px 32px 8px 32px;
+    user-select: none;
   }
 </style>

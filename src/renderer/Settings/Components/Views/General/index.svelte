@@ -83,6 +83,10 @@
       <CheckBox bind:checked={$settings.app.enableColorSpaceSrgb} text="Enable color space sRGB" />
       <CheckBox bind:checked={$settings.app.visibleNewProjectBtn} text="Show new project button" />
       <CheckBox bind:checked={$settings.app.useZenity} text="Use Zenity for Dialogs" />
+      <CheckBox
+        bind:checked={$settings.app.useOldPreviewer}
+        text="Use old Previewer in ThemeCreator"
+      />
       <CheckBox bind:checked={$settings.app.disableThemes} text="Disable themes" />
     </Flex>
     <Flex width="120px" />

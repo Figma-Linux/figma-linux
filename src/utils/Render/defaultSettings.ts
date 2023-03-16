@@ -25,6 +25,7 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
     savedExtensions: [],
     themeDropdownOpen: true,
     creatorsThemesDropdownOpen: false,
+    useOldPreviewer: false,
   },
   theme: {
     currentTheme: "0",

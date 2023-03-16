@@ -12,6 +12,7 @@ function createSettings() {
           ...settings.app,
           themeDropdownOpen: settings.app.themeDropdownOpen ?? true,
           creatorsThemesDropdownOpen: settings.app.creatorsThemesDropdownOpen ?? false,
+          useOldPreviewer: settings.app.useOldPreviewer ?? false,
         },
       }),
     subscribe,

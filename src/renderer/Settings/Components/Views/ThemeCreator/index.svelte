@@ -5,7 +5,7 @@
   import { RadioNormal, RadioChecked } from "Common/Icons";
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
-  import { creatorTheme, modalBounds } from "../../../store";
+  import { creatorTheme, modalBounds, settings } from "../../../store";
 
   import Preview from "./Preview.svelte";
   import ColorPalette from "./ColorPalette.svelte";
@@ -75,71 +75,74 @@
               {/if}
             </ButtonTool>
           </toolBar>
-          <iframeView>
-            <webview
-              bind:this={webviews[0]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                user-select: none;
-                width: 1099px;
-                height: 609px;
-              `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <webview
-              bind:this={webviews[1]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                user-select: none;
-                width: 1099px;
-                height: 609px;
-              `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <webview
-              bind:this={webviews[2]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                user-select: none;
-                width: 1099px;
-                height: 609px;
-              `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <webview
-              bind:this={webviews[3]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                user-select: none;
-                width: 1099px;
-                height: 609px;
-              `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-          </iframeView>
-          <!-- <div style={getColorPallet($creatorTheme.theme).join(";")}>
-            <Preview />
-          </div> -->
+          {#if $settings.app.useOldPreviewer}
+            <iframeView style={getColorPallet($creatorTheme.theme).join(";")}>
+              <Preview />
+            </iframeView>
+          {:else}
+            <iframeView>
+              <webview
+                bind:this={webviews[0]}
+                preload={`file://${resolve(
+                  process.cwd(),
+                  "dist/renderer",
+                  "themePreviewPreload.js",
+                )}`}
+                style={`
+                  user-select: none;
+                  width: 1099px;
+                  height: 609px;
+                `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              />
+              <webview
+                bind:this={webviews[1]}
+                preload={`file://${resolve(
+                  process.cwd(),
+                  "dist/renderer",
+                  "themePreviewPreload.js",
+                )}`}
+                style={`
+                  user-select: none;
+                  width: 1099px;
+                  height: 609px;
+                `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              />
+              <webview
+                bind:this={webviews[2]}
+                preload={`file://${resolve(
+                  process.cwd(),
+                  "dist/renderer",
+                  "themePreviewPreload.js",
+                )}`}
+                style={`
+                  user-select: none;
+                  width: 1099px;
+                  height: 609px;
+                `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              />
+              <webview
+                bind:this={webviews[3]}
+                preload={`file://${resolve(
+                  process.cwd(),
+                  "dist/renderer",
+                  "themePreviewPreload.js",
+                )}`}
+                style={`
+                  user-select: none;
+                  width: 1099px;
+                  height: 609px;
+                `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              />
+            </iframeView>
+          {/if}
         </ZoomView>
         <Flex height="10px" />
         <InputRange bind:value={$creatorTheme.zoom} min={0.2} max={1.5} step={0.05} />

@@ -69,6 +69,7 @@ declare namespace Types {
       lastExportDir?: string;
       themeDropdownOpen: boolean;
       creatorsThemesDropdownOpen: boolean;
+      useOldPreviewer: boolean;
     };
     ui: {
       scalePanel: number;

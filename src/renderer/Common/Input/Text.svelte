@@ -3,9 +3,17 @@
 
   export let width = "auto";
   export let placeholder = "";
+  export let isValidValue = true;
+  export let validator = (value: string) => true;
+
+  function onChangeHandler() {
+    isValidValue = validator(value);
+  }
+
+  isValidValue = validator(value);
 </script>
 
-<div>
+<div class={`${!isValidValue ? "input_error" : ""}`}>
   <slot />
   <input
     bind:value
@@ -14,6 +22,7 @@
     `}
     type="text"
     {placeholder}
+    on:change={onChangeHandler}
   />
 </div>
 
@@ -24,6 +33,9 @@
     border-radius: 3px;
     padding: 8px;
     width: var(--inputWidth);
+  }
+  .input_error {
+    border: 1px solid var(--bg-window-close);
   }
   input {
     background-color: transparent;

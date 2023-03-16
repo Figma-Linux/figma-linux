@@ -5,4 +5,9 @@ declare namespace Store {
     zoom: number;
     theme: Themes.Theme;
   }
+
+  interface InputErrors {
+    themeNameError: string;
+    authorNameError: string;
+  }
 }

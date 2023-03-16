@@ -2,6 +2,7 @@
   import { ipcRenderer } from "electron";
   import { Popup, ListBox } from "Common";
   import { Download, Plus, Reset, Save2 } from "Common/Icons";
+  import { validateThemeName, validateThemeAuthor } from "../../../validators";
   import { creatorTheme } from "../../../store";
 
   import MenuItem from "./MenuItem.svelte";
@@ -69,12 +70,25 @@
     creatorTheme.reset();
   }
   function onAddToThemes() {
+    if (!validateThemeName($creatorTheme.theme.name)) {
+      return;
+    }
+    if (!validateThemeAuthor($creatorTheme.theme.author)) {
+      return;
+    }
+
     ipcRenderer.send("themeCreatorAddTheme", $creatorTheme.theme);
 
     creatorTheme.reset();
   }
   function onExport() {
-    // TODO: check name and author
+    if (!validateThemeName($creatorTheme.theme.name)) {
+      return;
+    }
+    if (!validateThemeAuthor($creatorTheme.theme.author)) {
+      return;
+    }
+
     ipcRenderer.send("themeCreatorExportTheme", $creatorTheme.theme);
   }
 </script>

@@ -5,7 +5,14 @@
   import { RadioNormal, RadioChecked } from "Common/Icons";
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
-  import { creatorTheme, modalBounds, settings } from "../../../store";
+  import {
+    creatorTheme,
+    modalBounds,
+    settings,
+    themeNameError,
+    themeAuthorError,
+  } from "../../../store";
+  import { validateThemeName, validateThemeAuthor } from "../../../validators";
 
   import Preview from "./Preview.svelte";
   import ColorPalette from "./ColorPalette.svelte";
@@ -57,6 +64,9 @@
       });
     });
   });
+
+  $: isValidName = $themeNameError === "";
+  $: isValidAuthor = $themeAuthorError === "";
 </script>
 
 <div style={`z-index: ${zIndex}; height: ${bodyHeight}px;`}>
@@ -65,15 +75,30 @@
       <Flex>
         <Flex der="column" width="-webkit-fill-available">
           <Label>Enter name of new theme</Label>
-          <InputText bind:value={$creatorTheme.theme.name} placeholder="Theme name" />
+          <InputText
+            bind:value={$creatorTheme.theme.name}
+            validator={validateThemeName}
+            placeholder="Theme name"
+            bind:isValidValue={isValidName}
+          />
+          <Flex height="20px">
+            <Text size="12px" color="var(--bg-window-close)">{$themeNameError}</Text>
+          </Flex>
         </Flex>
         <Flex width="120px" />
         <Flex der="column" width="-webkit-fill-available">
           <Label>Enter your name as author</Label>
-          <InputText bind:value={$creatorTheme.theme.author} placeholder="Author name" />
+          <InputText
+            bind:value={$creatorTheme.theme.author}
+            validator={validateThemeAuthor}
+            placeholder="Author name"
+            bind:isValidValue={isValidAuthor}
+          />
+          <Flex height="20px">
+            <Text size="12px" color="var(--bg-window-close)">{$themeAuthorError}</Text>
+          </Flex>
         </Flex>
       </Flex>
-      <Flex height="20px" />
       <Flex der="column">
         <ZoomView
           minZoom={0.2}

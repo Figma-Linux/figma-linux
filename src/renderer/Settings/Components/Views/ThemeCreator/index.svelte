@@ -26,11 +26,23 @@
     }
   }
 
+  let previewer: HTMLDivElement;
+  let maskBounds = { width: 0, height: 0 };
+
   let webviews: any[] = [];
 
   onMount(() => {
     webviews.forEach((webview, index) => {
       webview.addEventListener("dom-ready", () => {
+        if (previewer) {
+          const width = previewer.getBoundingClientRect().width;
+          const height = previewer.getBoundingClientRect().height;
+          maskBounds = {
+            width,
+            height,
+          };
+        }
+
         setTimeout(() => {
           webview.send("getThemeCreatorPalette", $creatorTheme.theme.palette);
 
@@ -66,6 +78,7 @@
         <ZoomView
           minZoom={0.2}
           maxZoom={1.5}
+          bind:maskBounds
           bind:zoom={$creatorTheme.zoom}
           bind:isMaskActive={$creatorTheme.previewMaskVisible}
           height={`${zoomViewHeight}px`}
@@ -82,74 +95,85 @@
               {/if}
             </ButtonTool>
           </toolBar>
-          {#if $settings.app.useOldPreviewer}
-            <iframeView style={getColorPallet($creatorTheme.theme).join(";")}>
-              <Preview />
-            </iframeView>
-          {:else}
-            <iframeView>
-              <webview
-                bind:this={webviews[0]}
-                preload={`file://${resolve(
-                  process.cwd(),
-                  "dist/renderer",
-                  "themePreviewPreload.js",
-                )}`}
-                style={`
+          <iframeView
+            style={`
+              ${getColorPallet($creatorTheme.theme).join(";")};
+              z-index: ${$settings.app.useOldPreviewer ? 2 : 0};
+              display: ${$settings.app.useOldPreviewer ? "block" : "none"};
+              user-select: ${$settings.app.useOldPreviewer ? "all" : "none"};
+            `}
+          >
+            <Preview />
+          </iframeView>
+          <iframeView
+            bind:this={previewer}
+            style={`
+              z-index: ${$settings.app.useOldPreviewer ? 0 : 2};
+              display: ${$settings.app.useOldPreviewer ? "none" : "grid"};
+              user-select: ${$settings.app.useOldPreviewer ? "none" : "all"};
+            `}
+          >
+            <webview
+              bind:this={webviews[0]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
+              style={`
                   user-select: none;
                   width: 1099px;
                   height: 609px;
                 `}
-                title="Figma recent files"
-                src="https://www.figma.com/files/recent"
-              />
-              <webview
-                bind:this={webviews[1]}
-                preload={`file://${resolve(
-                  process.cwd(),
-                  "dist/renderer",
-                  "themePreviewPreload.js",
-                )}`}
-                style={`
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+            <webview
+              bind:this={webviews[1]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
+              style={`
                   user-select: none;
                   width: 1099px;
                   height: 609px;
                 `}
-                title="Figma recent files"
-                src="https://www.figma.com/files/recent"
-              />
-              <webview
-                bind:this={webviews[2]}
-                preload={`file://${resolve(
-                  process.cwd(),
-                  "dist/renderer",
-                  "themePreviewPreload.js",
-                )}`}
-                style={`
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+            <webview
+              bind:this={webviews[2]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
+              style={`
                   user-select: none;
                   width: 1099px;
                   height: 609px;
                 `}
-                title="Figma recent files"
-                src="https://www.figma.com/files/recent"
-              />
-              <webview
-                bind:this={webviews[3]}
-                preload={`file://${resolve(
-                  process.cwd(),
-                  "dist/renderer",
-                  "themePreviewPreload.js",
-                )}`}
-                style={`
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+            <webview
+              bind:this={webviews[3]}
+              preload={`file://${resolve(
+                process.cwd(),
+                "dist/renderer",
+                "themePreviewPreload.js",
+              )}`}
+              style={`
                   user-select: none;
                   width: 1099px;
                   height: 609px;
                 `}
-                title="Figma recent files"
-                src="https://www.figma.com/files/recent"
-              />
-            </iframeView>
-          {/if}
+              title="Figma recent files"
+              src="https://www.figma.com/files/recent"
+            />
+          </iframeView>
         </ZoomView>
         <Flex height="10px" />
         <InputRange bind:value={$creatorTheme.zoom} min={0.2} max={1.5} step={0.05} />
@@ -180,6 +204,7 @@
     display: block;
   }
   iframeView {
+    position: absolute;
     display: grid;
     grid-template-columns: auto auto;
     gap: 2vmin;

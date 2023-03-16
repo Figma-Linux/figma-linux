@@ -9,6 +9,7 @@
   export let width = "auto";
   export let height = "auto";
   export let isMaskActive = true;
+  export let maskBounds = { width: 0, height: 0 };
 
   let div: HTMLDivElement;
   let mask: HTMLDivElement;
@@ -117,7 +118,14 @@
     `}
   >
     <slot />
-    <maskZoomArea bind:this={mask} style={`z-index: ${isMaskActive ? 1 : -1}`} />
+    <maskZoomArea
+      bind:this={mask}
+      style={`
+        z-index: ${isMaskActive ? 100 : -1};
+        width: ${maskBounds.width}px;
+        height: ${maskBounds.height}px;
+      `}
+    />
   </div>
   <zoomAreaToolBarWrap>
     <zoomAreaToolBar>

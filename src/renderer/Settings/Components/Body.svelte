@@ -100,7 +100,6 @@
     position: relative;
     display: block;
     scroll-behavior: smooth;
-    overflow-y: auto;
     height: calc(80vh - 46px);
   }
 </style>

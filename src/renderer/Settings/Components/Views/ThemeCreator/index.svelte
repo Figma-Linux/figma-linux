@@ -19,6 +19,13 @@
     }
   }
 
+  let bodyHeight: number;
+  $: {
+    if ($modalBounds) {
+      bodyHeight = $modalBounds.height - 94;
+    }
+  }
+
   let webviews: any[] = [];
 
   onMount(() => {
@@ -40,7 +47,7 @@
   });
 </script>
 
-<div style={`z-index: ${zIndex}`}>
+<div style={`z-index: ${zIndex}; height: ${bodyHeight}px;`}>
   <Grid columns="1fr 2vmin 35vmin">
     <Flex der="column">
       <Flex>

@@ -5,7 +5,7 @@
   import { ButtonTool, SecondaryButton } from "Common/Buttons";
   import { TOPPANELHEIGHT } from "Const";
   import { Folder } from "Common/Icons";
-  import { settings } from "../../../store";
+  import { settings, modalBounds } from "../../../store";
 
   import DirectoryListItem from "./DirectoryListItem.svelte";
 
@@ -44,6 +44,13 @@
     $settings.app.fontDirs = [];
   }
 
+  let bodyHeight: number;
+  $: {
+    if ($modalBounds) {
+      bodyHeight = $modalBounds.height - 94;
+    }
+  }
+
   $: {
     ipcRenderer.invoke("updateFigmaUiScale", $settings.ui.scaleFigmaUI);
   }
@@ -53,7 +60,7 @@
   }
 </script>
 
-<div style={`z-index: ${zIndex}`}>
+<div style={`z-index: ${zIndex}; height: ${bodyHeight}px;`}>
   <Flex>
     <Flex der="column" width="-webkit-fill-available">
       <Label>Scale UI</Label>
@@ -138,5 +145,6 @@
     width: -webkit-fill-available;
     padding: 32px 32px 8px 32px;
     user-select: none;
+    overflow: auto;
   }
 </style>

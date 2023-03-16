@@ -86,7 +86,7 @@
   }
 
   function keydownHandler(event: KeyboardEvent) {
-    if (event.code === "ControlLeft") {
+    if (event.code === "AltLeft") {
       isMaskActive = !isMaskActive;
     }
   }

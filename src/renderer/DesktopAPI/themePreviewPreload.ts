@@ -18,7 +18,7 @@ import { themes } from "./ThemesApplier";
   });
 
   function keydownHandler(event: KeyboardEvent) {
-    if (event.code === "ControlLeft") {
+    if (event.code === "AltLeft") {
       ipcRenderer.send("toggleThemeCreatorPreviewMask");
     }
   }

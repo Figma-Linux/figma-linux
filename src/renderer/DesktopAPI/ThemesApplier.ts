@@ -72,14 +72,21 @@ export class ThemesApplier {
 
       if (key === "bg-header-control") {
         document.body.style.setProperty("--color-bg-toolbar-secondary", value);
-        document.body.style.setProperty("--bg-overlay-active", value);
+        // document.body.style.setProperty("--bg-overlay-active", value);
         document.body.style.setProperty("--color-bg-toolbar-tertiary", value);
       }
       if (key === "bg-toolbar-active") {
         document.body.style.setProperty("--bg-primary-btn", value);
-        document.body.style.setProperty("--bg-overlay-active", value);
+        // document.body.style.setProperty("--bg-overlay-active", value);
         document.body.style.setProperty("--color-border-toolbar-selected", value);
         document.body.style.setProperty("--color-bg-toolbar-selected", value);
+        document.body.style.setProperty("--color-border-selected", value);
+        document.body.style.setProperty("--color-bg-menu-selected", value);
+        document.body.style.setProperty("--color-bg-menu-selected-hover", value);
+        document.body.style.setProperty("--color-bg-menu-selected-pressed", value);
+      }
+      if (key === "fg-overlay") {
+        document.body.style.setProperty("--color-icon-menu", value);
       }
       if (key === "bg-toolbar-hover") {
         document.body.style.setProperty("--color-bg-toolbar-hover", value);
@@ -90,9 +97,11 @@ export class ThemesApplier {
       }
       if (key === "fg-toolbar-active") {
         document.body.style.setProperty("--fg-overlay-active", value);
-      }
-      if (key === "fg-toolbar-active") {
-        document.body.style.setProperty("--fg-overlay-active", value);
+        document.body.style.setProperty("--color-text-menu-hover", value);
+        document.body.style.setProperty("--color-icon-toolbar-onselected", value);
+        document.body.style.setProperty("--color-text-onbrand", value);
+        // document.body.style.setProperty("--color-icon-toolbar", value);
+        // document.body.style.setProperty("--color-text-menu", value);
       }
       if (key === "text-disabled") {
         document.body.style.setProperty("--fg-overlay-secondary", value);
@@ -105,6 +114,7 @@ export class ThemesApplier {
       if (key === "text") {
         document.body.style.setProperty("--color-icon", value);
         document.body.style.setProperty("--color-icon-brand", value);
+        document.body.style.setProperty("--color-icon-secondary", value);
         document.body.style.setProperty("--color-icon-tertiary", value);
       }
       if (key === "text-active") {
@@ -114,6 +124,16 @@ export class ThemesApplier {
       if (key === "bg-panel-hover") {
         document.body.style.setProperty("--color-bg-pressed", value);
         document.body.style.setProperty("--color-bg-tertiary", value);
+      }
+      if (key === "fg-component") {
+        document.body.style.setProperty("--color-icon-component", value);
+        document.body.style.setProperty("--color-text-component", value);
+      }
+      if (key === "fg-component-disabled") {
+        document.body.style.setProperty("--color-icon-component-secondary", value);
+        document.body.style.setProperty("--color-text-component-secondary", value);
+        document.body.style.setProperty("--color-icon-component-tertiary", value);
+        document.body.style.setProperty("--color-text-component-tertiary", value);
       }
     }
 

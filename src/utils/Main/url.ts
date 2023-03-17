@@ -11,9 +11,14 @@ export const preloadMainScriptPathDev = `${resolve(
   "dist/renderer",
   "loadMainContent.js",
 )}`;
-export const preloadMainScriptPathProd = `${resolve(__dirname, "../loadMainContent.js")}`;
+export const preloadMainScriptPathProd = `${resolve(
+  __dirname,
+  "..",
+  "renderer",
+  "loadMainContent.js",
+)}`;
 export const preloadScriptPathDev = `${resolve(process.cwd(), "dist/renderer", "loadContent.js")}`;
-export const preloadScriptPathProd = `${resolve(__dirname, "../loadContent.js")}`;
+export const preloadScriptPathProd = `${resolve(__dirname, "..", "renderer", "loadContent.js")}`;
 
 export const isFileBrowser = (url: string): boolean => {
   return !/file\/.+/.test(url);

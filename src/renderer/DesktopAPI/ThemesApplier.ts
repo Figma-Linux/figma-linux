@@ -100,8 +100,10 @@ export class ThemesApplier {
         document.body.style.setProperty("--color-text-menu-hover", value);
         document.body.style.setProperty("--color-icon-toolbar-onselected", value);
         document.body.style.setProperty("--color-text-onbrand", value);
-        // document.body.style.setProperty("--color-icon-toolbar", value);
-        // document.body.style.setProperty("--color-text-menu", value);
+        document.body.style.setProperty("--color-icon-toolbar", value);
+        document.body.style.setProperty("--color-text-toolbar-secondary", value);
+        document.body.style.setProperty("--color-icon-toolbar-tertiary", value);
+        document.body.style.setProperty("--color-icon-toolbar-hover", value);
       }
       if (key === "text-disabled") {
         document.body.style.setProperty("--fg-overlay-secondary", value);

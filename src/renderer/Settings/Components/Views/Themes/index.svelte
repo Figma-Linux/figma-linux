@@ -3,6 +3,7 @@
   import { createEventDispatcher } from "svelte";
   import { themes, creatorsThemes, creatorTheme, settings, modalBounds } from "../../../store";
   import { DropDown, Flex, Grid } from "Common";
+  import { themeApp } from "Common/Store/Themes";
   import { DEFAULT_THEME } from "Const";
 
   import ThemeItem from "./ThemeItem.svelte";
@@ -25,7 +26,9 @@
 
     ipcRenderer.send("themeCreatorRemoveTheme", themeId);
 
-    onApplyTheme(new CustomEvent("applyTheme", { detail: { themeId: DEFAULT_THEME.id } }));
+    if (themeId === $themeApp.id) {
+      onApplyTheme(new CustomEvent("applyTheme", { detail: { themeId: DEFAULT_THEME.id } }));
+    }
   }
   function onEditTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
     const themeId = event.detail.themeId;

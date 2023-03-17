@@ -190,6 +190,10 @@ export default class Window {
     this.window.addBrowserView(this.settingsView.view);
 
     isDev && toggleDetachedDevTools(this.settingsView.view.webContents);
+
+    setTimeout(() => {
+      this.settingsView.updateProps(bounds);
+    }, 100);
   }
   public closeSettingsView() {
     if (!this.settingsView.view) {

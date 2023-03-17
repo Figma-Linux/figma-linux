@@ -70,6 +70,7 @@ declare namespace Types {
       themeDropdownOpen: boolean;
       creatorsThemesDropdownOpen: boolean;
       useOldPreviewer: boolean;
+      dontShowTutorialCreator: boolean;
     };
     ui: {
       scalePanel: number;

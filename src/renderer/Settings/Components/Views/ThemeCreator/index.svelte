@@ -6,9 +6,9 @@
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
   import {
+    settings,
     creatorTheme,
     modalBounds,
-    settings,
     themeNameError,
     themeAuthorError,
   } from "../../../store";
@@ -16,6 +16,7 @@
 
   import Preview from "./Preview.svelte";
   import ColorPalette from "./ColorPalette.svelte";
+  import Tutorial from "./Tutorial.svelte";
 
   export let zIndex: number;
 
@@ -199,6 +200,7 @@
               src="https://www.figma.com/files/recent"
             />
           </iframeView>
+          <Tutorial slot="layout_1" />
         </ZoomView>
         <Flex height="10px" />
         <InputRange bind:value={$creatorTheme.zoom} min={0.2} max={1.5} step={0.05} />

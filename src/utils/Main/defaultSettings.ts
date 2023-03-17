@@ -27,6 +27,7 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
     themeDropdownOpen: true,
     creatorsThemesDropdownOpen: false,
     useOldPreviewer: false,
+    dontShowTutorialCreator: false,
   },
   theme: {
     currentTheme: "0",

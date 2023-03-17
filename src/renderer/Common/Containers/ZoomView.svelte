@@ -132,6 +132,7 @@
       <slot name="toolBar" />
     </zoomAreaToolBar>
   </zoomAreaToolBarWrap>
+  <slot name="layout_1" />
 </zoomArea>
 
 <style>

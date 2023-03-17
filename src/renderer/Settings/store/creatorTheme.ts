@@ -4,6 +4,7 @@ import { DEFAULT_THEME } from "Const";
 function createCreatorTheme() {
   const { subscribe, set, update } = writable<Store.CreatorThemeStore>({
     state: "new",
+    loadedTemplateId: "",
     previewMaskVisible: true,
     zoom: 1,
     theme: DEFAULT_THEME,
@@ -16,6 +17,7 @@ function createCreatorTheme() {
     reset: () =>
       update(() => ({
         state: "new",
+        loadedTemplateId: "",
         previewMaskVisible: true,
         zoom: 1,
         theme: DEFAULT_THEME,
@@ -28,6 +30,7 @@ function createCreatorTheme() {
     setPaletteTheme: (theme: Themes.Theme) =>
       update((store) => ({
         ...store,
+        loadedTemplateId: theme.id,
         state: "new",
         theme: {
           ...store.theme,

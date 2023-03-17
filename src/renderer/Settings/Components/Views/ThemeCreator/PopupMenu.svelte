@@ -3,7 +3,7 @@
   import { Popup, ListBox } from "Common";
   import { Download, Plus, Reset, Save2 } from "Common/Icons";
   import { validateThemeName, validateThemeAuthor } from "../../../validators";
-  import { creatorTheme } from "../../../store";
+  import { creatorTheme, creatorsThemes, themes } from "../../../store";
 
   import MenuItem from "./MenuItem.svelte";
 
@@ -17,6 +17,15 @@
         Icon: Reset,
       },
       handler: onReset,
+      item: MenuItem,
+    },
+    {
+      id: "resetTmp",
+      text: "Reset Template",
+      itemArgs: {
+        Icon: Reset,
+      },
+      handler: onResetTemplate,
       item: MenuItem,
     },
     {
@@ -56,6 +65,12 @@
       }
       return item;
     });
+    items = items.map((item) => {
+      if (item.id === "resetTmp") {
+        item.disabled = $creatorTheme.loadedTemplateId === "";
+      }
+      return item;
+    });
   }
 
   function onItemClick(item: Types.ThemeCreatorPopupMenuItem) {
@@ -68,6 +83,14 @@
 
   function onReset() {
     creatorTheme.reset();
+  }
+  function onResetTemplate() {
+    const themeId = $creatorTheme.loadedTemplateId;
+    const theme: Themes.Theme = structuredClone(
+      [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
+    );
+
+    creatorTheme.setPaletteTheme(theme);
   }
   function onAddToThemes() {
     if (!validateThemeName($creatorTheme.theme.name)) {

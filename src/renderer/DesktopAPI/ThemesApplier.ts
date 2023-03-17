@@ -198,10 +198,6 @@ export class ThemesApplier {
           });
         }
 
-        if (/search--searchInput|search--searchContainerWithSelection/.test(cssRule.selectorText)) {
-          cssRule.style["background-color"] = `var(--bg-panel-hover)`;
-          cssRule.style["color"] = `var(--text-active)`;
-        }
         if (
           /option_button--toggled|segmented_control--segmentSelected/.test(cssRule.selectorText)
         ) {
@@ -209,7 +205,10 @@ export class ThemesApplier {
         }
 
         if (/searchIcon/.test(cssRule.selectorText)) {
-          cssRule.style["fill"] = `var(--text-active)`;
+          cssRule.style["fill"] = `var(--fg-toolbar)`;
+        }
+        if (/base_upgrade_section--content/.test(cssRule.selectorText)) {
+          cssRule.style["background-color"] = `var(--borders)`;
         }
         if (/tool_bar--toolBarRightSide|pages_panel--pageRowSelected/.test(cssRule.selectorText)) {
           cssRule.style["fill"] = `var(--text-active)`;

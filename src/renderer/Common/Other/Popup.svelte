@@ -10,14 +10,14 @@
   export let isOpen = false;
   export let x = 0;
   export let y = 0;
+  export let cornerX = 0;
 
   let corner: HTMLDivElement;
   let button: HTMLDivElement;
   let popupBody: HTMLDivElement;
-  let cornerX = 0;
 
   function clickInside(node: HTMLDivElement) {
-    const handleClick = (event: Event) => {
+    const handleClick = (event: MouseEvent) => {
       if (node && node.contains(event.target as Node)) {
         const btnBounds = node.getBoundingClientRect();
         const bodyBounds = popupBody.getBoundingClientRect();
@@ -37,7 +37,7 @@
     };
   }
   function clickOutside(node: HTMLDivElement) {
-    const handleClick = (event: Event) => {
+    const handleClick = (event: MouseEvent) => {
       if (
         node &&
         !(node.contains(event.target as Node) || button.contains(event.target as Node)) &&
@@ -68,7 +68,7 @@
   bind:this={corner}
 />
 <div use:clickInside bind:this={button}>
-  <slot name="popupButon" />
+  <slot name="popupButton" />
 </div>
 
 <popupBody

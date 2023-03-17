@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { MouseWheelInputEvent } from "electron";
-  import { values } from "lodash";
   import { onMount, onDestroy } from "svelte";
 
   export let zoom: number;

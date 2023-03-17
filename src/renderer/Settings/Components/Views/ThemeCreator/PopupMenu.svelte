@@ -117,7 +117,7 @@
 </script>
 
 <Popup bind:isOpen bradius="3px">
-  <slot slot="popupButon" />
+  <slot slot="popupButton" />
 
   <ListBox bind:items slot="popupBody" border="0" padding="0" bradius="0" {onItemClick} />
 </Popup>

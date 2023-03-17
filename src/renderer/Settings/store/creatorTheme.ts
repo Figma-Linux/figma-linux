@@ -27,6 +27,17 @@ function createCreatorTheme() {
         ...store,
         theme,
       })),
+    setColor: (key: string, value: string) =>
+      update((store) => ({
+        ...store,
+        theme: {
+          ...store.theme,
+          palette: {
+            ...store.theme.palette,
+            [key]: value,
+          },
+        },
+      })),
     setPaletteTheme: (theme: Themes.Theme) =>
       update((store) => ({
         ...store,

@@ -7,4 +7,10 @@ declare namespace SvelteEvents {
   interface SetSettingsTabViewIndex {
     index: number;
   }
+  interface InputColorClick {
+    input: HTMLInputElement;
+    button: number;
+    value: string;
+    key: string;
+  }
 }

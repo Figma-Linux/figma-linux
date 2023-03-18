@@ -20,7 +20,7 @@
 </script>
 
 <Button bind:disabled disabledBgColor="transparent" on:buttonClick={onItemClick}>
-  <Flex alignItems="center" padding="6px 0" width="-webkit-fill-available">
+  <Flex alignItems="center" padding="6px 0" width="100%">
     <Flex width="14px" />
     {#if Icon}
       <Icon bind:color />

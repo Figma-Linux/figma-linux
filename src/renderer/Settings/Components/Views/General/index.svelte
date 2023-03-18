@@ -145,6 +145,7 @@
     width: -webkit-fill-available;
     padding: 32px 32px 8px 32px;
     user-select: none;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 </style>

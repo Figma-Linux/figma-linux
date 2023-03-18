@@ -12,6 +12,9 @@
 
   const dispatch = createEventDispatcher();
 
+  $: isCreatorThemesEmpty = $creatorsThemes.length === 0;
+  $: isThemesEmpty = $themes.length === 0;
+
   function onApplyTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
     const themeId = event.detail.themeId;
     const theme: Themes.Theme = structuredClone(
@@ -63,7 +66,7 @@
 <div style={`z-index: ${zIndex}; height: ${zoomViewHeight}px;`}>
   <DropDown
     title="ThemeCreator's themes"
-    isEmpty={$creatorsThemes.length === 0}
+    bind:isEmpty={isCreatorThemesEmpty}
     bind:open={$settings.app.creatorsThemesDropdownOpen}
   >
     <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">
@@ -91,7 +94,7 @@
   <Flex height="20px" />
   <DropDown
     title="Repository themes"
-    isEmpty={$themes.length === 0}
+    bind:isEmpty={isThemesEmpty}
     bind:open={$settings.app.themeDropdownOpen}
   >
     <Grid columns="repeat(auto-fit, minmax(300px, 1fr))" gap="2vmin" padding="12px 0 0 0">

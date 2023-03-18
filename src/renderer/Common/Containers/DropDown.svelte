@@ -22,9 +22,7 @@
 
     const bounds = content.getBoundingClientRect();
 
-    if (!isEmpty) {
-      height = bounds.height;
-    }
+    height = isEmpty ? 0 : bounds.height;
 
     if (open) {
       bodyHeight.set(height);
@@ -32,6 +30,8 @@
   }
   function onChange(event: Event) {
     const elem = event.target as HTMLInputElement;
+
+    calcHeight();
 
     if (elem.checked) {
       bodyHeight.set(height);
@@ -47,7 +47,7 @@
 
 <div>
   <label>
-    <input type="checkbox" bind:checked={open} on:change={onChange} />
+    <input type="checkbox" bind:checked={open} on:change={onChange} on:focusin={onChange} />
     <span>{title}</span>
   </label>
   <block
@@ -63,17 +63,17 @@
 
 <style>
   div {
-    width: -webkit-fill-available;
+    width: 100%;
   }
   label {
     display: flex;
     align-items: center;
-    width: -webkit-fill-available;
+    width: 100%;
     user-select: none;
   }
   span {
     position: relative;
-    width: -webkit-fill-available;
+    width: 100%;
     border-bottom: 1px solid var(--borders);
     padding-left: 24px;
     color: var(--text);
@@ -84,7 +84,7 @@
   }
   block {
     display: block;
-    width: -webkit-fill-available;
+    width: 100%;
     overflow: hidden;
   }
 

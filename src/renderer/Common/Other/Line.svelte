@@ -5,11 +5,11 @@
 
   switch (type) {
     case "H": {
-      width = width || "-webkit-fill-available";
+      width = width || "100%";
       break;
     }
     case "V": {
-      height = height || "-webkit-fill-available";
+      height = height || "100%";
       break;
     }
   }

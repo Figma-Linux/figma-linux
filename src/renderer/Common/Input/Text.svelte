@@ -42,7 +42,7 @@
     color: var(--text);
     border: 0;
     margin-left: 6px;
-    width: -webkit-fill-available;
+    width: 100%;
   }
 
   input:hover,

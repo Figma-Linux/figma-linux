@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import { Flex, Text, SecondaryButton, CheckBox } from "Common";
   import { settings } from "../../../store";
 
@@ -8,13 +9,8 @@
 </script>
 
 <div style={`display: ${display};`}>
-  <Flex
-    margin="0 0 0 40px"
-    height="40px"
-    width="-webkit-fill-available"
-    bgColor="rgba(0, 0, 0, 0.8)"
-  />
-  <Flex height="-webkit-fill-available" width="-webkit-fill-available" bgColor="rgba(0, 0, 0, 0.8)">
+  <Flex margin="0 0 0 40px" height="40px" width="100%" bgColor="rgba(0, 0, 0, 0.8)" />
+  <Flex height="100%" width="100%" bgColor="rgba(0, 0, 0, 0.8)">
     <Flex width="200px" padding="2px 0 0 0px">
       <svg
         width="200px"

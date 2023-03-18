@@ -77,6 +77,7 @@ export class ThemesApplier {
       }
       if (key === "bg-toolbar-active") {
         document.body.style.setProperty("--bg-primary-btn", value);
+        document.body.style.setProperty("--color-bg-brand", value);
         // document.body.style.setProperty("--bg-overlay-active", value);
         document.body.style.setProperty("--color-border-toolbar-selected", value);
         document.body.style.setProperty("--color-bg-toolbar-selected", value);
@@ -95,13 +96,19 @@ export class ThemesApplier {
         document.body.style.setProperty("--fg-overlay", value);
         document.body.style.setProperty("--fg-overlay-right", value);
       }
+      if (key === "fg-toolbar") {
+        document.body.style.setProperty("--color-icon-toolbar", value);
+        document.body.style.setProperty("--color-text-toolbar-secondary", value);
+      }
+      if (key === "fg-toolbar-hover") {
+        document.body.style.setProperty("--color-icon-toolbar-hover", value);
+      }
       if (key === "fg-toolbar-active") {
         document.body.style.setProperty("--fg-overlay-active", value);
         document.body.style.setProperty("--color-text-menu-hover", value);
         document.body.style.setProperty("--color-icon-toolbar-onselected", value);
         document.body.style.setProperty("--color-text-onbrand", value);
-        document.body.style.setProperty("--color-icon-toolbar", value);
-        document.body.style.setProperty("--color-text-toolbar-secondary", value);
+        // document.body.style.setProperty("--color-icon-toolbar", value);
         document.body.style.setProperty("--color-icon-toolbar-tertiary", value);
         document.body.style.setProperty("--color-icon-toolbar-hover", value);
       }

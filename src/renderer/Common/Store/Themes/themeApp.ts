@@ -7,7 +7,7 @@ function createThemeApp() {
   return {
     subscribe,
     set,
-    reset: () => set(DEFAULT_THEME),
+    reset: () => set(structuredClone(DEFAULT_THEME)),
   };
 }
 

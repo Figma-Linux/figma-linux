@@ -6,7 +6,7 @@ export class ThemesApplier {
   private currentTheme: Themes.Theme;
 
   constructor() {
-    this.currentTheme = DEFAULT_THEME;
+    this.currentTheme = structuredClone(DEFAULT_THEME);
 
     E.ipcRenderer.invoke("themesIsDisabled").then((disabled) => {
       if (disabled) {

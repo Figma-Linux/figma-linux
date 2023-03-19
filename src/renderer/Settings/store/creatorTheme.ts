@@ -7,7 +7,7 @@ function createCreatorTheme() {
     loadedTemplateId: "",
     previewMaskVisible: true,
     zoom: 1,
-    theme: DEFAULT_THEME,
+    theme: structuredClone(DEFAULT_THEME),
   });
 
   return {
@@ -15,13 +15,13 @@ function createCreatorTheme() {
     update,
     set,
     reset: () =>
-      update(() => ({
+      set({
         state: "new",
         loadedTemplateId: "",
         previewMaskVisible: true,
         zoom: 1,
-        theme: DEFAULT_THEME,
-      })),
+        theme: structuredClone(DEFAULT_THEME),
+      }),
     setTheme: (theme: Themes.Theme) =>
       update((store) => ({
         ...store,

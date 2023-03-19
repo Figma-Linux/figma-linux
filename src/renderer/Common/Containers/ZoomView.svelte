@@ -147,7 +147,7 @@
   }
   zoomAreaToolBarWrap {
     position: absolute;
-    z-index: 2;
+    z-index: 2000;
     top: 0px;
     left: 0px;
   }

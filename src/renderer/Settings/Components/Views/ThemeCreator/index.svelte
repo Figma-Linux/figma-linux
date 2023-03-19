@@ -115,9 +115,9 @@
               on:buttonClick={creatorTheme.togglePreviewVisible}
             >
               {#if $creatorTheme.previewMaskVisible}
-                <RadioChecked size="14" />
+                <RadioChecked color="var(--text)" size="14" />
               {:else}
-                <RadioNormal size="14" />
+                <RadioNormal color="var(--text)" size="14" />
               {/if}
             </ButtonTool>
           </toolBar>
@@ -240,6 +240,7 @@
   toolBar {
     display: flex;
     background-color: var(--bg-panel);
+    border: 1px solid var(--borders);
     padding: 6px;
     border-radius: 3px;
   }

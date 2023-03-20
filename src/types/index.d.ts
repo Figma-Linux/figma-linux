@@ -214,7 +214,10 @@ declare namespace Electron {
       channel: "updateFigmaUiScale",
       listener: (event: IpcMainInvokeEvent, theme: Themes.Theme) => void,
     ): this;
-    on(channel: "windowClose", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(
+      channel: "windowClose",
+      listener: (event: IpcMainInvokeEvent, tabs: Types.TabFront[]) => void,
+    ): this;
     on(channel: "changeTheme", listener: (event: IpcMainEvent, theme: Themes.Theme) => void): this;
     on(channel: "toggleThemeCreatorPreviewMask", listener: (event: IpcMainEvent) => void): this;
     on(
@@ -382,7 +385,7 @@ declare namespace Electron {
     send(channel: "windowDidMaximized"): this;
     send(channed: "windowDidRestored"): this;
     send(channed: "changeTheme", theme: Themes.Theme): this;
-    send(channed: "windowClose"): this;
+    send(channed: "windowClose", tabs: Types.TabFront[]): this;
     send(channed: "toggleThemeCreatorPreviewMask"): this;
 
     sendSync(channed: "getSettings"): Types.SettingsInterface;

@@ -2,7 +2,7 @@
   import { ipcRenderer } from "electron";
   import { Minimize, Maximize, Close, Corner } from "Icons";
   import { ButtonWindow } from "Common/Buttons";
-  import { isMenuOpen } from "../store";
+  import { tabs, isMenuOpen } from "../store";
 
   function clickMenu() {
     if ($isMenuOpen) {
@@ -11,6 +11,10 @@
 
     ipcRenderer.send("openMainMenu");
     isMenuOpen.toggle();
+  }
+
+  function closeHandler() {
+    ipcRenderer.send("windowClose", $tabs);
   }
 </script>
 
@@ -24,10 +28,7 @@
   <ButtonWindow on:buttonClick={() => ipcRenderer.send("window-maximize")}>
     <Maximize size="16" />
   </ButtonWindow>
-  <ButtonWindow
-    hoverBgColor={"var(--bg-window-close)"}
-    on:buttonClick={() => ipcRenderer.send("windowClose")}
-  >
+  <ButtonWindow hoverBgColor={"var(--bg-window-close)"} on:buttonClick={closeHandler}>
     <Close size="16" />
   </ButtonWindow>
 </div>

@@ -194,8 +194,6 @@ export default class App {
     app.quit();
   }
   private quitApp() {
-    this.windowManager.saveClosedTabs();
-
     storage.save();
 
     app.quit();

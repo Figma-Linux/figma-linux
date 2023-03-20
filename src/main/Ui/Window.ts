@@ -45,10 +45,38 @@ export default class Window {
   public get closedTabs() {
     return this.closedTabsHistory;
   }
+  public get tabs() {
+    return this.tabManager.getAll();
+  }
 
+  public sortTabs(tabs: Types.TabFront[]) {
+    this.tabManager.sortTabs(tabs);
+  }
+  public saveOpenedTabs() {
+    storage.settings.app.lastOpenedTabs = {};
+    storage.settings.app.lastOpenedTabs[this.id] = [];
+
+    for (const [_, tab] of this.tabs) {
+      storage.settings.app.lastOpenedTabs[this.id].push({
+        title: tab.title,
+        url: tab.url,
+      });
+    }
+  }
   public restoreTabs() {
+    const tabs = (
+      storage.settings.app.lastOpenedTabs as {
+        [key: string]: Types.SavedTab[];
+      }
+    )[this.id];
+
     setTimeout(() => {
-      this.tabManager.restoreTabs();
+      tabs.forEach((tab, i) => {
+        setTimeout(() => {
+          this.addTab(tab.url, tab.title);
+        }, 500 * i);
+      });
+
       this.menuManager.updateMainTabState();
     }, 1000);
   }
@@ -263,6 +291,7 @@ export default class Window {
       return;
     }
 
+    this.tabManager.setTitle(tab.id, title);
     this.window.webContents.send("setTitle", { id: tab.view.webContents.id, title });
   }
   private setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {

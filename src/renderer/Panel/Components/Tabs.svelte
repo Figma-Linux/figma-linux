@@ -6,11 +6,7 @@
 
   export let currentTabId: number | undefined;
 
-  let tabArray: Types.TabFront[] = [];
   let item: HTMLDivElement;
-  tabs.subscribe((tabs) => {
-    tabArray = tabs;
-  });
 
   function wheelHandler(e: MouseWheelInputEvent) {
     if (e.deltaY > 0) {
@@ -48,7 +44,7 @@
   }
 
   function onDndConsider(event: any) {
-    tabArray = event.detail.items;
+    tabs.set(event.detail.items);
   }
   function onDndFinalize(event: any) {
     tabs.set(event.detail.items);
@@ -57,7 +53,7 @@
 
 <div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler}>
   <List
-    items={tabArray}
+    bind:items={$tabs}
     {currentTabId}
     {onClickTitle}
     {onClickClose}

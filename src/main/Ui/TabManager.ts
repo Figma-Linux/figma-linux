@@ -30,20 +30,6 @@ export default class TabManager {
     return tab;
   }
 
-  public restoreTabs() {
-    const tabs = storage.settings.app.lastOpenedTabs;
-
-    if (Array.isArray(tabs) && tabs.length) {
-      tabs.forEach((tab, i) => {
-        setTimeout(() => {
-          this.addTab(tab.url, tab.title);
-        }, 500 * i);
-      });
-
-      storage.settings.app.lastOpenedTabs = [];
-    }
-  }
-
   public closeAll() {
     this.tabs.clear();
   }
@@ -135,6 +121,11 @@ export default class TabManager {
   public focusTab(id: number) {
     this.lastFocusedTab = id;
   }
+  public setTitle(id: number, title: string) {
+    const tab = this.tabs.get(id);
+
+    tab.title = title;
+  }
   public setBounds(id: number, bounds: Rectangle) {
     const tab = this.tabs.get(id);
 
@@ -148,6 +139,17 @@ export default class TabManager {
 
     for (const [_, tab] of this.tabs) {
       tab.setBounds(bounds);
+    }
+  }
+  public sortTabs(tabs: Types.TabFront[]) {
+    const entries = [...this.tabs.entries()];
+
+    this.tabs.clear();
+
+    for (const tab of tabs) {
+      const needed = entries.find(([_, t]) => t.id === tab.id);
+
+      this.tabs.set(needed[0], needed[1]);
     }
   }
 

@@ -33,15 +33,6 @@ export default class WindowManager {
     this.restoreTabs();
   }
 
-  public saveClosedTabs() {
-    storage.settings.app.lastOpenedTabs = {};
-
-    for (const [id, window] of this.windows) {
-      const tabs = window.closedTabs;
-
-      storage.settings.app.lastOpenedTabs[id] = tabs;
-    }
-  }
   public openUrlInNewTab(url: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -194,12 +185,20 @@ export default class WindowManager {
   private windowFocus(windowId: number) {
     this.lastFocusedwindowId = windowId;
   }
-  private handlerWindowClose(_: IpcMainEvent) {
+  private handlerWindowClose(_: IpcMainEvent, tabs: Types.TabFront[]) {
+    this.sortTabs(this.lastFocusedwindowId, tabs);
     this.windowClose(this.lastFocusedwindowId);
   }
+  private sortTabs(windowId: number, tabs: Types.TabFront[]) {
+    const window = this.windows.get(windowId);
+
+    window.sortTabs(tabs);
+  }
+
   private windowClose(windowId: number) {
     const window = this.windows.get(windowId);
 
+    window.saveOpenedTabs();
     window.close();
 
     this.windows.delete(windowId);

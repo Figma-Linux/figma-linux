@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { writable, get } from "svelte/store";
 
 function createCreatorsThemes() {
   const { subscribe, set, update } = writable<Themes.Theme[]>([]);
@@ -7,6 +7,7 @@ function createCreatorsThemes() {
     subscribe,
     update,
     set,
+    exists: (name: string) => !!get(creatorsThemes).find((theme) => theme.name === name),
   };
 }
 

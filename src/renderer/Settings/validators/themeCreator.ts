@@ -1,4 +1,4 @@
-import { themeNameError, themeAuthorError } from "../store";
+import { creatorsThemes, themeNameError, themeAuthorError } from "../store";
 
 export function validateThemeName(name: string): boolean {
   if (name === "Default Theme") {
@@ -7,6 +7,13 @@ export function validateThemeName(name: string): boolean {
   }
   if (name === "") {
     themeNameError.set("Enter the name of new theme");
+    return false;
+  }
+
+  const exists = creatorsThemes.exists(name);
+
+  if (exists) {
+    themeNameError.set("Theme already exists. Please, choose other name");
     return false;
   }
 

@@ -217,6 +217,10 @@ declare namespace Electron {
     on(channel: "windowClose", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "changeTheme", listener: (event: IpcMainEvent, theme: Themes.Theme) => void): this;
     on(channel: "toggleThemeCreatorPreviewMask", listener: (event: IpcMainEvent) => void): this;
+    on(
+      channel: "getSettings",
+      listener: (event: IpcMainEvent, settings: Types.SettingsInterface) => void,
+    ): this;
 
     handle(
       channel: "writeNewExtensionToDisk",

@@ -146,6 +146,7 @@ export default class WindowManager {
     const window = this.windows.get(this.lastFocusedwindowId);
 
     window.closeTab(tabId);
+    window.tabWasClosed(tabId);
   }
   private chromeGpu(_: WebContents) {
     const window = this.windows.get(this.lastFocusedwindowId);

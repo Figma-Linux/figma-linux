@@ -23,6 +23,9 @@ export function initIpc() {
   ipcRenderer.on("setTitle", (_, data) => {
     tabs.updateTab({ id: data.id, title: data.title });
   });
+  ipcRenderer.on("tabWasClosed", (_, tabId) => {
+    tabs.deleteTab(tabId);
+  });
   ipcRenderer.on("focusTab", (_, tabId) => {
     currentTab.set(tabId);
   });

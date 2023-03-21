@@ -189,10 +189,6 @@ export default class Window {
   public openTabMenu(tabId: number) {
     const url = this.tabManager.getTabUrl(tabId);
 
-    const close = () => {
-      this.closeTab(tabId);
-    };
-
     this.menuManager.openTabMenuHandler(this.window, tabId, url);
   }
   public hasWebContentId(webContentsId: number) {
@@ -267,6 +263,9 @@ export default class Window {
       title: tab.title,
       url: tab.view.webContents.getURL(),
     });
+  }
+  public tabWasClosed(tabId: number) {
+    this.window.webContents.send("tabWasClosed", tabId);
   }
   public setFocusToMainTab() {
     const mainTab = this.tabManager.mainTab;

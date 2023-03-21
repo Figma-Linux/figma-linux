@@ -308,6 +308,7 @@ declare namespace Electron {
     ): this;
     on(channel: "toggleThemeCreatorPreviewMask", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "focusTab", listener: (event: IpcRendererEvent, tabId: number) => void): this;
+    on(channel: "tabWasClosed", listener: (event: IpcRendererEvent, tabId: number) => void): this;
     on(
       channel: "setUsingMicrophone",
       listener: (event: IpcRendererEvent, data: { id: number; isUsingMicrophone: boolean }) => void,
@@ -420,6 +421,7 @@ declare namespace Electron {
     send(channel: "didTabAdd", data: Types.Tab): this;
     send(channel: "handleUrl", url: string): this;
     send(channel: "focusTab", tabId: number): this;
+    send(channel: "tabWasClosed", tabId: number): this;
     send(channel: "setUsingMicrophone", data: { id: number; isUsingMicrophone: boolean }): this;
     send(channel: "setIsInVoiceCall", data: { id: number; isInVoiceCall: boolean }): this;
     send(channel: "loadCreatorTheme", theme: Themes.Theme): this;

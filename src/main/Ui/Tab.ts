@@ -77,18 +77,6 @@ export default class Tab {
   public updateScale(scale: number) {
     this.view.webContents.setZoomFactor(scale);
   }
-  private updateFileKey(event: IpcMainEvent, windowId: number, key: string) {
-    // TODO: need use window id for understooding for what window handle this event
-    const tabId = event.sender.id;
-
-    logger.debug("updateFileKey: ", windowId, tabId, key);
-
-    if (this.id !== tabId) {
-      return;
-    }
-
-    this.fileKey = key;
-  }
   public reloadCurrentTheme() {
     app.emit("reloadCurrentTheme");
   }
@@ -210,8 +198,6 @@ export default class Tab {
   }
 
   private registerEvents() {
-    ipcMain.on("updateFileKey", this.updateFileKey.bind(this));
-
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
     this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));

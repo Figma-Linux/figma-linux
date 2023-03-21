@@ -15,7 +15,8 @@ declare namespace Electron {
 
   interface App extends NodeJS.EventEmitter {
     on(event: "newFile", listener: (sender: Electron.WebContents) => void): this;
-    on(event: "closeTab", listener: (sender: Electron.WebContents) => void): this;
+    on(event: "reloadTab", listener: (tabId: number) => void): this;
+    on(event: "closeTab", listener: (tabId: number) => void): this;
     on(event: "closeAllTab", listener: () => void): this;
     on(event: "chromeGpu", listener: (sender: Electron.WebContents) => void): this;
     on(event: "openFileUrlClipboard", listener: (sender: Electron.WebContents) => void): this;
@@ -53,7 +54,8 @@ declare namespace Electron {
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
-    emit(event: "closeTab", sender: Electron.WebContents): boolean;
+    emit(event: "reloadTab", tabId: number): boolean;
+    emit(event: "closeTab", tabId: number): boolean;
     emit(event: "closeAllTab"): boolean;
     emit(event: "chromeGpu", sender: Electron.WebContents): boolean;
     emit(event: "openFileUrlClipboard", sender: Electron.WebContents): boolean;
@@ -94,10 +96,6 @@ declare namespace Electron {
     on(
       channel: "updateActionState",
       listener: (event: IpcMainInvokeEvent, state: MenuState.State) => void,
-    ): this;
-    on(
-      channel: "updateFileKey",
-      listener: (event: IpcMainInvokeEvent, windowId: number, key: string) => void,
     ): this;
     on(channel: "closeAllTab", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "setFocusToMainTab", listener: (event: IpcMainInvokeEvent) => void): this;
@@ -357,7 +355,6 @@ declare namespace Electron {
     send(channel: "updateActionState", state: MenuState.State): this;
     send(channel: "closeAllTab"): this;
     send(channel: "setFocusToMainTab"): this;
-    send(channel: "updateFileKey", windowId: number, key: string): this;
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
     send(channel: "closeSettingsView", settings: Types.SettingsInterface): this;

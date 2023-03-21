@@ -268,9 +268,6 @@ const publicAPI: any = {
   close(args: any) {
     sendMsgToMain("closeTab", args.suppressReopening);
   },
-  setFileKey(args: any) {
-    sendMsgToMain("updateFileKey", 1, args.fileKey);
-  },
   setLoading(args: any) {
     sendMsgToMain("updateLoadingStatus", args.loading);
   },

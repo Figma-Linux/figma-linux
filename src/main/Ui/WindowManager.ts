@@ -137,9 +137,13 @@ export default class WindowManager {
 
     window.newProject();
   }
-  private closeTabFromMenu(sender: WebContents) {
+  private reloadTabFromMenu(tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
-    const tabId = sender.id;
+
+    window.reloadTab(tabId);
+  }
+  private closeTabFromMenu(tabId: number) {
+    const window = this.windows.get(this.lastFocusedwindowId);
 
     window.closeTab(tabId);
   }
@@ -277,6 +281,7 @@ export default class WindowManager {
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));
+    app.on("reloadTab", this.reloadTabFromMenu.bind(this));
     app.on("closeTab", this.closeTabFromMenu.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));
     app.on("chromeGpu", this.chromeGpu.bind(this));

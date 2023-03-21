@@ -53,25 +53,13 @@ export default class MenuManager {
     });
   }
 
-  public openTabMenuHandler(
-    window: BrowserWindow,
-    appUrl: string,
-    webUrl: string,
-    closeCb: () => void,
-  ) {
+  public openTabMenuHandler(window: BrowserWindow, tabId: number, url: string) {
     const context: MenuItemConstructorOptions[] = [
-      {
-        id: "copyAppUrl",
-        label: "Copy App Url",
-        click: (): void => {
-          clipboard.writeText(encodeURI(appUrl));
-        },
-      },
       {
         id: "copyUrl",
         label: "Copy Url",
         click: (): void => {
-          clipboard.writeText(encodeURI(webUrl));
+          clipboard.writeText(encodeURI(url));
         },
       },
       { type: "separator" },
@@ -79,7 +67,16 @@ export default class MenuManager {
         id: "openInBrowser",
         label: "Open in Browser",
         click: (): void => {
-          shell.openExternal(webUrl);
+          shell.openExternal(url);
+        },
+      },
+      { type: "separator" },
+      {
+        id: "reload",
+        label: "Reload",
+        visible: true,
+        click: () => {
+          app.emit("reloadTab", tabId);
         },
       },
       { type: "separator" },
@@ -87,7 +84,9 @@ export default class MenuManager {
         id: "close",
         label: "Close",
         visible: true,
-        click: closeCb,
+        click: () => {
+          app.emit("closeTab", tabId);
+        },
       },
     ];
 

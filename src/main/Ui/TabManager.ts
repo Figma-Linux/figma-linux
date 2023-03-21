@@ -101,6 +101,11 @@ export default class TabManager {
     return i;
   }
 
+  public reloadTab(tabId: number) {
+    const tab = this.tabs.get(tabId);
+
+    tab.view.webContents.reload();
+  }
   public loadUrlInMainTab(url: string) {
     this.mainTab.loadUrl(url);
   }
@@ -153,26 +158,10 @@ export default class TabManager {
     }
   }
 
-  public getTabLink(tabId: number, type: "app" | "web") {
+  public getTabUrl(tabId: number) {
     const tab = this.tabs.get(tabId);
-    let url = "";
 
-    switch (type) {
-      case "app": {
-        url = `figma://file/${tab.fileKey}/${tab.title}`;
-        break;
-      }
-      case "web": {
-        url = `${HOMEPAGE}/file/${tab.fileKey}`;
-        break;
-      }
-    }
-
-    if (!isValidProjectLink(url)) {
-      url = tab.url;
-    }
-
-    return url;
+    return tab.view.webContents.getURL();
   }
 
   public isMainTab(tabId: number) {

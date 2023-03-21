@@ -187,13 +187,16 @@ export default class Window {
     }, 150);
   }
   public openTabMenu(tabId: number) {
-    const appUrl = this.tabManager.getTabLink(tabId, "app");
-    const webUrl = this.tabManager.getTabLink(tabId, "web");
+    const url = this.tabManager.getTabUrl(tabId);
+
     const close = () => {
       this.closeTab(tabId);
     };
 
-    this.menuManager.openTabMenuHandler(this.window, appUrl, webUrl, close);
+    this.menuManager.openTabMenuHandler(this.window, tabId, url);
+  }
+  public hasWebContentId(webContentsId: number) {
+    return this.tabManager.getAll().has(webContentsId);
   }
 
   public addTab(url: string, title?: string) {
@@ -248,6 +251,9 @@ export default class Window {
       this.window.maximize();
       event.reply("windowDidMaximized");
     }
+  }
+  public reloadTab(tabId: number) {
+    this.tabManager.reloadTab(tabId);
   }
   public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);

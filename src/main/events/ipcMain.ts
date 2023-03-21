@@ -208,7 +208,7 @@ export const registerIpcMainHandlers = () => {
     const lastDir = storage.settings.app.lastExportDir || storage.settings.app.exportDir;
 
     if (files.length === 1 && !files[0].name.includes(path.sep)) {
-      const originalFileName = files[0].name.replace(/\//g, "-");
+      const originalFileName = files[0].name;
       const savePath = await dialogs.showSaveDialog({
         defaultPath: `${lastDir}/${path.basename(originalFileName)}`,
         showsTagField: false,
@@ -238,57 +238,17 @@ export const registerIpcMainHandlers = () => {
       directoryPath = directories[0];
       storage.settings.app.lastExportDir = directoryPath;
     }
+
     if (!directoryPath) {
       return;
     }
-    directoryPath = path.resolve(directoryPath);
-    let filesToBeReplaced = 0;
-    for (const file of files) {
-      const outputPath = path.join(directoryPath, file.name.replace(/\//g, "-"));
-      const validExtensions = [".fig", ".jpg", ".pdf", ".png", ".svg"];
-      if (
-        path.relative(directoryPath, outputPath).startsWith("..") ||
-        !validExtensions.includes(path.extname(outputPath))
-      ) {
-        await dialogs.showMessageBox({
-          type: "error",
-          title: "Export Failed",
-          message: "Export failed",
-          detail: `"${outputPath}" is not a valid path. No files were saved.`,
-        });
-        return;
-      }
-      try {
-        fs.accessSync(outputPath, fs.constants.R_OK);
-        ++filesToBeReplaced;
-      } catch (ex) {}
-    }
 
-    if (filesToBeReplaced > 0 && !skipReplaceConfirmation) {
-      const single = filesToBeReplaced === 1;
-      const selectedID = await dialogs.showMessageBox({
-        type: "warning",
-        title: "Replace Existing Files",
-        message: `Replace existing file${single ? "" : `s`}?`,
-        detail: `${
-          single
-            ? `"${files[0].name}" already exists`
-            : `${filesToBeReplaced} files including "${files[0].name}" already exist`
-        }. Replacing ${single ? "it" : "them"} will overwrite ${
-          single ? "its" : "their"
-        } existing contents.`,
-        textOkButton: "Replace",
-      });
-      if (selectedID !== 0) {
-        return;
-      }
-    }
     for (const file of files) {
-      const outputPath = path.join(directoryPath, file.name.replace(/\//g, "-"));
-      mkPath(path.dirname(outputPath));
+      const outputPath = path.join(directoryPath, file.name);
+      await mkPath(path.dirname(outputPath));
 
       try {
-        fs.writeFileSync(outputPath, Buffer.from(file.buffer), { encoding: "binary" });
+        await fs.promises.writeFile(outputPath, Buffer.from(file.buffer), { encoding: "binary" });
       } catch (ex) {
         await dialogs.showMessageBox({
           type: "error",

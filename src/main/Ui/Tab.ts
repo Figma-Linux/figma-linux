@@ -142,11 +142,7 @@ export default class Tab {
     // TODO: need use window id for understooding for what window handle this event
     this.view.webContents.send("setUsingMicrophone", { id: this.id, isUsingMicrophone });
   }
-  public requestMicrophonePermission() {
-    if (this.isUsingMicrophone) {
-      return;
-    }
-
+  public async requestMicrophonePermission() {
     this.view.webContents.session.setPermissionRequestHandler(this.permissionHandler);
   }
   public setIsInVoiceCall(isInVoiceCall: boolean) {

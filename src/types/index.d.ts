@@ -222,6 +222,7 @@ declare namespace Electron {
       channel: "getSettings",
       listener: (event: IpcMainEvent, settings: Types.SettingsInterface) => void,
     ): this;
+    on(channel: "requestMicrophonePermission", listener: (event: IpcMainEvent) => void): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -407,6 +408,7 @@ declare namespace Electron {
     invoke(channel: "add-font-directories"): Promise<string[] | null>;
     invoke(channel: "selectExportDirectory"): Promise<string | null>;
     invoke(channel: "updatePanelScale", scale: number): this;
+    invoke(channel: "requestMicrophonePermission"): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

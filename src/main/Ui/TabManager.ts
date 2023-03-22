@@ -180,10 +180,10 @@ export default class TabManager {
 
     tab.setUsingMicrophone(isUsingMicrophone);
   }
-  private requestMicrophonePermission(event: IpcMainEvent) {
+  private async requestMicrophonePermission(event: IpcMainEvent) {
     const tab = this.tabs.get(event.sender.id);
 
-    tab.requestMicrophonePermission();
+    return tab.requestMicrophonePermission();
   }
   private setIsInVoiceCall(event: IpcMainEvent, isInVoiceCall: boolean) {
     // TODO: need use window id for understooding for what window handle this event
@@ -214,9 +214,10 @@ export default class TabManager {
   }
 
   private registerEvents() {
+    ipcMain.handle("requestMicrophonePermission", this.requestMicrophonePermission.bind(this));
+
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
     ipcMain.on("setUsingMicrophone", this.setUsingMicrophone.bind(this));
-    ipcMain.on("requestMicrophonePermission", this.requestMicrophonePermission.bind(this));
     ipcMain.on("setIsInVoiceCall", this.setIsInVoiceCall.bind(this));
 
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));

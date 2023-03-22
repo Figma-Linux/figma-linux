@@ -246,8 +246,20 @@ const publicAPI: any = {
     // sendMsgToMain("addTabAnalyticsMetadata", args.isUsingMicrophone);
     console.log("Method addTabAnalyticsMetadata not implemented, args: ", args);
   },
-  requestMicrophonePermission() {
-    sendMsgToMain("requestMicrophonePermission");
+  async requestMicrophonePermission() {
+    let granted = false;
+
+    try {
+      await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+      granted = true;
+    } catch (_) {
+      granted = false;
+    }
+
+    return { data: granted };
+  },
+  async setMediaEnabled(args: any) {
+    return true;
   },
 
   newFile(args: any) {

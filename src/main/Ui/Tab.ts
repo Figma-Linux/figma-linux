@@ -138,16 +138,8 @@ export default class Tab {
     shell.openExternal(url);
   }
 
-  public setUsingMicrophone(isUsingMicrophone: boolean) {
-    // TODO: need use window id for understooding for what window handle this event
-    this.view.webContents.send("setUsingMicrophone", { id: this.id, isUsingMicrophone });
-  }
   public async requestMicrophonePermission() {
     this.view.webContents.session.setPermissionRequestHandler(this.permissionHandler);
-  }
-  public setIsInVoiceCall(isInVoiceCall: boolean) {
-    // TODO: need use window id for understooding for what window handle this event
-    this.view.webContents.send("setIsInVoiceCall", { id: this.id, isInVoiceCall });
   }
   private permissionHandler(
     webContents: WebContents,

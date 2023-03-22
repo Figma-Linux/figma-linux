@@ -174,22 +174,10 @@ export default class TabManager {
     return false;
   }
 
-  private setUsingMicrophone(event: IpcMainEvent, isUsingMicrophone: boolean) {
-    // TODO: need use window id for understooding for what window handle this event
-    const tab = this.tabs.get(event.sender.id);
-
-    tab.setUsingMicrophone(isUsingMicrophone);
-  }
   private async requestMicrophonePermission(event: IpcMainEvent) {
     const tab = this.tabs.get(event.sender.id);
 
     return tab.requestMicrophonePermission();
-  }
-  private setIsInVoiceCall(event: IpcMainEvent, isInVoiceCall: boolean) {
-    // TODO: need use window id for understooding for what window handle this event
-    const tab = this.tabs.get(event.sender.id);
-
-    tab.setIsInVoiceCall(isInVoiceCall);
   }
 
   private toggleCurrentTabDevTools() {
@@ -217,8 +205,6 @@ export default class TabManager {
     ipcMain.handle("requestMicrophonePermission", this.requestMicrophonePermission.bind(this));
 
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
-    ipcMain.on("setUsingMicrophone", this.setUsingMicrophone.bind(this));
-    ipcMain.on("setIsInVoiceCall", this.setIsInVoiceCall.bind(this));
 
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
     app.on("handlePluginMenuAction", this.handlePluginMenuAction.bind(this));

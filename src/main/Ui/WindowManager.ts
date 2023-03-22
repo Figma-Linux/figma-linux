@@ -265,6 +265,19 @@ export default class WindowManager {
     window.toggleThemeCreatorPreviewMask();
   }
 
+  private setIsInVoiceCall(event: IpcMainEvent, isInVoiceCall: boolean) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+    const tabId = event.sender.id;
+
+    window.setIsInVoiceCall(tabId, isInVoiceCall);
+  }
+  private setUsingMicrophone(event: IpcMainEvent, isUsingMicrophone: boolean) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+    const tabId = event.sender.id;
+
+    window.setUsingMicrophone(tabId, isUsingMicrophone);
+  }
+
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
 
@@ -279,6 +292,8 @@ export default class WindowManager {
     ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
     ipcMain.on("closeSettingsView", this.closeSettingsView.bind(this));
     ipcMain.on("toggleThemeCreatorPreviewMask", this.toggleThemeCreatorPreviewMask.bind(this));
+    ipcMain.on("setUsingMicrophone", this.setUsingMicrophone.bind(this));
+    ipcMain.on("setIsInVoiceCall", this.setIsInVoiceCall.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

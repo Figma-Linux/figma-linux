@@ -248,6 +248,12 @@ export default class Window {
       event.reply("windowDidMaximized");
     }
   }
+  public setIsInVoiceCall(tabId: number, isInVoiceCall: boolean) {
+    this.window.webContents.send("setIsInVoiceCall", { id: tabId, isInVoiceCall });
+  }
+  public setUsingMicrophone(tabId: number, isUsingMicrophone: boolean) {
+    this.window.webContents.send("setUsingMicrophone", { id: tabId, isUsingMicrophone });
+  }
   public reloadTab(tabId: number) {
     this.tabManager.reloadTab(tabId);
   }

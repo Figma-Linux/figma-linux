@@ -35,6 +35,17 @@ export class Storage {
     }
 
     this.settings = this.readSync();
+
+    this.settings = {
+      ...DEFAULT_SETTINGS,
+      ...this.settings,
+      app: {
+        ...DEFAULT_SETTINGS.app,
+        ...this.settings.app,
+      },
+    };
+
+    this.writeSync(this.settings);
   };
   private readSync = (): Types.SettingsInterface => {
     const content = fs.readFileSync(this.filePath).toString();

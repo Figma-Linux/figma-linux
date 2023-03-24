@@ -70,6 +70,10 @@ export default class Window {
       }
     )[this.id];
 
+    if (!tabs) {
+      return;
+    }
+
     setTimeout(() => {
       tabs.forEach((tab, i) => {
         setTimeout(() => {

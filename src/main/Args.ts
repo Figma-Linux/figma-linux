@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require("./../../package.json");
+const { version } = require("./../package.json");
 
 export default (): { figmaUrl: string } => {
   const argv = process.argv;

@@ -39,7 +39,7 @@
     "chokidar": "^3.5.3",
     "css-vars": "^2.4.0",
     "electron-build-env": "^0.2",
-    "figma-linux-rust-binding": "^0.2.8",
+    "figma-linux-rust-binding": "^0.2.9",
     "svelte-dnd-action": "git://github.com/ChugunovRoman/svelte-dnd-action.git#c529fabe1074ba980d753da8c447da0de8ef9147",
     "uuid": "^9.0.0"
   },

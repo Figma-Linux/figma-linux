@@ -184,6 +184,10 @@ module.exports = [
       copy({
         targets: [
           {
+            src: "src/package.json",
+            dest: "dist",
+          },
+          {
             src: "src/index.html",
             dest: "dist",
           },

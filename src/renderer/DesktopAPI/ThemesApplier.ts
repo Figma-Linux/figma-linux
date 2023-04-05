@@ -115,6 +115,7 @@ export class ThemesApplier {
       if (key === "text-disabled") {
         document.body.style.setProperty("--fg-overlay-secondary", value);
         document.body.style.setProperty("--fg-toolbar-placeholder", value);
+        document.body.style.setProperty("--color-icon-disabled", value);
       }
       if (key === "borders") {
         document.body.style.setProperty("--fg-overlay-sep", value);
@@ -129,6 +130,8 @@ export class ThemesApplier {
       if (key === "text-active") {
         document.body.style.setProperty("--color-icon-hover", value);
         document.body.style.setProperty("--color-text-secondary-hover", value);
+        document.body.style.setProperty("--color-text-hover", value);
+        document.body.style.setProperty("--color-icon-onselected", value);
       }
       if (key === "bg-panel-hover") {
         document.body.style.setProperty("--color-bg-pressed", value);

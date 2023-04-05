@@ -114,7 +114,7 @@ module.exports = [
       file: "dist/renderer/loadContent.js",
     },
     external: commonExternal,
-    plugins: [...commonPlugins],
+    plugins: [...commonPlugins, production && terser()],
   },
   {
     input: "src/renderer/DesktopAPI/loadMainContent.ts",
@@ -125,7 +125,7 @@ module.exports = [
       file: "dist/renderer/loadMainContent.js",
     },
     external: commonExternal,
-    plugins: [...commonPlugins],
+    plugins: [...commonPlugins, production && terser()],
   },
   {
     input: "src/renderer/DesktopAPI/themePreviewPreload.ts",
@@ -136,7 +136,7 @@ module.exports = [
       file: "dist/renderer/themePreviewPreload.js",
     },
     external: commonExternal,
-    plugins: [...commonPlugins],
+    plugins: [...commonPlugins, production && terser()],
   },
   {
     input: "src/renderer/Settings/index.ts",

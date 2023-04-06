@@ -7,7 +7,7 @@ description: |
   Join as in Telegram: https://t.me/figma_linux.
 
 icon: resources/icons/256x256.png
-base: core18
+base: core22
 grade: stable
 confinement: strict
 architectures:

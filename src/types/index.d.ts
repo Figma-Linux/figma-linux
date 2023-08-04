@@ -1,5 +1,3 @@
-type FontsMap = import("figma-linux-rust-binding").Fonts.IFonts;
-
 declare namespace Electron {
   interface RemoteMainInterface {
     app: App;
@@ -270,7 +268,7 @@ declare namespace Electron {
     ): void;
     handle(
       channel: "getFonts",
-      listener: (event: IpcMainInvokeEvent) => Promise<void> | FontsMap,
+      listener: (event: IpcMainInvokeEvent) => Promise<void> | Fonts.IFonts,
     ): void;
     handle(
       channel: "getFontFile",
@@ -403,7 +401,7 @@ declare namespace Electron {
     invoke(channel: "themesIsDisabled"): Promise<boolean>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
-    invoke(channel: "getFonts"): Promise<FontsMap>;
+    invoke(channel: "getFonts"): Promise<Fonts.IFonts>;
     invoke(channel: "getFontFile", data: WebApi.GetFontFile): Promise<Buffer>;
     invoke(channel: "add-font-directories"): Promise<string[] | null>;
     invoke(channel: "selectExportDirectory"): Promise<string | null>;

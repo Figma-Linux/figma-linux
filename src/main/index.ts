@@ -1,6 +1,6 @@
 import App from "./App";
 import Session from "./Session";
-import FontManager from "./FontManager";
+import FontManager from "./Fonts";
 import ThemeManager from "./Ui/ThemeManager";
 import ThemeValidator from "./Ui/ThemeManager/ThemeValidator";
 import WindowManager from "./Ui/WindowManager";

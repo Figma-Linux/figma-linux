@@ -22,7 +22,7 @@ import { storage } from "./Storage";
 import ThemeManager from "./Ui/ThemeManager";
 import WindowManager from "./Ui/WindowManager";
 import Session from "./Session";
-import FontManager from "./FontManager";
+import FontManager from "./Fonts";
 
 export default class App {
   constructor(

@@ -9,7 +9,6 @@ ARG GROUP_ID
 
 WORKDIR /usr/src/figma-linux
 
-COPY ./@types ./@types
 COPY ./config ./config
 COPY ./lib ./lib
 COPY ./resources ./resources

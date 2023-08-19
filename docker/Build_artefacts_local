@@ -14,7 +14,7 @@ COPY ./lib ./lib
 COPY ./resources ./resources
 COPY ./scripts ./scripts
 COPY ./src ./src
-COPY ["./*.json", "./.prettierrc", "./.eslintrc", "./"]
+COPY ["./*.json", "./.prettierrc", "./"]
 
 RUN addgroup --gid $GROUP_ID user && \
   adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user && \

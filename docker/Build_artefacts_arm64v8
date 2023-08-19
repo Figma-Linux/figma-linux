@@ -7,7 +7,7 @@ COPY ./lib ./lib
 COPY ./resources ./resources
 COPY ./scripts ./scripts
 COPY ./src ./src
-COPY ["./*.json", "./.prettierrc", "./.eslintrc", "./"]
+COPY ["./*.json", "./.prettierrc", "./"]
 
 ENV USE_SYSTEM_FPM true
 

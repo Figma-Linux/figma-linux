@@ -53,11 +53,9 @@ export default class ThemeManager {
     const currentThemeId = storage.settings.theme.currentTheme;
     const disableThemes = storage.settings.app.disableThemes;
 
-    if (disableThemes) return;
-
     let currentTheme = this.themes.get(currentThemeId) || this.creatorThemes.get(currentThemeId);
 
-    if (currentThemeId === DEFAULT_THEME.id) {
+    if (currentThemeId === DEFAULT_THEME.id || disableThemes) {
       currentTheme = DEFAULT_THEME;
     }
 

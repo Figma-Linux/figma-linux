@@ -347,6 +347,9 @@ export default class Window {
 
     storage.settings.theme.currentTheme = theme.id;
   }
+  private reloadCurrentTheme() {
+    app.emit("reloadCurrentTheme");
+  }
 
   private handleFrontReady() {
     this.window.webContents.send("loadSettings", storage.settings);
@@ -389,5 +392,6 @@ export default class Window {
     this.window.on("unmaximize", () => setTimeout(this.updateTabsBounds.bind(this), 100));
     this.window.on("move", () => setTimeout(this.updateTabsBounds.bind(this), 100));
     this.window.on("focus", () => app.emit("windowFocus", this.window.id));
+    this.window.webContents.on("dom-ready", () => this.reloadCurrentTheme());
   }
 }

@@ -467,7 +467,7 @@ const init = (fileBrowser: boolean): void => {
 
   E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
 
-  document.addEventListener("load", () => {
+  document.addEventListener("DOMContentLoaded", () => {
     E.ipcRenderer.invoke("themesIsDisabled").then((disabled) => {
       if (!disabled) {
         setTimeout(() => {

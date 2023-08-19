@@ -271,6 +271,17 @@ export class ThemesApplier {
         if (/toolbar_view--shareButton|basic_form--primaryBtn/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--fg-toolbar-active)`;
         }
+        if (/file_browser_layout--fileBrowserPageViewContainer/.test(cssRule.selectorText)) {
+          additionStyleRules.push(
+            `${cssRule.selectorText}::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }`,
+          );
+          additionStyleRules.push(
+            `${cssRule.selectorText}::-webkit-scrollbar-corner { display: none; }`,
+          );
+          additionStyleRules.push(
+            `${cssRule.selectorText}::-webkit-scrollbar-thumb { background: var(--color-scrollbar, rgba(179, 179, 179, 0.5)); border-radius: 10px; }`,
+          );
+        }
       }
     }
 

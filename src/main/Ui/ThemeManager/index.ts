@@ -241,7 +241,14 @@ export default class ThemeManager {
     this.creatorTheme = theme;
   }
   private async reloadCurrentTheme() {
-    app.emit("loadCurrentTheme", this.themes.get(storage.settings.theme.currentTheme));
+    let theme = this.themes.get(storage.settings.theme.currentTheme) ?? DEFAULT_THEME;
+    const disableThemes = storage.settings.app.disableThemes;
+
+    if (disableThemes) {
+      theme = DEFAULT_THEME;
+    }
+
+    app.emit("loadCurrentTheme", theme);
   }
 
   private registerEvents() {

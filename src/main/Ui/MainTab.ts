@@ -88,6 +88,9 @@ export default class MainTab {
   public updateScale(scale: number) {
     this.view.webContents.setZoomFactor(scale);
   }
+  public reloadCurrentTheme() {
+    app.emit("reloadCurrentTheme");
+  }
   public loadTheme(theme: Themes.Theme) {
     this.view.webContents.send("loadCurrentTheme", theme);
   }
@@ -98,6 +101,9 @@ export default class MainTab {
 
       event.preventDefault();
     }
+  }
+  private onDomReady(event: any) {
+    this.reloadCurrentTheme();
   }
   private onMainWindowWillNavigate(event: any, newUrl: string) {
     const currentUrl = event.sender.getURL();
@@ -141,8 +147,6 @@ export default class MainTab {
     const url = details.url;
     logger.debug("newWindow, url: ", url);
 
-    // window.close();
-
     if (/start_google_sso/.test(url)) return;
 
     if (isPrototypeUrl(url) || isValidProjectLink(url)) {
@@ -156,6 +160,7 @@ export default class MainTab {
   private registerEvents() {
     this.view.webContents.on("will-navigate", this.onMainTabWillNavigate.bind(this));
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
+    this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));
   }
 }

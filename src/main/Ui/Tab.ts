@@ -77,7 +77,13 @@ export default class Tab {
   public updateScale(scale: number) {
     this.view.webContents.setZoomFactor(scale);
   }
+  public reloadCurrentTheme() {
+    app.emit("reloadCurrentTheme");
+  }
 
+  private onDomReady(event: any) {
+    this.reloadCurrentTheme();
+  }
   private onMainWindowWillNavigate(event: any, newUrl: string) {
     const currentUrl = event.sender.getURL();
 
@@ -181,6 +187,7 @@ export default class Tab {
 
   private registerEvents() {
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
+    this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));
 
     this.view.webContents.session.setPermissionRequestHandler(this.permissionHandler.bind(this));

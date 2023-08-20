@@ -1,8 +1,8 @@
 <script lang="ts">
   import { flip } from "svelte/animate";
-  import { dndzone } from "svelte-dnd-action";
+  import { dndzone } from "../../svelte-dnd-action";
   import { ButtonTool } from "Common/Buttons";
-  import { Close, Muted, UnMuted } from "Icons";
+  import { Close } from "Icons";
 
   export let currentTabId: number | undefined;
   export let items: Types.TabFront[] = [];

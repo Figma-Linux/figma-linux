@@ -45,9 +45,9 @@ jobs:
     - name: Build in Docker
       id: build
       run: |
-        docker buildx build --platform linux/arm64 -t 4tqrgqe5yrgfd/figma-linux-artefacts-arm --load -f ./docker/Build_artefacts_arm64v8 .
+        docker buildx build --platform linux/arm64 -t 4tqrgqe5yrgfd/figma-linux-docker-image-arm:latest --load -f ./docker/Build_artefacts_arm64v8 .
         mkdir -p ./build/installers
-        docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-artefacts-arm)://usr/src/figma-linux/build/installers/. ./build/installers
+        docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-image-arm:latest)://usr/src/figma-linux/build/installers/. ./build/installers
         perl ./scripts/generate_release_notes.pl
 
     - name: Cache arm64v8 artifacts

@@ -43,7 +43,7 @@ jobs:
 
     - name: Set up Docker Buildx
       id: docker_buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Build in Docker
       id: build

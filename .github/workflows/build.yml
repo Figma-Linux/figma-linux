@@ -48,9 +48,9 @@ jobs:
     # - name: Build in Docker
     #   id: build
     #   run: |
-    #     docker buildx build --platform linux/arm64 --builder ${{ steps.docker_buildx.outputs.name}} -t 4tqrgqe5yrgfd/figma-linux-docker-image-arm:latest --load -f ./docker/Build_artefacts_arm64v8 .
+    #     docker buildx build --platform linux/arm64 --builder ${{ steps.docker_buildx.outputs.name}} -t figma-linux-artefacts-arm:latest --load -f ./docker/Build_artefacts_arm64v8 .
     #     mkdir -p ./build/installers
-    #     docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-image-arm:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+    #     docker cp $(docker create figma-linux-artefacts-arm:latest)://usr/src/figma-linux/build/installers/. ./build/installers
 
     - name: Build
       uses: docker/build-push-action@v4
@@ -60,7 +60,7 @@ jobs:
         file: ./docker/Build_artefacts_arm64v8
         platforms: linux/arm64
         push: false
-        tags: 4tqrgqe5yrgfd/figma-linux-docker-image-arm:latest
+        tags: figma-linux-artefacts-arm:latest
 
     # - name: Cache arm64v8 artifacts
     #   id: cache-arm64v8-artifacts

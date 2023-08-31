@@ -45,29 +45,19 @@ jobs:
       id: docker_buildx
       uses: docker/setup-buildx-action@v2
 
-    # - name: Build in Docker
-    #   id: build
-    #   run: |
-    #     docker buildx build --platform linux/arm64 --builder ${{ steps.docker_buildx.outputs.name}} -t figma-linux-artefacts-arm:latest --load -f ./docker/Build_artefacts_arm64v8 .
-    #     mkdir -p ./build/installers
-    #     docker cp $(docker create figma-linux-artefacts-arm:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+    - name: Build in Docker
+      id: build
+      run: |
+        docker buildx build --platform linux/arm64 --builder ${{ steps.docker_buildx.outputs.name}} -t figma-linux-artefacts-arm:latest --load -f ./docker/Build_artefacts_arm64v8 .
+        mkdir -p ./build/installers
+        docker cp $(docker create figma-linux-artefacts-arm:latest)://usr/src/figma-linux/build/installers/. ./build/installers
 
-    - name: Build
-      uses: docker/build-push-action@v4
+    - name: Cache arm64v8 artifacts
+      id: cache-arm64v8-artifacts
+      uses: actions/upload-artifact@v2
       with:
-        builder: ${{ steps.docker_buildx.outputs.name}}
-        context: .
-        file: ./docker/Build_artefacts_arm64v8
-        platforms: linux/arm64
-        push: false
-        tags: figma-linux-artefacts-arm:latest
-
-    # - name: Cache arm64v8 artifacts
-    #   id: cache-arm64v8-artifacts
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: arm64v8
-    #     path: build/installers/*
+        name: arm64v8
+        path: build/installers/*
 
   build_amd64:
     runs-on: ubuntu-latest

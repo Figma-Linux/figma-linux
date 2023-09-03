@@ -4,6 +4,7 @@ import { getColorsMap, variablesColorsMap } from "Utils/Common";
 
 export class ThemesApplier {
   private currentTheme: Themes.Theme;
+  private targetElements: Set<HTMLElement | CSSStyleRule> = new Set();
 
   constructor() {
     this.currentTheme = structuredClone(DEFAULT_THEME);
@@ -61,115 +62,125 @@ export class ThemesApplier {
   }
 
   private setThemeVariables() {
-    this.applyPalette(this.currentTheme.palette);
+    for (const el of this.targetElements) {
+      this.applyPalette(this.currentTheme.palette, el);
+    }
   }
-  private applyPalette(palette: Themes.Palette) {
+  private applyPalette(palette: Themes.Palette, el: HTMLElement | CSSStyleRule = document.body) {
     const keys = Object.keys(palette);
 
     for (const key of keys) {
       const value = palette[key];
-      document.body.style.setProperty(`--${key}`, value);
+      el.style.setProperty(`--${key}`, value);
 
       if (key === "bg-header-control") {
-        document.body.style.setProperty("--color-bg-toolbar-secondary", value);
-        // document.body.style.setProperty("--bg-overlay-active", value);
-        document.body.style.setProperty("--color-bg-toolbar-tertiary", value);
+        el.style.setProperty("--color-bg-toolbar-secondary", value);
+        // el.style.setProperty("--bg-overlay-active", value);
+        el.style.setProperty("--color-bg-toolbar-tertiary", value);
       }
       if (key === "bg-toolbar-active") {
-        document.body.style.setProperty("--bg-primary-btn", value);
-        document.body.style.setProperty("--color-bg-brand", value);
-        // document.body.style.setProperty("--bg-overlay-active", value);
-        document.body.style.setProperty("--color-border-toolbar-selected", value);
-        document.body.style.setProperty("--color-bg-toolbar-selected", value);
-        document.body.style.setProperty("--color-border-selected", value);
-        document.body.style.setProperty("--color-bg-menu-selected", value);
-        document.body.style.setProperty("--color-bg-menu-selected-hover", value);
-        document.body.style.setProperty("--color-bg-menu-selected-pressed", value);
+        el.style.setProperty("--bg-primary-btn", value);
+        el.style.setProperty("--color-bg-brand", value);
+        // el.style.setProperty("--bg-overlay-active", value);
+        el.style.setProperty("--color-border-toolbar-selected", value);
+        el.style.setProperty("--color-bg-toolbar-selected", value);
+        el.style.setProperty("--color-border-selected", value);
+        el.style.setProperty("--color-bg-menu-selected", value);
+        el.style.setProperty("--color-bg-menu-selected-hover", value);
+        el.style.setProperty("--color-bg-menu-selected-pressed", value);
       }
       if (key === "fg-overlay") {
-        document.body.style.setProperty("--color-icon-menu", value);
+        el.style.setProperty("--color-icon-menu", value);
       }
       if (key === "bg-toolbar-hover") {
-        document.body.style.setProperty("--color-bg-toolbar-hover", value);
+        el.style.setProperty("--color-bg-toolbar-hover", value);
+      }
+      if (key === "fg-tab-hover") {
+        el.style.setProperty("--color-text-toolbar-hover", value);
       }
       if (key === "fg-overlay") {
-        document.body.style.setProperty("--fg-overlay", value);
-        document.body.style.setProperty("--fg-overlay-right", value);
+        el.style.setProperty("--fg-overlay", value);
+        el.style.setProperty("--fg-overlay-right", value);
       }
       if (key === "fg-toolbar") {
-        document.body.style.setProperty("--color-icon-toolbar", value);
-        document.body.style.setProperty("--color-text-toolbar-secondary", value);
+        el.style.setProperty("--color-icon-toolbar", value);
+        el.style.setProperty("--color-text-toolbar-secondary", value);
       }
       if (key === "fg-toolbar-hover") {
-        document.body.style.setProperty("--color-icon-toolbar-hover", value);
+        el.style.setProperty("--color-icon-toolbar-hover", value);
       }
       if (key === "fg-toolbar-active") {
-        document.body.style.setProperty("--fg-overlay-active", value);
-        document.body.style.setProperty("--color-text-menu-hover", value);
-        document.body.style.setProperty("--color-icon-toolbar-onselected", value);
-        document.body.style.setProperty("--color-text-onbrand", value);
-        // document.body.style.setProperty("--color-icon-toolbar", value);
-        document.body.style.setProperty("--color-icon-toolbar-tertiary", value);
-        document.body.style.setProperty("--color-icon-toolbar-hover", value);
+        el.style.setProperty("--fg-overlay-active", value);
+        el.style.setProperty("--color-text-menu-hover", value);
+        el.style.setProperty("--color-icon-toolbar-onselected", value);
+        el.style.setProperty("--color-text-onbrand", value);
+        // el.style.setProperty("--color-icon-toolbar", value);
+        el.style.setProperty("--color-icon-toolbar-tertiary", value);
+        el.style.setProperty("--color-icon-toolbar-hover", value);
       }
       if (key === "text-disabled") {
-        document.body.style.setProperty("--fg-overlay-secondary", value);
-        document.body.style.setProperty("--fg-toolbar-placeholder", value);
-        document.body.style.setProperty("--color-icon-disabled", value);
+        el.style.setProperty("--fg-overlay-secondary", value);
+        el.style.setProperty("--fg-toolbar-placeholder", value);
+        el.style.setProperty("--color-icon-disabled", value);
       }
       if (key === "borders") {
-        document.body.style.setProperty("--fg-overlay-sep", value);
-        document.body.style.setProperty("--color-border-toolbar", value);
+        el.style.setProperty("--fg-overlay-sep", value);
+        el.style.setProperty("--color-border-toolbar", value);
       }
       if (key === "text") {
-        document.body.style.setProperty("--color-icon", value);
-        document.body.style.setProperty("--color-icon-brand", value);
-        document.body.style.setProperty("--color-icon-secondary", value);
-        document.body.style.setProperty("--color-icon-tertiary", value);
+        el.style.setProperty("--color-icon", value);
+        el.style.setProperty("--color-icon-brand", value);
+        el.style.setProperty("--color-icon-secondary", value);
+        el.style.setProperty("--color-icon-tertiary", value);
       }
       if (key === "text-active") {
-        document.body.style.setProperty("--color-icon-hover", value);
-        document.body.style.setProperty("--color-text-secondary-hover", value);
-        document.body.style.setProperty("--color-text-hover", value);
-        document.body.style.setProperty("--color-icon-onselected", value);
+        el.style.setProperty("--color-icon-hover", value);
+        el.style.setProperty("--color-text-secondary-hover", value);
+        el.style.setProperty("--color-text-hover", value);
+        el.style.setProperty("--color-icon-onselected", value);
       }
       if (key === "bg-panel-hover") {
-        document.body.style.setProperty("--color-bg-pressed", value);
-        document.body.style.setProperty("--color-bg-tertiary", value);
+        el.style.setProperty("--color-bg-pressed", value);
+        el.style.setProperty("--color-bg-tertiary", value);
       }
       if (key === "fg-component") {
-        document.body.style.setProperty("--color-icon-component", value);
-        document.body.style.setProperty("--color-text-component", value);
+        el.style.setProperty("--color-icon-component", value);
+        el.style.setProperty("--color-text-component", value);
       }
       if (key === "fg-component-disabled") {
-        document.body.style.setProperty("--color-icon-component-secondary", value);
-        document.body.style.setProperty("--color-text-component-secondary", value);
-        document.body.style.setProperty("--color-icon-component-tertiary", value);
-        document.body.style.setProperty("--color-text-component-tertiary", value);
+        el.style.setProperty("--color-icon-component-secondary", value);
+        el.style.setProperty("--color-text-component-secondary", value);
+        el.style.setProperty("--color-icon-component-tertiary", value);
+        el.style.setProperty("--color-text-component-tertiary", value);
+      }
+      if (key === "bg-beta-label") {
+        el.style.setProperty("--color-bg-info", value);
       }
     }
 
-    document.body.style.setProperty("background-color", "var(--gb-panel)");
+    el.style.setProperty("background-color", "var(--bg-panel)");
 
-    document.body.style.setProperty("--color-bg", "var(--bg-panel)");
-    document.body.style.setProperty("--color-bg-toolbar", "var(--bg-toolbar)");
-    document.body.style.setProperty("--color-bg-selected", "var(--bg-panel)");
-    document.body.style.setProperty("--color-text", "var(--text)");
-    document.body.style.setProperty("--color-text-secondary", "var(--text)");
-    document.body.style.setProperty("--color-border", "var(--borders)");
-    document.body.style.setProperty("--color-border-menu", "var(--borders)");
-    document.body.style.setProperty("--color-conditionalborder", "var(--borders)");
-    document.body.style.setProperty("--color-border-tooltip", "var(--borders)");
-    document.body.style.setProperty("--color-text-disabled", "var(--text-disabled)");
-    document.body.style.setProperty("--color-bg-selected-secondary", "var(--bg-panel)");
-    document.body.style.setProperty("--color-bg-selected", "var(--bg-panel-hover)");
-    document.body.style.setProperty("--color-text-toolbar", "var(--text)");
-    document.body.style.setProperty("--color-bg-hover", "var(--bg-panel-hover)");
-    document.body.style.setProperty("--color-bg-secondary", "var(--bg-panel-hover)");
-    document.body.style.setProperty("--color-bg-tooltip", "var(--bg-overlay)");
+    el.style.setProperty("--color-bg", "var(--bg-panel)");
+    el.style.setProperty("--color-bg-toolbar", "var(--bg-toolbar)");
+    el.style.setProperty("--color-bg-selected", "var(--bg-panel)");
+    el.style.setProperty("--color-text", "var(--text)");
+    el.style.setProperty("--color-text-secondary", "var(--text)");
+    el.style.setProperty("--color-border", "var(--borders)");
+    el.style.setProperty("--color-border-menu", "var(--borders)");
+    el.style.setProperty("--color-conditionalborder", "var(--borders)");
+    el.style.setProperty("--color-border-tooltip", "var(--borders)");
+    el.style.setProperty("--color-text-disabled", "var(--text-disabled)");
+    el.style.setProperty("--color-bg-selected-secondary", "var(--bg-panel)");
+    el.style.setProperty("--color-bg-selected", "var(--bg-panel-hover)");
+    el.style.setProperty("--color-text-toolbar", "var(--text)");
+    el.style.setProperty("--color-bg-hover", "var(--bg-panel-hover)");
+    el.style.setProperty("--color-bg-secondary", "var(--bg-panel-hover)");
+    el.style.setProperty("--color-bg-tooltip", "var(--bg-overlay)");
   }
 
   public init() {
+    this.targetElements.add(document.body);
+
     const figmaCoreStylesheet = this.getCoreStylesheet();
 
     if (!figmaCoreStylesheet) {
@@ -239,7 +250,11 @@ export class ThemesApplier {
           cssRule.style["color"] = `var(--text-active)`;
           cssRule.style["fill"] = `var(--text-active)`;
         }
-        if (/optionDisabled/.test(cssRule.selectorText)) {
+        if (
+          /optionDisabled|formatted_expanding_textarea--placeholder|expanding_textarea--expandingTextarea--*::placeholder/.test(
+            cssRule.selectorText,
+          )
+        ) {
           additionStyleRules.push(`${cssRule.selectorText} { color: var(--text-disabled); }`);
         }
         if (/.text--_negText/.test(cssRule.selectorText)) {
@@ -265,11 +280,19 @@ export class ThemesApplier {
         if (/basic_form--textInput/.test(cssRule.selectorText)) {
           cssRule.style["backgroundColor"] = `var(--bg-panel)`;
         }
-        if (/step_breadcrumb--stepTitle/.test(cssRule.selectorText)) {
+        if (
+          /step_breadcrumb--stepTitle|account_switcher--dropdownButtonContent/.test(
+            cssRule.selectorText,
+          )
+        ) {
           cssRule.style["color"] = `var(--text-active)`;
         }
         if (/toolbar_view--shareButton|basic_form--primaryBtn/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--fg-toolbar-active)`;
+        }
+        if (/.data-preferred-theme=.{3,20}\s?navbar--navbarContainer/.test(cssRule.selectorText)) {
+          this.targetElements.add(cssRule);
+          this.applyPalette(this.currentTheme.palette, cssRule);
         }
         if (/file_browser_layout--fileBrowserPageViewContainer/.test(cssRule.selectorText)) {
           additionStyleRules.push(
@@ -282,6 +305,9 @@ export class ThemesApplier {
             `${cssRule.selectorText}::-webkit-scrollbar-thumb { background: var(--color-scrollbar, rgba(179, 179, 179, 0.5)); border-radius: 10px; }`,
           );
         }
+        additionStyleRules.push(
+          `button[class*=css_builder--colorBgPressed] { color: var(--fg-toolbar-active); }`,
+        );
       }
     }
 

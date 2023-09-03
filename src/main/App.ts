@@ -34,7 +34,7 @@ export default class App {
     const isSingleInstance = app.requestSingleInstanceLock();
 
     if (!isSingleInstance) {
-      this.windowManager.focusLastWindow();
+      app.emit("focusLastWindow");
       app.quit();
       return;
     }

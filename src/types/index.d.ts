@@ -49,6 +49,7 @@ declare namespace Electron {
     on(event: "relaunchApp", listener: () => void): this;
     on(event: "quitApp", listener: () => void): this;
     on(event: "reloadCurrentTheme", listener: () => void): this;
+    on(event: "focusLastWindow", listener: () => void): this;
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
@@ -82,6 +83,7 @@ declare namespace Electron {
     emit(event: "relaunchApp"): void;
     emit(event: "quitApp"): void;
     emit(event: "reloadCurrentTheme"): void;
+    emit(event: "focusLastWindow"): void;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {

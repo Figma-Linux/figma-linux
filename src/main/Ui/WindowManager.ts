@@ -306,6 +306,7 @@ export default class WindowManager {
     app.on("reopenClosedTab", this.reopenClosedTab.bind(this));
     // End events from main menu
 
+    app.on("focusLastWindow", this.focusLastWindow.bind(this));
     app.on("requestBoundsForTabView", this.sendWindowBoundsToTabs.bind(this));
     app.on("openUrlInNewTab", this.openUrlInNewTab.bind(this));
     app.on("windowFocus", this.windowFocus.bind(this));

@@ -20,6 +20,7 @@
     "builder": "electron-builder --config=config/builder.json -l",
     "pack": "rm -rf build/installers && npm run build && chmod a+x ./resources/AppRun && npm run builder",
     "package": "rm -rf build/installers && npm run build && electron-builder --config=config/builder.json -l",
+    "local:install": "sudo rm -rf /opt/figma-linux && sudo mkdir -p /opt/figma-linux && sudo cp -rf ./build/installers/linux-unpacked/* /opt/figma-linux/",
     "check": "svelte-check",
     "lp": "run-p lint prettier",
     "lint": "eslint -c ./config/.eslintrc.js src/**/*.ts",

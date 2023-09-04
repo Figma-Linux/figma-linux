@@ -145,17 +145,19 @@ export default class Tab {
     webContents: WebContents,
     permission:
       | "clipboard-read"
-      | "media"
+      | "clipboard-sanitized-write"
       | "display-capture"
-      | "mediaKeySystem"
+      | "fullscreen"
       | "geolocation"
-      | "notifications"
+      | "idle-detection"
+      | "media"
+      | "mediaKeySystem"
       | "midi"
       | "midiSysex"
+      | "notifications"
       | "pointerLock"
-      | "fullscreen"
       | "openExternal"
-      | "window-placement"
+      | "window-management"
       | "unknown",
     callback: (permissionGranted: boolean) => void,
     details: PermissionRequestHandlerHandlerDetails,

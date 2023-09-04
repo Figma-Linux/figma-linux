@@ -352,11 +352,6 @@ export default class Window {
     this.window.webContents.send("loadSettings", storage.settings);
     this.showHandler(null);
   }
-  private handleWebViewEventQueue() {
-    for (const event of this.webViewQueueEvent) {
-      this.window.webContents.send(event.id, ...event.args);
-    }
-  }
 
   public close() {
     this.window.close();

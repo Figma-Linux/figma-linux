@@ -1,4 +1,6 @@
-export const WINDOW_DEFAULT_OPTIONS = {
+import type { BrowserWindowConstructorOptions } from "electron";
+
+export const WINDOW_DEFAULT_OPTIONS: BrowserWindowConstructorOptions = {
   width: 1200,
   height: 900,
   frame: false,

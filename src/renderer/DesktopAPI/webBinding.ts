@@ -1,3 +1,4 @@
+import type { IpcRendererEvent } from "electron";
 import * as E from "electron";
 
 import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
@@ -188,14 +189,14 @@ const initWebBindings = (): void => {
   E.ipcRenderer.on("newFile", () => {
     webPort.postMessage({ name: "newFile", args: {} });
   });
-  E.ipcRenderer.on("handleAction", (_: Event, action: string, source: string) => {
+  E.ipcRenderer.on("handleAction", (_: E.IpcRendererEvent, action: string, source: string) => {
     webPort.postMessage({ name: "handleAction", args: { action, source } });
   });
-  E.ipcRenderer.on("handleUrl", (_: Event, path: string, params: string) => {
+  E.ipcRenderer.on("handleUrl", (_: IpcRendererEvent, path: string, params: string) => {
     console.log("handleUrl, url: ", path);
     webPort.postMessage({ name: "handleUrl", args: { path, params } });
   });
-  E.ipcRenderer.on("handlePageCommand", (_: Event, command: string) => {
+  E.ipcRenderer.on("handlePageCommand", (_: IpcRendererEvent, command: string) => {
     const fullscreenFocusTargetFocused =
       document.activeElement && document.activeElement.classList.contains("focus-target");
     if (fullscreenFocusTargetFocused) {
@@ -218,11 +219,11 @@ const initWebBindings = (): void => {
     }
   });
 
-  E.ipcRenderer.on("redeemAppAuth", (event: Event, gSecret: string) => {
+  E.ipcRenderer.on("redeemAppAuth", (event: IpcRendererEvent, gSecret: string) => {
     webPort.postMessage({ name: "redeemAppAuth", args: { gSecret } });
   });
 
-  E.ipcRenderer.on("handlePluginMenuAction", (event: Event, pluginMenuAction: any) => {
+  E.ipcRenderer.on("handlePluginMenuAction", (event: IpcRendererEvent, pluginMenuAction: any) => {
     webPort.postMessage({ name: "handlePluginMenuAction", args: { pluginMenuAction } });
   });
 };

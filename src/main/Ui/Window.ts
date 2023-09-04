@@ -1,7 +1,6 @@
 import { parse } from "url";
 import { app, ipcMain, BrowserWindow, IpcMainEvent, Rectangle } from "electron";
 import { storage } from "Main/Storage";
-import { logger } from "Main/Logger";
 import MenuManager from "./Menu/MenuManager";
 import SettingsView from "./SettingsView";
 import TabManager from "./TabManager";
@@ -17,8 +16,6 @@ export default class Window {
   private settingsView: SettingsView;
 
   private closedTabsHistory: Types.SavedTab[] = [];
-
-  private webViewQueueEvent: Set<Types.WebViewQueueItem> = new Set();
 
   constructor() {
     this.window = new BrowserWindow(WINDOW_DEFAULT_OPTIONS);

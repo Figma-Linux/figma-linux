@@ -2,7 +2,7 @@ import { app, shell, MenuItemConstructorOptions } from "electron";
 
 import { LINKS } from "Const";
 import { toggleDetachedDevTools } from "Utils/Main";
-import { item, commandToMainProcess, handleUrl } from "./menu";
+import { item, commandToMainProcess, handleUrl } from "Utils/Main";
 
 const PLUGINS_MENU = {
   label: "Plugins",

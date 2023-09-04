@@ -1,13 +1,7 @@
-import {
-  app,
-  BrowserWindow,
-  KeyboardEvent,
-  MenuItemConstructorOptions,
-  Menu,
-  MenuItem,
-} from "electron";
+import { app, BrowserWindow, KeyboardEvent, MenuItemConstructorOptions, Menu } from "electron";
 
 import { getMenuTemplate } from "./menuItems";
+import { handleUrl } from "Utils/Main";
 import { stringOfActionMenuItemName, assertNever } from "Utils/Common";
 
 export const handlePluginMenuAction = (
@@ -97,30 +91,4 @@ export const buildActionToMenuItemMap = (menu: Menu) => {
 
   parseMenu(menu);
   return map;
-};
-
-export const item = (label: string, accelerator: string, params: MenuItemConstructorOptions) => {
-  const props: MenuItemConstructorOptions = {
-    label,
-    enabled: true,
-    ...params,
-  };
-
-  if (accelerator) {
-    props.accelerator = accelerator;
-  }
-
-  return props;
-};
-
-export const commandToMainProcess = (item: Menu.PluginMenuItem, window: BrowserWindow) => {
-  app.emit(item.id, window.webContents);
-};
-
-export const handleCommandItemClick = (item: Menu.PluginMenuItem, window: BrowserWindow) => {
-  window.webContents.send("handlePageCommand", item.id);
-};
-
-export const handleUrl = (url: string) => {
-  app.emit("handleUrl", url);
 };

@@ -188,12 +188,7 @@ export default class WindowManager {
   }
 
   private getWindowByWebContentsId(webContentsId: number): Window | undefined {
-    for (const [id, window] of this.windows) {
-      console.log(
-        "getWindowByWebContentsId, webContentsId: ",
-        window.allWebContentsIds,
-        webContentsId,
-      );
+    for (const [_, window] of this.windows) {
       if (window.allWebContentsIds.includes(webContentsId)) {
         return window;
       }

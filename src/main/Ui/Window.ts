@@ -32,7 +32,6 @@ export default class Window {
     this.menuManager.initMainMenu();
     this.menuManager.updateMainTabState();
 
-    logger.debug("Create window, id: ", this.window.id, isDev ? panelUrlDev : panelUrlProd);
     this.window.loadURL(isDev ? panelUrlDev : panelUrlProd);
     isDev && toggleDetachedDevTools(this.window.webContents);
 

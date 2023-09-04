@@ -42,11 +42,25 @@ export default class Window {
   public get id() {
     return this.window.id;
   }
+  public get webContentId() {
+    return this.window.webContents.id;
+  }
+  public get settingsViewId() {
+    return this.settingsView.view.webContents.id;
+  }
   public get closedTabs() {
     return this.closedTabsHistory;
   }
   public get tabs() {
     return this.tabManager.getAll();
+  }
+  public get allWebContentsIds() {
+    return [
+      this.webContentId,
+      this.settingsViewId,
+      this.tabManager.mainTabWebContentId,
+      ...this.tabs.keys(),
+    ];
   }
 
   public sortTabs(tabs: Types.TabFront[]) {
@@ -131,7 +145,7 @@ export default class Window {
     this.settingsView.toggleThemeCreatorPreviewMask();
   }
 
-  private updatePanelScale(_: IpcMainEvent, scale: number) {
+  public updatePanelScale(_: IpcMainEvent, scale: number) {
     const panelScale = +scale.toFixed(2);
 
     storage.settings.app.panelHeight = Math.floor(TOPPANELHEIGHT * panelScale);
@@ -141,7 +155,7 @@ export default class Window {
 
     this.updateTabsBounds();
   }
-  private updateFigmaUiScale(_: IpcMainEvent, scale: number) {
+  public updateFigmaUiScale(_: IpcMainEvent, scale: number) {
     this.tabManager.updateScaleAll(scale);
   }
   public updateTabsBounds() {
@@ -176,7 +190,7 @@ export default class Window {
 
     tab.view.webContents.addListener("did-finish-load", onDidFinishLoad);
   }
-  private openMainMenuHandler() {
+  public openMainMenuHandler() {
     const width = this.window.getBounds().width;
 
     this.menuManager.openMainMenuHandler(
@@ -299,7 +313,7 @@ export default class Window {
     this.tabManager.setBounds(tabId, bounds);
     this.menuManager.updateTabState();
   }
-  private setTabTitle(event: IpcMainEvent, title: string) {
+  public setTabTitle(event: IpcMainEvent, title: string) {
     const tab = this.tabManager.getById(event.sender.id);
 
     if (!tab) {
@@ -309,7 +323,7 @@ export default class Window {
     this.tabManager.setTitle(tab.id, title);
     this.window.webContents.send("setTitle", { id: tab.view.webContents.id, title });
   }
-  private setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {
+  public setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {
     // TODO: need use window id for understooding for what window handle this event
     const tab = this.tabManager.getById(event.sender.id);
 
@@ -325,7 +339,7 @@ export default class Window {
       this.menuManager.updatePluginState(pluginMenu);
     }
   }
-  private openFile(_: IpcMainEvent, ...args: string[]) {
+  public openFile(_: IpcMainEvent, ...args: string[]) {
     let url = `${HOMEPAGE}${args[0]}`;
 
     if (args[2]) {
@@ -334,21 +348,21 @@ export default class Window {
 
     this.addTab(url);
   }
-  private updateVisibleNewProjectBtn(_: IpcMainEvent, visible: boolean) {
+  public updateVisibleNewProjectBtn(_: IpcMainEvent, visible: boolean) {
     this.window.webContents.send("updateVisibleNewProjectBtn", visible);
   }
 
-  private updateActionState(_: IpcMainEvent, state: MenuState.State) {
+  public updateActionState(_: IpcMainEvent, state: MenuState.State) {
     // TODO: need use window id for understooding for what window handle this event
     this.menuManager.updateTabState(state);
   }
-  private changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
+  public changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
     this.loadCurrentTheme(theme);
 
     storage.settings.theme.currentTheme = theme.id;
   }
 
-  private handleFrontReady() {
+  public handleFrontReady() {
     this.window.webContents.send("loadSettings", storage.settings);
     this.showHandler(null);
   }
@@ -361,19 +375,6 @@ export default class Window {
     // TODO: Add window id for determinate which window will be minimized or maximized
     ipcMain.on("window-minimize", this.windowMinimize.bind(this));
     ipcMain.on("window-maximize", this.windowMaimize.bind(this));
-    //
-    ipcMain.on("closeAllTab", this.closeAllTab.bind(this));
-    ipcMain.on("setTitle", this.setTabTitle.bind(this));
-    ipcMain.on("openMainMenu", this.openMainMenuHandler.bind(this));
-    ipcMain.on("setPluginMenuData", this.setPluginMenuData.bind(this));
-    ipcMain.on("updateActionState", this.updateActionState.bind(this));
-    ipcMain.on("changeTheme", this.changeTheme.bind(this));
-    ipcMain.on("openFile", this.openFile.bind(this));
-    ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
-    ipcMain.on("frontReady", this.handleFrontReady.bind(this));
-
-    ipcMain.handle("updatePanelScale", this.updatePanelScale.bind(this));
-    ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
 
     app.on("openSettingsView", this.openSettingsView.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));

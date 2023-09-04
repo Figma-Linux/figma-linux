@@ -13,6 +13,7 @@ declare namespace Electron {
 
   interface App extends NodeJS.EventEmitter {
     on(event: "newFile", listener: (sender: Electron.WebContents) => void): this;
+    on(event: "newWindow", listener: (sender: Electron.WebContents) => void): this;
     on(event: "reloadTab", listener: (tabId: number) => void): this;
     on(event: "closeTab", listener: (tabId: number) => void): this;
     on(event: "closeAllTab", listener: () => void): this;
@@ -53,6 +54,7 @@ declare namespace Electron {
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
+    emit(event: "newWindow", sender: Electron.WebContents): boolean;
     emit(event: "reloadTab", tabId: number): boolean;
     emit(event: "closeTab", tabId: number): boolean;
     emit(event: "closeAllTab"): boolean;

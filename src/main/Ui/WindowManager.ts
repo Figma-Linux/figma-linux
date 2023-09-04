@@ -187,6 +187,18 @@ export default class WindowManager {
     this.handleUrl(url);
   }
 
+  private getWindowByWebContentsId(webContentsId: number): Window | undefined {
+    for (const [id, window] of this.windows) {
+      console.log(
+        "getWindowByWebContentsId, webContentsId: ",
+        window.allWebContentsIds,
+        webContentsId,
+      );
+      if (window.allWebContentsIds.includes(webContentsId)) {
+        return window;
+      }
+    }
+  }
   private windowFocus(windowId: number) {
     this.lastFocusedwindowId = windowId;
   }
@@ -246,6 +258,17 @@ export default class WindowManager {
 
     return directories[0];
   }
+  private updatePanelScale(event: IpcMainEvent, scale: number) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.updatePanelScale(event, scale);
+  }
+  private updateFigmaUiScale(event: IpcMainEvent, scale: number) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.updatePanelScale(event, scale);
+  }
+
   public closeSettingsView(_: IpcMainEvent, settings: Types.SettingsInterface) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -278,8 +301,52 @@ export default class WindowManager {
     window.setUsingMicrophone(tabId, isUsingMicrophone);
   }
 
+  private setTabTitle(event: IpcMainEvent, title: string) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.setTabTitle(event, title);
+  }
+  private setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.setPluginMenuData(event, pluginMenu);
+  }
+  private openFile(event: IpcMainEvent, ...args: string[]) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.openFile(event, ...args);
+  }
+  private updateVisibleNewProjectBtn(event: IpcMainEvent, visible: boolean) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.updateVisibleNewProjectBtn(event, visible);
+  }
+
+  private updateActionState(event: IpcMainEvent, state: MenuState.State) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.updateActionState(event, state);
+  }
+  private changeTheme(event: IpcMainEvent, theme: Themes.Theme) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.changeTheme(event, theme);
+  }
+  private handleFrontReady(event: IpcMainEvent) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.handleFrontReady();
+  }
+  private openMainMenuHandler(event: IpcMainEvent) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.openMainMenuHandler();
+  }
+
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
+    ipcMain.handle("updatePanelScale", this.updatePanelScale.bind(this));
+    ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
 
     ipcMain.on("openDevTools", this.openDevTools.bind(this));
     ipcMain.on("startAppAuth", this.startAppAuth.bind(this));
@@ -294,9 +361,19 @@ export default class WindowManager {
     ipcMain.on("toggleThemeCreatorPreviewMask", this.toggleThemeCreatorPreviewMask.bind(this));
     ipcMain.on("setUsingMicrophone", this.setUsingMicrophone.bind(this));
     ipcMain.on("setIsInVoiceCall", this.setIsInVoiceCall.bind(this));
+    ipcMain.on("closeAllTab", this.closeAllTab.bind(this));
+    ipcMain.on("setTitle", this.setTabTitle.bind(this));
+    ipcMain.on("openMainMenu", this.openMainMenuHandler.bind(this));
+    ipcMain.on("setPluginMenuData", this.setPluginMenuData.bind(this));
+    ipcMain.on("updateActionState", this.updateActionState.bind(this));
+    ipcMain.on("changeTheme", this.changeTheme.bind(this));
+    ipcMain.on("openFile", this.openFile.bind(this));
+    ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
+    ipcMain.on("frontReady", this.handleFrontReady.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));
+    app.on("newWindow", this.newWindow.bind(this));
     app.on("reloadTab", this.reloadTabFromMenu.bind(this));
     app.on("closeTab", this.closeTabFromMenu.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));

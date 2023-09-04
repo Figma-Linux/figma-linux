@@ -138,9 +138,6 @@ export default class Tab {
     shell.openExternal(url);
   }
 
-  public async requestMicrophonePermission() {
-    this.view.webContents.session.setPermissionRequestHandler(this.permissionHandler);
-  }
   private permissionHandler(
     webContents: WebContents,
     permission:

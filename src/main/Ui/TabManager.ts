@@ -13,6 +13,10 @@ export default class TabManager {
   private lastFocusedTab: number | undefined;
   private tabs: Map<number, Tab> = new Map();
 
+  public get mainTabWebContentId() {
+    return this.mainTab.view.webContents.id;
+  }
+
   constructor(private windowId: number) {
     this.mainTab = new MainTab(this.windowId);
     this.lastFocusedTab = this.mainTab.id;
@@ -174,12 +178,6 @@ export default class TabManager {
     return false;
   }
 
-  private async requestMicrophonePermission(event: IpcMainEvent) {
-    const tab = this.tabs.get(event.sender.id);
-
-    return tab.requestMicrophonePermission();
-  }
-
   private toggleCurrentTabDevTools() {
     const tab = this.getById(this.lastFocusedTab) || this.mainTab;
 
@@ -202,8 +200,6 @@ export default class TabManager {
   }
 
   private registerEvents() {
-    ipcMain.handle("requestMicrophonePermission", this.requestMicrophonePermission.bind(this));
-
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
 
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));

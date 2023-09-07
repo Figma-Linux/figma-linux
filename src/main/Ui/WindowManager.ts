@@ -323,9 +323,9 @@ export default class WindowManager {
     window.updateActionState(event, state);
   }
   private changeTheme(event: IpcMainEvent, theme: Themes.Theme) {
-    const window = this.getWindowByWebContentsId(event.sender.id);
-
-    window.changeTheme(event, theme);
+    for (const [_, window] of this.windows) {
+      window.changeTheme(event, theme);
+    }
   }
   private handleFrontReady(event: IpcMainEvent) {
     const window = this.getWindowByWebContentsId(event.sender.id);

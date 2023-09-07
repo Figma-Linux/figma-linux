@@ -337,6 +337,11 @@ export default class WindowManager {
 
     window.openMainMenuHandler();
   }
+  private openSettingsView() {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.openSettingsView();
+  }
 
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
@@ -376,6 +381,7 @@ export default class WindowManager {
     app.on("openFileUrlClipboard", this.openFileUrlClipboard.bind(this));
     app.on("openFileBrowser", this.openFileBrowser.bind(this));
     app.on("reopenClosedTab", this.reopenClosedTab.bind(this));
+    app.on("openSettingsView", this.openSettingsView.bind(this));
     // End events from main menu
 
     app.on("focusLastWindow", this.focusLastWindow.bind(this));

@@ -224,7 +224,7 @@ export default class Window {
     this.menuManager.updateTabState();
   }
 
-  private openSettingsView() {
+  public openSettingsView() {
     const bounds = this.window.getBounds();
     this.settingsView.updateProps(bounds);
 
@@ -372,7 +372,6 @@ export default class Window {
     ipcMain.on("window-minimize", this.windowMinimize.bind(this));
     ipcMain.on("window-maximize", this.windowMaimize.bind(this));
 
-    app.on("openSettingsView", this.openSettingsView.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));
 
     this.window.on("show", this.showHandler.bind(this));

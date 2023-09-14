@@ -1,14 +1,14 @@
 import { app, ipcMain, Rectangle, IpcMainEvent } from "electron";
 
-import { HOMEPAGE, RECENT_FILES } from "Const";
+import { NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
 import { toggleDetachedDevTools } from "Utils/Main";
-import { isValidProjectLink } from "Utils/Common";
 import MainTab from "./MainTab";
 import Tab from "./Tab";
 import { storage } from "Main/Storage";
 
 export default class TabManager {
   public mainTab: MainTab;
+  public hasOpenedNewFileTab: boolean = false;
 
   private lastFocusedTab: number | undefined;
   private tabs: Map<number, Tab> = new Map();
@@ -30,6 +30,10 @@ export default class TabManager {
     tab.title = title;
     tab.loadUrl(url);
     this.tabs.set(tab.id, tab);
+
+    if (title === NEW_FILE_TAB_TITLE) {
+      this.hasOpenedNewFileTab = true;
+    }
 
     return tab;
   }
@@ -59,6 +63,9 @@ export default class TabManager {
 
     if (tab.view.webContents && !tab.view.webContents.isDestroyed()) {
       tab.view.webContents.destroy();
+    }
+    if (tab.title === NEW_FILE_TAB_TITLE) {
+      this.hasOpenedNewFileTab = false;
     }
 
     this.tabs.delete(tabId);
@@ -124,6 +131,17 @@ export default class TabManager {
   }
   public getById(id: number) {
     return this.tabs.get(id);
+  }
+  public getByTitle(title: string) {
+    let foundTab: Tab | undefined;
+
+    this.tabs.forEach((tab) => {
+      if (tab.title === title) {
+        foundTab = tab;
+      }
+    });
+
+    return foundTab;
   }
   public getAll = () => this.tabs;
 

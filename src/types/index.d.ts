@@ -259,6 +259,10 @@ declare namespace Electron {
       ) => Promise<void> | any,
     ): void;
     handle(
+      channel: "createFile",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.CreateFile) => Promise<void> | any,
+    ): void;
+    handle(
       channel: "isDevToolsOpened",
       listener: (event: IpcMainInvokeEvent) => Promise<void> | any,
     ): void;
@@ -311,6 +315,10 @@ declare namespace Electron {
     ): this;
     on(channel: "toggleThemeCreatorPreviewMask", listener: (event: IpcRendererEvent) => void): this;
     on(channel: "focusTab", listener: (event: IpcRendererEvent, tabId: number) => void): this;
+    on(
+      channel: "newFileBtnVisible",
+      listener: (event: IpcRendererEvent, visible: boolean) => void,
+    ): this;
     on(channel: "tabWasClosed", listener: (event: IpcRendererEvent, tabId: number) => void): this;
     on(
       channel: "setUsingMicrophone",
@@ -402,6 +410,7 @@ declare namespace Electron {
       channel: "createMultipleNewLocalFileExtensions",
       data: WebApi.CreateMultipleExtension,
     ): Promise<any>;
+    invoke(channel: "createFile", data: WebApi.CreateFile): Promise<any>;
     invoke(channel: "themesIsDisabled"): Promise<boolean>;
     invoke(channel: "isDevToolsOpened"): Promise<boolean>;
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
@@ -425,6 +434,7 @@ declare namespace Electron {
     send(channel: "didTabAdd", data: Types.Tab): this;
     send(channel: "handleUrl", url: string): this;
     send(channel: "focusTab", tabId: number): this;
+    send(channel: "newFileBtnVisible", visible: boolean): this;
     send(channel: "tabWasClosed", tabId: number): this;
     send(channel: "setUsingMicrophone", data: { id: number; isUsingMicrophone: boolean }): this;
     send(channel: "setIsInVoiceCall", data: { id: number; isInVoiceCall: boolean }): this;

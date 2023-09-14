@@ -10,28 +10,31 @@ function createTabs() {
     set,
     subscribe,
     addTab: (data: Types.AddTabProps) =>
-      update((tabs) => [
-        ...tabs,
-        {
-          id: data.id,
-          title: data.title ?? "Figma",
-          url: data.url,
-          moves: false,
-          order: tabs.length + 1,
-          focused: data.focused,
-          isUsingMicrophone: false,
-          isInVoiceCall: false,
-        },
-      ]),
+      update((tabs) =>
+        [
+          ...tabs,
+          {
+            id: data.id,
+            title: data.title ?? "Figma",
+            url: data.url,
+            moves: false,
+            order: data.order ?? tabs.length + 1,
+            focused: data.focused,
+            isUsingMicrophone: false,
+            isInVoiceCall: false,
+          },
+        ].sort((a, b) => (a.order > b.order ? 1 : -1)),
+      ),
     deleteTab: (id: number) => update((tabs) => tabs.filter((t) => t.id !== id)),
     clear: () => update((tabs) => (tabs = [])),
     updateTab: (tab: Types.TabFront) =>
       update((tabs) =>
         tabs
           .map((t) => (t.id === tab.id ? { ...t, ...tab } : t))
-          .sort((a, b) => (a.order > b.order ? 1 : 0)),
+          .sort((a, b) => (a.order > b.order ? 1 : -1)),
       ),
     getTab: (id: number) => state.find((tab) => tab.id === id),
+    getTabByTitle: (title: string) => state.find((tab) => tab.title === title),
   };
 }
 

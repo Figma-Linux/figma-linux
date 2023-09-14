@@ -19,6 +19,7 @@ declare namespace Types {
     url: string;
     title?: string;
     focused?: boolean;
+    order?: number;
   }
 
   interface TabData {

@@ -107,6 +107,7 @@ export default class Tab {
     const to = parse(newUrl);
 
     if (from.pathname === "/login") {
+      // TODO:
       // this.tabManager.reloadAll();
 
       event.preventDefault();

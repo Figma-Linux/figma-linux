@@ -17,6 +17,25 @@ declare namespace WebApi {
     title: string;
   }
 
+  interface CreateFile {
+    url: string;
+    newFileInfo: {
+      folder_id: number | null;
+      org_id: number | null;
+      openNewFileIn: "new_tab"; // enum value?
+      trackingInfo: {
+        from: "desktop_new_tab_button"; // enum value?
+        selectedView: {
+          view: "desktopNewTab"; // enum value?
+        };
+      };
+      editorType: "design"; // enum value?
+      localFileKey: string;
+    };
+    editorType: "design"; // enum value?
+    isFromNewTabPage: boolean;
+  }
+
   interface ExtensionId {
     id: number;
   }

@@ -2,8 +2,6 @@ import { parse } from "url";
 import {
   app,
   shell,
-  ipcMain,
-  IpcMainEvent,
   BrowserView,
   BrowserViewConstructorOptions,
   Rectangle,

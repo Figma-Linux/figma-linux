@@ -234,6 +234,11 @@ export default class WindowManager {
 
     window.newProject();
   }
+  private async createFile(_: IpcMainEvent, args: WebApi.CreateFile) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    return window.createFile(args);
+  }
   private closeTab(_: IpcMainEvent, tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -347,6 +352,7 @@ export default class WindowManager {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
     ipcMain.handle("updatePanelScale", this.updatePanelScale.bind(this));
     ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
+    ipcMain.handle("createFile", this.createFile.bind(this));
 
     ipcMain.on("openDevTools", this.openDevTools.bind(this));
     ipcMain.on("startAppAuth", this.startAppAuth.bind(this));

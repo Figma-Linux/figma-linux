@@ -10,7 +10,7 @@ interface IntiApiOptions {
   fileBrowser: boolean;
 }
 
-const API_VERSION = 53;
+const API_VERSION = 100;
 let webPort: MessagePort;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 
@@ -189,7 +189,7 @@ const initWebBindings = (): void => {
   E.ipcRenderer.on("newFile", () => {
     webPort.postMessage({ name: "newFile", args: {} });
   });
-  E.ipcRenderer.on("handleAction", (_: E.IpcRendererEvent, action: string, source: string) => {
+  E.ipcRenderer.on("handleAction", (_: IpcRendererEvent, action: string, source: string) => {
     webPort.postMessage({ name: "handleAction", args: { action, source } });
   });
   E.ipcRenderer.on("handleUrl", (_: IpcRendererEvent, path: string, params: string) => {
@@ -269,6 +269,11 @@ const publicAPI: any = {
   openFile(args: any) {
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
+  // TODO:
+  // openCommunity(args: any) {
+  //   console.log("openCommunity, args: ", args);
+  //   // sendMsgToMain("openCommunity", args);
+  // },
   openPrototype(args: any) {
     sendMsgToMain(
       "openFile",
@@ -277,6 +282,46 @@ const publicAPI: any = {
       "?node-id=" + args.pageId,
       args.target,
     );
+  },
+  // TODO:
+  // async isTabOpen(args: any) {
+  //   console.log("isTabOpen, args: ", args);
+  //   //   {
+  //   //     "url": "https://www.figma.com/file/new?editor_type=design&localFileKey=LOCAL_e8ed2b31-ac61-435c-999c-84d85395e349&fuid=525661429846675544",
+  //   //     "newFileInfo": {
+  //   //         "folder_id": null,
+  //   //         "org_id": null,
+  //   //         "openNewFileIn": "new_tab",
+  //   //         "trackingInfo": {
+  //   //             "from": "desktop_new_tab_button",
+  //   //             "selectedView": {
+  //   //                 "view": "desktopNewTab"
+  //   //             }
+  //   //         },
+  //   //         "editorType": "design",
+  //   //         "localFileKey": "LOCAL_e8ed2b31-ac61-435c-999c-84d85395e349"
+  //   //     },
+  //   //     "editorType": "design",
+  //   //     "isFromNewTabPage": true
+  //   // }
+  //   // return { data: await n.sendAsync("isTabOpen", e.getString("url")) };
+  // },
+  // openFileFromNewTab(args: any) {
+  //   console.log("openFileFromNewTab, args: ", args);
+  //   // n.send(
+  //   //   "openFileFromNewTab",
+  //   //   e.getString("url"),
+  //   //   e.getString("editorType", "") || void 0,
+  //   //   e.getString("title", "") || void 0,
+  //   //   e.getBoolean("isBranch", !1),
+  //   //   e.getBoolean("isLibrary", !1),
+  //   //   e.getBoolean("isTeamTemplate", !1),
+  //   // );
+  // },
+  async createFile(args: WebApi.CreateFile) {
+    const result = await E.ipcRenderer.invoke("createFile", args);
+
+    return { data: result };
   },
   close(args: any) {
     sendMsgToMain("closeTab", args.suppressReopening);
@@ -296,6 +341,27 @@ const publicAPI: any = {
   setIsPreloaded() {
     sendMsgToMain("setIsPreloaded");
   },
+  // TODO:
+  // setEditorType(args: any) {
+  //   console.log("setEditorType, args: ", args);
+  //   // n.send("updateEditorType", e.getString("editorType"));
+  // },
+  // setRealtimeToken(args: any) {
+  //   console.log("setRealtimeToken, args: ", args);
+  //   // n.send("setRealtimeToken", e.getString("realtimeToken"), e.getString("fileKey"));
+  // },
+  // setInitialOptions(args: any) {
+  //   console.log("isTabOpen, args: ", args);
+  //   // let t = e.getString("userId"),
+  //   //   s = e.getString("orgId", "") || void 0,
+  //   //   r = e.getObjectOrNull("navigationConfig");
+  //   // n.send("setInitialOptions", t, s, r),
+  //   //   w.crashReporter.addExtraParameter("sentry[user][figma_id]", t);
+  // },
+  // setTheme(args: any) {
+  //   console.log("isTabOpen, args: ", args);
+  //   // n.send("setTheme", e.getString("theme", "dark"));
+  // },
   setPluginMenuData(args: WebApi.SetPluginMenuDataProps) {
     const pluginMenuData = [];
     for (const item of args.data) {
@@ -333,7 +399,6 @@ const publicAPI: any = {
   },
 
   async createMultipleNewLocalFileExtensions(args: WebApi.CreateMultipleExtension) {
-    console.log("createMultipleNewLocalFileExtensions, args: ", args);
     const result = await E.ipcRenderer.invoke("createMultipleNewLocalFileExtensions", args);
 
     return { data: result };

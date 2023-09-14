@@ -1,7 +1,8 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
   import type { MouseWheelInputEvent } from "electron";
-  import { tabs, currentTab } from "../store";
+  import { tabs } from "../store";
+  import { closeTab, tabFocus } from "./utils";
   import List from "./List.svelte";
 
   export let currentTabId: number | undefined;
@@ -20,14 +21,12 @@
     switch (event.button) {
       // left mouse button
       case 0: {
-        currentTab.set(id);
-        ipcRenderer.send("setTabFocus", id);
+        tabFocus(id);
         break;
       }
       // wheel mouse button
       case 1: {
-        tabs.deleteTab(id);
-        ipcRenderer.send("closeTab", id);
+        closeTab(id);
         break;
       }
       // right mouse button
@@ -39,8 +38,7 @@
   }
 
   function onClickClose(event: MouseEvent, id: number) {
-    tabs.deleteTab(id);
-    ipcRenderer.send("closeTab", id);
+    closeTab(id);
   }
 
   function onDndConsider(event: any) {

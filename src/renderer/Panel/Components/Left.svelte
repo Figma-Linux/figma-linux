@@ -1,22 +1,14 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { Figma, Plus } from "Icons";
   import { ButtonWindow, ButtonTool } from "Common/Buttons";
-  import { currentTab } from "../store";
+  import { newFileVisible } from "../store";
+  import { onClickHome, onClickNewProject } from "./utils";
 
   export let currentTabId: number | undefined;
 
   let isActive = false;
 
   $: isActive = currentTabId === undefined;
-
-  function onClickHome() {
-    ipcRenderer.send("setFocusToMainTab");
-    currentTab.set(undefined);
-  }
-  function onClickNewProject() {
-    ipcRenderer.send("newProject");
-  }
 </script>
 
 <div class="panel-left">
@@ -29,9 +21,11 @@
   >
     <Figma size="22" />
   </ButtonWindow>
-  <ButtonTool padding={"0px 8px"} on:buttonClick={onClickNewProject}>
-    <Plus size="15" />
-  </ButtonTool>
+  {#if $newFileVisible}
+    <ButtonTool padding={"0px 8px"} on:buttonClick={onClickNewProject}>
+      <Plus size="15" />
+    </ButtonTool>
+  {/if}
 </div>
 
 <style>

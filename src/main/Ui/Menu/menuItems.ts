@@ -117,7 +117,6 @@ const HELP_MENU = {
 
 export const getMenuTemplate = (pluginMenuItems?: any[]): MenuItemConstructorOptions[] => {
   const menu: MenuItemConstructorOptions[] = [
-    item("New File", "Ctrl+N", { id: "newFile", click: commandToMainProcess }),
     item("New Window", "Ctrl+N", { id: "newWindow", click: commandToMainProcess }),
     item("Open File Browser", "Ctrl+O", { id: "openFileBrowser", click: commandToMainProcess }),
     item("Open File URL from Clipboard", "Ctrl+Shift+O", {

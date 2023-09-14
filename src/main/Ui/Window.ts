@@ -5,7 +5,13 @@ import MenuManager from "./Menu/MenuManager";
 import SettingsView from "./SettingsView";
 import TabManager from "./TabManager";
 
-import { HOMEPAGE, WINDOW_DEFAULT_OPTIONS, TOPPANELHEIGHT } from "Const";
+import {
+  HOMEPAGE,
+  WINDOW_DEFAULT_OPTIONS,
+  TOPPANELHEIGHT,
+  NEW_PROJECT_TAB_URL,
+  NEW_FILE_TAB_TITLE,
+} from "Const";
 import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl } from "Utils/Common";
 import { panelUrlDev, panelUrlProd, toggleDetachedDevTools } from "Utils/Main";
 
@@ -178,13 +184,23 @@ export default class Window {
   }
 
   public newProject() {
-    const tab = this.tabManager.addTab();
-    const onDidFinishLoad = (): void => {
-      tab.view.webContents.send("newFile");
-      tab.view.webContents.removeListener("did-finish-load", onDidFinishLoad);
-    };
+    if (this.tabManager.hasOpenedNewFileTab) {
+      return;
+    }
 
-    tab.view.webContents.addListener("did-finish-load", onDidFinishLoad);
+    this.addTab(NEW_PROJECT_TAB_URL, NEW_FILE_TAB_TITLE);
+  }
+  public createFile(args: WebApi.CreateFile) {
+    const newFileTab = this.tabManager.getByTitle(NEW_FILE_TAB_TITLE);
+    const tab = this.addTab(args.url);
+
+    tab.loadUrl(args.url);
+    this.closeTab(newFileTab.id);
+    this.tabWasClosed(newFileTab.id);
+
+    this.window.webContents.send("newFileBtnVisible", true);
+
+    return true;
   }
   public openMainMenuHandler() {
     const width = this.window.getBounds().width;
@@ -222,6 +238,8 @@ export default class Window {
     });
 
     this.menuManager.updateTabState();
+
+    return tab;
   }
 
   public openSettingsView() {
@@ -279,10 +297,18 @@ export default class Window {
     this.tabManager.focusTab(nextTabId);
     this.window.webContents.send("focusTab", nextTabId);
 
-    this.closedTabsHistory.push({
-      title: tab.title,
-      url: tab.view.webContents.getURL(),
-    });
+    if (nextTabId) {
+      this.setTabFocus(nextTabId);
+    } else {
+      this.setFocusToMainTab();
+    }
+
+    if (tab.title !== NEW_FILE_TAB_TITLE) {
+      this.closedTabsHistory.push({
+        title: tab.title,
+        url: tab.view.webContents.getURL(),
+      });
+    }
   }
   public tabWasClosed(tabId: number) {
     this.window.webContents.send("tabWasClosed", tabId);
@@ -312,7 +338,7 @@ export default class Window {
   public setTabTitle(event: IpcMainEvent, title: string) {
     const tab = this.tabManager.getById(event.sender.id);
 
-    if (!tab) {
+    if (!tab || tab.title === NEW_FILE_TAB_TITLE) {
       return;
     }
 
@@ -320,7 +346,6 @@ export default class Window {
     this.window.webContents.send("setTitle", { id: tab.view.webContents.id, title });
   }
   public setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {
-    // TODO: need use window id for understooding for what window handle this event
     const tab = this.tabManager.getById(event.sender.id);
 
     if (!tab) {
@@ -349,7 +374,6 @@ export default class Window {
   }
 
   public updateActionState(_: IpcMainEvent, state: MenuState.State) {
-    // TODO: need use window id for understooding for what window handle this event
     this.menuManager.updateTabState(state);
   }
   public changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
@@ -368,7 +392,6 @@ export default class Window {
   }
 
   private registerEvents() {
-    // TODO: Add window id for determinate which window will be minimized or maximized
     ipcMain.on("window-minimize", this.windowMinimize.bind(this));
     ipcMain.on("window-maximize", this.windowMaimize.bind(this));
 

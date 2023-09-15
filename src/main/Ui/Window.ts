@@ -338,11 +338,13 @@ export default class Window {
     this.menuManager.updateMainTabState();
   }
   public setFocusToCommunityTab() {
+    const bounds = this.calcBoundsForTabView();
     const communityTab = this.tabManager.communityTab;
 
     this.window.setTopBrowserView(communityTab.view);
     this.tabManager.focusCommunityTab();
     this.menuManager.updateMainTabState();
+    this.tabManager.communityTab.setBounds(bounds);
   }
   public setTabFocus(tabId: number) {
     const bounds = this.calcBoundsForTabView();

@@ -53,8 +53,6 @@ export default class CommunityTab {
   }
 
   private initTab() {
-    const url = `${COMMUNITY_TAB_URL}/?fuid=${this.userId}`;
-
     const options: BrowserViewConstructorOptions = {
       webPreferences: {
         nodeIntegration: false,
@@ -68,7 +66,6 @@ export default class CommunityTab {
     this.view = new BrowserView(options);
     this.id = this.view.webContents.id;
 
-    this.loadUrl(url);
     this.setAutosize(true);
 
     isDev && toggleDetachedDevTools(this.view.webContents);

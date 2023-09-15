@@ -13,7 +13,15 @@ export function closeNewFileTab() {
 
 export function onClickHome() {
   ipcRenderer.send("setFocusToMainTab");
-  currentTab.set(undefined);
+  currentTab.set("mainTab");
+  newFileVisible.set(true);
+
+  closeNewFileTab();
+}
+
+export function onClickCommunity() {
+  ipcRenderer.send("setFocusToCommunityTab");
+  currentTab.set("communityTab");
   newFileVisible.set(true);
 
   closeNewFileTab();

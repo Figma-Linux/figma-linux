@@ -3,12 +3,15 @@ import { app, ipcMain, Rectangle, IpcMainEvent } from "electron";
 import { NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
 import { toggleDetachedDevTools } from "Utils/Main";
 import MainTab from "./MainTab";
+import CommunityTab from "./CommunityTab";
 import Tab from "./Tab";
 import { storage } from "Main/Storage";
 
 export default class TabManager {
   public mainTab: MainTab;
+  public communityTab: CommunityTab;
   public hasOpenedNewFileTab: boolean = false;
+  public hasOpenedCommunityTab: boolean = false;
 
   private lastFocusedTab: number | undefined;
   private tabs: Map<number, Tab> = new Map();
@@ -16,9 +19,13 @@ export default class TabManager {
   public get mainTabWebContentId() {
     return this.mainTab.view.webContents.id;
   }
+  public get communityTabWebContentId() {
+    return this.communityTab.view.webContents.id;
+  }
 
   constructor(private windowId: number) {
     this.mainTab = new MainTab(this.windowId);
+    this.communityTab = new CommunityTab(this.windowId);
     this.lastFocusedTab = this.mainTab.id;
 
     this.registerEvents();
@@ -41,10 +48,10 @@ export default class TabManager {
   public closeAll() {
     this.tabs.clear();
   }
-  public close(tabId: number): number {
+  public close(tabId: number): Types.TabIdType {
     const tab = this.tabs.get(tabId);
     const array = [...this.tabs.entries()];
-    let nextTabId: number;
+    let nextTabId: Types.TabIdType;
 
     for (let i = 0; i < array.length; i++) {
       const tab = array[i];
@@ -70,6 +77,10 @@ export default class TabManager {
 
     this.tabs.delete(tabId);
 
+    if (!nextTabId) {
+      nextTabId = this.hasOpenedCommunityTab ? "communityTab" : "mainTab";
+    }
+
     return nextTabId;
   }
 
@@ -80,6 +91,7 @@ export default class TabManager {
   }
   public updateScaleAll(scale: number) {
     this.mainTab.updateScale(scale);
+    this.communityTab.updateScale(scale);
     this.tabs.forEach((t) => t.updateScale(scale));
   }
 
@@ -129,8 +141,26 @@ export default class TabManager {
   public handleUrl(path: string) {
     this.mainTab.handleUrl(path);
   }
-  public getById(id: number) {
-    return this.tabs.get(id);
+  public getById(id: Types.TabIdType) {
+    switch (id) {
+      case "mainTab": {
+        return this.mainTab;
+      }
+      case "communityTab": {
+        return this.communityTab;
+      }
+      default: {
+        if (this.tabs.has(id)) {
+          return this.tabs.get(id);
+        } else if (this.mainTab.id === id) {
+          return this.mainTab;
+        } else if (this.communityTab.id === id) {
+          return this.communityTab;
+        }
+      }
+    }
+
+    return this.mainTab;
   }
   public getByTitle(title: string) {
     let foundTab: Tab | undefined;
@@ -145,8 +175,10 @@ export default class TabManager {
   }
   public getAll = () => this.tabs;
 
-  public focusTab(id: number) {
-    this.lastFocusedTab = id;
+  public focusTab(id: Types.TabIdType) {
+    const tab = this.getById(id);
+
+    this.lastFocusedTab = tab.id;
   }
   public setTitle(id: number, title: string) {
     const tab = this.tabs.get(id);
@@ -161,8 +193,12 @@ export default class TabManager {
   public focusMainTab() {
     this.lastFocusedTab = this.mainTab.id;
   }
+  public focusCommunityTab() {
+    this.lastFocusedTab = this.communityTab.id;
+  }
   public setBoundsForAllTab(bounds: Rectangle) {
     this.mainTab.setBounds(bounds);
+    this.communityTab.setBounds(bounds);
 
     for (const [_, tab] of this.tabs) {
       tab.setBounds(bounds);
@@ -197,18 +233,19 @@ export default class TabManager {
   }
 
   private toggleCurrentTabDevTools() {
-    const tab = this.getById(this.lastFocusedTab) || this.mainTab;
+    const tab = this.getById(this.lastFocusedTab);
 
     toggleDetachedDevTools(tab.view.webContents);
   }
   private handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {
-    const tab = this.getById(this.lastFocusedTab) || this.mainTab;
+    const tab = this.getById(this.lastFocusedTab);
 
     tab.view.webContents.send("handlePluginMenuAction", pluginMenuAction);
   }
 
   private loadCurrentTheme(theme: Themes.Theme) {
     this.mainTab.loadTheme(theme);
+    this.communityTab.loadTheme(theme);
     this.tabs.forEach((t) => t.view.webContents.send("loadCurrentTheme", theme));
   }
   private changeTheme(_: IpcMainEvent, theme: Themes.Theme) {

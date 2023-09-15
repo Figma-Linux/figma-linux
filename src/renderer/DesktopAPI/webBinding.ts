@@ -266,14 +266,13 @@ const publicAPI: any = {
   newFile(args: any) {
     sendMsgToMain("newFile", args.info);
   },
+  // TODO: need update
   openFile(args: any) {
     sendMsgToMain("openFile", "/file/" + args.fileKey, args.title, undefined, args.target);
   },
-  // TODO:
-  // openCommunity(args: any) {
-  //   console.log("openCommunity, args: ", args);
-  //   // sendMsgToMain("openCommunity", args);
-  // },
+  openCommunity(args: WebApi.OpenCommunity) {
+    sendMsgToMain("openCommunity", args);
+  },
   openPrototype(args: any) {
     sendMsgToMain(
       "openFile",

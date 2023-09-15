@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 function createCurrent() {
-  const { subscribe, set } = writable<number | undefined>();
+  const { subscribe, set } = writable<Types.TabIdType>("mainTab");
 
   return {
     subscribe,

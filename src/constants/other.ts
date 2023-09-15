@@ -6,7 +6,8 @@ export const HOMEPAGE = "https://www.figma.com";
 export const LOGOUT_PAGE = `${HOMEPAGE}/logout`;
 export const LOGIN_PAGE = `${HOMEPAGE}/login`;
 export const RECENT_FILES = `${HOMEPAGE}/files/recent`;
-export const NEW_PROJECT_TAB_URL = `${HOMEPAGE}/desktop_new_tab?fuid=525661429846675544`;
+export const NEW_PROJECT_TAB_URL = `${HOMEPAGE}/desktop_new_tab`;
+export const COMMUNITY_TAB_URL = `${HOMEPAGE}/@figma_linux`;
 export const PARSED_HOMEPAGE = parse("https://www.figma.com");
 
 export const DOWNLOAD_ZIP_URI =

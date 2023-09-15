@@ -14,6 +14,7 @@ import {
 } from "Const";
 import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl } from "Utils/Common";
 import { panelUrlDev, panelUrlProd, toggleDetachedDevTools } from "Utils/Main";
+import Tab from "./Tab";
 
 export default class Window {
   private window: BrowserWindow;
@@ -61,6 +62,7 @@ export default class Window {
       this.webContentId,
       this.settingsViewId,
       this.tabManager.mainTabWebContentId,
+      this.tabManager.communityTabWebContentId,
       ...this.tabs.keys(),
     ];
   }
@@ -188,7 +190,8 @@ export default class Window {
       return;
     }
 
-    this.addTab(NEW_PROJECT_TAB_URL, NEW_FILE_TAB_TITLE);
+    const userId = storage.settings.userId;
+    this.addTab(`${NEW_PROJECT_TAB_URL}?fuid=${userId}`, NEW_FILE_TAB_TITLE);
   }
   public createFile(args: WebApi.CreateFile) {
     const newFileTab = this.tabManager.getByTitle(NEW_FILE_TAB_TITLE);
@@ -289,6 +292,12 @@ export default class Window {
   public reloadTab(tabId: number) {
     this.tabManager.reloadTab(tabId);
   }
+  public closeCommunityTab() {
+    this.window.removeBrowserView(this.tabManager.communityTab.view);
+    this.setFocusToMainTab();
+
+    this.tabManager.hasOpenedCommunityTab = false;
+  }
   public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);
 
@@ -297,13 +306,21 @@ export default class Window {
     this.tabManager.focusTab(nextTabId);
     this.window.webContents.send("focusTab", nextTabId);
 
-    if (nextTabId) {
-      this.setTabFocus(nextTabId);
-    } else {
-      this.setFocusToMainTab();
+    switch (nextTabId) {
+      case "mainTab": {
+        this.setFocusToMainTab();
+        break;
+      }
+      case "communityTab": {
+        this.setFocusToCommunityTab();
+        break;
+      }
+      default: {
+        this.setTabFocus(nextTabId);
+      }
     }
 
-    if (tab.title !== NEW_FILE_TAB_TITLE) {
+    if (tab instanceof Tab && tab.title !== NEW_FILE_TAB_TITLE) {
       this.closedTabsHistory.push({
         title: tab.title,
         url: tab.view.webContents.getURL(),
@@ -318,6 +335,13 @@ export default class Window {
 
     this.window.setTopBrowserView(mainTab.view);
     this.tabManager.focusMainTab();
+    this.menuManager.updateMainTabState();
+  }
+  public setFocusToCommunityTab() {
+    const communityTab = this.tabManager.communityTab;
+
+    this.window.setTopBrowserView(communityTab.view);
+    this.tabManager.focusCommunityTab();
     this.menuManager.updateMainTabState();
   }
   public setTabFocus(tabId: number) {
@@ -338,7 +362,7 @@ export default class Window {
   public setTabTitle(event: IpcMainEvent, title: string) {
     const tab = this.tabManager.getById(event.sender.id);
 
-    if (!tab || tab.title === NEW_FILE_TAB_TITLE) {
+    if (!tab || (tab instanceof Tab && tab.title === NEW_FILE_TAB_TITLE)) {
       return;
     }
 
@@ -368,6 +392,18 @@ export default class Window {
     }
 
     this.addTab(url);
+  }
+  public openCommunity(args: WebApi.OpenCommunity) {
+    this.tabManager.communityTab.userId = args.userId;
+    this.tabManager.communityTab.loadUrl(`${HOMEPAGE}${args.path}?fuid=${args.userId}`);
+
+    this.window.addBrowserView(this.tabManager.communityTab.view);
+    this.window.setTopBrowserView(this.tabManager.communityTab.view);
+
+    this.window.webContents.send("openCommunity");
+    this.tabManager.hasOpenedCommunityTab = true;
+
+    this.setFocusToCommunityTab();
   }
   public updateVisibleNewProjectBtn(_: IpcMainEvent, visible: boolean) {
     this.window.webContents.send("updateVisibleNewProjectBtn", visible);

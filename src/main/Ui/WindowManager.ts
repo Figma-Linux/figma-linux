@@ -244,6 +244,16 @@ export default class WindowManager {
 
     window.closeTab(tabId);
   }
+  private closeCommunityTab(_: IpcMainEvent) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.closeCommunityTab();
+  }
+  private setFocusToCommunityTab(_: IpcMainEvent) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.setFocusToCommunityTab();
+  }
   private setTabFocus(_: IpcMainEvent, tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -316,6 +326,11 @@ export default class WindowManager {
 
     window.openFile(event, ...args);
   }
+  private openCommunity(event: IpcMainEvent, args: WebApi.OpenCommunity) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.openCommunity(args);
+  }
   private updateVisibleNewProjectBtn(event: IpcMainEvent, visible: boolean) {
     const window = this.getWindowByWebContentsId(event.sender.id);
 
@@ -362,6 +377,8 @@ export default class WindowManager {
     ipcMain.on("openTabMenu", this.openTabMenuHandler.bind(this));
     ipcMain.on("newProject", this.newProject.bind(this));
     ipcMain.on("closeTab", this.closeTab.bind(this));
+    ipcMain.on("closeCommunityTab", this.closeCommunityTab.bind(this));
+    ipcMain.on("setFocusToCommunityTab", this.setFocusToCommunityTab.bind(this));
     ipcMain.on("setTabFocus", this.setTabFocus.bind(this));
     ipcMain.on("closeSettingsView", this.closeSettingsView.bind(this));
     ipcMain.on("toggleThemeCreatorPreviewMask", this.toggleThemeCreatorPreviewMask.bind(this));
@@ -374,6 +391,7 @@ export default class WindowManager {
     ipcMain.on("updateActionState", this.updateActionState.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
     ipcMain.on("openFile", this.openFile.bind(this));
+    ipcMain.on("openCommunity", this.openCommunity.bind(this));
     ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
     ipcMain.on("frontReady", this.handleFrontReady.bind(this));
 

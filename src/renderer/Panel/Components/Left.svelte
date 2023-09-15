@@ -1,14 +1,8 @@
 <script lang="ts">
-  import { Figma, Plus } from "Icons";
+  import { Figma, Community, Plus } from "Icons";
   import { ButtonWindow, ButtonTool } from "Common/Buttons";
-  import { newFileVisible } from "../store";
-  import { onClickHome, onClickNewProject } from "./utils";
-
-  export let currentTabId: number | undefined;
-
-  let isActive = false;
-
-  $: isActive = currentTabId === undefined;
+  import { newFileVisible, communityTabVisible, currentTab } from "../store";
+  import { onClickHome, onClickNewProject, onClickCommunity } from "./utils";
 </script>
 
 <div class="panel-left">
@@ -16,11 +10,23 @@
     padding={"0px 10px"}
     hoverBgColor={"var(--bg-tab-hover)"}
     activeBgColor={"var(--bg-tab-hover)"}
-    {isActive}
+    isActive={$currentTab === "mainTab"}
     on:buttonClick={onClickHome}
   >
     <Figma size="22" />
   </ButtonWindow>
+
+  {#if $communityTabVisible}
+    <ButtonWindow
+      padding={"0px 10px"}
+      hoverBgColor={"var(--bg-tab-hover)"}
+      activeBgColor={"var(--bg-tab-hover)"}
+      isActive={$currentTab === "communityTab"}
+      on:buttonClick={onClickCommunity}
+    >
+      <Community size="20" />
+    </ButtonWindow>
+  {/if}
   {#if $newFileVisible}
     <ButtonTool padding={"0px 8px"} on:buttonClick={onClickNewProject}>
       <Plus size="15" />

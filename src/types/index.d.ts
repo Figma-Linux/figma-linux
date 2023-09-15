@@ -99,8 +99,14 @@ declare namespace Electron {
       channel: "updateActionState",
       listener: (event: IpcMainInvokeEvent, state: MenuState.State) => void,
     ): this;
+    on(
+      channel: "openCommunity",
+      listener: (event: IpcMainInvokeEvent, args: WebApi.OpenCommunity) => void,
+    ): this;
+    on(channel: "openFile", listener: (event: IpcMainInvokeEvent, url: string) => void): this;
     on(channel: "closeAllTab", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "setFocusToMainTab", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "setFocusToCommunityTab", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "setTabFocus", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(channel: "closeTab", listener: (event: IpcMainInvokeEvent, id: number) => void): this;
     on(
@@ -189,6 +195,7 @@ declare namespace Electron {
     on(channel: "openTabMenu", listener: (event: IpcMainInvokeEvent, tabId: number) => void): this;
     on(channel: "appExit", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "newProject", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "closeCommunityTab", listener: (event: IpcMainInvokeEvent) => void): this;
     on(
       channel: "updateVisibleNewProjectBtn",
       listener: (event: IpcMainInvokeEvent, visible: boolean) => void,
@@ -360,13 +367,17 @@ declare namespace Electron {
       channel: "changeZoomFactor",
       listener: (event: IpcRendererEvent, zoom: number) => void,
     ): this;
+    on(channel: "openCommunity", listener: (event: IpcRendererEvent) => void): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
     send(channel: "setPluginMenuData", pluginMenu: Menu.MenuItem[]): this;
     send(channel: "updateActionState", state: MenuState.State): this;
+    send(channel: "openCommunity", args: WebApi.OpenCommunity): this;
+    send(channel: "openFile", url: string): this;
     send(channel: "closeAllTab"): this;
     send(channel: "setFocusToMainTab"): this;
+    send(channel: "setFocusToCommunityTab"): this;
     send(channel: "setTabFocus", id: number): this;
     send(channel: "closeTab", id: number): this;
     send(channel: "closeSettingsView", settings: Types.SettingsInterface): this;
@@ -384,6 +395,7 @@ declare namespace Electron {
     send(channel: "openMainMenu"): this;
     send(channel: "openTabMenu", tabId: number): this;
     send(channel: "newProject"): this;
+    send(channel: "closeCommunityTab"): this;
     send(channel: "appExit"): this;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;
     send(channel: "saveCreatorTheme", theme: Themes.Theme): this;
@@ -447,6 +459,7 @@ declare namespace Electron {
     send(channel: "loadSettings", settings: Types.SettingsInterface): this;
     send(channel: "getThemeCreatorPalette", palette: Themes.Palette): this;
     send(channel: "changeZoomFactor", zoom: number): this;
+    send(channel: "openCommunity"): this;
 
     destroy(): void;
   }

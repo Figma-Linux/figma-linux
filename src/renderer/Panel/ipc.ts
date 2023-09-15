@@ -1,7 +1,14 @@
 import { ipcRenderer } from "electron";
 import { NEW_FILE_TAB_TITLE } from "Const";
 
-import { currentTab, tabs, isMenuOpen, panelZoom, newFileVisible } from "./store";
+import {
+  currentTab,
+  tabs,
+  isMenuOpen,
+  panelZoom,
+  newFileVisible,
+  communityTabVisible,
+} from "./store";
 
 export function initIpc() {
   ipcRenderer.send("frontReady");
@@ -58,5 +65,9 @@ export function initIpc() {
   });
   ipcRenderer.on("loadSettings", (_, settings: Types.SettingsInterface) => {
     panelZoom.set(settings.ui.scalePanel);
+  });
+  ipcRenderer.on("openCommunity", (_) => {
+    communityTabVisible.set(true);
+    currentTab.set("communityTab");
   });
 }

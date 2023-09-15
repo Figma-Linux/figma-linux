@@ -5,6 +5,7 @@ export { default as Close } from "./Close.svelte";
 export { default as CloseModal } from "./CloseModal.svelte";
 export { default as CloseTab } from "./CloseTab.svelte";
 export { default as Component } from "./Component.svelte";
+export { default as Community } from "./Community.svelte";
 export { default as Corner } from "./Corner.svelte";
 export { default as Delete } from "./Delete.svelte";
 export { default as Figma } from "./Figma.svelte";

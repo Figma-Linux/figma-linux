@@ -36,6 +36,11 @@ declare namespace WebApi {
     isFromNewTabPage: boolean;
   }
 
+  interface OpenCommunity {
+    path: string;
+    userId: string;
+  }
+
   interface ExtensionId {
     id: number;
   }

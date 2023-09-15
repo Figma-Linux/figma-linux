@@ -1,11 +1,11 @@
 <script lang="ts">
   import { ipcRenderer } from "electron";
   import type { MouseWheelInputEvent } from "electron";
-  import { tabs } from "../store";
+  import { tabs, currentTab } from "../store";
   import { closeTab, tabFocus } from "./utils";
   import List from "./List.svelte";
 
-  export let currentTabId: number | undefined;
+  let currentTabId: number | undefined;
 
   let item: HTMLDivElement;
 
@@ -47,6 +47,12 @@
   function onDndFinalize(event: any) {
     tabs.set(event.detail.items);
   }
+
+  currentTab.subscribe((id) => {
+    if (typeof id === "number") {
+      currentTabId = id;
+    }
+  });
 </script>
 
 <div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler}>

@@ -125,7 +125,7 @@ export default class TabManager {
   }
 
   public reloadTab(tabId: number) {
-    const tab = this.tabs.get(tabId);
+    const tab = this.getById(tabId);
 
     tab.view.webContents.reload();
   }
@@ -181,12 +181,14 @@ export default class TabManager {
     this.lastFocusedTab = tab.id;
   }
   public setTitle(id: number, title: string) {
-    const tab = this.tabs.get(id);
+    const tab = this.getById(id);
 
-    tab.title = title;
+    if (tab instanceof Tab) {
+      tab.title = title;
+    }
   }
   public setBounds(id: number, bounds: Rectangle) {
-    const tab = this.tabs.get(id);
+    const tab = this.getById(id);
 
     tab.setBounds(bounds);
   }

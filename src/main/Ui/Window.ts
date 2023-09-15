@@ -310,7 +310,6 @@ export default class Window {
 
     this.tabManager.hasOpenedCommunityTab = false;
     this.window.webContents.send("communityTabWasClose");
-    this.tabManager.communityTab.loadRecentFilesUrl();
   }
   public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);

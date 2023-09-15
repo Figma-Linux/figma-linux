@@ -45,7 +45,8 @@
     tabs.set(event.detail.items);
   }
   function onDndFinalize(event: any) {
-    tabs.set(event.detail.items);
+    const items = event.detail.items as Types.TabFront[];
+    tabs.set(items.map((tab, index) => ({ ...tab, order: index + 1 })));
   }
 
   currentTab.subscribe((id) => {

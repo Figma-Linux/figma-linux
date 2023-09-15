@@ -58,13 +58,18 @@ export default class Window {
     return this.tabManager.getAll();
   }
   public get allWebContentsIds() {
-    return [
+    const ids = new Set<number>([
       this.webContentId,
       this.settingsViewId,
       this.tabManager.mainTabWebContentId,
-      this.tabManager.communityTabWebContentId,
       ...this.tabs.keys(),
-    ];
+    ]);
+
+    if (this.tabManager.communityTabWebContentId) {
+      ids.add(this.tabManager.communityTabWebContentId);
+    }
+
+    return [...ids];
   }
 
   public sortTabs(tabs: Types.TabFront[]) {
@@ -304,13 +309,6 @@ export default class Window {
   public reloadTab(tabId: number) {
     this.tabManager.reloadTab(tabId);
   }
-  public closeCommunityTab() {
-    this.window.removeBrowserView(this.tabManager.communityTab.view);
-    this.setFocusToMainTab();
-
-    this.tabManager.hasOpenedCommunityTab = false;
-    this.window.webContents.send("communityTabWasClose");
-  }
   public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);
 
@@ -408,12 +406,24 @@ export default class Window {
 
     this.addTab(url);
   }
+  public closeCommunityTab() {
+    this.window.removeBrowserView(this.tabManager.communityTab.view);
+    this.tabManager.closeCommunityTab();
+    this.setFocusToMainTab();
+
+    this.tabManager.hasOpenedCommunityTab = false;
+    this.window.webContents.send("communityTabWasClose");
+  }
   public openCommunity(args: WebApi.OpenCommunity) {
+    const bounds = this.calcBoundsForTabView();
+
+    this.tabManager.addCommunityTab();
     this.tabManager.communityTab.userId = args.userId;
     this.tabManager.communityTab.loadUrl(`${HOMEPAGE}${args.path}?fuid=${args.userId}`);
 
     this.window.addBrowserView(this.tabManager.communityTab.view);
     this.window.setTopBrowserView(this.tabManager.communityTab.view);
+    this.tabManager.communityTab.setBounds(bounds);
 
     this.window.webContents.send("openCommunity");
     this.tabManager.hasOpenedCommunityTab = true;

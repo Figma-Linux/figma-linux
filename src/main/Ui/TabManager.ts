@@ -9,7 +9,7 @@ import { storage } from "Main/Storage";
 
 export default class TabManager {
   public mainTab: MainTab;
-  public communityTab: CommunityTab;
+  public communityTab: CommunityTab | undefined;
   public hasOpenedNewFileTab: boolean = false;
   public hasOpenedCommunityTab: boolean = false;
 
@@ -20,12 +20,11 @@ export default class TabManager {
     return this.mainTab.view.webContents.id;
   }
   public get communityTabWebContentId() {
-    return this.communityTab.view.webContents.id;
+    return this.communityTab ? this.communityTab.view.webContents.id : undefined;
   }
 
   constructor(private windowId: number) {
     this.mainTab = new MainTab(this.windowId);
-    this.communityTab = new CommunityTab(this.windowId);
     this.lastFocusedTab = this.mainTab.id;
 
     this.registerEvents();
@@ -43,6 +42,17 @@ export default class TabManager {
     }
 
     return tab;
+  }
+
+  public addCommunityTab() {
+    this.communityTab = new CommunityTab(this.windowId);
+  }
+  public closeCommunityTab() {
+    if (this.communityTab.view.webContents && !this.communityTab.view.webContents.isDestroyed()) {
+      this.communityTab.view.webContents.destroy();
+    }
+
+    this.communityTab = undefined;
   }
 
   public closeAll() {
@@ -200,7 +210,6 @@ export default class TabManager {
   }
   public setBoundsForAllTab(bounds: Rectangle) {
     this.mainTab.setBounds(bounds);
-    this.communityTab.setBounds(bounds);
 
     for (const [_, tab] of this.tabs) {
       tab.setBounds(bounds);
@@ -247,7 +256,7 @@ export default class TabManager {
 
   private loadCurrentTheme(theme: Themes.Theme) {
     this.mainTab.loadTheme(theme);
-    this.communityTab.loadTheme(theme);
+    this.communityTab && this.communityTab.loadTheme(theme);
     this.tabs.forEach((t) => t.view.webContents.send("loadCurrentTheme", theme));
   }
   private changeTheme(_: IpcMainEvent, theme: Themes.Theme) {

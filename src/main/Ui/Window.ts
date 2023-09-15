@@ -311,23 +311,34 @@ export default class Window {
   }
   public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);
+    const isNewFileTab = this.tabManager.isNewFileTab(tabId);
 
     this.window.removeBrowserView(tab.view);
-    const nextTabId = this.tabManager.close(tabId);
-    this.tabManager.focusTab(nextTabId);
-    this.window.webContents.send("focusTab", nextTabId);
 
-    switch (nextTabId) {
-      case "mainTab": {
-        this.setFocusToMainTab();
-        break;
-      }
-      case "communityTab": {
-        this.setFocusToCommunityTab();
-        break;
-      }
-      default: {
-        this.setTabFocus(nextTabId);
+    const nextTabId = this.tabManager.close(tabId);
+
+    if (this.tabManager.lastFocusedTab === tabId) {
+      if (isNewFileTab) {
+        this.tabManager.hasOpenedCommunityTab
+          ? this.setFocusToCommunityTab()
+          : this.setFocusToMainTab();
+      } else {
+        this.tabManager.focusTab(nextTabId);
+        this.window.webContents.send("focusTab", nextTabId);
+
+        switch (nextTabId) {
+          case "mainTab": {
+            this.setFocusToMainTab();
+            break;
+          }
+          case "communityTab": {
+            this.setFocusToCommunityTab();
+            break;
+          }
+          default: {
+            this.setTabFocus(nextTabId);
+          }
+        }
       }
     }
 
@@ -347,6 +358,7 @@ export default class Window {
     this.window.setTopBrowserView(mainTab.view);
     this.tabManager.focusMainTab();
     this.menuManager.updateMainTabState();
+    this.window.webContents.send("focusTab", "mainTab");
   }
   public setFocusToCommunityTab() {
     const bounds = this.calcBoundsForTabView();
@@ -356,6 +368,7 @@ export default class Window {
     this.tabManager.focusCommunityTab();
     this.menuManager.updateMainTabState();
     this.tabManager.communityTab.setBounds(bounds);
+    this.window.webContents.send("focusTab", "communityTab");
   }
   public setTabFocus(tabId: number) {
     const bounds = this.calcBoundsForTabView();

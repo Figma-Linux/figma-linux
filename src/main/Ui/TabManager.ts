@@ -13,7 +13,7 @@ export default class TabManager {
   public hasOpenedNewFileTab: boolean = false;
   public hasOpenedCommunityTab: boolean = false;
 
-  private lastFocusedTab: number | undefined;
+  public lastFocusedTab: number | undefined;
   private tabs: Map<number, Tab> = new Map();
 
   public get mainTabWebContentId() {
@@ -233,6 +233,15 @@ export default class TabManager {
     return tab.view.webContents.getURL();
   }
 
+  public isNewFileTab(tabId: number) {
+    for (const [_, tab] of this.tabs) {
+      if (tab.title && tab.title === NEW_FILE_TAB_TITLE && tab.id === tabId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
   public isMainTab(tabId: number) {
     const keys = [...this.tabs.keys()];
 

@@ -4,6 +4,7 @@
   import { tabs, currentTab } from "../store";
   import { closeTab, tabFocus } from "./utils";
   import List from "./List.svelte";
+  import { NEW_FILE_TAB_TITLE } from "../../../constants/other";
 
   let currentTabId: number | undefined;
 
@@ -46,7 +47,14 @@
   }
   function onDndFinalize(event: any) {
     const items = event.detail.items as Types.TabFront[];
-    tabs.set(items.map((tab, index) => ({ ...tab, order: index + 1 })));
+    tabs.set(
+      items
+        .map((tab, index) => ({
+          ...tab,
+          order: tab.title === NEW_FILE_TAB_TITLE ? 0 : index + 1,
+        }))
+        .sort((a, b) => (a.order > b.order ? 1 : -1)),
+    );
   }
 
   currentTab.subscribe((id) => {

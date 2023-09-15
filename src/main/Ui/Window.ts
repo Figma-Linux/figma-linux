@@ -428,13 +428,16 @@ export default class Window {
     this.window.webContents.send("communityTabWasClose");
   }
   public openCommunity(args: WebApi.OpenCommunity) {
+    const alreadyOpen = this.tabManager.hasOpenedCommunityTab;
     const bounds = this.calcBoundsForTabView();
 
-    this.tabManager.addCommunityTab();
-    this.tabManager.communityTab.userId = args.userId;
-    this.tabManager.communityTab.loadUrl(`${HOMEPAGE}${args.path}?fuid=${args.userId}`);
+    if (!alreadyOpen) {
+      this.tabManager.addCommunityTab();
+      this.tabManager.communityTab.userId = args.userId;
+      this.tabManager.communityTab.loadUrl(`${HOMEPAGE}${args.path}?fuid=${args.userId}`);
+      this.window.addBrowserView(this.tabManager.communityTab.view);
+    }
 
-    this.window.addBrowserView(this.tabManager.communityTab.view);
     this.window.setTopBrowserView(this.tabManager.communityTab.view);
     this.tabManager.communityTab.setBounds(bounds);
 

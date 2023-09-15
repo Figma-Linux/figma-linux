@@ -20,10 +20,6 @@ export const preloadMainScriptPathProd = `${resolve(
 export const preloadScriptPathDev = `${resolve(process.cwd(), "dist/renderer", "loadContent.js")}`;
 export const preloadScriptPathProd = `${resolve(__dirname, "..", "renderer", "loadContent.js")}`;
 
-export const isFileBrowser = (url: string): boolean => {
-  return !/file\/.+/.test(url);
-};
-
 export const isFigmaValidUrl = (url: string): boolean => {
   return /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(url);
 };

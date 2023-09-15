@@ -9,18 +9,8 @@ import {
   DidCreateWindowDetails,
 } from "electron";
 
-import {
-  preloadMainScriptPathDev,
-  preloadMainScriptPathProd,
-  toggleDetachedDevTools,
-} from "Utils/Main";
-import {
-  isDev,
-  isValidProjectLink,
-  isPrototypeUrl,
-  isAppAuthRedeem,
-  isFigmaDocLink,
-} from "Utils/Common";
+import { preloadScriptPathDev, preloadScriptPathProd, toggleDetachedDevTools } from "Utils/Main";
+import { isDev, isValidProjectLink, isPrototypeUrl, isRecentFilesLink } from "Utils/Common";
 import { storage } from "Main/Storage";
 import { logger } from "Main/Logger";
 
@@ -58,7 +48,7 @@ export default class CommunityTab {
         webgl: true,
         contextIsolation: false,
         zoomFactor: 1,
-        preload: isDev ? preloadMainScriptPathDev : preloadMainScriptPathProd,
+        preload: isDev ? preloadScriptPathDev : preloadScriptPathProd,
       },
     };
 
@@ -82,53 +72,15 @@ export default class CommunityTab {
     this.view.webContents.send("loadCurrentTheme", theme);
   }
 
-  private onMainTabWillNavigate(event: Event, url: string) {
-    if (isValidProjectLink(url) || isPrototypeUrl(url)) {
-      app.emit("openUrlInNewTab", url);
+  private onCommunityTabWillNavigate(event: Event, url: string) {
+    event.preventDefault();
 
-      event.preventDefault();
+    if (isRecentFilesLink(url)) {
+      app.emit("openFileBrowser");
     }
   }
   private onDomReady(event: any) {
     this.reloadCurrentTheme();
-  }
-  private onMainWindowWillNavigate(event: any, newUrl: string) {
-    const currentUrl = event.sender.getURL();
-
-    if (isAppAuthRedeem(newUrl)) {
-      return;
-    }
-
-    if (newUrl === currentUrl) {
-      event.preventDefault();
-      return;
-    }
-
-    if (isFigmaDocLink(newUrl)) {
-      shell.openExternal(newUrl);
-
-      event.preventDefault();
-      return;
-    }
-
-    const from = parse(currentUrl);
-    const to = parse(newUrl);
-
-    if (from.pathname === "/login") {
-      // this.tabManager.reloadAll();
-
-      event.preventDefault();
-      return;
-    }
-
-    if (to.pathname === "/logout") {
-      app.emit("signOut");
-    }
-
-    if (to.search && to.search.match(/[\?\&]redirected=1/)) {
-      event.preventDefault();
-      return;
-    }
   }
   private onNewWindow(window: BrowserWindow, details: DidCreateWindowDetails) {
     const url = details.url;
@@ -145,8 +97,7 @@ export default class CommunityTab {
   }
 
   private registerEvents() {
-    this.view.webContents.on("will-navigate", this.onMainTabWillNavigate.bind(this));
-    this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
+    this.view.webContents.on("will-navigate", this.onCommunityTabWillNavigate.bind(this));
     this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));
   }

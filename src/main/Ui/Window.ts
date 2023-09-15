@@ -224,6 +224,18 @@ export default class Window {
 
     this.menuManager.openTabMenuHandler(this.window, tabId, url);
   }
+  public openMainTabMenuHandler() {
+    const tabId = this.tabManager.mainTab.id;
+    const url = this.tabManager.mainTab.view.webContents.getURL();
+
+    this.menuManager.openMainTabMenuHandler(this.window, tabId, url);
+  }
+  public openCommunityTabMenuHandler() {
+    const tabId = this.tabManager.communityTab.id;
+    const url = this.tabManager.communityTab.view.webContents.getURL();
+
+    this.menuManager.openCommunityTabMenuHandler(this.window, tabId, url);
+  }
   public hasWebContentId(webContentsId: number) {
     return this.tabManager.getAll().has(webContentsId);
   }
@@ -297,6 +309,8 @@ export default class Window {
     this.setFocusToMainTab();
 
     this.tabManager.hasOpenedCommunityTab = false;
+    this.window.webContents.send("communityTabWasClose");
+    this.tabManager.communityTab.loadRecentFilesUrl();
   }
   public closeTab(tabId: number) {
     const tab = this.tabManager.getById(tabId);

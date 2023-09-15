@@ -9,7 +9,6 @@ import {
   DidCreateWindowDetails,
 } from "electron";
 
-import { COMMUNITY_TAB_URL } from "Const";
 import {
   preloadMainScriptPathDev,
   preloadMainScriptPathProd,

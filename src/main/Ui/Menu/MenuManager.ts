@@ -53,6 +53,74 @@ export default class MenuManager {
     });
   }
 
+  public openMainTabMenuHandler(window: BrowserWindow, tabId: number, url: string) {
+    const context: MenuItemConstructorOptions[] = [
+      {
+        id: "copyUrl",
+        label: "Copy Url",
+        click: (): void => {
+          clipboard.writeText(encodeURI(url));
+        },
+      },
+      {
+        id: "reload",
+        label: "Reload",
+        visible: true,
+        click: () => {
+          app.emit("reloadTab", tabId);
+        },
+      },
+    ];
+
+    const menu = Menu.buildFromTemplate(context);
+
+    menu.popup({
+      window,
+    });
+  }
+  public openCommunityTabMenuHandler(window: BrowserWindow, tabId: number, url: string) {
+    const context: MenuItemConstructorOptions[] = [
+      {
+        id: "copyUrl",
+        label: "Copy Url",
+        click: (): void => {
+          clipboard.writeText(encodeURI(url));
+        },
+      },
+      { type: "separator" },
+      {
+        id: "openInBrowser",
+        label: "Open in Browser",
+        click: (): void => {
+          shell.openExternal(url);
+        },
+      },
+      { type: "separator" },
+      {
+        id: "reload",
+        label: "Reload",
+        visible: true,
+        click: () => {
+          app.emit("reloadTab", tabId);
+        },
+      },
+      { type: "separator" },
+      {
+        id: "close",
+        label: "Close",
+        visible: true,
+        click: () => {
+          app.emit("closeCommunityTab");
+        },
+      },
+    ];
+
+    const menu = Menu.buildFromTemplate(context);
+
+    menu.popup({
+      window,
+    });
+  }
   public openTabMenuHandler(window: BrowserWindow, tabId: number, url: string) {
     const context: MenuItemConstructorOptions[] = [
       {

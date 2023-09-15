@@ -16,6 +16,7 @@ declare namespace Electron {
     on(event: "newWindow", listener: (sender: Electron.WebContents) => void): this;
     on(event: "reloadTab", listener: (tabId: number) => void): this;
     on(event: "closeTab", listener: (tabId: number) => void): this;
+    on(event: "closeCommunityTab", listener: () => void): this;
     on(event: "closeAllTab", listener: () => void): this;
     on(event: "chromeGpu", listener: (sender: Electron.WebContents) => void): this;
     on(event: "openFileUrlClipboard", listener: (sender: Electron.WebContents) => void): this;
@@ -56,6 +57,7 @@ declare namespace Electron {
     emit(event: "newFile", sender: Electron.WebContents): boolean;
     emit(event: "newWindow", sender: Electron.WebContents): boolean;
     emit(event: "reloadTab", tabId: number): boolean;
+    emit(event: "closeCommunityTab"): boolean;
     emit(event: "closeTab", tabId: number): boolean;
     emit(event: "closeAllTab"): boolean;
     emit(event: "chromeGpu", sender: Electron.WebContents): boolean;
@@ -192,6 +194,8 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, id: number) => void,
     ): this;
     on(channel: "openMainMenu", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "openMainTabMenu", listener: (event: IpcMainInvokeEvent) => void): this;
+    on(channel: "openCommunityTabMenu", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "openTabMenu", listener: (event: IpcMainInvokeEvent, tabId: number) => void): this;
     on(channel: "appExit", listener: (event: IpcMainInvokeEvent) => void): this;
     on(channel: "newProject", listener: (event: IpcMainInvokeEvent) => void): this;
@@ -355,6 +359,7 @@ declare namespace Electron {
       channel: "isMainMenuOpen",
       listener: (event: IpcRendererEvent, isOpen: boolean) => void,
     ): this;
+    on(channel: "communityTabWasClose", listener: (event: IpcRendererEvent) => void): this;
     on(
       channel: "loadSettings",
       listener: (event: IpcRendererEvent, settings: Types.SettingsInterface) => void,
@@ -393,6 +398,8 @@ declare namespace Electron {
     send(channel: "removeLocalFileExtension", id: number): this;
     send(channel: "openExtensionDirectory", id: number): this;
     send(channel: "openMainMenu"): this;
+    send(channel: "openMainTabMenu"): this;
+    send(channel: "openCommunityTabMenu"): this;
     send(channel: "openTabMenu", tabId: number): this;
     send(channel: "newProject"): this;
     send(channel: "closeCommunityTab"): this;
@@ -456,6 +463,7 @@ declare namespace Electron {
     send(channel: "syncThemesStart", theme: Themes.Theme): this;
     send(channel: "syncThemesEnd", theme: Themes.Theme): this;
     send(channel: "isMainMenuOpen", isOpen: boolean): this;
+    send(channel: "communityTabWasClose", isOpen: boolean): this;
     send(channel: "loadSettings", settings: Types.SettingsInterface): this;
     send(channel: "getThemeCreatorPalette", palette: Themes.Palette): this;
     send(channel: "changeZoomFactor", zoom: number): this;

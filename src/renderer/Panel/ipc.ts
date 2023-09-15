@@ -70,4 +70,8 @@ export function initIpc() {
     communityTabVisible.set(true);
     currentTab.set("communityTab");
   });
+  ipcRenderer.on("communityTabWasClose", (_) => {
+    communityTabVisible.set(false);
+    currentTab.set("mainTab");
+  });
 }

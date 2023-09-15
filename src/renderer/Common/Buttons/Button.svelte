@@ -41,7 +41,7 @@
 
   function clickHandler(event: MouseEvent) {
     if (!disabled) {
-      dispatch("buttonClick");
+      dispatch("buttonClick", event);
     }
   }
 </script>

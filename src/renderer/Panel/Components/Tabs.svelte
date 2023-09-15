@@ -51,6 +51,8 @@
   currentTab.subscribe((id) => {
     if (typeof id === "number") {
       currentTabId = id;
+    } else {
+      currentTabId = undefined;
     }
   });
 </script>

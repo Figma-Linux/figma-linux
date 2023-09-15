@@ -229,6 +229,16 @@ export default class WindowManager {
 
     window.openTabMenu(tabId);
   }
+  private openMainTabMenuHandler(_: IpcMainEvent) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.openMainTabMenuHandler();
+  }
+  private openCommunityTabMenuHandler(_: IpcMainEvent) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.openCommunityTabMenuHandler();
+  }
   private newProject(_: IpcMainEvent) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -375,6 +385,8 @@ export default class WindowManager {
     ipcMain.on("windowClose", this.handlerWindowClose.bind(this));
     ipcMain.on("setFocusToMainTab", this.setFocusToMainTab.bind(this));
     ipcMain.on("openTabMenu", this.openTabMenuHandler.bind(this));
+    ipcMain.on("openMainTabMenu", this.openMainTabMenuHandler.bind(this));
+    ipcMain.on("openCommunityTabMenu", this.openCommunityTabMenuHandler.bind(this));
     ipcMain.on("newProject", this.newProject.bind(this));
     ipcMain.on("closeTab", this.closeTab.bind(this));
     ipcMain.on("closeCommunityTab", this.closeCommunityTab.bind(this));
@@ -400,6 +412,7 @@ export default class WindowManager {
     app.on("newWindow", this.newWindow.bind(this));
     app.on("reloadTab", this.reloadTabFromMenu.bind(this));
     app.on("closeTab", this.closeTabFromMenu.bind(this));
+    app.on("closeCommunityTab", this.closeCommunityTab.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));
     app.on("chromeGpu", this.chromeGpu.bind(this));
     app.on("openFileUrlClipboard", this.openFileUrlClipboard.bind(this));

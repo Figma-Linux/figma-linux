@@ -1,6 +1,6 @@
 import { ipcRenderer } from "electron";
 import { NEW_FILE_TAB_TITLE } from "Const";
-import { currentTab, tabs, newFileVisible } from "../store";
+import { currentTab, tabs, newFileVisible, communityTabVisible } from "../store";
 
 export function closeNewFileTab() {
   const tab = tabs.getTabByTitle(NEW_FILE_TAB_TITLE);
@@ -11,20 +11,54 @@ export function closeNewFileTab() {
   }
 }
 
-export function onClickHome() {
-  ipcRenderer.send("setFocusToMainTab");
-  currentTab.set("mainTab");
-  newFileVisible.set(true);
+export function onClickHome(svelteEvent: { detail: MouseEvent }) {
+  const mouseButton = svelteEvent.detail.button;
 
-  closeNewFileTab();
+  switch (mouseButton) {
+    // left mouse button
+    case 0: {
+      ipcRenderer.send("setFocusToMainTab");
+      currentTab.set("mainTab");
+      newFileVisible.set(true);
+
+      closeNewFileTab();
+
+      break;
+    }
+    // right mouse button
+    case 2: {
+      ipcRenderer.send("openMainTabMenu");
+      break;
+    }
+  }
 }
 
-export function onClickCommunity() {
-  ipcRenderer.send("setFocusToCommunityTab");
-  currentTab.set("communityTab");
-  newFileVisible.set(true);
+export function onClickCommunity(svelteEvent: { detail: MouseEvent }) {
+  const mouseButton = svelteEvent.detail.button;
 
-  closeNewFileTab();
+  switch (mouseButton) {
+    // left mouse button
+    case 0: {
+      ipcRenderer.send("setFocusToCommunityTab");
+      currentTab.set("communityTab");
+      newFileVisible.set(true);
+
+      closeNewFileTab();
+
+      break;
+    }
+    // wheel mouse button
+    case 1: {
+      communityTabVisible.set(false);
+      ipcRenderer.send("closeCommunityTab");
+      break;
+    }
+    // right mouse button
+    case 2: {
+      ipcRenderer.send("openCommunityTabMenu");
+      break;
+    }
+  }
 }
 export function onClickNewProject() {
   console.log("onClickNewProject");

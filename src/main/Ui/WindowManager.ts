@@ -307,6 +307,11 @@ export default class WindowManager {
 
     window.handleUrl(path);
   }
+  private handlePluginManageAction() {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.handlePluginManageAction();
+  }
   private toggleThemeCreatorPreviewMask(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -433,5 +438,6 @@ export default class WindowManager {
     app.on("windowFocus", this.windowFocus.bind(this));
     app.on("windowClose", this.windowClose.bind(this));
     app.on("handleUrl", this.handleUrl.bind(this));
+    app.on("handlePluginManageAction", this.handlePluginManageAction.bind(this));
   }
 }

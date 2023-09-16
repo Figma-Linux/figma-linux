@@ -10,7 +10,7 @@ const PLUGINS_MENU = {
     {
       label: "Manage plugins...",
       click() {
-        handleUrl("/my_plugins");
+        app.emit("handlePluginManageAction");
       },
     },
   ],

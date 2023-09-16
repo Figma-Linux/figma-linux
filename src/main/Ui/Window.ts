@@ -128,6 +128,10 @@ export default class Window {
     this.tabManager.handleUrl(path);
     this.setFocusToMainTab();
   }
+  public handlePluginManageAction() {
+    this.tabManager.mainTab.view.webContents.send("handlePluginMenuAction", { type: "manage" });
+    this.setFocusToMainTab();
+  }
 
   public openUrlFromCommunity(url: string) {
     const tab = this.addTab(url);
@@ -464,9 +468,6 @@ export default class Window {
     this.tabManager.hasOpenedCommunityTab = true;
 
     this.setFocusToCommunityTab();
-    setTimeout(() => {
-      this.tabManager.communityTab.setBounds(bounds);
-    }, 100);
   }
   public updateVisibleNewProjectBtn(_: IpcMainEvent, visible: boolean) {
     this.window.webContents.send("updateVisibleNewProjectBtn", visible);

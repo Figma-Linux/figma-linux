@@ -211,6 +211,10 @@ export default class TabManager {
   public setBoundsForAllTab(bounds: Rectangle) {
     this.mainTab.setBounds(bounds);
 
+    if (this.hasOpenedCommunityTab) {
+      this.communityTab.setBounds(bounds);
+    }
+
     for (const [_, tab] of this.tabs) {
       tab.setBounds(bounds);
     }

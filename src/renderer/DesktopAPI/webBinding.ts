@@ -69,20 +69,6 @@ const initWebApi = (props: IntiApiOptions) => {
   let messageHandler: (name: string, args: any) => void;
   let nextPromiseID = 0;
   let nextCallbackID = 0;
-  const messageQueue: any[] = [];
-
-  const tryFlushMessages = () => {
-    if (messageHandler) {
-      let msg = messageQueue.shift();
-      while (msg) {
-        msg = messageQueue.shift();
-        if (!msg) {
-          break;
-        }
-        messageHandler(msg.name, msg.args);
-      }
-    }
-  };
 
   window.__figmaContent = false;
 
@@ -148,7 +134,6 @@ const initWebApi = (props: IntiApiOptions) => {
     },
     setMessageHandler: function (handler: () => void): void {
       messageHandler = handler;
-      tryFlushMessages();
     },
   };
 
@@ -177,8 +162,7 @@ const initWebApi = (props: IntiApiOptions) => {
         console.log("callback missing? ", msg);
       }
     } else if (msg.name != null) {
-      messageQueue.push(msg);
-      tryFlushMessages();
+      messageHandler(msg.name, msg.args);
     }
   };
 

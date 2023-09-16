@@ -1,4 +1,3 @@
-import { parse } from "url";
 import {
   app,
   shell,
@@ -7,10 +6,17 @@ import {
   Rectangle,
   BrowserWindow,
   DidCreateWindowDetails,
+  HandlerDetails,
 } from "electron";
 
 import { preloadScriptPathDev, preloadScriptPathProd, toggleDetachedDevTools } from "Utils/Main";
-import { isDev, isValidProjectLink, isPrototypeUrl, isRecentFilesLink } from "Utils/Common";
+import {
+  isDev,
+  isValidProjectLink,
+  isPrototypeUrl,
+  isRecentFilesLink,
+  isFigmaUrl,
+} from "Utils/Common";
 import { storage } from "Main/Storage";
 import { logger } from "Main/Logger";
 
@@ -73,32 +79,37 @@ export default class CommunityTab {
   }
 
   private onCommunityTabWillNavigate(event: Event, url: string) {
+    if (isFigmaUrl(url) && !isRecentFilesLink(url)) {
+      return;
+    }
+
     event.preventDefault();
 
     if (isRecentFilesLink(url)) {
       app.emit("openFileBrowser");
     }
+
+    shell.openExternal(url);
   }
   private onDomReady(event: any) {
     this.reloadCurrentTheme();
   }
-  private onNewWindow(window: BrowserWindow, details: DidCreateWindowDetails) {
+  private windowOpenHandler(details: HandlerDetails) {
     const url = details.url;
-    logger.debug("newWindow, url: ", url);
-
-    if (/start_google_sso/.test(url)) return;
 
     if (isPrototypeUrl(url) || isValidProjectLink(url)) {
       app.emit("openUrlInNewTab", url);
-      return;
+      return { action: "deny" };
     }
 
     shell.openExternal(url);
+
+    return { action: "deny" };
   }
 
   private registerEvents() {
+    this.view.webContents.setWindowOpenHandler(this.windowOpenHandler.bind(this));
     this.view.webContents.on("will-navigate", this.onCommunityTabWillNavigate.bind(this));
     this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
-    this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));
   }
 }

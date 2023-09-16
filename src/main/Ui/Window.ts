@@ -76,6 +76,7 @@ export default class Window {
     this.tabManager.sortTabs(tabs);
   }
   public saveOpenedTabs() {
+    storage.settings.app.hasOpenedCommunityTab = this.tabManager.hasOpenedCommunityTab;
     storage.settings.app.lastOpenedTabs = {};
     storage.settings.app.lastOpenedTabs[this.id] = [];
 
@@ -305,6 +306,17 @@ export default class Window {
       event.reply("windowDidMaximized");
     }
   }
+  private webContentDidFinishLoad() {
+    const hasOpenedCommunityTab = storage.settings.app.hasOpenedCommunityTab;
+
+    if (hasOpenedCommunityTab) {
+      this.openCommunity({
+        path: "/@figma_linux",
+        userId: storage.settings.userId,
+      });
+    }
+  }
+
   public setIsInVoiceCall(tabId: number, isInVoiceCall: boolean) {
     this.window.webContents.send("setIsInVoiceCall", { id: tabId, isInVoiceCall });
   }
@@ -436,11 +448,12 @@ export default class Window {
   public openCommunity(args: WebApi.OpenCommunity) {
     const alreadyOpen = this.tabManager.hasOpenedCommunityTab;
     const bounds = this.calcBoundsForTabView();
+    const url = `${HOMEPAGE}${args.path}?fuid=${args.userId}`;
 
     if (!alreadyOpen) {
       this.tabManager.addCommunityTab();
       this.tabManager.communityTab.userId = args.userId;
-      this.tabManager.communityTab.loadUrl(`${HOMEPAGE}${args.path}?fuid=${args.userId}`);
+      this.tabManager.communityTab.loadUrl(url);
       this.window.addBrowserView(this.tabManager.communityTab.view);
     }
 
@@ -451,6 +464,9 @@ export default class Window {
     this.tabManager.hasOpenedCommunityTab = true;
 
     this.setFocusToCommunityTab();
+    setTimeout(() => {
+      this.tabManager.communityTab.setBounds(bounds);
+    }, 100);
   }
   public updateVisibleNewProjectBtn(_: IpcMainEvent, visible: boolean) {
     this.window.webContents.send("updateVisibleNewProjectBtn", visible);
@@ -486,5 +502,7 @@ export default class Window {
     this.window.on("unmaximize", () => setTimeout(this.updateTabsBounds.bind(this), 100));
     this.window.on("move", () => setTimeout(this.updateTabsBounds.bind(this), 100));
     this.window.on("focus", () => app.emit("windowFocus", this.window.id));
+
+    this.window.webContents.on("did-finish-load", this.webContentDidFinishLoad.bind(this));
   }
 }

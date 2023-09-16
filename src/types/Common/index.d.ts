@@ -58,6 +58,7 @@ declare namespace Types {
       disableThemes: boolean;
       panelHeight: number;
       saveLastOpenedTabs: boolean;
+      hasOpenedCommunityTab: boolean;
       exportDir: string;
       fontDirs: string[];
       lastOpenedTabs:

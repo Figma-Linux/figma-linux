@@ -128,6 +128,12 @@ export default class Window {
     this.setFocusToMainTab();
   }
 
+  public openUrlFromCommunity(url: string) {
+    const tab = this.addTab(url);
+
+    this.setTabFocus(tab.id);
+  }
+
   public openUrl(url: string) {
     if (isAppAuthRedeem(url)) {
       const normalizedUrl = normalizeUrl(url);
@@ -208,6 +214,8 @@ export default class Window {
 
     this.window.webContents.send("newFileBtnVisible", true);
 
+    this.setTabFocus(tab.id);
+
     return true;
   }
   public openMainMenuHandler() {
@@ -247,9 +255,6 @@ export default class Window {
 
   public addTab(url: string, title?: string) {
     const tab = this.tabManager.addTab(url, title);
-
-    this.window.addBrowserView(tab.view);
-    this.window.setTopBrowserView(this.tabManager.mainTab.view);
 
     this.window.webContents.send("didTabAdd", {
       id: tab.id,
@@ -384,6 +389,7 @@ export default class Window {
     this.tabManager.focusTab(tabId);
     this.tabManager.setBounds(tabId, bounds);
     this.menuManager.updateTabState();
+    this.window.webContents.send("focusTab", tabId);
   }
   public setTabTitle(event: IpcMainEvent, title: string) {
     const tab = this.tabManager.getById(event.sender.id);

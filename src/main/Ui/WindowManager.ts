@@ -38,6 +38,11 @@ export default class WindowManager {
 
     window.openUrl(url);
   }
+  public openUrlFromCommunity(url: string) {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.openUrlFromCommunity(url);
+  }
   public sendWindowBoundsToTabs(windowId: number) {
     for (const [id, window] of this.windows) {
       if (id === windowId) {
@@ -424,6 +429,7 @@ export default class WindowManager {
     app.on("focusLastWindow", this.focusLastWindow.bind(this));
     app.on("requestBoundsForTabView", this.sendWindowBoundsToTabs.bind(this));
     app.on("openUrlInNewTab", this.openUrlInNewTab.bind(this));
+    app.on("openUrlFromCommunity", this.openUrlFromCommunity.bind(this));
     app.on("windowFocus", this.windowFocus.bind(this));
     app.on("windowClose", this.windowClose.bind(this));
     app.on("handleUrl", this.handleUrl.bind(this));

@@ -39,6 +39,7 @@ declare namespace Electron {
     ): this;
     on(event: "handleUrl", listener: (url: string) => void): this;
     on(event: "openUrlInNewTab", listener: (url: string) => void): this;
+    on(event: "openUrlFromCommunity", listener: (url: string) => void): this;
     on(event: "openSettingsView", listener: () => void): this;
     on(event: "windowClose", listener: (windowId: number) => void): this;
     on(event: "windowFocus", listener: (windowId: number) => void): this;
@@ -75,6 +76,7 @@ declare namespace Electron {
     emit(event: "handlePluginMenuAction", pluginMenuAction: Menu.MenuAction): boolean;
     emit(event: "handleUrl", url: string): boolean;
     emit(event: "openUrlInNewTab", url: string): boolean;
+    emit(event: "openUrlFromCommunity", url: string): boolean;
     emit(event: "openSettingsView"): boolean;
     emit(event: "windowClose", windowId: number): void;
     emit(event: "windowFocus", windowId: number): void;

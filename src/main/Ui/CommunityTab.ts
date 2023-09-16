@@ -16,6 +16,7 @@ import {
   isPrototypeUrl,
   isRecentFilesLink,
   isFigmaUrl,
+  isValidFigjamLink,
 } from "Utils/Common";
 import { storage } from "Main/Storage";
 import { logger } from "Main/Logger";
@@ -97,8 +98,8 @@ export default class CommunityTab {
   private windowOpenHandler(details: HandlerDetails) {
     const url = details.url;
 
-    if (isPrototypeUrl(url) || isValidProjectLink(url)) {
-      app.emit("openUrlInNewTab", url);
+    if (isPrototypeUrl(url) || isValidProjectLink(url) || isValidFigjamLink(url)) {
+      app.emit("openUrlFromCommunity", url);
       return { action: "deny" };
     }
 

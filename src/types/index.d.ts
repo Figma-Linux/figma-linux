@@ -23,10 +23,6 @@ declare namespace Electron {
     on(event: "openFileBrowser", listener: (sender: Electron.WebContents) => void): this;
     on(event: "reopenClosedTab", listener: (sender: Electron.WebContents) => void): this;
     on(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
-    on(
-      event: "os-menu-invalidated",
-      listener: (dependencies: MenuState.MenuStateParams) => void,
-    ): this;
     on(event: "log", listener: (data: any) => void): this;
     on(event: "signOut", listener: () => void): this;
     on(event: "themes-add-repository", listener: () => void): this;
@@ -35,7 +31,7 @@ declare namespace Electron {
     on(event: "toggleCurrentTabDevTools", listener: () => void): this;
     on(
       event: "handlePluginMenuAction",
-      listener: (pluginMenuAction: Menu.MenuAction) => void,
+      listener: (windowId: number, pluginMenuAction: Menu.MenuAction) => void,
     ): this;
     on(event: "handlePluginManageAction", listener: () => void): this;
     on(event: "handleUrl", listener: (url: string) => void): this;
@@ -67,14 +63,17 @@ declare namespace Electron {
     emit(event: "openFileBrowser", sender: Electron.WebContents): boolean;
     emit(event: "reopenClosedTab", sender: Electron.WebContents): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
-    emit(event: "os-menu-invalidated", dependencies: MenuState.MenuStateParams): boolean;
     emit(event: "log", data: any): boolean;
     emit(event: "signOut"): boolean;
     emit(event: "themes-add-repository"): boolean;
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggleSettingsDeveloperTools"): boolean;
     emit(event: "toggleCurrentTabDevTools"): boolean;
-    emit(event: "handlePluginMenuAction", pluginMenuAction: Menu.MenuAction): boolean;
+    emit(
+      event: "handlePluginMenuAction",
+      windowId: number,
+      pluginMenuAction: Menu.MenuAction,
+    ): boolean;
     emit(event: "handlePluginManageAction"): boolean;
     emit(event: "handleUrl", url: string): boolean;
     emit(event: "openUrlInNewTab", url: string): boolean;
@@ -97,14 +96,6 @@ declare namespace Electron {
   interface IpcMain extends NodeJS.EventEmitter {
     on(channel: string, listener: (event: IpcMainInvokeEvent, args: any) => void): this;
     on(channel: "setTitle", listener: (event: IpcMainInvokeEvent, title: string) => void): this;
-    on(
-      channel: "setPluginMenuData",
-      listener: (event: IpcMainInvokeEvent, pluginMenu: Menu.MenuItem[]) => void,
-    ): this;
-    on(
-      channel: "updateActionState",
-      listener: (event: IpcMainInvokeEvent, state: MenuState.State) => void,
-    ): this;
     on(
       channel: "openCommunity",
       listener: (event: IpcMainInvokeEvent, args: WebApi.OpenCommunity) => void,
@@ -207,6 +198,10 @@ declare namespace Electron {
     on(
       channel: "updateVisibleNewProjectBtn",
       listener: (event: IpcMainInvokeEvent, visible: boolean) => void,
+    ): this;
+    on(
+      channel: "updateFullscreenMenuState",
+      listener: (event: IpcMainInvokeEvent, state: Menu.State) => void,
     ): this;
     on(
       channel: "saveCreatorTheme",
@@ -380,8 +375,6 @@ declare namespace Electron {
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
-    send(channel: "setPluginMenuData", pluginMenu: Menu.MenuItem[]): this;
-    send(channel: "updateActionState", state: MenuState.State): this;
     send(channel: "openCommunity", args: WebApi.OpenCommunity): this;
     send(channel: "openFile", url: string): this;
     send(channel: "closeAllTab"): this;
@@ -409,6 +402,7 @@ declare namespace Electron {
     send(channel: "closeCommunityTab"): this;
     send(channel: "appExit"): this;
     send(channel: "updateVisibleNewProjectBtn", visible: boolean): this;
+    send(channel: "updateFullscreenMenuState", state: Menu.State): this;
     send(channel: "saveCreatorTheme", theme: Themes.Theme): this;
     send(channel: "syncThemes"): this;
     send(channel: "setClipboardData", data: WebApi.SetClipboardData): this;

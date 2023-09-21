@@ -1,75 +1,50 @@
 declare namespace Menu {
-  /**
-   * Public types
-   */
-  type NativeClick = (item: Electron.MenuItem, window: Electron.BrowserWindow, event: Event) => void;
-  type CustomClick = (item: Electron.MenuItemConstructorOptions, window: Electron.BrowserWindow, event: Event) => void;
+  interface State {
+    pluginMenuData?: Menu.MenuItem[];
+    widgetMenuData?: Menu.MenuItem[];
 
-  type Params = ParamsId | ParamsAction | ParamsCommand;
-  type MenuItem = Items.MenuName & (Items.PluginItem | Items.Separator | Items.Submenu | Items.Menu | Items.StringKey);
+    [key: string]: any;
+  }
 
-  type MenuAction = {
+  interface MenuActionParameter {
+    type: "plugin-parameter";
+    name: string;
+    key: string;
+    valueType: string;
+    description?: string;
+    allowFreeform?: boolean;
+    optional?: boolean;
+  }
+  interface MenuAction {
     type: string;
-  };
-
-  class PluginMenuItem extends Electron.MenuItem {
-    public type: "separator" | "submenu" | "normal" | "checkbox" | "radio";
-    public pluginMenuAction?: MenuAction;
+    pluginId?: string;
+    actualTypeForBackwardsCompatibility?: string;
+    parameterEntry?: {
+      type: "parameter-entry";
+      parameters: MenuActionParameter[];
+      commandName: string;
+    };
+    parameterOnly?: false;
   }
-
-  namespace Items {
-    interface MenuName {
-      type: string;
-      key: string;
-      string: string;
-      plugin?: string;
-      visible?: boolean;
-      disabled?: boolean;
-      click?: (
-        menuItem: Menu.PluginMenuItem,
-        browserWindow: Electron.BrowserWindow | undefined,
-        event: KeyboardEvent,
-      ) => void;
-    }
-
-    interface Separator {
-      type: "separator";
-    }
-    interface Submenu {
-      type: "submenu";
-      name: string;
-      submenu: [MenuName & Separator & Submenu & Menu & PluginItem & StringKey];
-    }
-    interface Menu {
-      type: "run-menu-action";
-      disabled?: boolean;
-      menuAction: MenuAction;
-      name: MenuName;
-    }
-    interface PluginItem {
-      type: "plugin-name";
-      plugin: string;
-    }
-    interface StringKey {
-      type: "string-key";
-      string: string;
-    }
+  interface MenuPluginItemName {
+    type: "plugin-name";
+    plugin: string;
   }
-
-  interface PluginMenuItemOptions {
-    pluginMenuAction?: MenuAction;
+  interface MenuKeyStringItemName {
+    type: "string-key";
+    key: string;
+    string: string;
   }
-
-  interface ParamsId {
-    id: string;
-    click?: NativeClick | CustomClick;
+  type MenuItemName = MenuPluginItemName | MenuKeyStringItemName | string;
+  interface MenuItem {
+    type: string;
+    name: MenuItemName;
+    submenu?: MenuItem[];
+    menuAction: MenuAction;
+    iconType?: string;
+    disabled: boolean;
+    property?: string;
+    propertyValue?: boolean;
   }
-  interface ParamsAction {
-    action: string;
-    click?: NativeClick | CustomClick;
-  }
-  interface ParamsCommand {
-    command: string;
-    click?: NativeClick | CustomClick;
-  }
+  interface PluginMenuData {}
 }

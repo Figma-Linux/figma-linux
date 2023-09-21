@@ -2,7 +2,6 @@ import type { IpcRendererEvent } from "electron";
 import * as E from "electron";
 
 import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
-import { isMenuItem } from "Utils/Common";
 import { themes } from "./ThemesApplier";
 
 interface IntiApiOptions {
@@ -81,38 +80,6 @@ const initWebApi = (props: IntiApiOptions) => {
     fileBrowser: props.fileBrowser,
     postMessage: function (name, args, transferList): void {
       console.log("postMessage, name, args, transferList: ", name, args, transferList);
-
-      // FIXME: ugly hack
-      if (!/recent/.test(window.location.href) && name === "updateActionState") {
-        console.log("postMessage ugly hack: ", name, args);
-        const state = {
-          "save-as": true,
-          "export-selected-exportables": true,
-          "toggle-grid": true,
-          "toggle-shown-layout-grids": true,
-          "toggle-show-masks": true,
-          "toggle-show-artboard-outlines": true,
-          "toggle-rulers": true,
-          "toggle-sidebar": true,
-          "toggle-ui": true,
-          "toggle-outlines": true,
-          "toggle-layers": true,
-          "toggle-publish": true,
-          "toggle-library": true,
-          "toggle-pixel-preview": true,
-          "toggle-checkerboard": true,
-          "zoom-in": true,
-          "zoom-out": true,
-          "zoom-reset": true,
-          "zoom-to-fit": true,
-          "zoom-to-selection": true,
-          "next-artboard": true,
-          "previous-artboard": true,
-        };
-
-        args = { state: { ...args.state, ...state } };
-      }
-
       channel.port1.postMessage({ name, args }, transferList);
     },
     registerCallback: function (name, args, callback) {
@@ -177,7 +144,6 @@ const initWebBindings = (): void => {
     webPort.postMessage({ name: "handleAction", args: { action, source } });
   });
   E.ipcRenderer.on("handleUrl", (_: IpcRendererEvent, path: string, params: string) => {
-    console.log("handleUrl, url: ", path);
     webPort.postMessage({ name: "handleUrl", args: { path, params } });
   });
   E.ipcRenderer.on("handlePageCommand", (_: IpcRendererEvent, command: string) => {
@@ -315,8 +281,8 @@ const publicAPI: any = {
   setSaved(args: any) {
     sendMsgToMain("updateSaveStatus", args.saved);
   },
-  updateActionState(args: any) {
-    sendMsgToMain("updateActionState", args.state);
+  updateFullscreenMenuState(args: any) {
+    sendMsgToMain("updateFullscreenMenuState", args.state);
   },
   showFileBrowser() {
     sendMsgToMain("showFileBrowser");
@@ -345,18 +311,6 @@ const publicAPI: any = {
   //   console.log("isTabOpen, args: ", args);
   //   // n.send("setTheme", e.getString("theme", "dark"));
   // },
-  setPluginMenuData(args: WebApi.SetPluginMenuDataProps) {
-    const pluginMenuData = [];
-    for (const item of args.data) {
-      if (isMenuItem(item)) {
-        pluginMenuData.push(item);
-      } else {
-        // sendMsgToMain("log-error", "[desktop] invalid plugin menu item", args);
-      }
-    }
-
-    sendMsgToMain("setPluginMenuData", pluginMenuData);
-  },
 
   setFeatureFlags(args: any) {
     sendMsgToMain("setFeatureFlags", args);
@@ -488,7 +442,6 @@ const publicAPI: any = {
   },
 
   async writeFiles(args: WebApi.WriteFiles) {
-    console.log("writeFiles, args: ", args);
     await E.ipcRenderer.invoke("writeFiles", args);
   },
 };

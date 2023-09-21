@@ -1,7 +1,7 @@
 import { parse } from "url";
-import { app, ipcMain, BrowserWindow, IpcMainEvent, Rectangle } from "electron";
+import { app, ipcMain, BrowserWindow, IpcMainEvent, Rectangle, Menu } from "electron";
 import { storage } from "Main/Storage";
-import MenuManager from "./Menu/MenuManager";
+import MenuManager from "./MenuManager";
 import SettingsView from "./SettingsView";
 import TabManager from "./TabManager";
 
@@ -33,8 +33,8 @@ export default class Window {
     this.window.addBrowserView(this.tabManager.mainTab.view);
     this.window.setTopBrowserView(this.tabManager.mainTab.view);
 
-    this.menuManager.initMainMenu();
-    this.menuManager.updateMainTabState();
+    const menu = this.menuManager.getMenu();
+    this.setMenu(menu);
 
     this.window.loadURL(isDev ? panelUrlDev : panelUrlProd);
     isDev && toggleDetachedDevTools(this.window.webContents);
@@ -104,8 +104,6 @@ export default class Window {
           this.addTab(tab.url, tab.title);
         }, 500 * i);
       });
-
-      this.menuManager.updateMainTabState();
     }, 1000);
   }
   public restoreClosedTab() {
@@ -131,6 +129,27 @@ export default class Window {
   public handlePluginManageAction() {
     this.tabManager.mainTab.view.webContents.send("handlePluginMenuAction", { type: "manage" });
     this.setFocusToMainTab();
+  }
+  public handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {
+    this.tabManager.handlePluginMenuAction(pluginMenuAction);
+  }
+  public toggleDevTools() {
+    toggleDetachedDevTools(this.window.webContents);
+  }
+  public updateFullscreenMenuState(event: IpcMainEvent, state: Menu.State) {
+    const tab = this.tabManager.getById(event.sender.id);
+
+    if (!tab) {
+      return;
+    }
+
+    this.menuManager.setTabMenu(tab.id, state);
+
+    if (tab.id === this.tabManager.lastFocusedTab) {
+      const menu = this.menuManager.getMenu(state);
+
+      this.setMenu(menu);
+    }
   }
 
   public openUrlFromCommunity(url: string) {
@@ -267,8 +286,6 @@ export default class Window {
       title,
     });
 
-    this.menuManager.updateTabState();
-
     return tab;
   }
 
@@ -319,6 +336,19 @@ export default class Window {
         userId: storage.settings.userId,
       });
     }
+  }
+  private setMenu(menu: Menu) {
+    this.window.setMenu(menu);
+  }
+  private setBaseMenu() {
+    const menu = this.menuManager.getMenu();
+    this.setMenu(menu);
+  }
+  private setTabMenu(tabId: number) {
+    const tabMenuState = this.menuManager.getTabMenu(tabId);
+    const tabMenu = this.menuManager.getMenu(tabMenuState);
+
+    this.setMenu(tabMenu);
   }
 
   public setIsInVoiceCall(tabId: number, isInVoiceCall: boolean) {
@@ -378,7 +408,7 @@ export default class Window {
 
     this.window.setTopBrowserView(mainTab.view);
     this.tabManager.focusMainTab();
-    this.menuManager.updateMainTabState();
+    this.setBaseMenu();
     this.window.webContents.send("focusTab", "mainTab");
   }
   public setFocusToCommunityTab() {
@@ -387,7 +417,7 @@ export default class Window {
 
     this.window.setTopBrowserView(communityTab.view);
     this.tabManager.focusCommunityTab();
-    this.menuManager.updateMainTabState();
+    this.setBaseMenu();
     this.tabManager.communityTab.setBounds(bounds);
     this.window.webContents.send("focusTab", "communityTab");
   }
@@ -404,7 +434,7 @@ export default class Window {
 
     this.tabManager.focusTab(tabId);
     this.tabManager.setBounds(tabId, bounds);
-    this.menuManager.updateTabState();
+    this.setTabMenu(tabId);
     this.window.webContents.send("focusTab", tabId);
   }
   public setTabTitle(event: IpcMainEvent, title: string) {
@@ -416,21 +446,6 @@ export default class Window {
 
     this.tabManager.setTitle(tab.id, title);
     this.window.webContents.send("setTitle", { id: tab.view.webContents.id, title });
-  }
-  public setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {
-    const tab = this.tabManager.getById(event.sender.id);
-
-    if (!tab) {
-      return;
-    }
-
-    const isMainTab = this.tabManager.isMainTab(event.sender.id);
-
-    if (isMainTab) {
-      this.menuManager.updateMainTabState();
-    } else {
-      this.menuManager.updatePluginState(pluginMenu);
-    }
   }
   public openFile(_: IpcMainEvent, ...args: string[]) {
     let url = `${HOMEPAGE}${args[0]}`;
@@ -473,9 +488,6 @@ export default class Window {
     this.window.webContents.send("updateVisibleNewProjectBtn", visible);
   }
 
-  public updateActionState(_: IpcMainEvent, state: MenuState.State) {
-    this.menuManager.updateTabState(state);
-  }
   public changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
     this.loadCurrentTheme(theme);
 

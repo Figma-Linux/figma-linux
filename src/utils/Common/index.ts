@@ -6,5 +6,4 @@ export * from "./wait";
 export * from "./isDev";
 export * from "./themes";
 export * from "./object";
-export * from "./menuTypes";
 export * from "./extensions";

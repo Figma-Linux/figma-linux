@@ -261,7 +261,7 @@ export default class TabManager {
 
     toggleDetachedDevTools(tab.view.webContents);
   }
-  private handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {
+  public handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {
     const tab = this.getById(this.lastFocusedTab);
 
     tab.view.webContents.send("handlePluginMenuAction", pluginMenuAction);
@@ -282,7 +282,6 @@ export default class TabManager {
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
 
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
-    app.on("handlePluginMenuAction", this.handlePluginMenuAction.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));
   }
 }

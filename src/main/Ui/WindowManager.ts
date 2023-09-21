@@ -312,6 +312,21 @@ export default class WindowManager {
 
     window.handlePluginManageAction();
   }
+  private handlePluginMenuAction(windowId: number, pluginMenuAction: Menu.MenuAction) {
+    const window = this.windows.get(windowId ?? this.lastFocusedwindowId);
+
+    window.handlePluginMenuAction(pluginMenuAction);
+  }
+  private toggleDevTools() {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.toggleDevTools();
+  }
+  private updateFullscreenMenuState(event: IpcMainEvent, state: Menu.State) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.updateFullscreenMenuState(event, state);
+  }
   private toggleThemeCreatorPreviewMask(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -336,11 +351,6 @@ export default class WindowManager {
 
     window.setTabTitle(event, title);
   }
-  private setPluginMenuData(event: IpcMainEvent, pluginMenu: Menu.MenuItem[]) {
-    const window = this.getWindowByWebContentsId(event.sender.id);
-
-    window.setPluginMenuData(event, pluginMenu);
-  }
   private openFile(event: IpcMainEvent, ...args: string[]) {
     const window = this.getWindowByWebContentsId(event.sender.id);
 
@@ -357,11 +367,6 @@ export default class WindowManager {
     window.updateVisibleNewProjectBtn(event, visible);
   }
 
-  private updateActionState(event: IpcMainEvent, state: MenuState.State) {
-    const window = this.getWindowByWebContentsId(event.sender.id);
-
-    window.updateActionState(event, state);
-  }
   private changeTheme(event: IpcMainEvent, theme: Themes.Theme) {
     for (const [_, window] of this.windows) {
       window.changeTheme(event, theme);
@@ -409,13 +414,12 @@ export default class WindowManager {
     ipcMain.on("closeAllTab", this.closeAllTab.bind(this));
     ipcMain.on("setTitle", this.setTabTitle.bind(this));
     ipcMain.on("openMainMenu", this.openMainMenuHandler.bind(this));
-    ipcMain.on("setPluginMenuData", this.setPluginMenuData.bind(this));
-    ipcMain.on("updateActionState", this.updateActionState.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
     ipcMain.on("openFile", this.openFile.bind(this));
     ipcMain.on("openCommunity", this.openCommunity.bind(this));
     ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
     ipcMain.on("frontReady", this.handleFrontReady.bind(this));
+    ipcMain.on("updateFullscreenMenuState", this.updateFullscreenMenuState.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));
@@ -439,5 +443,7 @@ export default class WindowManager {
     app.on("windowClose", this.windowClose.bind(this));
     app.on("handleUrl", this.handleUrl.bind(this));
     app.on("handlePluginManageAction", this.handlePluginManageAction.bind(this));
+    app.on("handlePluginMenuAction", this.handlePluginMenuAction.bind(this));
+    app.on("toggleSettingsDeveloperTools", this.toggleDevTools.bind(this));
   }
 }

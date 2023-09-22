@@ -350,6 +350,17 @@ export default class Window {
 
     this.setMenu(tabMenu);
   }
+  public closeNewFileTab() {
+    const newFileTab = this.tabManager.getByTitle(NEW_FILE_TAB_TITLE);
+
+    if (!newFileTab) {
+      return;
+    }
+
+    this.closeTab(newFileTab.id);
+    this.tabWasClosed(newFileTab.id);
+    this.window.webContents.send("newFileBtnVisible", true);
+  }
 
   public setIsInVoiceCall(tabId: number, isInVoiceCall: boolean) {
     this.window.webContents.send("setIsInVoiceCall", { id: tabId, isInVoiceCall });
@@ -409,6 +420,7 @@ export default class Window {
     this.window.setTopBrowserView(mainTab.view);
     this.tabManager.focusMainTab();
     this.setBaseMenu();
+    this.closeNewFileTab();
     this.window.webContents.send("focusTab", "mainTab");
   }
   public setFocusToCommunityTab() {
@@ -418,6 +430,7 @@ export default class Window {
     this.window.setTopBrowserView(communityTab.view);
     this.tabManager.focusCommunityTab();
     this.setBaseMenu();
+    this.closeNewFileTab();
     this.tabManager.communityTab.setBounds(bounds);
     this.window.webContents.send("focusTab", "communityTab");
   }

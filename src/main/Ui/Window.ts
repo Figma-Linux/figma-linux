@@ -136,6 +136,9 @@ export default class Window {
   public toggleDevTools() {
     toggleDetachedDevTools(this.window.webContents);
   }
+  public toggleSettingsDevTools() {
+    toggleDetachedDevTools(this.settingsView.view.webContents);
+  }
   public updateFullscreenMenuState(event: IpcMainEvent, state: Menu.State) {
     const tab = this.tabManager.getById(event.sender.id);
 

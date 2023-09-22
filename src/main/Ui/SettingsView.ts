@@ -109,9 +109,6 @@ export default class SettingsView {
     storage.settings = settings;
   }
 
-  private toggleDevTools() {
-    toggleDetachedDevTools(this.view.webContents);
-  }
   private syncThemesStart() {
     toggleDetachedDevTools(this.view.webContents);
   }
@@ -145,7 +142,6 @@ export default class SettingsView {
     // TODO: Move to Storage class
     ipcMain.on("saveSettings", this.saveSettings.bind(this));
 
-    app.on("toggleSettingsDeveloperTools", this.toggleDevTools.bind(this));
     app.on("syncThemesStart", this.syncThemesStart.bind(this));
     app.on("syncThemesEnd", this.syncThemesEnd.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));

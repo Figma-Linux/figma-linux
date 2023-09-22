@@ -284,9 +284,9 @@ export default class WindowManager {
     return directories[0];
   }
   private updatePanelScale(event: IpcMainEvent, scale: number) {
-    const window = this.getWindowByWebContentsId(event.sender.id);
-
-    window.updatePanelScale(event, scale);
+    for (const [_, window] of this.windows) {
+      window.updatePanelScale(event, scale);
+    }
   }
   private updateFigmaUiScale(event: IpcMainEvent, scale: number) {
     const window = this.getWindowByWebContentsId(event.sender.id);
@@ -317,7 +317,12 @@ export default class WindowManager {
 
     window.handlePluginMenuAction(pluginMenuAction);
   }
-  private toggleDevTools() {
+  private toggleSettingsDevTools() {
+    const window = this.windows.get(this.lastFocusedwindowId);
+
+    window.toggleSettingsDevTools();
+  }
+  private toggleCurrentWindowDevTools() {
     const window = this.windows.get(this.lastFocusedwindowId);
 
     window.toggleDevTools();
@@ -444,6 +449,7 @@ export default class WindowManager {
     app.on("handleUrl", this.handleUrl.bind(this));
     app.on("handlePluginManageAction", this.handlePluginManageAction.bind(this));
     app.on("handlePluginMenuAction", this.handlePluginMenuAction.bind(this));
-    app.on("toggleSettingsDeveloperTools", this.toggleDevTools.bind(this));
+    app.on("toggleCurrentWindowDevTools", this.toggleCurrentWindowDevTools.bind(this));
+    app.on("toggleSettingsDeveloperTools", this.toggleSettingsDevTools.bind(this));
   }
 }

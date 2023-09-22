@@ -289,9 +289,9 @@ export default class WindowManager {
     }
   }
   private updateFigmaUiScale(event: IpcMainEvent, scale: number) {
-    const window = this.getWindowByWebContentsId(event.sender.id);
-
-    window.updatePanelScale(event, scale);
+    for (const [_, window] of this.windows) {
+      window.updateFigmaUiScale(event, scale);
+    }
   }
 
   public closeSettingsView(_: IpcMainEvent, settings: Types.SettingsInterface) {

@@ -101,7 +101,7 @@ export default class TabManager {
   }
   public updateScaleAll(scale: number) {
     this.mainTab.updateScale(scale);
-    this.communityTab.updateScale(scale);
+    this.communityTab && this.communityTab.updateScale(scale);
     this.tabs.forEach((t) => t.updateScale(scale));
   }
 

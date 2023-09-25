@@ -139,6 +139,11 @@ export default class Window {
   public toggleSettingsDevTools() {
     toggleDetachedDevTools(this.settingsView.view.webContents);
   }
+  public toggleCurrentTabDevTools() {
+    const tab = this.tabManager.getById(this.tabManager.lastFocusedTab);
+
+    toggleDetachedDevTools(tab.view.webContents);
+  }
   public updateFullscreenMenuState(event: IpcMainEvent, state: Menu.State) {
     const tab = this.tabManager.getById(event.sender.id);
 
@@ -339,6 +344,8 @@ export default class Window {
         userId: storage.settings.userId,
       });
     }
+
+    this.setFocusToMainTab();
   }
   private setMenu(menu: Menu) {
     this.window.setMenu(menu);
@@ -413,6 +420,9 @@ export default class Window {
         url: tab.view.webContents.getURL(),
       });
     }
+  }
+  public getLatestFocusedTabId() {
+    return this.tabManager.lastFocusedTab;
   }
   public tabWasClosed(tabId: number) {
     this.window.webContents.send("tabWasClosed", tabId);

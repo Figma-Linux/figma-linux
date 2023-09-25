@@ -18,7 +18,7 @@ export default class MenuManager {
       this.item("Open File Browser", "openFileBrowser", "Ctrl+O"),
       this.item("Open File URL from Clipboard", "openFileUrlClipboard", "Ctrl+Shift+O"),
       { type: "separator" },
-      this.item("Close Tab", "closeTab", "Ctrl+W"),
+      this.item("Close Tab", "closeCurrentTab", "Ctrl+W"),
       this.item("Reopen Closed Tab", "reopenClosedTab", "Ctrl+Shift+T"),
       { type: "separator" },
       // this.item("New Window", "newWindow", "Ctrl+N"),
@@ -164,8 +164,8 @@ export default class MenuManager {
         id: "close",
         label: "Close",
         visible: true,
-        click: () => {
-          app.emit("closeTab", tabId);
+        click: (_, window) => {
+          app.emit("closeTab", window.id, tabId);
         },
       },
     ];
@@ -196,7 +196,7 @@ export default class MenuManager {
       label,
       enabled: true,
       id,
-      click: (_, window) => app.emit(id, window.webContents),
+      click: (_, window) => app.emit(id, window.id),
     };
 
     if (accelerator) {

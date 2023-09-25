@@ -15,7 +15,8 @@ declare namespace Electron {
     on(event: "newFile", listener: (sender: Electron.WebContents) => void): this;
     on(event: "newWindow", listener: (sender: Electron.WebContents) => void): this;
     on(event: "reloadTab", listener: (tabId: number) => void): this;
-    on(event: "closeTab", listener: (tabId: number) => void): this;
+    on(event: "closeTab", listener: (windowId: number, tabId: number) => void): this;
+    on(event: "closeCurrentTab", listener: (windowId: number) => void): this;
     on(event: "closeCommunityTab", listener: () => void): this;
     on(event: "closeAllTab", listener: () => void): this;
     on(event: "chromeGpu", listener: (sender: Electron.WebContents) => void): this;
@@ -29,7 +30,7 @@ declare namespace Electron {
     on(event: "themes-remove-repository", listener: () => void): this;
     on(event: "toggleSettingsDeveloperTools", listener: () => void): this;
     on(event: "toggleCurrentWindowDevTools", listener: () => void): this;
-    on(event: "toggleCurrentTabDevTools", listener: () => void): this;
+    on(event: "toggleCurrentTabDevTools", listener: (windowId: number) => void): this;
     on(
       event: "handlePluginMenuAction",
       listener: (windowId: number, pluginMenuAction: Menu.MenuAction) => void,
@@ -57,7 +58,8 @@ declare namespace Electron {
     emit(event: "newWindow", sender: Electron.WebContents): boolean;
     emit(event: "reloadTab", tabId: number): boolean;
     emit(event: "closeCommunityTab"): boolean;
-    emit(event: "closeTab", tabId: number): boolean;
+    emit(event: "closeTab", windowId: number, tabId: number): boolean;
+    emit(event: "closeCurrentTab", windowId: number): boolean;
     emit(event: "closeAllTab"): boolean;
     emit(event: "chromeGpu", sender: Electron.WebContents): boolean;
     emit(event: "openFileUrlClipboard", sender: Electron.WebContents): boolean;
@@ -70,7 +72,7 @@ declare namespace Electron {
     emit(event: "themes-remove-repository"): boolean;
     emit(event: "toggleSettingsDeveloperTools"): boolean;
     emit(event: "toggleCurrentWindowDevTools"): boolean;
-    emit(event: "toggleCurrentTabDevTools"): boolean;
+    emit(event: "toggleCurrentTabDevTools", windowId: number): boolean;
     emit(
       event: "handlePluginMenuAction",
       windowId: number,

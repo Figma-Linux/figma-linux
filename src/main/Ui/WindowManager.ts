@@ -147,30 +147,39 @@ export default class WindowManager {
 
     window.reloadTab(tabId);
   }
-  private closeTabFromMenu(tabId: number) {
-    const window = this.windows.get(this.lastFocusedwindowId);
+  private closeTabFromMenu(windowId: number, tabId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
     window.closeTab(tabId);
     window.tabWasClosed(tabId);
   }
-  private chromeGpu(_: WebContents) {
+  private closeCurrentTabFromMenu(windowId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
+    const tabId = window.getLatestFocusedTabId();
+
+    if (tabId) {
+      window.closeTab(tabId);
+      window.tabWasClosed(tabId);
+    }
+  }
+  private chromeGpu() {
     const window = this.windows.get(this.lastFocusedwindowId);
 
     window.addTab("chrome://gpu", "chrome://gpu");
   }
-  private openFileUrlClipboard(_: WebContents) {
+  private openFileUrlClipboard() {
     const window = this.windows.get(this.lastFocusedwindowId);
     const uri = clipboard.readText();
 
     window.openUrl(uri);
   }
-  private openFileBrowser(_: WebContents) {
+  private openFileBrowser() {
     const window = this.windows.get(this.lastFocusedwindowId);
 
     window.setFocusToMainTab();
   }
-  private reopenClosedTab(_: WebContents) {
-    const window = this.windows.get(this.lastFocusedwindowId);
+  private reopenClosedTab(windowId: number, webContentId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
     window.restoreClosedTab();
   }
@@ -317,13 +326,18 @@ export default class WindowManager {
 
     window.handlePluginMenuAction(pluginMenuAction);
   }
-  private toggleSettingsDevTools() {
-    const window = this.windows.get(this.lastFocusedwindowId);
+  private toggleSettingsDevTools(windowId: number, webContentId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
     window.toggleSettingsDevTools();
   }
-  private toggleCurrentWindowDevTools() {
-    const window = this.windows.get(this.lastFocusedwindowId);
+  private toggleCurrentTabDevTools(windowId: number, webContentsId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
+
+    window.toggleCurrentTabDevTools();
+  }
+  private toggleCurrentWindowDevTools(windowId: number, webContentId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
     window.toggleDevTools();
   }
@@ -431,6 +445,7 @@ export default class WindowManager {
     app.on("newWindow", this.newWindow.bind(this));
     app.on("reloadTab", this.reloadTabFromMenu.bind(this));
     app.on("closeTab", this.closeTabFromMenu.bind(this));
+    app.on("closeCurrentTab", this.closeCurrentTabFromMenu.bind(this));
     app.on("closeCommunityTab", this.closeCommunityTab.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));
     app.on("chromeGpu", this.chromeGpu.bind(this));
@@ -451,5 +466,6 @@ export default class WindowManager {
     app.on("handlePluginMenuAction", this.handlePluginMenuAction.bind(this));
     app.on("toggleCurrentWindowDevTools", this.toggleCurrentWindowDevTools.bind(this));
     app.on("toggleSettingsDeveloperTools", this.toggleSettingsDevTools.bind(this));
+    app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
   }
 }

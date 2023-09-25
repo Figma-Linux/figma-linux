@@ -256,11 +256,6 @@ export default class TabManager {
     return false;
   }
 
-  private toggleCurrentTabDevTools() {
-    const tab = this.getById(this.lastFocusedTab);
-
-    toggleDetachedDevTools(tab.view.webContents);
-  }
   public handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {
     const tab = this.getById(this.lastFocusedTab);
 
@@ -281,7 +276,6 @@ export default class TabManager {
   private registerEvents() {
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
 
-    app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));
   }
 }

@@ -211,8 +211,6 @@ export default class App {
 
     app.on("ready", this.ready.bind(this));
     app.on("second-instance", this.secondInstance.bind(this));
-    // TODO: possibly remove "browser-window-created"
-    app.on("browser-window-created", (e, window) => window.setMenu(null));
     app.on("window-all-closed", this.onWindowAllClosed.bind(this));
     app.on("relaunchApp", this.relaunchApp.bind(this));
     app.on("signOut", this.logout.bind(this));

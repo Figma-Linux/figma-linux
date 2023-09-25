@@ -32,8 +32,6 @@ export default class Session {
         url: Const.HOMEPAGE,
       })
       .then((cookies) => {
-        session.defaultSession.cookies.on("changed", this.handleCookiesChanged);
-
         this._hasFigmaSession = !!cookies.find((cookie) => {
           return cookie.name === Const.FIGMA_SESSION_COOKIE_NAME;
         });
@@ -43,24 +41,5 @@ export default class Session {
       .catch((error: Error) =>
         logger.error("[wm] failed to get cookies during handleAppReady:", Const.HOMEPAGE, error),
       );
-  };
-
-  private handleCookiesChanged = (
-    event: Event,
-    cookie: Cookie,
-    cause: string,
-    removed: boolean,
-  ) => {
-    if (isSameCookieDomain(cookie.domain || "", Const.PARSED_HOMEPAGE.hostname || "")) {
-      if (cookie.name === Const.FIGMA_SESSION_COOKIE_NAME) {
-        logger.debug(
-          `${cookie.name} cookie changed:`,
-          cause,
-          cookie.name,
-          cookie.domain,
-          removed ? "removed" : "",
-        );
-      }
-    }
   };
 }

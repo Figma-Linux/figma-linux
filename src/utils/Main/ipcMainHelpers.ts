@@ -1,6 +1,5 @@
 import { ipcMain, WebContents, IpcMainEvent } from "electron";
 
-import Tab from "Main/Ui/TabManager";
 import { isDev } from "Utils/Common";
 
 export function listenToWebBinding(

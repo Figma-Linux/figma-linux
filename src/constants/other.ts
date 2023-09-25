@@ -27,7 +27,7 @@ export const CONFIGDIR = `${process.env.HOME}/.config/figma-linux`;
 export const RESOURCESDIR = `${process.env.HOME}/.config/figma-linux/resources`;
 export const REGEXP_APP_AUTH_GRANT = /^\/{0,2}app_auth\/[^/]+\/grant/;
 
-export const FIGMA_SESSION_COOKIE_NAME = "figma.st";
+export const FIGMA_SESSION_COOKIE_NAME = "figma.session";
 
 export const FILE_EXTENSION_WHITE_LIST = [
   ".css",

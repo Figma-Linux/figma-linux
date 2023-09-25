@@ -162,8 +162,8 @@ export default class WindowManager {
       window.tabWasClosed(tabId);
     }
   }
-  private chromeGpu() {
-    const window = this.windows.get(this.lastFocusedwindowId);
+  private chromeGpu(windowId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
     window.addTab("chrome://gpu", "chrome://gpu");
   }

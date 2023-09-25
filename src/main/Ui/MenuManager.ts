@@ -318,8 +318,7 @@ export default class MenuManager {
           "toggleSettingsDeveloperTools",
           "Shift+Ctrl+Alt+S",
         ),
-        // TODO: fix
-        // item("GPU", "", { id: "chromeGpu", click: commandToMainProcess }),
+        this.item("GPU", "chromeGpu"),
       ],
     };
   }

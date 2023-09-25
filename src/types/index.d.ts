@@ -19,7 +19,7 @@ declare namespace Electron {
     on(event: "closeCurrentTab", listener: (windowId: number) => void): this;
     on(event: "closeCommunityTab", listener: () => void): this;
     on(event: "closeAllTab", listener: () => void): this;
-    on(event: "chromeGpu", listener: (sender: Electron.WebContents) => void): this;
+    on(event: "chromeGpu", listener: (windowId: number) => void): this;
     on(event: "openFileUrlClipboard", listener: (sender: Electron.WebContents) => void): this;
     on(event: "openFileBrowser", listener: (sender: Electron.WebContents) => void): this;
     on(event: "reopenClosedTab", listener: (sender: Electron.WebContents) => void): this;
@@ -61,7 +61,7 @@ declare namespace Electron {
     emit(event: "closeTab", windowId: number, tabId: number): boolean;
     emit(event: "closeCurrentTab", windowId: number): boolean;
     emit(event: "closeAllTab"): boolean;
-    emit(event: "chromeGpu", sender: Electron.WebContents): boolean;
+    emit(event: "chromeGpu", windowId: number): boolean;
     emit(event: "openFileUrlClipboard", sender: Electron.WebContents): boolean;
     emit(event: "openFileBrowser", sender: Electron.WebContents): boolean;
     emit(event: "reopenClosedTab", sender: Electron.WebContents): boolean;

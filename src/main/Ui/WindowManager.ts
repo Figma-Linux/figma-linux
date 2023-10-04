@@ -4,7 +4,7 @@ import Window from "./Window";
 import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
-import { HOMEPAGE } from "Const";
+import { HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
 import { registerIpcMainHandlers } from "Main/events";
 
@@ -43,6 +43,9 @@ export default class WindowManager {
   public newWindow() {
     const menu = this.menuManager.getMenu({
       recentClosedTabsMenuData: this.closedTabsForMenu,
+      actionCheckedState: {
+        "close-tab": false,
+      },
     });
     const window = new Window();
 
@@ -164,14 +167,24 @@ export default class WindowManager {
       this.handleCloseTab(window, tabId);
     }
   }
+  private closeCurrentWindowFromMenu(windowId: number) {
+    this.windowClose(windowId);
+  }
+  private reopenClosedTabFromMenu(windowId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
+
+    window.restoreTabs(this.closedTabsForMenu);
+  }
   private handleCloseTab(window: Window, tabId: number) {
     const tabInfo = window.getTabInfo(tabId);
 
-    this.closedTabs.delete(tabInfo.title);
-    this.closedTabs.set(tabInfo.title, {
-      title: tabInfo.title,
-      url: tabInfo.url,
-    });
+    if (tabInfo.title !== NEW_FILE_TAB_TITLE) {
+      this.closedTabs.delete(tabInfo.title);
+      this.closedTabs.set(tabInfo.title, {
+        title: tabInfo.title,
+        url: tabInfo.url,
+      });
+    }
 
     storage.settings.app.recentlyClosedTabs = this.closedTabsForMenu;
 
@@ -277,10 +290,15 @@ export default class WindowManager {
       communityTabInfo.url,
     );
   }
-  private needUpdateMenu(windowId: number, tabId?: number) {
+  private needUpdateMenu(
+    windowId: number,
+    tabId?: number,
+    actionCheckedState: { [key: string]: boolean } = {},
+  ) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
     let state: Menu.State = {
       recentClosedTabsMenuData: this.closedTabsForMenu,
+      actionCheckedState,
     };
 
     if (tabId) {
@@ -288,6 +306,11 @@ export default class WindowManager {
       state = {
         ...state,
         ...tabMenuState,
+        actionCheckedState: {
+          ...state.actionCheckedState,
+          ...(tabMenuState.actionCheckedState ?? {}),
+          "close-tab": true,
+        },
       };
     }
 
@@ -384,14 +407,13 @@ export default class WindowManager {
     window.toggleDevTools();
   }
   private updateFullscreenMenuState(event: IpcMainEvent, state: Menu.State) {
-    const window = this.getWindowByWebContentsId(event.sender.id);
+    // event.sender.id - it's id of a tab's webContent
+    const tabId = event.sender.id;
+    const window = this.getWindowByWebContentsId(tabId);
 
-    const menu = this.menuManager.getMenu({
-      recentClosedTabsMenuData: this.closedTabsForMenu,
-      ...state,
-    });
+    this.menuManager.setTabMenu(tabId, state);
 
-    window.setMenu(menu);
+    this.needUpdateMenu(window.id, tabId);
   }
   private toggleThemeCreatorPreviewMask(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -498,6 +520,8 @@ export default class WindowManager {
     app.on("reloadTab", this.reloadTabFromMenu.bind(this));
     app.on("closeTab", this.closeTabFromMenu.bind(this));
     app.on("closeCurrentTab", this.closeCurrentTabFromMenu.bind(this));
+    app.on("reopenClosedTab", this.reopenClosedTabFromMenu.bind(this));
+    app.on("closeCurrentWindow", this.closeCurrentWindowFromMenu.bind(this));
     app.on("closeCommunityTab", this.closeCommunityTab.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));
     app.on("chromeGpu", this.chromeGpu.bind(this));

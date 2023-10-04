@@ -17,6 +17,8 @@ declare namespace Electron {
     on(event: "reloadTab", listener: (tabId: number) => void): this;
     on(event: "closeTab", listener: (windowId: number, tabId: number) => void): this;
     on(event: "closeCurrentTab", listener: (windowId: number) => void): this;
+    on(event: "reopenClosedTab", listener: (windowId: number) => void): this;
+    on(event: "closeCurrentWindow", listener: (windowId: number) => void): this;
     on(event: "closeCommunityTab", listener: () => void): this;
     on(event: "closeAllTab", listener: () => void): this;
     on(event: "chromeGpu", listener: (windowId: number) => void): this;
@@ -55,7 +57,14 @@ declare namespace Electron {
     on(event: "quitApp", listener: () => void): this;
     on(event: "reloadCurrentTheme", listener: () => void): this;
     on(event: "focusLastWindow", listener: () => void): this;
-    on(event: "needUpdateMenu", listener: (windowId: number, tabId?: number) => void): this;
+    on(
+      event: "needUpdateMenu",
+      listener: (
+        windowId: number,
+        tabId?: number,
+        actionCheckedState?: { [key: string]: boolean },
+      ) => void,
+    ): this;
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
@@ -64,6 +73,8 @@ declare namespace Electron {
     emit(event: "closeCommunityTab"): boolean;
     emit(event: "closeTab", windowId: number, tabId: number): boolean;
     emit(event: "closeCurrentTab", windowId: number): boolean;
+    emit(event: "reopenClosedTab", windowId: number): boolean;
+    emit(event: "closeCurrentWindow", windowId: number): boolean;
     emit(event: "closeAllTab"): boolean;
     emit(event: "chromeGpu", windowId: number): boolean;
     emit(event: "openFileUrlClipboard", sender: Electron.WebContents): boolean;
@@ -99,7 +110,12 @@ declare namespace Electron {
     emit(event: "quitApp"): void;
     emit(event: "reloadCurrentTheme"): void;
     emit(event: "focusLastWindow"): void;
-    emit(event: "needUpdateMenu", windowId: number, tabId?: number): void;
+    emit(
+      event: "needUpdateMenu",
+      windowId: number,
+      tabId?: number,
+      actionCheckedState?: { [key: string]: boolean },
+    ): void;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {

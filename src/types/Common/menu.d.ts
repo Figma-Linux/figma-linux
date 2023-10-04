@@ -3,6 +3,7 @@ declare namespace Menu {
     pluginMenuData?: Menu.MenuItem[];
     widgetMenuData?: Menu.MenuItem[];
     recentClosedTabsMenuData?: Types.SavedTab[];
+    actionCheckedState?: { [key: string]: boolean };
 
     [key: string]: any;
   }

@@ -15,16 +15,13 @@ export default class MenuManager {
   public getMenu(state?: Menu.State): Menu {
     const template: MICO[] = [
       this.item("New Window", "newWindow", "Ctrl+N"),
-      // TODO:
-      // this.item("New Tab", "newTab", "Ctrl+T"),
+      this.item("New Tab", "newFile", "Ctrl+T"),
       this.item("Open File Browser", "openFileBrowser", "Ctrl+O"),
       this.item("Open File URL from Clipboard", "openFileUrlClipboard", "Ctrl+Shift+O"),
       { type: "separator" },
-      // TODO:
-      // this.item("Close Window", "closeCurrentWindow", "Ctrl+Shift+W"),
-      this.item("Close Tab", "closeCurrentTab", "Ctrl+W"),
-      // TODO:
-      // this.item("Reopen Closed Tab", "reopenClosedTab", "Ctrl+Shift+W"),
+      this.item("Close Window", "closeCurrentWindow", "Ctrl+Shift+W"),
+      this.item("Close Tab", "closeCurrentTab", "Ctrl+W", state?.actionCheckedState["close-tab"]),
+      this.item("Reopen Closed Tab", "reopenClosedTab", "Ctrl+Shift+T"),
     ];
 
     if (state?.recentClosedTabsMenuData?.length > 0) {
@@ -210,10 +207,10 @@ export default class MenuManager {
     this._menu.set(tabId, state);
   }
 
-  private item(label: string, id: string, accelerator?: string) {
+  private item(label: string, id: string, accelerator?: string, enabled: boolean = true) {
     const props: MenuItemConstructorOptions = {
       label,
-      enabled: true,
+      enabled,
       id,
       click: (_, window) => app.emit(id, window.id),
     };

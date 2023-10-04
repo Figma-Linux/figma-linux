@@ -93,12 +93,14 @@ export default class Window {
       });
     }
   }
-  public restoreTabs() {
-    const tabs = (
-      storage.settings.app.lastOpenedTabs as {
-        [key: string]: Types.SavedTab[];
-      }
-    )[this.id];
+  public restoreTabs(list?: Types.SavedTab[]) {
+    const tabs =
+      list ??
+      (
+        storage.settings.app.lastOpenedTabs as {
+          [key: string]: Types.SavedTab[];
+        }
+      )[this.id];
 
     if (!tabs) {
       return;
@@ -223,6 +225,8 @@ export default class Window {
 
     const userId = storage.settings.userId;
     this.addTab(`${NEW_PROJECT_TAB_URL}?fuid=${userId}`, NEW_FILE_TAB_TITLE);
+
+    this.window.webContents.send("newFileBtnVisible", false);
   }
   public createFile(args: WebApi.CreateFile) {
     const newFileTab = this.tabManager.getByTitle(NEW_FILE_TAB_TITLE);
@@ -376,6 +380,10 @@ export default class Window {
         }
       }
     }
+
+    if (!this.tabManager.hasOpenedNewFileTab) {
+      this.window.webContents.send("newFileBtnVisible", true);
+    }
   }
   public getLatestFocusedTabId() {
     return this.tabManager.lastFocusedTab;
@@ -391,7 +399,7 @@ export default class Window {
     this.closeNewFileTab();
     this.window.webContents.send("focusTab", "mainTab");
 
-    app.emit("needUpdateMenu", this.id);
+    app.emit("needUpdateMenu", this.id, null, { "close-tab": false });
   }
   public setFocusToCommunityTab() {
     const bounds = this.calcBoundsForTabView();
@@ -403,7 +411,7 @@ export default class Window {
     this.tabManager.communityTab.setBounds(bounds);
     this.window.webContents.send("focusTab", "communityTab");
 
-    app.emit("needUpdateMenu", this.id);
+    app.emit("needUpdateMenu", this.id, null, { "close-tab": true });
   }
   public setTabFocus(tabId: number) {
     const bounds = this.calcBoundsForTabView();
@@ -420,7 +428,7 @@ export default class Window {
     this.tabManager.setBounds(tabId, bounds);
     this.window.webContents.send("focusTab", tabId);
 
-    app.emit("needUpdateMenu", this.id, tabId);
+    app.emit("needUpdateMenu", this.id, tabId, { "close-tab": true });
   }
   public setTabTitle(event: IpcMainEvent, title: string) {
     const tab = this.tabManager.getById(event.sender.id);

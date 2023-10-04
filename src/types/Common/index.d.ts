@@ -61,6 +61,7 @@ declare namespace Types {
       hasOpenedCommunityTab: boolean;
       exportDir: string;
       fontDirs: string[];
+      recentlyClosedTabs: SavedTab[];
       lastOpenedTabs:
         | {
             [key: string]: SavedTab[];

@@ -36,6 +36,9 @@ export default class CommunityTab {
   public loadUrl(url: string) {
     this.view.webContents.loadURL(url);
   }
+  public getUrl() {
+    return this.view.webContents.getURL();
+  }
   public setAutosize(flag: boolean) {
     this.view.setAutoResize({
       width: flag,

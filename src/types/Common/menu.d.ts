@@ -2,6 +2,7 @@ declare namespace Menu {
   interface State {
     pluginMenuData?: Menu.MenuItem[];
     widgetMenuData?: Menu.MenuItem[];
+    recentClosedTabsMenuData?: Types.SavedTab[];
 
     [key: string]: any;
   }

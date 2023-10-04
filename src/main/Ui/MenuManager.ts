@@ -15,14 +15,33 @@ export default class MenuManager {
   public getMenu(state?: Menu.State): Menu {
     const template: MICO[] = [
       this.item("New Window", "newWindow", "Ctrl+N"),
+      // TODO:
+      // this.item("New Tab", "newTab", "Ctrl+T"),
       this.item("Open File Browser", "openFileBrowser", "Ctrl+O"),
       this.item("Open File URL from Clipboard", "openFileUrlClipboard", "Ctrl+Shift+O"),
       { type: "separator" },
+      // TODO:
+      // this.item("Close Window", "closeCurrentWindow", "Ctrl+Shift+W"),
       this.item("Close Tab", "closeCurrentTab", "Ctrl+W"),
-      this.item("Reopen Closed Tab", "reopenClosedTab", "Ctrl+Shift+T"),
-      { type: "separator" },
-      // this.item("New Window", "newWindow", "Ctrl+N"),
+      // TODO:
+      // this.item("Reopen Closed Tab", "reopenClosedTab", "Ctrl+Shift+W"),
     ];
+
+    if (state?.recentClosedTabsMenuData?.length > 0) {
+      template.push({
+        type: "submenu",
+        label: "Recently Closed Tabs",
+        submenu: state.recentClosedTabsMenuData.map((data) => ({
+          type: "normal",
+          label: data.title,
+          click: (_, window) => {
+            app.emit("restoreClosedTab", window.id, data.title, data.url);
+          },
+        })),
+      });
+    }
+
+    template.push({ type: "separator" });
 
     if (state?.pluginMenuData?.length > 0) {
       template.push({

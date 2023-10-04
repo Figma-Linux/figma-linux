@@ -1,6 +1,7 @@
 import { app, shell, clipboard, ipcMain, IpcMainEvent, WebContents } from "electron";
 
 import Window from "./Window";
+import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
 import { HOMEPAGE } from "Const";
@@ -8,28 +9,48 @@ import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Uti
 import { registerIpcMainHandlers } from "Main/events";
 
 export default class WindowManager {
+  private menuManager: MenuManager;
+
   private lastFocusedwindowId: number;
   private windows: Map<number, Window> = new Map();
+  private closedTabs: Map<string, Types.SavedTab> = new Map();
 
   constructor() {
+    this.menuManager = new MenuManager();
+
     this.addIpc();
+    this.restoreData();
     registerIpcMainHandlers();
 
     this.registerEvents();
   }
 
-  openUrl = (url: string): void => {
+  public get closedTabsForMenu() {
+    const list = [...this.closedTabs.values()].reverse();
+
+    if (list.length > 10) {
+      list.length = 10;
+    }
+
+    return list;
+  }
+
+  public openUrl(url: string): void {
     const window = this.windows.get(this.lastFocusedwindowId);
     window.openUrl(url);
-  };
+  }
 
   public newWindow() {
+    const menu = this.menuManager.getMenu({
+      recentClosedTabsMenuData: this.closedTabsForMenu,
+    });
     const window = new Window();
 
     this.lastFocusedwindowId = window.id;
     this.windows.set(window.id, window);
 
     window.focus();
+    window.setMenu(menu);
     this.restoreTabs();
   }
 
@@ -96,36 +117,19 @@ export default class WindowManager {
       //   return;
       // }
     });
-
-    // app.on("handle-command", (sender, id) => {
-    //   switch (id) {
-    //     case "scale-normal": {
-    //       this.updateAllScale();
-    //       break;
-    //     }
-    //     case "scale-inc0.1": {
-    //       this.updateAllScale(0.1);
-    //       break;
-    //     }
-    //     case "scale-dic0.1": {
-    //       this.updateAllScale(-0.1);
-    //       break;
-    //     }
-    //     case "scale-inc0.05": {
-    //       this.updateAllScale(0.05);
-    //       break;
-    //     }
-    //     case "scale-dic0.05": {
-    //       this.updateAllScale(-0.05);
-    //       break;
-    //     }
-
-    //     default: {
-    //       logger.error("unavailable command id: ", id);
-    //     }
-    //   }
-    // });
   };
+  private restoreData() {
+    const recentlyClosedTabs = storage.settings.app.recentlyClosedTabs;
+
+    if (recentlyClosedTabs?.length > 0) {
+      for (const tabInfo of recentlyClosedTabs.reverse()) {
+        this.closedTabs.set(tabInfo.title, {
+          title: tabInfo.title,
+          url: tabInfo.url,
+        });
+      }
+    }
+  }
 
   private restoreTabs() {
     if (!storage.settings.app.saveLastOpenedTabs) {
@@ -150,18 +154,31 @@ export default class WindowManager {
   private closeTabFromMenu(windowId: number, tabId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
-    window.closeTab(tabId);
-    window.tabWasClosed(tabId);
+    this.handleCloseTab(window, tabId);
   }
   private closeCurrentTabFromMenu(windowId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
     const tabId = window.getLatestFocusedTabId();
 
     if (tabId) {
-      window.closeTab(tabId);
-      window.tabWasClosed(tabId);
+      this.handleCloseTab(window, tabId);
     }
   }
+  private handleCloseTab(window: Window, tabId: number) {
+    const tabInfo = window.getTabInfo(tabId);
+
+    this.closedTabs.delete(tabInfo.title);
+    this.closedTabs.set(tabInfo.title, {
+      title: tabInfo.title,
+      url: tabInfo.url,
+    });
+
+    storage.settings.app.recentlyClosedTabs = this.closedTabsForMenu;
+
+    window.closeTab(tabId);
+    window.tabWasClosed(tabId);
+  }
+
   private chromeGpu(windowId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
@@ -178,10 +195,10 @@ export default class WindowManager {
 
     window.setFocusToMainTab();
   }
-  private reopenClosedTab(windowId: number, webContentId: number) {
+  private restoreClosedTab(windowId: number, title: string, uri: string) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
-    window.restoreClosedTab();
+    window.addTab(uri, title);
   }
   private openDevTools(event: IpcMainEvent, mode: "right" | "bottom" | "undocked" | "detach") {
     if (event.sender) {
@@ -240,18 +257,43 @@ export default class WindowManager {
   }
   private openTabMenuHandler(_: IpcMainEvent, tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
+    const tabInfo = window.getTabInfo(tabId);
 
-    window.openTabMenu(tabId);
+    this.menuManager.openTabMenuHandler(window.win, tabId, tabInfo.url);
   }
   private openMainTabMenuHandler(_: IpcMainEvent) {
     const window = this.windows.get(this.lastFocusedwindowId);
+    const mainTabInfo = window.mainTabInfo;
 
-    window.openMainTabMenuHandler();
+    this.menuManager.openMainTabMenuHandler(window.win, mainTabInfo.id, mainTabInfo.url);
   }
   private openCommunityTabMenuHandler(_: IpcMainEvent) {
     const window = this.windows.get(this.lastFocusedwindowId);
+    const communityTabInfo = window.communityTabInfo;
 
-    window.openCommunityTabMenuHandler();
+    this.menuManager.openCommunityTabMenuHandler(
+      window.win,
+      communityTabInfo.id,
+      communityTabInfo.url,
+    );
+  }
+  private needUpdateMenu(windowId: number, tabId?: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
+    let state: Menu.State = {
+      recentClosedTabsMenuData: this.closedTabsForMenu,
+    };
+
+    if (tabId) {
+      const tabMenuState = this.menuManager.getTabMenu(tabId);
+      state = {
+        ...state,
+        ...tabMenuState,
+      };
+    }
+
+    const menu = this.menuManager.getMenu(state);
+
+    window.setMenu(menu);
   }
   private newProject(_: IpcMainEvent) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -266,7 +308,7 @@ export default class WindowManager {
   private closeTab(_: IpcMainEvent, tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
-    window.closeTab(tabId);
+    this.handleCloseTab(window, tabId);
   }
   private closeCommunityTab(_: IpcMainEvent) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -344,7 +386,12 @@ export default class WindowManager {
   private updateFullscreenMenuState(event: IpcMainEvent, state: Menu.State) {
     const window = this.getWindowByWebContentsId(event.sender.id);
 
-    window.updateFullscreenMenuState(event, state);
+    const menu = this.menuManager.getMenu({
+      recentClosedTabsMenuData: this.closedTabsForMenu,
+      ...state,
+    });
+
+    window.setMenu(menu);
   }
   private toggleThemeCreatorPreviewMask(path: string) {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -398,8 +445,13 @@ export default class WindowManager {
   }
   private openMainMenuHandler(event: IpcMainEvent) {
     const window = this.getWindowByWebContentsId(event.sender.id);
+    const width = window.getBounds().width;
 
-    window.openMainMenuHandler();
+    this.menuManager.openMainMenuHandler(
+      width,
+      window.win,
+      window.openMainMenuCloseHandler.bind(window),
+    );
   }
   private openSettingsView() {
     const window = this.windows.get(this.lastFocusedwindowId);
@@ -451,7 +503,7 @@ export default class WindowManager {
     app.on("chromeGpu", this.chromeGpu.bind(this));
     app.on("openFileUrlClipboard", this.openFileUrlClipboard.bind(this));
     app.on("openFileBrowser", this.openFileBrowser.bind(this));
-    app.on("reopenClosedTab", this.reopenClosedTab.bind(this));
+    app.on("restoreClosedTab", this.restoreClosedTab.bind(this));
     app.on("openSettingsView", this.openSettingsView.bind(this));
     // End events from main menu
 
@@ -467,5 +519,6 @@ export default class WindowManager {
     app.on("toggleCurrentWindowDevTools", this.toggleCurrentWindowDevTools.bind(this));
     app.on("toggleSettingsDeveloperTools", this.toggleSettingsDevTools.bind(this));
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
+    app.on("needUpdateMenu", this.needUpdateMenu.bind(this));
   }
 }

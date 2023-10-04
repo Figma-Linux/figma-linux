@@ -172,6 +172,7 @@ export default class App {
       useSessionCookies: true,
     });
 
+    // TODO: remove only current user's id
     storage.settings.authedUserIDs = [];
 
     try {

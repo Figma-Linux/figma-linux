@@ -37,6 +37,9 @@ export default class MainTab {
   public loadUrl(url: string) {
     this.view.webContents.loadURL(url);
   }
+  public getUrl() {
+    return this.view.webContents.getURL();
+  }
   public loadLoginPage() {
     this.view.webContents.loadURL(LOGIN_PAGE);
   }

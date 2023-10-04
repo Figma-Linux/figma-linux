@@ -22,7 +22,10 @@ declare namespace Electron {
     on(event: "chromeGpu", listener: (windowId: number) => void): this;
     on(event: "openFileUrlClipboard", listener: (sender: Electron.WebContents) => void): this;
     on(event: "openFileBrowser", listener: (sender: Electron.WebContents) => void): this;
-    on(event: "reopenClosedTab", listener: (sender: Electron.WebContents) => void): this;
+    on(
+      event: "restoreClosedTab",
+      listener: (windowId: number, title: string, uri: string) => void,
+    ): this;
     on(event: "handle-page-command", listener: (item: any, window: BrowserWindow) => void): this;
     on(event: "log", listener: (data: any) => void): this;
     on(event: "signOut", listener: () => void): this;
@@ -52,6 +55,7 @@ declare namespace Electron {
     on(event: "quitApp", listener: () => void): this;
     on(event: "reloadCurrentTheme", listener: () => void): this;
     on(event: "focusLastWindow", listener: () => void): this;
+    on(event: "needUpdateMenu", listener: (windowId: number, tabId?: number) => void): this;
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
@@ -64,7 +68,7 @@ declare namespace Electron {
     emit(event: "chromeGpu", windowId: number): boolean;
     emit(event: "openFileUrlClipboard", sender: Electron.WebContents): boolean;
     emit(event: "openFileBrowser", sender: Electron.WebContents): boolean;
-    emit(event: "reopenClosedTab", sender: Electron.WebContents): boolean;
+    emit(event: "restoreClosedTab", windowId: number, title: string, uri: string): boolean;
     emit(event: "handle-page-command", item: any, window: BrowserWindow): boolean;
     emit(event: "log", data: any): boolean;
     emit(event: "signOut"): boolean;
@@ -95,6 +99,7 @@ declare namespace Electron {
     emit(event: "quitApp"): void;
     emit(event: "reloadCurrentTheme"): void;
     emit(event: "focusLastWindow"): void;
+    emit(event: "needUpdateMenu", windowId: number, tabId?: number): void;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {

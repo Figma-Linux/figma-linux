@@ -1,7 +1,6 @@
 import { app, ipcMain, Rectangle, IpcMainEvent } from "electron";
 
 import { NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
-import { toggleDetachedDevTools } from "Utils/Main";
 import MainTab from "./MainTab";
 import CommunityTab from "./CommunityTab";
 import Tab from "./Tab";

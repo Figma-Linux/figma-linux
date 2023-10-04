@@ -22,6 +22,7 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
       "/run/host/user-fonts",
       `${process.env.HOME}/.local/share/fonts`,
     ],
+    recentlyClosedTabs: [],
     lastOpenedTabs: {},
     featureFlags: {},
     savedExtensions: [],

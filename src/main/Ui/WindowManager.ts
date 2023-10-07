@@ -40,21 +40,35 @@ export default class WindowManager {
     window.openUrl(url);
   }
 
-  public newWindow() {
+  public newWindow(windowOpts?: Types.WindowInitOpts) {
     const menu = this.menuManager.getMenu({
       recentClosedTabsMenuData: this.closedTabsForMenu,
       actionCheckedState: {
         "close-tab": false,
       },
     });
-    const window = new Window();
+    const window = new Window(windowOpts);
 
     this.lastFocusedwindowId = window.id;
     this.windows.set(window.id, window);
 
     window.focus();
     window.setMenu(menu);
-    this.restoreTabs();
+  }
+  public restoreState() {
+    if (
+      !storage.settings.app.windowsState ||
+      Object.keys(storage.settings.app.windowsState).length === 0
+    ) {
+      this.newWindow();
+      return;
+    }
+
+    const windowsInitData = Object.values(storage.settings.app.windowsState);
+
+    for (const data of windowsInitData) {
+      this.newWindow(data);
+    }
   }
 
   public openUrlInNewTab(url: string) {
@@ -112,6 +126,18 @@ export default class WindowManager {
 
     window.focus();
   }
+  public saveState() {
+    storage.settings.app.windowsState = {};
+
+    for (const [_, window] of this.windows) {
+      const state = window.getState();
+
+      storage.settings.app.windowsState[state.windowId] = {
+        userId: state.userId,
+        tabs: state.tabs,
+      };
+    }
+  }
 
   private addIpc = (): void => {
     ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
@@ -132,16 +158,6 @@ export default class WindowManager {
         });
       }
     }
-  }
-
-  private restoreTabs() {
-    if (!storage.settings.app.saveLastOpenedTabs) {
-      return;
-    }
-
-    const window = this.windows.get(this.lastFocusedwindowId);
-
-    window.restoreTabs();
   }
 
   private newFile(_: WebContents) {
@@ -271,7 +287,6 @@ export default class WindowManager {
   private windowClose(windowId: number) {
     const window = this.windows.get(windowId);
 
-    window.saveOpenedTabs();
     window.close();
 
     this.windows.delete(windowId);

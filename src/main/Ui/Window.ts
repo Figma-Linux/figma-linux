@@ -22,7 +22,7 @@ export default class Window {
 
   private _userId: string;
 
-  constructor() {
+  constructor(windowOpts?: Types.WindowInitOpts) {
     this.window = new BrowserWindow(WINDOW_DEFAULT_OPTIONS);
     this.tabManager = new TabManager(this.window.id);
     this.settingsView = new SettingsView();
@@ -30,10 +30,11 @@ export default class Window {
     this.window.addBrowserView(this.tabManager.mainTab.view);
     this.window.setTopBrowserView(this.tabManager.mainTab.view);
 
+    this.registerEvents();
+
     this.window.loadURL(isDev ? panelUrlDev : panelUrlProd);
     isDev && toggleDetachedDevTools(this.window.webContents);
-
-    this.registerEvents();
+    windowOpts && this.applyOptions(windowOpts);
   }
 
   public get id() {
@@ -87,17 +88,21 @@ export default class Window {
   public sortTabs(tabs: Types.TabFront[]) {
     this.tabManager.sortTabs(tabs);
   }
-  public saveOpenedTabs() {
-    storage.settings.app.hasOpenedCommunityTab = this.tabManager.hasOpenedCommunityTab;
-    storage.settings.app.lastOpenedTabs = {};
-    storage.settings.app.lastOpenedTabs[this.id] = [];
+  public getState() {
+    const tabs: Types.SavedTab[] = [];
 
     for (const [_, tab] of this.tabs) {
-      storage.settings.app.lastOpenedTabs[this.id].push({
+      tabs.push({
         title: tab.title,
         url: tab.url,
       });
     }
+
+    return {
+      windowId: this.id,
+      userId: this._userId,
+      tabs,
+    };
   }
   public restoreTabs(list?: Types.SavedTab[]) {
     const tabs =
@@ -116,9 +121,9 @@ export default class Window {
       tabs.forEach((tab, i) => {
         setTimeout(() => {
           this.addTab(tab.url, tab.title);
-        }, 500 * i);
+        }, 300 * i);
       });
-    }, 1000);
+    }, 100);
   }
   public calcBoundsForTabView(): Rectangle {
     const panelHeight = storage.settings.app.panelHeight;
@@ -301,6 +306,13 @@ export default class Window {
     this.window.removeBrowserView(this.settingsView.view);
 
     this.settingsView.postClose();
+  }
+  private applyOptions(windowOpts: Types.WindowInitOpts) {
+    windowOpts.userId && this.setUserId(windowOpts.userId);
+
+    if (storage.settings.app.saveLastOpenedTabs && windowOpts.tabs && windowOpts.tabs.length > 0) {
+      this.window.webContents.once("did-finish-load", () => this.restoreTabs(windowOpts.tabs));
+    }
   }
   private loadCurrentTheme(theme: Themes.Theme) {
     this.window.webContents.send("loadCurrentTheme", theme);

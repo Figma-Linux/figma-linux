@@ -65,7 +65,7 @@ export default class MenuManager {
 
     template.push({ type: "separator" });
 
-    template.push(this.item("Quit", "quitApp"));
+    template.push(this.item("Quit", "quitApp", "Ctrl+Alt+Q"));
 
     this.menu = Menu.buildFromTemplate(template);
 

@@ -66,7 +66,7 @@ export default class App {
   private ready = (): void => {
     const { figmaUrl } = Args();
 
-    this.windowManager.newWindow();
+    this.windowManager.restoreState();
     this.session.handleAppReady();
 
     setTimeout(() => {
@@ -127,7 +127,7 @@ export default class App {
       storage.save();
     }
 
-    storage.settings.authedUserIDs = [...storage.settings.authedUserIDs, ...userIds];
+    storage.settings.authedUserIDs = [...new Set([...storage.settings.authedUserIDs, ...userIds])];
   }
   private setWorkspaceName(_: IpcMainEvent, name: string) {
     logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
@@ -192,6 +192,7 @@ export default class App {
     app.quit();
   }
   private quitApp() {
+    this.windowManager.saveState();
     storage.save();
 
     app.quit();

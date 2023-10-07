@@ -28,6 +28,11 @@ declare namespace Types {
     view: import("electron").BrowserView;
   }
 
+  interface WindowInitOpts {
+    userId?: string;
+    tabs?: Types.SavedTab[];
+  }
+
   interface SavedTab {
     title?: string;
     url?: string;
@@ -62,6 +67,12 @@ declare namespace Types {
       exportDir: string;
       fontDirs: string[];
       recentlyClosedTabs: SavedTab[];
+      windowsState: {
+        [key: string]: {
+          userId: string;
+          tabs: SavedTab[];
+        };
+      };
       lastOpenedTabs:
         | {
             [key: string]: SavedTab[];

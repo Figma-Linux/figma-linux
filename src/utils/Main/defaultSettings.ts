@@ -23,6 +23,7 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
       `${process.env.HOME}/.local/share/fonts`,
     ],
     recentlyClosedTabs: [],
+    windowsState: {},
     lastOpenedTabs: {},
     featureFlags: {},
     savedExtensions: [],

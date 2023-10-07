@@ -168,6 +168,10 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, auth: { grantPath: string }) => void,
     ): this;
     on(
+      channel: "setInitialOptions",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.SetInitOptions) => void,
+    ): this;
+    on(
       channel: "finishAppAuth",
       listener: (event: IpcMainInvokeEvent, auth: { redirectURL: string }) => void,
     ): this;
@@ -175,6 +179,7 @@ declare namespace Electron {
       channel: "setAuthedUsers",
       listener: (event: IpcMainInvokeEvent, userIds: string[]) => void,
     ): this;
+    on(channel: "setUser", listener: (event: IpcMainInvokeEvent, userId: string) => void): this;
     on(
       channel: "setUsingMicrophone",
       listener: (event: IpcMainInvokeEvent, isUsingMicrophone: boolean) => void,
@@ -433,6 +438,8 @@ declare namespace Electron {
     send(channed: "changeTheme", theme: Themes.Theme): this;
     send(channed: "windowClose", tabs: Types.TabFront[]): this;
     send(channed: "toggleThemeCreatorPreviewMask"): this;
+    send(channed: "setInitialOptions", data: WebApi.SetInitOptions): this;
+    send(channed: "setUser", userId: string): this;
 
     sendSync(channed: "getSettings"): Types.SettingsInterface;
 

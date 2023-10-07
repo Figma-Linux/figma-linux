@@ -91,4 +91,19 @@ declare namespace WebApi {
   interface SetFigjamEnabled {
     figjamEnabled: boolean;
   }
+  interface NavigationConfigRule {
+    test: string;
+    urlType: string;
+    normalizedPath?: any;
+    title?: any;
+    isNewFile?: boolean;
+  }
+  interface NavigationConfig {
+    rules: NavigationConfigRule[];
+  }
+  interface SetInitOptions {
+    userId: string;
+    orgId: string | null;
+    navigationConfig: NavigationConfig;
+  }
 }

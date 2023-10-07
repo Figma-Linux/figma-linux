@@ -122,15 +122,12 @@ export default class App {
     this.themeManager.loadCreatorTheme();
   }
   private setAuthedUsers(_: IpcMainEvent, userIds: string[]) {
-    const figmaUserIDs = storage.settings.authedUserIDs;
-
-    if (!util.isDeepStrictEqual(figmaUserIDs, userIds)) {
+    if (!Array.isArray(storage.settings.authedUserIDs)) {
       storage.settings.authedUserIDs = userIds;
+      storage.save();
     }
 
-    if (userIds.length === 1) {
-      storage.settings.userId = userIds[0];
-    }
+    storage.settings.authedUserIDs = [...storage.settings.authedUserIDs, ...userIds];
   }
   private setWorkspaceName(_: IpcMainEvent, name: string) {
     logger.info("The setWorkspaceName not implemented, workspaceName: ", name);

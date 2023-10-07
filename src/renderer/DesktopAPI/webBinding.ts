@@ -184,7 +184,7 @@ const publicAPI: any = {
   },
 
   setUser(args: WebApi.SetUser) {
-    sendMsgToMain("setAuthedUsers", [args.id]);
+    sendMsgToMain("setUser", args.id);
   },
   setUsingMicrophone(args: WebApi.SetUsingMic) {
     sendMsgToMain("setUsingMicrophone", args.isUsingMicrophone);
@@ -299,14 +299,9 @@ const publicAPI: any = {
   //   console.log("setRealtimeToken, args: ", args);
   //   // n.send("setRealtimeToken", e.getString("realtimeToken"), e.getString("fileKey"));
   // },
-  // setInitialOptions(args: any) {
-  //   console.log("isTabOpen, args: ", args);
-  //   // let t = e.getString("userId"),
-  //   //   s = e.getString("orgId", "") || void 0,
-  //   //   r = e.getObjectOrNull("navigationConfig");
-  //   // n.send("setInitialOptions", t, s, r),
-  //   //   w.crashReporter.addExtraParameter("sentry[user][figma_id]", t);
-  // },
+  setInitialOptions(args: WebApi.SetInitOptions) {
+    sendMsgToMain("setInitialOptions", args);
+  },
   // setTheme(args: any) {
   //   console.log("isTabOpen, args: ", args);
   //   // n.send("setTheme", e.getString("theme", "dark"));

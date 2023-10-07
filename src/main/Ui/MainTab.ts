@@ -26,6 +26,17 @@ import { storage } from "Main/Storage";
 import { logger } from "Main/Logger";
 
 export default class MainTab {
+  private _userId: string;
+  private options: BrowserViewConstructorOptions = {
+    webPreferences: {
+      nodeIntegration: false,
+      webgl: true,
+      contextIsolation: false,
+      zoomFactor: 1,
+      preload: isDev ? preloadMainScriptPathDev : preloadMainScriptPathProd,
+    },
+  };
+
   public id: number;
   public view: BrowserView;
 
@@ -34,6 +45,14 @@ export default class MainTab {
     this.registerEvents();
   }
 
+  public setUserId(id: string) {
+    if (this._userId !== id) {
+      const url = `${RECENT_FILES}/?fuid=${id}`;
+      this.loadUrl(url);
+    }
+
+    this._userId = id;
+  }
   public loadUrl(url: string) {
     this.view.webContents.loadURL(url);
   }
@@ -62,20 +81,10 @@ export default class MainTab {
   }
 
   private initTab() {
-    const userId = storage.settings.userId;
-    const url = `${RECENT_FILES}/?fuid=${userId}`;
+    this._userId = storage.settings.userId;
+    const url = `${RECENT_FILES}/?fuid=${this._userId}`;
 
-    const options: BrowserViewConstructorOptions = {
-      webPreferences: {
-        nodeIntegration: false,
-        webgl: true,
-        contextIsolation: false,
-        zoomFactor: 1,
-        preload: isDev ? preloadMainScriptPathDev : preloadMainScriptPathProd,
-      },
-    };
-
-    this.view = new BrowserView(options);
+    this.view = new BrowserView(this.options);
     this.id = this.view.webContents.id;
 
     this.loadUrl(url);

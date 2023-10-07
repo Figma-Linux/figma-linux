@@ -29,6 +29,9 @@ export default class TabManager {
     this.registerEvents();
   }
 
+  public setUserId(id: string) {
+    this.mainTab.setUserId(id);
+  }
   public addTab(url = RECENT_FILES, title?: string): Tab {
     const tab = new Tab(this.windowId);
 

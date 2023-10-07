@@ -218,6 +218,16 @@ export default class WindowManager {
       event.sender.openDevTools({ mode });
     }
   }
+  private setUser(event: IpcMainEvent, userId: string) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.setUserId(userId);
+  }
+  private setInitialOptions(event: IpcMainEvent, data: WebApi.SetInitOptions) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.setUserId(data.userId);
+  }
   private startAppAuth(event: IpcMainEvent, data: { grantPath: string }) {
     if (isAppAuthGrandLink(data.grantPath)) {
       const url = `${HOMEPAGE}${data.grantPath}?desktop_protocol=figma`;
@@ -229,6 +239,8 @@ export default class WindowManager {
     const url = `${HOMEPAGE}${data.redirectURL}`;
 
     this.handleUrl(url);
+    this.reloadAllWindows();
+    this.tryHandleAppAuthRedeemUrl(data.redirectURL);
   }
 
   private getWindowByWebContentsId(webContentsId: number): Window | undefined {
@@ -236,6 +248,11 @@ export default class WindowManager {
       if (window.allWebContentsIds.includes(webContentsId)) {
         return window;
       }
+    }
+  }
+  private reloadAllWindows() {
+    for (const [_, window] of this.windows) {
+      window.reload();
     }
   }
   private windowFocus(windowId: number) {
@@ -487,6 +504,8 @@ export default class WindowManager {
     ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
     ipcMain.handle("createFile", this.createFile.bind(this));
 
+    ipcMain.on("setInitialOptions", this.setInitialOptions.bind(this));
+    ipcMain.on("setUser", this.setUser.bind(this));
     ipcMain.on("openDevTools", this.openDevTools.bind(this));
     ipcMain.on("startAppAuth", this.startAppAuth.bind(this));
     ipcMain.on("finishAppAuth", this.finishAppAuth.bind(this));

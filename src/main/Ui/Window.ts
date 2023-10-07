@@ -20,6 +20,8 @@ export default class Window {
   private tabManager: TabManager;
   private settingsView: SettingsView;
 
+  private _userId: string;
+
   constructor() {
     this.window = new BrowserWindow(WINDOW_DEFAULT_OPTIONS);
     this.tabManager = new TabManager(this.window.id);
@@ -78,6 +80,10 @@ export default class Window {
     return [...ids];
   }
 
+  public setUserId(id: string) {
+    this._userId = id;
+    this.tabManager.setUserId(id);
+  }
   public sortTabs(tabs: Types.TabFront[]) {
     this.tabManager.sortTabs(tabs);
   }
@@ -223,8 +229,7 @@ export default class Window {
       return;
     }
 
-    const userId = storage.settings.userId;
-    this.addTab(`${NEW_PROJECT_TAB_URL}?fuid=${userId}`, NEW_FILE_TAB_TITLE);
+    this.addTab(`${NEW_PROJECT_TAB_URL}?fuid=${this._userId}`, NEW_FILE_TAB_TITLE);
 
     this.window.webContents.send("newFileBtnVisible", false);
   }
@@ -304,6 +309,10 @@ export default class Window {
     this.window.minimize();
   }
   private windowMaimize(event: IpcMainEvent, windowId: number) {
+    if (!this.window || this.window.isDestroyed()) {
+      return;
+    }
+
     if (this.window.isMaximized()) {
       this.window.restore();
       event.reply("windowDidRestored");
@@ -318,7 +327,7 @@ export default class Window {
     if (hasOpenedCommunityTab) {
       this.openCommunity({
         path: "/@figma_linux",
-        userId: storage.settings.userId,
+        userId: this._userId,
       });
     }
 
@@ -344,6 +353,9 @@ export default class Window {
   }
   public setUsingMicrophone(tabId: number, isUsingMicrophone: boolean) {
     this.window.webContents.send("setUsingMicrophone", { id: tabId, isUsingMicrophone });
+  }
+  public reload() {
+    this.window.reload();
   }
   public reloadTab(tabId: number) {
     this.tabManager.reloadTab(tabId);

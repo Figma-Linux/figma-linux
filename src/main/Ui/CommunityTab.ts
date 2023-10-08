@@ -91,6 +91,7 @@ export default class CommunityTab {
 
     if (isRecentFilesLink(url)) {
       app.emit("openFileBrowser");
+      return;
     }
 
     shell.openExternal(url);

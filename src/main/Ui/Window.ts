@@ -11,7 +11,7 @@ import {
   NEW_PROJECT_TAB_URL,
   NEW_FILE_TAB_TITLE,
 } from "Const";
-import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl } from "Utils/Common";
+import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl, parseURL } from "Utils/Common";
 import { panelUrlDev, panelUrlProd, toggleDetachedDevTools } from "Utils/Main";
 import Tab from "./Tab";
 
@@ -273,7 +273,10 @@ export default class Window {
   }
 
   public addTab(url: string, title?: string) {
-    const tab = this.tabManager.addTab(url, title);
+    const parsedUrl = parseURL(url);
+    parsedUrl.searchParams.set("fuid", this._userId);
+
+    const tab = this.tabManager.addTab(parsedUrl.toString(), title);
 
     this.window.webContents.send("didTabAdd", {
       id: tab.id,

@@ -105,9 +105,7 @@ export default class SettingsView {
 
     this.disableThemesChanged = true;
   }
-  private syncThemesStart() {
-    toggleDetachedDevTools(this.view.webContents);
-  }
+  private syncThemesStart() {}
   private syncThemesEnd(themes: Themes.Theme[]) {
     this.view.webContents.send("themesLoaded", themes);
   }

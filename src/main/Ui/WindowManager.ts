@@ -339,8 +339,8 @@ export default class WindowManager {
         ...state,
         ...tabMenuState,
         actionCheckedState: {
-          ...state.actionCheckedState,
-          ...(tabMenuState.actionCheckedState ?? {}),
+          ...(state?.actionCheckedState ?? {}),
+          ...(tabMenuState?.actionCheckedState ?? {}),
           "close-tab": true,
         },
       };

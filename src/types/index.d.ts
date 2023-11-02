@@ -65,6 +65,10 @@ declare namespace Electron {
         actionCheckedState?: { [key: string]: boolean },
       ) => void,
     ): this;
+    on(
+      event: "handleCallbackForTab",
+      listener: (tabId: number, callbackID: number, args: any) => void,
+    ): this;
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
@@ -116,6 +120,7 @@ declare namespace Electron {
       tabId?: number,
       actionCheckedState?: { [key: string]: boolean },
     ): void;
+    emit(event: "handleCallbackForTab", tabId: number, callbackID: number, args: any): void;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -261,6 +266,18 @@ declare namespace Electron {
       listener: (event: IpcMainEvent, settings: Types.SettingsInterface) => void,
     ): this;
     on(channel: "requestMicrophonePermission", listener: (event: IpcMainEvent) => void): this;
+    on(
+      channel: "web-callback:registerManifestChangeObserver",
+      listener: (event: IpcMainEvent, callbackID: number, args?: any) => void,
+    ): this;
+    on(
+      channel: "web-callback:registerCodeChangeObserver",
+      listener: (event: IpcMainEvent, callbackID: number, args?: any) => void,
+    ): this;
+    on(
+      channel: "web-callback:registerUiChangeObserver",
+      listener: (event: IpcMainEvent, callbackID: number, args?: any) => void,
+    ): this;
 
     handle(
       channel: "writeNewExtensionToDisk",
@@ -319,11 +336,18 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, data: WebApi.GetFontFile) => Promise<void> | Buffer,
     ): void;
     handle(
-      channel: "add-font-directories",
-      listener: (event: IpcMainInvokeEvent) => Promise<string[] | null>,
+      channel: "selectExportDirectory",
+      listener: (event: IpcMainInvokeEvent) => Promise<string | null>,
     ): void;
     handle(
-      channel: "selectExportDirectory",
+      channel: "writeNewExtensionDirectoryToDisk",
+      listener: (
+        event: IpcMainInvokeEvent,
+        data: WebApi.WriteNewExtensionDirectoryToDisk,
+      ) => Promise<string | null>,
+    ): void;
+    handle(
+      channel: "getLocalManifestFileExtensionIdsToCachedMetadataMap",
       listener: (event: IpcMainInvokeEvent) => Promise<string | null>,
     ): void;
   }
@@ -440,6 +464,13 @@ declare namespace Electron {
     send(channed: "toggleThemeCreatorPreviewMask"): this;
     send(channed: "setInitialOptions", data: WebApi.SetInitOptions): this;
     send(channed: "setUser", userId: string): this;
+    send(
+      channed: "web-callback:registerManifestChangeObserver",
+      callbackID: number,
+      args?: any,
+    ): this;
+    send(channed: "web-callback:registerCodeChangeObserver", callbackID: number, args?: any): this;
+    send(channed: "web-callback:registerUiChangeObserver", callbackID: number, args?: any): this;
 
     sendSync(channed: "getSettings"): Types.SettingsInterface;
 
@@ -460,10 +491,14 @@ declare namespace Electron {
     invoke(channel: "writeFiles", data: WebApi.WriteFiles): Promise<void>;
     invoke(channel: "getFonts"): Promise<Fonts.IFonts>;
     invoke(channel: "getFontFile", data: WebApi.GetFontFile): Promise<Buffer>;
-    invoke(channel: "add-font-directories"): Promise<string[] | null>;
     invoke(channel: "selectExportDirectory"): Promise<string | null>;
     invoke(channel: "updatePanelScale", scale: number): this;
     invoke(channel: "requestMicrophonePermission"): this;
+    invoke(
+      channel: "writeNewExtensionDirectoryToDisk",
+      data: WebApi.WriteNewExtensionDirectoryToDisk,
+    ): this;
+    invoke(channel: "getLocalManifestFileExtensionIdsToCachedMetadataMap"): this;
   }
 
   interface WebContents extends NodeJS.EventEmitter {

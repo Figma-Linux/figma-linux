@@ -1,3 +1,7 @@
+export const ALLOW_EXT_FILES = /^(.+\.(html|js|ts)|manifest.json)$/;
+export const ALLOW_CODE_FILES = /^(.+\.(js|ts))$/;
+export const ALLOW_UI_FILES = /^(.+\.html)$/;
+
 export function sanitizeFileName(input: string): string {
   const illegalRe = /[\/\?<>\\:\*\|":]/g;
   const controlRe = /[\x00-\x1f\x80-\x9f]/g;

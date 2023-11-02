@@ -507,6 +507,9 @@ export default class Window {
   public updateVisibleNewProjectBtn(_: IpcMainEvent, visible: boolean) {
     this.window.webContents.send("updateVisibleNewProjectBtn", visible);
   }
+  public handleCallbackForTab(webContentsId: number, cbId: number, args: any) {
+    this.tabManager.handleCallbackForTab(webContentsId, cbId, args);
+  }
 
   public changeTheme(_: IpcMainEvent, theme: Themes.Theme) {
     this.loadCurrentTheme(theme);

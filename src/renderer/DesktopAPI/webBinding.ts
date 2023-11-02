@@ -88,7 +88,6 @@ const initWebApi = (props: IntiApiOptions) => {
       registeredCallbacks.set(id, callback);
       channel.port1.postMessage({ name, args, callbackID: id });
       return (): void => {
-        registeredCallbacks.delete(id); // TODO: is it okay to delete this? will it ever be needed after cancelled?
         channel.port1.postMessage({ cancelCallbackID: id });
       };
     },
@@ -330,29 +329,44 @@ const publicAPI: any = {
     sendMsgToMain("setFigjamEnabled", args.figjamEnabled);
   },
 
+  async writeNewExtensionDirectoryToDisk(args: WebApi.WriteNewExtensionDirectoryToDisk) {
+    const data = await E.ipcRenderer.invoke("writeNewExtensionDirectoryToDisk", args);
+
+    return { data };
+  },
+  async getLocalManifestFileExtensionIdsToCachedMetadataMap() {
+    const data = await E.ipcRenderer.invoke("getLocalManifestFileExtensionIdsToCachedMetadataMap");
+
+    return { data };
+  },
+
   async createMultipleNewLocalFileExtensions(args: WebApi.CreateMultipleExtension) {
     const result = await E.ipcRenderer.invoke("createMultipleNewLocalFileExtensions", args);
 
     return { data: result };
   },
   async getAllLocalManifestFileExtensionIds() {
-    const list = await E.ipcRenderer.invoke("getAllLocalFileExtensionIds");
-    return { data: list };
+    const result = await E.ipcRenderer.invoke("getAllLocalFileExtensionIds");
+    return { data: result };
   },
   async getLocalFileExtensionManifest(args: WebApi.ExtensionId) {
-    const manifest = await E.ipcRenderer.invoke("getLocalFileExtensionManifest", args.id);
+    const manifest = await E.ipcRenderer.invoke("getLocalFileExtensionManifest", args);
     return { data: manifest };
   },
   async getLocalFileExtensionSource(args: WebApi.ExtensionId) {
-    const source = await E.ipcRenderer.invoke("getLocalFileExtensionSource", args.id);
+    const source = await E.ipcRenderer.invoke("getLocalFileExtensionSource", args);
     return { data: source };
   },
   removeLocalFileExtension(args: WebApi.ExtensionId) {
-    E.ipcRenderer.send("removeLocalFileExtension", args.id);
+    E.ipcRenderer.send("removeLocalFileExtension", args);
   },
   openExtensionDirectory(args: WebApi.ExtensionId) {
-    E.ipcRenderer.send("openExtensionDirectory", args.id);
+    E.ipcRenderer.send("openExtensionDirectory", args);
   },
+  // TODO:
+  // openExtensionManifest(args: WebApi.ExtensionId) {
+  //   E.ipcRenderer.send("openExtensionManifest", args.id);
+  // },
   async writeNewExtensionToDisk(args: WebApi.WriteNewExtensionToDiskArgs) {
     const extId = await E.ipcRenderer.invoke("writeNewExtensionToDisk", args);
     return { data: extId };

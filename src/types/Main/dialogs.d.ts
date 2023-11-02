@@ -1,16 +1,21 @@
 declare namespace Dialogs {
   type Providers = "Native" | "Zenity";
   type Type = "error" | "warning" | "info" | "question";
+  type FileFilter = import("electron").FileFilter;
+  type OpenDialogOptions = import("electron").OpenDialogOptions;
 
-  interface SaveOptions {
+  interface CammonOptions {
     title?: string;
     defaultPath?: string;
+  }
+
+  interface SaveOptions extends CammonOptions {
     showsTagField?: boolean;
   }
-  interface OpenOptions {
+  interface OpenOptions extends CammonOptions {
     buttonLabel?: string;
-    defaultPath?: string;
-    properties?: string[];
+    properties?: OpenDialogOptions["properties"];
+    filters?: FileFilter[];
   }
 
   type MessageBoxOptions = ErrorBoxOptions | QuestionBoxOptions | WarningBoxOptions;

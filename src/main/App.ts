@@ -1,4 +1,3 @@
-import * as util from "util";
 import {
   app,
   session,
@@ -19,6 +18,7 @@ import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
 import Args from "./Args";
 import { logger } from "./Logger";
 import { storage } from "./Storage";
+import ExtensionManager from "./ExtensionManager";
 import ThemeManager from "./Ui/ThemeManager";
 import WindowManager from "./Ui/WindowManager";
 import Session from "./Session";
@@ -27,6 +27,7 @@ import FontManager from "./Fonts";
 export default class App {
   constructor(
     private windowManager: WindowManager,
+    private extensionManager: ExtensionManager,
     private session: Session,
     private fontManager: FontManager,
     private themeManager: ThemeManager,

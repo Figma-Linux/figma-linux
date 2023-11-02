@@ -2,20 +2,20 @@ import { parse } from "url";
 import {
   app,
   shell,
-  ipcMain,
-  BrowserView,
   Rectangle,
-  IpcMainEvent,
+  WebContents,
+  BrowserView,
   BrowserWindow,
+  HandlerDetails,
   DidCreateWindowDetails,
   BrowserViewConstructorOptions,
-  WebContents,
   PermissionRequestHandlerHandlerDetails,
 } from "electron";
 
 import { preloadScriptPathDev, preloadScriptPathProd } from "Utils/Main";
 import {
   isDev,
+  isFigmaUrl,
   isValidProjectLink,
   isPrototypeUrl,
   isAppAuthRedeem,
@@ -130,8 +130,6 @@ export default class Tab {
     const url = details.url;
     logger.debug("newWindow, url: ", url);
 
-    // window.close();
-
     if (/start_google_sso/.test(url)) return;
 
     if (isPrototypeUrl(url) || isValidProjectLink(url)) {
@@ -188,7 +186,19 @@ export default class Tab {
     return callback(false);
   }
 
+  private windowOpenHandler(details: HandlerDetails) {
+    const url = details.url;
+
+    if (isFigmaUrl(url)) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
+
+    return { action: "deny" };
+  }
+
   private registerEvents() {
+    this.view.webContents.setWindowOpenHandler(this.windowOpenHandler.bind(this));
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
     this.view.webContents.on("dom-ready", this.onDomReady.bind(this));
     this.view.webContents.on("did-create-window", this.onNewWindow.bind(this));

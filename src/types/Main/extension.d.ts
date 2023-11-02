@@ -3,17 +3,14 @@ declare namespace Extensions {
 
   type ManifestObserver = (args: Extensions.NotifyObserverParams) => void;
 
-  enum Observertype {
-    ADDED = "added",
-    CHANGED = "changed",
-    REMOVED = "removed",
-  }
+  type ObserverType = "changed" | "added" | "removed";
 
   interface Extension {
     path: string;
-    lastKnownName?: string;
-    manifestPath?: string;
-    watcher?: _FSWatcher;
+    lastKnownPluginId: string;
+    lastKnownName: string;
+    cachedContainsWidget: boolean;
+    observeFiles: Map<string, _FSWatcher>;
   }
   interface ExtensionWithManifest extends Extension {
     manifest: string;
@@ -22,17 +19,15 @@ declare namespace Extensions {
     error: string;
   }
 
-  interface ExtensionJson {
+  interface ExtensionJson extends Omit<Extension, "observeFiles"> {
     id: number;
-    path?: string;
-    lastKnownName?: string;
-    manifestPath?: string;
-    watcher?: _FSWatcher;
+    files: string[];
   }
 
   interface NotifyObserverParams {
     id: number;
     type: string;
+    manifestFileId?: number;
     localLoadResult?: Extension;
   }
 
@@ -46,6 +41,13 @@ declare namespace Extensions {
     id: string;
     api: string;
     main: string;
+    capabilities: string[];
+    enableProposedApi: boolean;
+    editorType: string[];
+    ui?: string | Dict<string>;
+    networkAccess?: {
+      allowedDomains: string[];
+    };
     build?: string;
   }
 

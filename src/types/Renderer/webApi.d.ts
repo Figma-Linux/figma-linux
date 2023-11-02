@@ -106,4 +106,21 @@ declare namespace WebApi {
     orgId: string | null;
     navigationConfig: NavigationConfig;
   }
+  interface WriteNewExtensionDirectoryToDiskFile {
+    name: string;
+    content: string;
+  }
+  interface WriteNewExtensionDirectoryToDisk {
+    dir: {
+      name: string;
+      dirs: string[];
+      files: WriteNewExtensionDirectoryToDiskFile[];
+    };
+  }
+  interface ExtensionsCachedMetadataMap {
+    [key: string]: {
+      lastKnownPluginId: string;
+      cachedContainsWidget: boolean;
+    };
+  }
 }

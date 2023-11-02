@@ -4,8 +4,6 @@ import {
   BrowserView,
   BrowserViewConstructorOptions,
   Rectangle,
-  BrowserWindow,
-  DidCreateWindowDetails,
   HandlerDetails,
 } from "electron";
 

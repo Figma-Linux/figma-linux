@@ -69,7 +69,7 @@ export class NativeDialogs implements ProviderDialog {
   };
 
   public showOpenDialog = async (options: Dialogs.OpenOptions) => {
-    const result = await dialog.showOpenDialog(null, options as OpenDialogOptions);
+    const result = await dialog.showOpenDialog(null, options);
     return !result.canceled ? result.filePaths : null;
   };
   public showOpenDialogSync = (options: Dialogs.OpenOptions) => {

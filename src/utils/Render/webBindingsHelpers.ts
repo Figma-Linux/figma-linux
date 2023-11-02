@@ -1,12 +1,7 @@
 import type { Event } from "electron";
 import { ipcRenderer } from "electron";
 
-export const postCallbackMessageToMainProcess = (channel: string, ...args: any[]) => {
-  ipcRenderer.send(`web-callback:${channel}`, ...args);
-};
-
 export const sendMsgToMain = (msg: string, ...data: any[]) => {
-  console.log(`sendMsgToMain, msg: "${msg}", args: `, data);
   ipcRenderer.send(msg, ...data);
 };
 
@@ -27,7 +22,7 @@ export const registerCallbackWithMainProcess = (() => {
     const callbackID = nextCallbackID++;
     registeredCallbacks.set(callbackID, callback);
 
-    ipcRenderer.send(`web-callback:${channel}`, args, callbackID);
+    ipcRenderer.send(`web-callback:${channel}`, callbackID, args);
 
     return () => {
       // TODO: this message is not handled anywhere

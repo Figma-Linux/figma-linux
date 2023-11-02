@@ -1,3 +1,5 @@
+import * as fs from "fs";
+import * as path from "path";
 import { app, shell, clipboard, ipcMain, IpcMainEvent, WebContents } from "electron";
 
 import Window from "./Window";
@@ -6,7 +8,7 @@ import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
 import { HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
-import { registerIpcMainHandlers } from "Main/events";
+import { mkPath } from "Utils/Main";
 
 export default class WindowManager {
   private menuManager: MenuManager;
@@ -20,7 +22,6 @@ export default class WindowManager {
 
     this.addIpc();
     this.restoreData();
-    registerIpcMainHandlers();
 
     this.registerEvents();
   }
@@ -360,6 +361,76 @@ export default class WindowManager {
 
     return window.createFile(args);
   }
+  private async isDevToolsOpened(event: IpcMainEvent) {
+    return event.sender.isDevToolsOpened();
+  }
+  private async themesIsDisabled(event: IpcMainEvent) {
+    return storage.settings.app.disableThemes;
+  }
+  private async writeFiles(event: IpcMainEvent, args: WebApi.WriteFiles) {
+    const files = args.files;
+
+    if (!files.length) {
+      return;
+    }
+
+    let skipReplaceConfirmation = false;
+    let directoryPath = null;
+    const lastDir = storage.settings.app.lastExportDir || storage.settings.app.exportDir;
+
+    if (files.length === 1 && !files[0].name.includes(path.sep)) {
+      const originalFileName = files[0].name;
+      const savePath = await dialogs.showSaveDialog({
+        title: "Choose directory for export file",
+        defaultPath: `${lastDir}/${path.basename(originalFileName)}`,
+        showsTagField: false,
+      });
+
+      if (savePath) {
+        directoryPath = path.dirname(savePath);
+        files[0].name = path.basename(savePath);
+        if (path.extname(files[0].name) === "") {
+          files[0].name += path.extname(originalFileName);
+        } else {
+          skipReplaceConfirmation = true;
+        }
+
+        storage.settings.app.lastExportDir = path.parse(savePath).dir;
+      }
+    } else {
+      const directories = await dialogs.showOpenDialog({
+        title: "Choose directory for export files",
+        properties: ["openDirectory", "createDirectory"],
+        buttonLabel: "Save",
+        defaultPath: lastDir,
+      });
+      if (!directories || directories.length !== 1) {
+        return;
+      }
+      directoryPath = directories[0];
+      storage.settings.app.lastExportDir = directoryPath;
+    }
+
+    if (!directoryPath) {
+      return;
+    }
+
+    for (const file of files) {
+      const outputPath = path.join(directoryPath, file.name);
+      await mkPath(path.dirname(outputPath));
+
+      try {
+        await fs.promises.writeFile(outputPath, Buffer.from(file.buffer), { encoding: "binary" });
+      } catch (ex) {
+        await dialogs.showMessageBox({
+          type: "error",
+          title: "Export Failed",
+          message: "Saving file failed",
+          detail: `"${file.name}" could not be saved. Remaining files will not be saved.`,
+        });
+      }
+    }
+  }
   private closeTab(_: IpcMainEvent, tabId: number) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
@@ -512,12 +583,20 @@ export default class WindowManager {
 
     window.openSettingsView();
   }
+  private handleCallbackForTab(webContentsId: number, cbId: number, args: any) {
+    const window = this.getWindowByWebContentsId(webContentsId);
+
+    window.handleCallbackForTab(webContentsId, cbId, args);
+  }
 
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
     ipcMain.handle("updatePanelScale", this.updatePanelScale.bind(this));
     ipcMain.handle("updateFigmaUiScale", this.updateFigmaUiScale.bind(this));
     ipcMain.handle("createFile", this.createFile.bind(this));
+    ipcMain.handle("isDevToolsOpened", this.isDevToolsOpened.bind(this));
+    ipcMain.handle("themesIsDisabled", this.themesIsDisabled.bind(this));
+    ipcMain.handle("writeFiles", this.writeFiles.bind(this));
 
     ipcMain.on("setInitialOptions", this.setInitialOptions.bind(this));
     ipcMain.on("setUser", this.setUser.bind(this));
@@ -578,5 +657,6 @@ export default class WindowManager {
     app.on("toggleSettingsDeveloperTools", this.toggleSettingsDevTools.bind(this));
     app.on("toggleCurrentTabDevTools", this.toggleCurrentTabDevTools.bind(this));
     app.on("needUpdateMenu", this.needUpdateMenu.bind(this));
+    app.on("handleCallbackForTab", this.handleCallbackForTab.bind(this));
   }
 }

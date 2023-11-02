@@ -56,6 +56,11 @@ export default class TabManager {
 
     this.communityTab = undefined;
   }
+  public handleCallbackForTab(webContentsId: number, callbackID: number, args: any) {
+    const tab = this.getById(webContentsId);
+
+    tab.view.webContents.send("handleCallback", callbackID, args);
+  }
 
   public closeAll() {
     this.tabs.clear();

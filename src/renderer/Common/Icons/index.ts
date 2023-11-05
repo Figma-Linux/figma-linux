@@ -31,5 +31,6 @@ export { default as Settings } from "./Settings.svelte";
 export { default as Sync } from "./Sync.svelte";
 export { default as UnMuted } from "./UnMuted.svelte";
 export { default as Download } from "./Download.svelte";
+export { default as Loader } from "./Loader.svelte";
 export { default as RadioNormal } from "./RadioNormal.svelte";
 export { default as RadioChecked } from "./RadioChecked.svelte";

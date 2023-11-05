@@ -2,6 +2,9 @@ declare namespace WebApi {
   interface SetPluginMenuDataProps {
     data: Menu.MenuItem[];
   }
+  interface SetLoading {
+    loading: boolean;
+  }
 
   interface WriteNewExtensionToDiskArgs {
     dirName: string;

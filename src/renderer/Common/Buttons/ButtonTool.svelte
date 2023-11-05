@@ -34,6 +34,8 @@
 
 <div
   on:mouseup|capture={clickHandler}
+  on:mouseenter={(e) => dispatch("mouseenter", e)}
+  on:mouseleave={(e) => dispatch("mouseleave", e)}
   style={`
     --padding: ${padding};
     --width: ${width};

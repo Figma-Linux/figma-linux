@@ -338,6 +338,16 @@ export default class Window {
   private loadCurrentTheme(theme: Themes.Theme) {
     this.window.webContents.send("loadCurrentTheme", theme);
   }
+  public setLoading(event: IpcMainEvent, args: WebApi.SetLoading) {
+    const tabId = event.sender.id;
+    const tab = this.tabManager.getById(tabId);
+
+    if (!tab) {
+      return;
+    }
+
+    this.window.webContents.send("setLoading", tabId, args.loading);
+  }
   public windowMinimize(event: IpcMainEvent) {
     this.window.minimize();
   }

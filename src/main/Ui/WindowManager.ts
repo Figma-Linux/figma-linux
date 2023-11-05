@@ -595,6 +595,11 @@ export default class WindowManager {
 
     window.windowMaimize(event);
   }
+  private setLoading(event: IpcMainEvent, args: WebApi.SetLoading) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.setLoading(event, args);
+  }
 
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
@@ -635,6 +640,7 @@ export default class WindowManager {
     ipcMain.on("updateFullscreenMenuState", this.updateFullscreenMenuState.bind(this));
     ipcMain.on("windowMinimize", this.windowMinimize.bind(this));
     ipcMain.on("windowMaximize", this.windowMaimize.bind(this));
+    ipcMain.on("setLoading", this.setLoading.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

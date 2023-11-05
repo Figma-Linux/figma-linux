@@ -2,10 +2,12 @@
   import { flip } from "svelte/animate";
   import { dndzone } from "../../svelte-dnd-action";
   import { ButtonTool } from "Common/Buttons";
-  import { Close } from "Icons";
+  import { Loader, Close } from "Icons";
+  import { Spiner } from "Common";
 
   export let currentTabId: number | undefined;
   export let items: Types.TabFront[] = [];
+  const loadingItems: Dict<boolean> = {};
   const flipDurationMs = 150;
   const constrainAxisY = true;
   const cursorStartDrag = "default";
@@ -19,6 +21,17 @@
   export let onClickClose = (event: CustomEvent, id: number) => {};
   export let onDndConsider = (event: any) => {};
   export let onDndFinalize = (event: any) => {};
+
+  function onHover(e: CustomEvent<MouseEvent>, itemId: number) {
+    loadingItems[itemId] = false;
+  }
+  function onLeave(e: CustomEvent<MouseEvent>, itemId: number) {
+    loadingItems[itemId] = true;
+  }
+
+  $: for (const item of items) {
+    loadingItems[item.id] = true;
+  }
 </script>
 
 <section
@@ -61,8 +74,16 @@
         {normalBgColor}
         {hoverBgColor}
         on:buttonClick={(e) => onClickClose(e, item.id)}
+        on:mouseenter={(e) => onHover(e, item.id)}
+        on:mouseleave={(e) => onLeave(e, item.id)}
       >
-        <Close size="12" />
+        {#if item.loading && loadingItems[item.id]}
+          <Spiner spin={true}>
+            <Loader size="14" />
+          </Spiner>
+        {:else}
+          <Close size="14" />
+        {/if}
       </ButtonTool>
     </div>
   {/each}

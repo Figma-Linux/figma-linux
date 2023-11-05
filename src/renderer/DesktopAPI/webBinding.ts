@@ -274,8 +274,8 @@ const publicAPI: any = {
   close(args: any) {
     sendMsgToMain("closeTab", args.suppressReopening);
   },
-  setLoading(args: any) {
-    sendMsgToMain("updateLoadingStatus", args.loading);
+  setLoading(args: WebApi.SetLoading) {
+    sendMsgToMain("setLoading", args);
   },
   setSaved(args: any) {
     sendMsgToMain("updateSaveStatus", args.saved);

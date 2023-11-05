@@ -22,6 +22,7 @@ function createTabs() {
             focused: data.focused,
             isUsingMicrophone: false,
             isInVoiceCall: false,
+            loading: true,
           },
         ].sort((a, b) => (a.order > b.order ? 1 : -1)),
       ),

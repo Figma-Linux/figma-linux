@@ -9,11 +9,15 @@ declare namespace Types {
     focused?: boolean;
     isUsingMicrophone?: boolean;
     isInVoiceCall?: boolean;
+    loading?: boolean;
     view: import("electron").BrowserView;
   }
 
   type TabIdType = number | "mainTab" | "communityTab";
-  type TabFront = Pick<Tab, "id" | "title" | "order" | "isUsingMicrophone" | "isInVoiceCall">;
+  type TabFront = Pick<
+    Tab,
+    "id" | "title" | "order" | "isUsingMicrophone" | "isInVoiceCall" | "loading"
+  >;
 
   interface AddTabProps {
     id: number;

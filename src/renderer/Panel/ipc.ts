@@ -74,4 +74,7 @@ export function initIpc() {
     communityTabVisible.set(false);
     currentTab.set("mainTab");
   });
+  ipcRenderer.on("setLoading", (_, tabId, loading) => {
+    tabs.updateTab({ id: tabId, loading });
+  });
 }

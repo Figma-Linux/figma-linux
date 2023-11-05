@@ -410,6 +410,10 @@ declare namespace Electron {
     ): this;
     on(channel: "communityTabWasClose", listener: (event: IpcRendererEvent) => void): this;
     on(
+      channel: "setLoading",
+      listener: (event: IpcRendererEvent, tabId: number, loading: boolean) => void,
+    ): this;
+    on(
       channel: "loadSettings",
       listener: (event: IpcRendererEvent, settings: Types.SettingsInterface) => void,
     ): this;
@@ -524,6 +528,7 @@ declare namespace Electron {
     send(channel: "syncThemesEnd", theme: Themes.Theme): this;
     send(channel: "isMainMenuOpen", isOpen: boolean): this;
     send(channel: "communityTabWasClose", isOpen: boolean): this;
+    send(channel: "loading", tabId: number, loading: boolean): this;
     send(channel: "loadSettings", settings: Types.SettingsInterface): this;
     send(channel: "getThemeCreatorPalette", palette: Themes.Palette): this;
     send(channel: "changeZoomFactor", zoom: number): this;

@@ -22,10 +22,10 @@
   <ButtonWindow isActive={$isMenuOpen} on:buttonClick={clickMenu}>
     <Corner size="14" />
   </ButtonWindow>
-  <ButtonWindow on:buttonClick={() => ipcRenderer.send("window-minimize")}>
+  <ButtonWindow on:buttonClick={() => ipcRenderer.send("windowMinimize")}>
     <Minimize size="16" />
   </ButtonWindow>
-  <ButtonWindow on:buttonClick={() => ipcRenderer.send("window-maximize")}>
+  <ButtonWindow on:buttonClick={() => ipcRenderer.send("windowMaximize")}>
     <Maximize size="16" />
   </ButtonWindow>
   <ButtonWindow hoverBgColor={"var(--bg-window-close)"} on:buttonClick={closeHandler}>

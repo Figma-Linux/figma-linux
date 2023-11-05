@@ -585,6 +585,16 @@ export default class WindowManager {
 
     window.handleCallbackForTab(webContentsId, cbId, args);
   }
+  private windowMinimize(event: IpcMainEvent) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.windowMinimize(event);
+  }
+  private windowMaimize(event: IpcMainEvent) {
+    const window = this.getWindowByWebContentsId(event.sender.id);
+
+    window.windowMaimize(event);
+  }
 
   private registerEvents() {
     ipcMain.handle("selectExportDirectory", this.selectExportDirectory);
@@ -623,6 +633,8 @@ export default class WindowManager {
     ipcMain.on("updateVisibleNewProjectBtn", this.updateVisibleNewProjectBtn.bind(this));
     ipcMain.on("frontReady", this.handleFrontReady.bind(this));
     ipcMain.on("updateFullscreenMenuState", this.updateFullscreenMenuState.bind(this));
+    ipcMain.on("windowMinimize", this.windowMinimize.bind(this));
+    ipcMain.on("windowMaximize", this.windowMaimize.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));

@@ -17,6 +17,12 @@
       item.scrollLeft -= 50;
     }
   }
+  function dblclickHandler(e: MouseEvent) {
+    ipcRenderer.send("windowMaximize");
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    e.stopPropagation();
+  }
 
   function onClickTitle(event: MouseEvent, id: number) {
     switch (event.button) {
@@ -66,7 +72,7 @@
   });
 </script>
 
-<div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler}>
+<div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler} on:dblclick={dblclickHandler}>
   <List
     bind:items={$tabs}
     {currentTabId}
@@ -88,6 +94,7 @@
     overflow-x: scroll;
     outline: none !important;
     color: var(--fg-tab) !important;
+    -webkit-app-region: drag;
   }
   .panel-tabs:focus-visible {
     outline: none !important;

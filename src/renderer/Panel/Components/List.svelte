@@ -108,6 +108,7 @@
     background-color: var(--bg-tab);
     transition: all 0.08s ease;
     outline: none !important;
+    -webkit-app-region: no-drag;
   }
   .panel-tab:hover {
     background-color: var(--bg-tab-hover);

@@ -236,7 +236,7 @@ export class ThemesApplier {
           cssRule.style["background-color"] = `var(--bg-panel-hover)`;
         }
         if (
-          /community_hub_link--communityArrow|new_file_creation_topbar--plusIcon/.test(
+          /community_hub_link--communityArrow|new_file_creation_topbar--plusIcon|timer_view--plusIcon|delightful_toolbar--verticalButton/.test(
             cssRule.selectorText,
           )
         ) {
@@ -251,14 +251,22 @@ export class ThemesApplier {
           cssRule.style["fill"] = `var(--text-active)`;
         }
         if (
+          /search--searchInput__OLD|public-DraftEditorPlaceholder-root/.test(cssRule.selectorText)
+        ) {
+          cssRule.style["color"] = `var(--text-disabled)`;
+        }
+        if (
           /optionDisabled|formatted_expanding_textarea--placeholder|expanding_textarea--expandingTextarea--*::placeholder/.test(
             cssRule.selectorText,
           )
         ) {
           additionStyleRules.push(`${cssRule.selectorText} { color: var(--text-disabled); }`);
         }
-        if (/.text--_negText/.test(cssRule.selectorText)) {
-          additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
+        if (/filename_view--pageTitle/.test(cssRule.selectorText)) {
+          cssRule.style["color"] = `var(--fg-header)`;
+        }
+        if (/starter_kit_ui--option/.test(cssRule.selectorText)) {
+          cssRule.style["color"] = `black`;
         }
         if (/.navbar--workspaceSubtitle/.test(cssRule.selectorText)) {
           additionStyleRules.push(`${cssRule.selectorText} { color: var(--fg-header); }`);
@@ -281,7 +289,7 @@ export class ThemesApplier {
           cssRule.style["backgroundColor"] = `var(--bg-panel)`;
         }
         if (
-          /step_breadcrumb--stepTitle|account_switcher--dropdownButtonContent/.test(
+          /step_breadcrumb--stepTitle|account_switcher--dropdownButtonContent|time_display--timeDisplay/.test(
             cssRule.selectorText,
           )
         ) {
@@ -290,11 +298,27 @@ export class ThemesApplier {
         if (/toolbar_view--shareButton|basic_form--primaryBtn/.test(cssRule.selectorText)) {
           cssRule.style["color"] = `var(--fg-toolbar-active)`;
         }
+        if (/time_display--timeInput/.test(cssRule.selectorText)) {
+          additionStyleRules.push(`input${cssRule.selectorText} { color: var(--text-disabled) }`);
+        }
         if (/.data-preferred-theme=.{3,20}\s?navbar--navbarContainer/.test(cssRule.selectorText)) {
           this.targetElements.add(cssRule);
           this.applyPalette(this.currentTheme.palette, cssRule);
         }
-        if (/file_browser_layout--fileBrowserPageViewContainer/.test(cssRule.selectorText)) {
+        if (
+          /dlt_submenu--chevronButtonIcon|dlt_hoverable_icon--chevron|delightful_toolbar--connectorIcon/.test(
+            cssRule.selectorText,
+          )
+        ) {
+          additionStyleRules.push(
+            `${cssRule.selectorText} > svg > path { fill: var(--text-active); }`,
+          );
+        }
+        if (
+          /file_browser_layout--fileBrowserPageViewContainer|browse_templates_modal/.test(
+            cssRule.selectorText,
+          )
+        ) {
           additionStyleRules.push(
             `${cssRule.selectorText}::-webkit-scrollbar { width: 8px; height: 8px; background: transparent; }`,
           );

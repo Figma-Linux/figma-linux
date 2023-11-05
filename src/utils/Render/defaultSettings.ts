@@ -12,7 +12,6 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
     disableThemes: false,
     panelHeight: 40,
     saveLastOpenedTabs: true,
-    hasOpenedCommunityTab: false,
     exportDir: `${process.env.HOME}/Pictures/Figma`,
     fontDirs: [
       "/usr/share/fonts",

@@ -521,7 +521,7 @@ export default class ExtensionManager {
   private openExtensionDirectory(event: IpcMainEvent, data: WebApi.ExtensionId): void {
     const extensionDirectory = this.getPath(data.id);
 
-    shell.openPath(extensionDirectory);
+    shell.showItemInFolder(extensionDirectory);
   }
   private removeLocalFileExtension(event: IpcMainEvent, data: WebApi.ExtensionId): void {
     this.removePath(data.id);

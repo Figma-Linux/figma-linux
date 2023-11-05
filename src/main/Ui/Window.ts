@@ -19,13 +19,15 @@ export default class Window {
   private window: BrowserWindow;
   private tabManager: TabManager;
   private settingsView: SettingsView;
+  private state: Types.WindowState;
 
   private _userId: string;
 
-  constructor(windowOpts?: Types.WindowInitOpts) {
+  constructor(state: Types.WindowState) {
     this.window = new BrowserWindow(WINDOW_DEFAULT_OPTIONS);
     this.tabManager = new TabManager(this.window.id);
     this.settingsView = new SettingsView();
+    this.state = state;
 
     this.window.addBrowserView(this.tabManager.mainTab.view);
     this.window.setTopBrowserView(this.tabManager.mainTab.view);
@@ -34,7 +36,7 @@ export default class Window {
 
     this.window.loadURL(isDev ? panelUrlDev : panelUrlProd);
     isDev && toggleDetachedDevTools(this.window.webContents);
-    windowOpts && this.applyOptions(windowOpts);
+    this.applyState();
   }
 
   public get id() {
@@ -88,7 +90,7 @@ export default class Window {
   public sortTabs(tabs: Types.TabFront[]) {
     this.tabManager.sortTabs(tabs);
   }
-  public getState() {
+  public getState(): Types.WindowState & { windowId: number } {
     const tabs: Types.SavedTab[] = [];
 
     for (const [_, tab] of this.tabs) {
@@ -98,7 +100,13 @@ export default class Window {
       });
     }
 
+    const bounds = this.window.getBounds();
+
     return {
+      ...bounds,
+      isMaximized: this.window.isMaximized(),
+      lastActiveTabPath: this.tabManager.getActiveTabPath(),
+      hasOpenedCommunityTab: this.tabManager.hasOpenedCommunityTab,
       windowId: this.id,
       userId: this._userId,
       tabs,
@@ -121,6 +129,9 @@ export default class Window {
       tabs.forEach((tab, i) => {
         setTimeout(() => {
           this.addTab(tab.url, tab.title);
+          if (i + 1 === tabs.length) {
+            this.setTabFocusByPath(this.state.lastActiveTabPath);
+          }
         }, 300 * i);
       });
     }, 100);
@@ -310,11 +321,18 @@ export default class Window {
 
     this.settingsView.postClose();
   }
-  private applyOptions(windowOpts: Types.WindowInitOpts) {
-    windowOpts.userId && this.setUserId(windowOpts.userId);
+  private applyState() {
+    const { x, y, height, width, userId, tabs, isMaximized } = this.state;
+    userId && this.setUserId(userId);
 
-    if (storage.settings.app.saveLastOpenedTabs && windowOpts.tabs && windowOpts.tabs.length > 0) {
-      this.window.webContents.once("did-finish-load", () => this.restoreTabs(windowOpts.tabs));
+    if (storage.settings.app.saveLastOpenedTabs && tabs && tabs.length > 0) {
+      this.window.webContents.once("did-finish-load", () => this.restoreTabs(tabs));
+    }
+
+    this.win.setBounds({ x, y, width, height });
+
+    if (isMaximized) {
+      this.win.maximize();
     }
   }
   private loadCurrentTheme(theme: Themes.Theme) {
@@ -337,9 +355,7 @@ export default class Window {
     }
   }
   private webContentDidFinishLoad() {
-    const hasOpenedCommunityTab = storage.settings.app.hasOpenedCommunityTab;
-
-    if (hasOpenedCommunityTab) {
+    if (this.state.hasOpenedCommunityTab) {
       this.openCommunity({
         path: "/@figma_linux",
         userId: this._userId,
@@ -439,6 +455,22 @@ export default class Window {
     this.window.webContents.send("focusTab", "communityTab");
 
     app.emit("needUpdateMenu", this.id, null, { "close-tab": true });
+  }
+  public setTabFocusByPath(path: string) {
+    const tab = this.tabManager.getByPath(path);
+
+    if (tab) {
+      this.setTabFocus(tab.id);
+    } else {
+      if (/recents/.test(path)) {
+        this.setFocusToMainTab();
+        this.tabManager.loadUrlInMainTab(`${HOMEPAGE}${path}`);
+      }
+      if (/community/.test(path)) {
+        this.setFocusToCommunityTab();
+        this.tabManager.loadUrlInCommunityTab(`${HOMEPAGE}${path}`);
+      }
+    }
   }
   public setTabFocus(tabId: number) {
     const bounds = this.calcBoundsForTabView();

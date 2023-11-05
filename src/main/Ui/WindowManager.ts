@@ -1,12 +1,12 @@
 import * as fs from "fs";
 import * as path from "path";
-import { app, shell, clipboard, ipcMain, IpcMainEvent, WebContents } from "electron";
+import { app, shell, clipboard, ipcMain, screen, IpcMainEvent, WebContents } from "electron";
 
 import Window from "./Window";
 import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
-import { HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
+import { DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
 import { mkPath } from "Utils/Main";
 
@@ -20,9 +20,7 @@ export default class WindowManager {
   constructor() {
     this.menuManager = new MenuManager();
 
-    this.addIpc();
     this.restoreData();
-
     this.registerEvents();
   }
 
@@ -41,14 +39,24 @@ export default class WindowManager {
     window.openUrl(url);
   }
 
-  public newWindow(windowOpts?: Types.WindowInitOpts) {
+  public newWindowFromMenu(windowId: number) {
+    this.newWindow();
+  }
+  public newWindow(windowState: Types.WindowState = DEFAULT_WIN_OPTIONS) {
     const menu = this.menuManager.getMenu({
       recentClosedTabsMenuData: this.closedTabsForMenu,
       actionCheckedState: {
         "close-tab": false,
       },
     });
-    const window = new Window(windowOpts);
+    const window = new Window(windowState);
+
+    if (windowState.x === -1 || windowState.y === -1) {
+      window.win.center();
+      const bounds = window.win.getBounds();
+      windowState.x = bounds.x;
+      windowState.y = bounds.y;
+    }
 
     this.lastFocusedwindowId = window.id;
     this.windows.set(window.id, window);
@@ -65,10 +73,10 @@ export default class WindowManager {
       return;
     }
 
-    const windowsInitData = Object.values(storage.settings.app.windowsState);
+    const windowsStates = Object.values(storage.settings.app.windowsState);
 
-    for (const data of windowsInitData) {
-      this.newWindow(data);
+    for (const state of windowsStates) {
+      this.newWindow(state);
     }
   }
 
@@ -131,23 +139,12 @@ export default class WindowManager {
     storage.settings.app.windowsState = {};
 
     for (const [_, window] of this.windows) {
-      const state = window.getState();
+      const { windowId, ...state } = window.getState();
 
-      storage.settings.app.windowsState[state.windowId] = {
-        userId: state.userId,
-        tabs: state.tabs,
-      };
+      storage.settings.app.windowsState[windowId] = state;
     }
   }
 
-  private addIpc = (): void => {
-    ipcMain.on("registerManifestChangeObserver", (event: any, callbackId: any) => {
-      // const tab = Tabs.getByWebContentId(event.sender.id);
-      // if (!tab) {
-      //   return;
-      // }
-    });
-  };
   private restoreData() {
     const recentlyClosedTabs = storage.settings.app.recentlyClosedTabs;
 
@@ -629,7 +626,7 @@ export default class WindowManager {
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));
-    app.on("newWindow", this.newWindow.bind(this));
+    app.on("newWindow", this.newWindowFromMenu.bind(this));
     app.on("reloadTab", this.reloadTabFromMenu.bind(this));
     app.on("closeTab", this.closeTabFromMenu.bind(this));
     app.on("closeCurrentTab", this.closeCurrentTabFromMenu.bind(this));

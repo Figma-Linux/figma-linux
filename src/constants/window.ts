@@ -17,3 +17,15 @@ export const WINDOW_DEFAULT_OPTIONS: BrowserWindowConstructorOptions = {
     contextIsolation: false,
   },
 };
+
+export const DEFAULT_WIN_OPTIONS: Types.WindowState = {
+  x: -1,
+  y: -1,
+  width: 1200,
+  height: 900,
+  isMaximized: false,
+  lastActiveTabPath: "",
+  hasOpenedCommunityTab: false,
+  userId: "",
+  tabs: [],
+};

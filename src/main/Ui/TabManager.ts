@@ -1,3 +1,4 @@
+import * as URL from "url";
 import { app, ipcMain, Rectangle, IpcMainEvent } from "electron";
 
 import { NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
@@ -149,6 +150,9 @@ export default class TabManager {
   public loadUrlInMainTab(url: string) {
     this.mainTab.loadUrl(url);
   }
+  public loadUrlInCommunityTab(url: string) {
+    this.communityTab.loadUrl(url);
+  }
   public loadLoginPage() {
     this.mainTab.loadLoginPage();
   }
@@ -184,6 +188,19 @@ export default class TabManager {
 
     this.tabs.forEach((tab) => {
       if (tab.title === title) {
+        foundTab = tab;
+      }
+    });
+
+    return foundTab;
+  }
+  public getByPath(path: string) {
+    let foundTab: Tab | undefined;
+
+    this.tabs.forEach((tab) => {
+      const pathname = URL.parse(tab.url ?? tab.getUrl()).pathname;
+      const reg = new RegExp(pathname);
+      if (reg.test(path)) {
         foundTab = tab;
       }
     });
@@ -267,6 +284,13 @@ export default class TabManager {
     const tab = this.getById(this.lastFocusedTab);
 
     tab.view.webContents.send("handlePluginMenuAction", pluginMenuAction);
+  }
+
+  public getActiveTabPath(): string {
+    const tab = this.getById(this.lastFocusedTab);
+    const tabUri = tab.view.webContents.getURL();
+
+    return URL.parse(tabUri).pathname;
   }
 
   private loadCurrentTheme(theme: Themes.Theme) {

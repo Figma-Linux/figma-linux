@@ -51,6 +51,18 @@ declare namespace Types {
     desktop_beta_use_agent_for_fonts?: boolean;
   }
 
+  interface WindowState {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    isMaximized: boolean;
+    lastActiveTabPath: string;
+    hasOpenedCommunityTab: boolean;
+    userId: string;
+    tabs: SavedTab[];
+  }
+
   interface SettingsInterface {
     clientId: string;
     userId: string;
@@ -63,15 +75,11 @@ declare namespace Types {
       disableThemes: boolean;
       panelHeight: number;
       saveLastOpenedTabs: boolean;
-      hasOpenedCommunityTab: boolean;
       exportDir: string;
       fontDirs: string[];
       recentlyClosedTabs: SavedTab[];
       windowsState: {
-        [key: string]: {
-          userId: string;
-          tabs: SavedTab[];
-        };
+        [key: string]: WindowState;
       };
       lastOpenedTabs:
         | {

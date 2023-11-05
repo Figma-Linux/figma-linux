@@ -328,6 +328,9 @@ const publicAPI: any = {
   setFigjamEnabled(args: WebApi.SetFigjamEnabled) {
     sendMsgToMain("setFigjamEnabled", args.figjamEnabled);
   },
+  getZoomFactor() {
+    return Promise.resolve({ data: E.webFrame.getZoomFactor() });
+  },
 
   async writeNewExtensionDirectoryToDisk(args: WebApi.WriteNewExtensionDirectoryToDisk) {
     const data = await E.ipcRenderer.invoke("writeNewExtensionDirectoryToDisk", args);
@@ -363,10 +366,9 @@ const publicAPI: any = {
   openExtensionDirectory(args: WebApi.ExtensionId) {
     E.ipcRenderer.send("openExtensionDirectory", args);
   },
-  // TODO:
-  // openExtensionManifest(args: WebApi.ExtensionId) {
-  //   E.ipcRenderer.send("openExtensionManifest", args.id);
-  // },
+  openExtensionManifest(args: WebApi.ExtensionId) {
+    E.ipcRenderer.send("openExtensionDirectory", args);
+  },
   async writeNewExtensionToDisk(args: WebApi.WriteNewExtensionToDiskArgs) {
     const extId = await E.ipcRenderer.invoke("writeNewExtensionToDisk", args);
     return { data: extId };

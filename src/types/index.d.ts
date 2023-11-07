@@ -205,9 +205,9 @@ declare namespace Electron {
       channel: "setFeatureFlags",
       listener: (event: IpcMainInvokeEvent, data: { featureFlags: Types.FeatureFlags }) => void,
     ): this;
-    on(channel: "log-debug", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
-    on(channel: "log-info", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
-    on(channel: "log-error", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
+    on(channel: "logDebug", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
+    on(channel: "logInfo", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
+    on(channel: "logError", listener: (event: IpcMainInvokeEvent, ...args: any[]) => void): this;
     on(
       channel: "openDevTools",
       listener: (
@@ -443,9 +443,9 @@ declare namespace Electron {
     send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
     send(channel: "disableThemesChanged", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
-    send(channel: "log-debug", ...args: any[]): this;
-    send(channel: "log-info", ...args: any[]): this;
-    send(channel: "log-error", ...args: any[]): this;
+    send(channel: "logDebug", ...args: any[]): this;
+    send(channel: "logInfo", ...args: any[]): this;
+    send(channel: "logError", ...args: any[]): this;
     send(channel: "removeLocalFileExtension", id: number): this;
     send(channel: "openExtensionDirectory", id: number): this;
     send(channel: "openMainMenu"): this;

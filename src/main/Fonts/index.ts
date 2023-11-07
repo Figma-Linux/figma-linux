@@ -31,7 +31,7 @@ export default class FontManager {
 
         this.fontList[path] = [ttf.getData()];
       } catch (error) {
-        logger.error(`skip font: ${path}, error: `, error.message);
+        logger.warn(`skip font: ${path}, error: `, error.message);
       }
     }
   }
@@ -48,7 +48,7 @@ export default class FontManager {
 
         this.fontList[path] = ttc.getData();
       } catch (error) {
-        logger.error(`skip font: ${path}, error: `, error.message);
+        logger.warn(`skip font: ${path}, error: `, error.message);
       }
     }
   }

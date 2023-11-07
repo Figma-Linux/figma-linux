@@ -6,6 +6,7 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
   authedUserIDs: [],
   app: {
     logLevel: LogLevel.INFO,
+    lastTimeClearLogFile: 0,
     enableColorSpaceSrgb: false,
     visibleNewProjectBtn: true,
     useZenity: false,

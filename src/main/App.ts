@@ -131,10 +131,10 @@ export default class App {
     storage.settings.authedUserIDs = [...new Set([...storage.settings.authedUserIDs, ...userIds])];
   }
   private setWorkspaceName(_: IpcMainEvent, name: string) {
-    logger.info("The setWorkspaceName not implemented, workspaceName: ", name);
+    logger.warn("The setWorkspaceName not implemented, workspaceName: ", name);
   }
   private setFigjamEnabled(_: IpcMainEvent, enabled: boolean) {
-    logger.info("The setFigjamEnabled not implemented, enabled: ", enabled);
+    logger.warn("The setFigjamEnabled not implemented, enabled: ", enabled);
   }
   private setClipboardData(_: IpcMainEvent, data: WebApi.SetClipboardData) {
     const format = data.format;

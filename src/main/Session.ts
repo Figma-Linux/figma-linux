@@ -39,7 +39,7 @@ export default class Session {
         logger.info("[wm] already signed in?", this._hasFigmaSession);
       })
       .catch((error: Error) =>
-        logger.error("[wm] failed to get cookies during handleAppReady:", Const.HOMEPAGE, error),
+        logger.warn("[wm] failed to get cookies during handleAppReady:", Const.HOMEPAGE, error),
       );
   };
 }

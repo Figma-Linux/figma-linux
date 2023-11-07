@@ -73,6 +73,7 @@ declare namespace Types {
     authedUserIDs: string[];
     app: {
       logLevel: number;
+      lastTimeClearLogFile: number;
       enableColorSpaceSrgb: boolean;
       visibleNewProjectBtn: boolean;
       useZenity: boolean;

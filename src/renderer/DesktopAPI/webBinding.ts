@@ -31,7 +31,7 @@ const onWebMessage = (event: MessageEvent) => {
     return;
   }
   if (!msg.name || !(msg.name in publicAPI)) {
-    sendMsgToMain("log-error", "[desktop] Unhandled message", msg.name);
+    sendMsgToMain("logWarn", "[desktop] Unhandled message", msg.name);
     return;
   }
 
@@ -394,7 +394,7 @@ const publicAPI: any = {
   getClipboardData(args: any) {
     return new Promise((resolve, reject) => {
       if (E.clipboard.has("org.nspasteboard.ConcealedType")) {
-        sendMsgToMain("log-error", "Clipboard unavailable");
+        sendMsgToMain("logError", "Clipboard unavailable");
         reject(new Error("Clipboard unavailable"));
         return;
       }
@@ -443,7 +443,7 @@ const publicAPI: any = {
         }
       }
 
-      sendMsgToMain("log-error", "Formats not found. Formats: ", formats);
+      sendMsgToMain("logError", "Formats not found. Formats: ", formats);
       reject(new Error("Formats not found"));
     });
   },

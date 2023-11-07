@@ -244,7 +244,7 @@ export default class MenuManager {
       }
       default: {
         const msg = `Invalid name type item: ${JSON.stringify(itemName)}`;
-        logger.info(msg);
+        logger.warn(msg);
         return msg;
       }
     }

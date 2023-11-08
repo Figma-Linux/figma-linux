@@ -12,13 +12,13 @@ jobs:
     steps:
       - name: Checkout project
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Cache src
         id: cache-src
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: repo
           path: ./*
@@ -28,7 +28,7 @@ jobs:
     name: build for arm64v8
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v3
       with:
         name: repo
         path: ./
@@ -55,7 +55,7 @@ jobs:
 
     - name: Cache arm64v8 artifacts
       id: cache-arm64v8-artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: arm64v8
         path: build/installers/*
@@ -68,7 +68,7 @@ jobs:
       - name: mkdir installers
         run: mkdir -p ./build/installers
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: arm64v8
           path: ./build/installers
@@ -94,7 +94,7 @@ jobs:
     name: build for amd64
     needs: setup
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: repo
           path: ./
@@ -116,7 +116,7 @@ jobs:
 
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: amd64
           path: |
@@ -131,7 +131,7 @@ jobs:
       - name: mkdir installers
         run: mkdir -p ./build/installers
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: amd64
           path: ./
@@ -158,7 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_amd64
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: ./
 
@@ -191,7 +191,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: release_amd64
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: ./
 
@@ -256,7 +256,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release_amd64, release_arm64v8]
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: ./
 

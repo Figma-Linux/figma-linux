@@ -54,10 +54,9 @@ jobs:
 
     - name: Cache arm64v8 artifacts
       id: cache-arm64v8-artifacts
-      uses: actions/upload-artifact@v3
+      uses: nanoufo/action-upload-artifacts-and-release-assets@main
       with:
-        name: figma-linux*.*
-        path: build/installers/figma-linux*.*
+        path: build/installers/figma-linux_*.*
 
   build_amd64:
     runs-on: ubuntu-latest
@@ -85,7 +84,6 @@ jobs:
 
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: figma-linux*.*
-          path: build/installers/figma-linux*.*
+        uses: nanoufo/action-upload-artifacts-and-release-assets@main
+      with:
+        path: build/installers/figma-linux_*.*

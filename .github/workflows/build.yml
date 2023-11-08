@@ -56,7 +56,6 @@ jobs:
       id: cache-arm64v8-artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: arm64v8
         path: build/installers/*
 
   build_amd64:
@@ -87,6 +86,4 @@ jobs:
         id: cache-amd64-artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: amd64
-          path: |
-            build/installers/*
+          path: build/installers/*

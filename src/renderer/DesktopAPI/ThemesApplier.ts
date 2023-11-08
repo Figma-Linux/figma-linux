@@ -176,6 +176,7 @@ export class ThemesApplier {
     el.style.setProperty("--color-bg-hover", "var(--bg-panel-hover)");
     el.style.setProperty("--color-bg-secondary", "var(--bg-panel-hover)");
     el.style.setProperty("--color-bg-tooltip", "var(--bg-overlay)");
+    el.style.setProperty("--ui2-button-color-bg-disabled", "var(--borders)");
   }
 
   public init() {
@@ -251,9 +252,11 @@ export class ThemesApplier {
           cssRule.style["fill"] = `var(--text-active)`;
         }
         if (
-          /search--searchInput__OLD|public-DraftEditorPlaceholder-root/.test(cssRule.selectorText)
+          /search--searchInput__OLD|public-DraftEditorPlaceholder-root|css_builder_color--colorTextSecondary/.test(
+            cssRule.selectorText,
+          )
         ) {
-          cssRule.style["color"] = `var(--text-disabled)`;
+          cssRule.style["color"] = `var(--text)`;
         }
         if (
           /optionDisabled|formatted_expanding_textarea--placeholder|expanding_textarea--expandingTextarea--*::placeholder/.test(
@@ -289,7 +292,7 @@ export class ThemesApplier {
           cssRule.style["backgroundColor"] = `var(--bg-panel)`;
         }
         if (
-          /step_breadcrumb--stepTitle|account_switcher--dropdownButtonContent|time_display--timeDisplay/.test(
+          /step_breadcrumb--stepTitle|account_switcher--dropdownButtonContent|time_display--timeDisplay|.ai_modal--input.+placeholder|colorTextTertiary|css_builder_backgroundColor--colorBgPressed/.test(
             cssRule.selectorText,
           )
         ) {
@@ -332,6 +335,7 @@ export class ThemesApplier {
         additionStyleRules.push(
           `button[class*=css_builder--colorBgPressed] { color: var(--fg-toolbar-active); }`,
         );
+        additionStyleRules.push(`input { color: var(--text-active); }`);
       }
     }
 

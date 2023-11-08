@@ -56,17 +56,8 @@ jobs:
       id: cache-arm64v8-artifacts
       uses: actions/upload-artifact@v3
       with:
-        title: artefacts
-        - name: figma-linux_0.10.0_linux_arm64.deb
-          files: [ build/installers/figma-linux_0.10.0_linux_arm64.deb ]
-        - name: figma-linux_0.10.0_linux_aarch64.pacman
-          files: [ build/installers/figma-linux_0.10.0_linux_aarch64.pacman ]
-        - name: figma-linux_0.10.0_linux_arm64.zip
-          files: [ build/installers/figma-linux_0.10.0_linux_arm64.zip ]
-        - name: figma-linux_0.10.0_linux_arm64.AppImage
-          files: [ build/installers/figma-linux_0.10.0_linux_arm64.AppImage ]
-        - name: figma-linux_0.10.0_linux_aarch64.rpm
-          files: [ build/installers/figma-linux_0.10.0_linux_aarch64.rpm ]
+        name: figma-linux*.*
+        path: build/installers/figma-linux*.*
 
   build_amd64:
     runs-on: ubuntu-latest
@@ -96,14 +87,5 @@ jobs:
         id: cache-amd64-artifacts
         uses: actions/upload-artifact@v3
         with:
-          title: artefacts
-          - name: figma-linux_0.10.0_linux_amd64.deb
-            files: [ build/installers/figma-linux_0.10.0_linux_amd64.deb ]
-          - name: figma-linux_0.10.0_linux_x64.pacman
-            files: [ build/installers/figma-linux_0.10.0_linux_x64.pacman ]
-          - name: figma-linux_0.10.0_linux_x64.zip
-            files: [ build/installers/figma-linux_0.10.0_linux_x64.zip ]
-          - name: figma-linux_0.10.0_linux_x86_64.AppImage
-            files: [ build/installers/figma-linux_0.10.0_linux_x86_64.AppImage ]
-          - name: figma-linux_0.10.0_linux_x86_64.rpm
-            files: [ build/installers/figma-linux_0.10.0_linux_x86_64.rpm ]
+          name: figma-linux*.*
+          path: build/installers/figma-linux*.*

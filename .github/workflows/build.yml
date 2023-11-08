@@ -85,5 +85,5 @@ jobs:
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
         uses: nanoufo/action-upload-artifacts-and-release-assets@main
-      with:
-        path: build/installers/figma-linux_*.*
+        with:
+          path: build/installers/figma-linux_*.*

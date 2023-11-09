@@ -231,8 +231,7 @@ export default class ExtensionManager {
     }
   }
 
-  public async getSource(id: number): Promise<Extensions.ExtensionSource> {
-    const extensionPath = this.getPath(id);
+  public async getSource(extensionPath: string): Promise<Extensions.ExtensionSource> {
     const manifest = JSON.parse(
       await fs.promises.readFile(resolve(extensionPath, MANIFEST_FILE_NAME), { encoding: "utf8" }),
     );
@@ -355,7 +354,7 @@ export default class ExtensionManager {
 
       this.notifyManifestObservers({ type, id, localLoadResult: result });
     } else {
-      this.notifyManifestObservers({ type, id, manifestFileId: id });
+      this.notifyCodeObservers({ type, id, manifestFileId: id });
     }
   }
   private async fileAdded(id: number, filepath: string) {
@@ -382,10 +381,12 @@ export default class ExtensionManager {
       }
     }
   }
-  private addExtension(path: string, files: WebApi.WriteNewExtensionDirectoryToDiskFile[]) {
+  private async addExtension(path: string, files: WebApi.WriteNewExtensionDirectoryToDiskFile[]) {
     const id = this.generateFileId();
     const observeFiles = this.validateExtensionFiles(files);
     const manifest = this.getManifestFromFiles(files);
+
+    await this.saveExtensionFiles(path, files);
 
     this.extensionMap.set(id, {
       path,
@@ -488,7 +489,8 @@ export default class ExtensionManager {
     const accessDir = await access(path);
 
     if (accessDir) {
-      throw new Error("Overwriting existing files or directories not supported");
+      logger.warn("Overwriting existing files or directories not supported");
+      return;
     }
 
     await mkPath(path);
@@ -555,7 +557,20 @@ export default class ExtensionManager {
         if (exists) {
           existed.push(exists.id);
         } else {
-          added.push(this.addExtension(path, [{ name: MANIFEST_FILE_NAME, content: manifest }]));
+          const manifestJson = JSON.parse(manifest) as Extensions.ManifestFile;
+          const files = [
+            { name: MANIFEST_FILE_NAME, content: manifest },
+            { name: manifestJson.main, content: "" },
+          ];
+          if (typeof manifestJson.ui === "object") {
+            for (const file of Object.values(manifestJson.ui)) {
+              files.push({ name: file, content: "" });
+            }
+          } else {
+            files.push({ name: manifestJson.ui, content: "" });
+          }
+
+          added.push(await this.addExtension(path, files));
         }
       } else if (topLevel) {
         throw new Error(`Manifest must be named '${MANIFEST_FILE_NAME}'`);
@@ -592,9 +607,7 @@ export default class ExtensionManager {
 
     storage.settings.app.lastSavedPluginDir = parse(path).dir;
 
-    const id = this.addExtension(path, data.dir.files);
-
-    this.saveExtensionFiles(path, data.dir.files);
+    const id = await this.addExtension(path, data.dir.files);
 
     return id;
   }
@@ -614,7 +627,7 @@ export default class ExtensionManager {
     return this.loadExtensionManifest(data.id);
   }
   private async getLocalFileExtensionSource(event: IpcMainInvokeEvent, data: WebApi.ExtensionId) {
-    return this.getSource(data.id);
+    return this.getSource(this.getPath(data.id));
   }
   private async getAllLocalFileExtensionIds(event: IpcMainInvokeEvent) {
     return Array.from(this.extensionMap.keys());

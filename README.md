@@ -113,11 +113,7 @@ sudo dnf install figma-linux-*.x86_64.rpm
 git clone https://github.com/Figma-Linux/figma-linux
 cd figma-linux
 ```
-2. Install Rust:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-3. Install prerequisites from npm:
+2. Install prerequisites from npm:
 ```bash
 npm i
 ```
@@ -127,6 +123,7 @@ npm run dev
 ```
 Aside from that, you can also run:
 
+- ```npm run dev``` to run the app in development mode
 - ```npm run build``` to built the app for production
 - ```npm run start``` to run the built version
 - ```npm run builder``` to package the app for distribution.
@@ -134,9 +131,6 @@ Aside from that, you can also run:
 - ```npm run pack``` to remove old packages from the installer directory, then pack the app.
 - * This depends on [AppImageTool](https://appimage.github.io/appimagetool/) being installed.
 
-
-ATTENTION:
-When you do changes in middleware component, You need to rebuild (`npm run build`) and restart the app each time, because the middleware execute only on run the app, Hot Reload won't work.
 
 Example of **.env** for local development:
 ```

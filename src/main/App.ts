@@ -44,10 +44,13 @@ export default class App {
     // Full flags reference: https://peter.sh/experiments/chromium-command-line-switches/
     // app.commandLine.appendSwitch("no-sandbox");
     // app.commandLine.appendSwitch("ignore-gpu-blocklist");
-    // app.commandLine.appendSwitch("enable-gpu-rasterization");
     // app.commandLine.appendSwitch("enable-video-decode");
     // app.commandLine.appendSwitch("enable-accelerated-2d-canvas");
     // app.commandLine.appendSwitch("enable-experimental-canvas-features");
+
+    app.commandLine.appendSwitch("enable-gpu-rasterization");
+    app.commandLine.appendSwitch("enable-unsafe-webgpu");
+    app.commandLine.appendSwitch("use-vulkan");
 
     const colorSpace = storage.settings.app.enableColorSpaceSrgb;
 

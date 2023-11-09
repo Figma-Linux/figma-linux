@@ -1,8 +1,9 @@
 import { parse } from "url";
-import { app, ipcMain, BrowserWindow, IpcMainEvent, Rectangle, Menu } from "electron";
+import { app, BrowserWindow, IpcMainEvent, Rectangle, Menu } from "electron";
 import { storage } from "Main/Storage";
 import SettingsView from "./SettingsView";
 import TabManager from "./TabManager";
+import { logger } from "../Logger";
 
 import {
   HOMEPAGE,
@@ -481,6 +482,9 @@ export default class Window {
         this.tabManager.loadUrlInCommunityTab(`${HOMEPAGE}${path}`);
       }
     }
+  }
+  public loadUrlMainTab(url: string) {
+    this.tabManager.mainTab.loadUrl(url);
   }
   public setTabFocus(tabId: number) {
     const bounds = this.calcBoundsForTabView();

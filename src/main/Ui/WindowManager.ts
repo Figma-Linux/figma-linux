@@ -251,10 +251,15 @@ export default class WindowManager {
   }
   private finishAppAuth(event: IpcMainEvent, data: { redirectURL: string }) {
     const url = `${HOMEPAGE}${data.redirectURL}`;
+    const window = this.getWindowByWebContentsId(event.sender.id);
 
     this.handleUrl(url);
     this.reloadAllWindows();
     this.tryHandleAppAuthRedeemUrl(data.redirectURL);
+
+    setTimeout(() => {
+      window.loadUrlMainTab(url);
+    }, 100);
   }
 
   private getWindowByWebContentsId(webContentsId: number): Window | undefined {

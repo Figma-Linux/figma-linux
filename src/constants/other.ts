@@ -22,6 +22,7 @@ export const PROTOCOL = "figma";
 export const TEST_THEME_ID = "test-creator-theme";
 
 export const MANIFEST_FILE_NAME = "manifest.json";
+export const CHROME_GPU = "chrome://gpu";
 
 export const CONFIGDIR = `${process.env.HOME}/.config/figma-linux`;
 export const RESOURCESDIR = `${process.env.HOME}/.config/figma-linux/resources`;

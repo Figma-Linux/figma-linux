@@ -4,6 +4,7 @@
   import { ButtonTool } from "Common/Buttons";
   import { Loader, Close } from "Icons";
   import { Spiner } from "Common";
+  import { CHROME_GPU } from "Const";
 
   export let currentTabId: number | undefined;
   export let items: Types.TabFront[] = [];
@@ -77,7 +78,7 @@
         on:mouseenter={(e) => onHover(e, item.id)}
         on:mouseleave={(e) => onLeave(e, item.id)}
       >
-        {#if item.loading && loadingItems[item.id]}
+        {#if item.loading && loadingItems[item.id] && item.title !== CHROME_GPU}
           <Spiner spin={true}>
             <Loader size="14" />
           </Spiner>

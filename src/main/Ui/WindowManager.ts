@@ -6,7 +6,7 @@ import Window from "./Window";
 import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
-import { DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
+import { CHROME_GPU, DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
 import { mkPath } from "Utils/Main";
 
@@ -209,7 +209,7 @@ export default class WindowManager {
   private chromeGpu(windowId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
-    window.addTab("chrome://gpu", "chrome://gpu");
+    window.addTab(CHROME_GPU, CHROME_GPU);
   }
   private openFileUrlClipboard() {
     const window = this.windows.get(this.lastFocusedwindowId);

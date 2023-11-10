@@ -49,14 +49,15 @@ export default class MenuManager {
       template.push(this.pluginsMenu());
     }
 
-    if (state?.widgetMenuData?.length > 0) {
-      template.push({
-        label: "Widgets",
-        submenu: this.parseFigmaMenu(state.widgetMenuData),
-      });
-    } else {
-      template.push(this.widgetsMenu());
-    }
+    // TODO: will complete this when the Figma develop's team will complete the desktop API for widgets
+    // if (state?.widgetMenuData?.length > 0) {
+    //   template.push({
+    //     label: "Widgets",
+    //     submenu: this.parseFigmaMenu(state.widgetMenuData),
+    //   });
+    // } else {
+    //   template.push(this.widgetsMenu());
+    // }
 
     template.push({ type: "separator" });
 
@@ -301,7 +302,7 @@ export default class MenuManager {
         {
           label: "Manage widgets...",
           click() {
-            app.emit("handlePluginManageAction");
+            app.emit("handleWidgetManageAction");
           },
         },
       ],

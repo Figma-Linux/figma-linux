@@ -151,8 +151,8 @@ export default class Window {
     this.tabManager.handleUrl(path);
     this.setFocusToMainTab();
   }
-  public handlePluginManageAction() {
-    this.tabManager.mainTab.view.webContents.send("handlePluginMenuAction", { type: "manage" });
+  public handlePluginManageAction(type: string) {
+    this.tabManager.mainTab.view.webContents.send("handlePluginMenuAction", { type });
     this.setFocusToMainTab();
   }
   public handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {

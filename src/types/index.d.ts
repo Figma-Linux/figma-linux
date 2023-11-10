@@ -41,6 +41,7 @@ declare namespace Electron {
       listener: (windowId: number, pluginMenuAction: Menu.MenuAction) => void,
     ): this;
     on(event: "handlePluginManageAction", listener: () => void): this;
+    on(event: "handleWidgetManageAction", listener: () => void): this;
     on(event: "handleUrl", listener: (url: string) => void): this;
     on(event: "openUrlInNewTab", listener: (url: string) => void): this;
     on(event: "openUrlFromCommunity", listener: (url: string) => void): this;
@@ -101,6 +102,7 @@ declare namespace Electron {
       pluginMenuAction: Menu.MenuAction,
     ): boolean;
     emit(event: "handlePluginManageAction"): boolean;
+    emit(event: "handleWidgetManageAction"): boolean;
     emit(event: "handleUrl", url: string): boolean;
     emit(event: "openUrlInNewTab", url: string): boolean;
     emit(event: "openUrlFromCommunity", url: string): boolean;

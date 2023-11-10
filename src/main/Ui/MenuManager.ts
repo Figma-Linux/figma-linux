@@ -22,6 +22,8 @@ export default class MenuManager {
       this.item("Close Window", "closeCurrentWindow", "Ctrl+Shift+W"),
       this.item("Close Tab", "closeCurrentTab", "Ctrl+W", state?.actionCheckedState["close-tab"]),
       this.item("Reopen Closed Tab", "reopenClosedTab", "Ctrl+Shift+T"),
+      // hidden items
+      this.item("Fullscreen", "toggleWindowFullscreen", "F11", true, false),
     ];
 
     if (state?.recentClosedTabsMenuData?.length > 0) {
@@ -208,10 +210,17 @@ export default class MenuManager {
     this._menu.set(tabId, state);
   }
 
-  private item(label: string, id: string, accelerator?: string, enabled: boolean = true) {
+  private item(
+    label: string,
+    id: string,
+    accelerator?: string,
+    enabled: boolean = true,
+    visible = true,
+  ) {
     const props: MenuItemConstructorOptions = {
       label,
       enabled,
+      visible,
       id,
       click: (_, window) => app.emit(id, window.id),
     };

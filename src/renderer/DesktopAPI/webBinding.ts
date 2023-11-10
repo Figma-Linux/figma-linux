@@ -177,6 +177,12 @@ const initWebBindings = (): void => {
   });
 };
 
+function keydownHandler(event: KeyboardEvent) {
+  if (event.code === "F11") {
+    E.ipcRenderer.send("toggleCurrentWindowFullscreen");
+  }
+}
+
 const publicAPI: any = {
   setTitle(args: WebApi.SetTitleArgs) {
     sendMsgToMain("setTitle", args.title);
@@ -480,6 +486,7 @@ const init = (fileBrowser: boolean): void => {
 
   E.webFrame.executeJavaScript(`(${initWebApi.toString()})(${JSON.stringify(initWebOptions)})`);
 
+  document.addEventListener("keydown", keydownHandler);
   document.addEventListener("DOMContentLoaded", () => {
     E.ipcRenderer.invoke("themesIsDisabled").then((disabled) => {
       if (!disabled) {

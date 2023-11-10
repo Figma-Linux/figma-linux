@@ -19,6 +19,7 @@ declare namespace Electron {
     on(event: "closeCurrentTab", listener: (windowId: number) => void): this;
     on(event: "reopenClosedTab", listener: (windowId: number) => void): this;
     on(event: "closeCurrentWindow", listener: (windowId: number) => void): this;
+    on(event: "toggleWindowFullscreen", listener: (windowId: number) => void): this;
     on(event: "closeCommunityTab", listener: () => void): this;
     on(event: "closeAllTab", listener: () => void): this;
     on(event: "chromeGpu", listener: (windowId: number) => void): this;
@@ -83,6 +84,8 @@ declare namespace Electron {
     emit(event: "closeCurrentTab", windowId: number): boolean;
     emit(event: "reopenClosedTab", windowId: number): boolean;
     emit(event: "closeCurrentWindow", windowId: number): boolean;
+    emit(event: "toggleWindowFullscreen", windowId: number): boolean;
+    emit(event: "toggleCurrentWindowFullscreen", sender: Electron.WebContents): boolean;
     emit(event: "closeAllTab"): boolean;
     emit(event: "chromeGpu", windowId: number): boolean;
     emit(event: "openFileUrlClipboard", sender: Electron.WebContents): boolean;
@@ -468,6 +471,7 @@ declare namespace Electron {
     send(channed: "toggleThemeCreatorPreviewMask"): this;
     send(channed: "setInitialOptions", data: WebApi.SetInitOptions): this;
     send(channed: "setUser", userId: string): this;
+    send(channed: "toggleCurrentWindowFullscreen"): this;
     send(
       channed: "web-callback:registerManifestChangeObserver",
       callbackID: number,

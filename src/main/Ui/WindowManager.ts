@@ -184,6 +184,16 @@ export default class WindowManager {
   private closeCurrentWindowFromMenu(windowId: number) {
     this.windowClose(windowId);
   }
+  private toggleCurrentWindowFullscreen(event: IpcMainEvent) {
+    const window = this.getWindowByWebContentsId(event.sender.id || this.lastFocusedwindowId);
+
+    window.win.setFullScreen(!window.win.isFullScreen());
+  }
+  private toggleCurrentWindowFullscreenFromMenu(windowId: number) {
+    const window = this.windows.get(windowId || this.lastFocusedwindowId);
+
+    window.win.setFullScreen(!window.win.isFullScreen());
+  }
   private reopenClosedTabFromMenu(windowId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
@@ -664,6 +674,7 @@ export default class WindowManager {
     ipcMain.on("windowMinimize", this.windowMinimize.bind(this));
     ipcMain.on("windowMaximize", this.windowMaimize.bind(this));
     ipcMain.on("setLoading", this.setLoading.bind(this));
+    ipcMain.on("toggleCurrentWindowFullscreen", this.toggleCurrentWindowFullscreen.bind(this));
 
     // Events from main menu
     app.on("newFile", this.newFile.bind(this));
@@ -673,6 +684,7 @@ export default class WindowManager {
     app.on("closeCurrentTab", this.closeCurrentTabFromMenu.bind(this));
     app.on("reopenClosedTab", this.reopenClosedTabFromMenu.bind(this));
     app.on("closeCurrentWindow", this.closeCurrentWindowFromMenu.bind(this));
+    app.on("toggleWindowFullscreen", this.toggleCurrentWindowFullscreenFromMenu.bind(this));
     app.on("closeCommunityTab", this.closeCommunityTab.bind(this));
     app.on("closeAllTab", this.closeAllTab.bind(this));
     app.on("chromeGpu", this.chromeGpu.bind(this));

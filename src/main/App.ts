@@ -1,5 +1,6 @@
 import {
   app,
+  net,
   session,
   clipboard,
   nativeImage,
@@ -61,22 +62,16 @@ export default class App {
       }
     }, 1500);
 
-    protocol.registerHttpProtocol(
-      Const.PROTOCOL,
-      (req: ProtocolRequest, cb: (req: ProtocolResponse) => void) => {
-        if (this.windowManager.tryHandleAppAuthRedeemUrl(req.url)) {
-          return;
-        }
+    protocol.handle(Const.PROTOCOL, (req: GlobalRequest) => {
+      logger.info("protocol.handle, req.url: ", req.url);
+      if (this.windowManager.tryHandleAppAuthRedeemUrl(req.url)) {
+        return new Response();
+      }
 
-        this.windowManager.openUrl(req.url);
-        // this.windowManager.addTab("loadMainContent.js", req.url);
+      this.windowManager.openUrl(req.url);
 
-        cb({
-          url: req.url,
-          method: req.method,
-        });
-      },
-    );
+      return net.fetch(req.url, { method: req.method });
+    });
   };
 
   private secondInstance(event: Event, argv: string[]) {

@@ -1,8 +1,8 @@
-import { v4 } from "uuid";
+import { randomUUID } from "crypto";
 import { LogLevel } from "Types/enums";
 
 export const DEFAULT_SETTINGS: Types.SettingsInterface = {
-  clientId: v4(),
+  clientId: randomUUID(),
   userId: "",
   authedUserIDs: [],
   app: {
@@ -15,6 +15,14 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
     panelHeight: 40,
     saveLastOpenedTabs: true,
     exportDir: `${process.env.HOME}/Pictures/Figma`,
+    commandSwitches: [
+      { switch: "enable-gpu-rasterization" },
+      { switch: "enable-unsafe-webgpu" },
+      { switch: "enable-skia-graphite" },
+      { switch: "enable-accelerated-2d-canvas" },
+      { switch: "enable-experimental-canvas-features" },
+      { switch: "use-vulkan" },
+    ],
     fontDirs: [
       "/usr/share/fonts",
       "/usr/local/share/fonts",

@@ -40,25 +40,7 @@ export default class App {
       return;
     }
 
-    // Chromium flags for better performance and GPU support
-    // Full flags reference: https://peter.sh/experiments/chromium-command-line-switches/
-    // app.commandLine.appendSwitch("no-sandbox");
-    // app.commandLine.appendSwitch("ignore-gpu-blocklist");
-    // app.commandLine.appendSwitch("enable-video-decode");
-    // app.commandLine.appendSwitch("enable-accelerated-2d-canvas");
-    // app.commandLine.appendSwitch("enable-experimental-canvas-features");
-
-    app.commandLine.appendSwitch("enable-gpu-rasterization");
-    app.commandLine.appendSwitch("enable-unsafe-webgpu");
-    app.commandLine.appendSwitch("use-vulkan");
-
-    const colorSpace = storage.settings.app.enableColorSpaceSrgb;
-
-    if (colorSpace) {
-      app.commandLine.appendSwitch("force-color-profile", "srgb");
-    } else {
-      app.commandLine.appendSwitch("disable-color-correct-rendering");
-    }
+    this.applySwitches();
 
     if (!app.isDefaultProtocolClient(Const.PROTOCOL)) {
       app.setAsDefaultProtocolClient(Const.PROTOCOL);
@@ -124,6 +106,27 @@ export default class App {
 
     this.themeManager.loadThemes();
     this.themeManager.loadCreatorTheme();
+  }
+  private applySwitches() {
+    // Chromium flags for better performance and GPU support
+    // Full flags reference: https://peter.sh/experiments/chromium-command-line-switches/
+    const switches = storage.settings.app.commandSwitches;
+
+    if (!switches.length) {
+      return;
+    }
+
+    for (const item of switches) {
+      app.commandLine.appendSwitch(item.switch, item.value);
+    }
+
+    const colorSpace = storage.settings.app.enableColorSpaceSrgb;
+
+    if (colorSpace) {
+      app.commandLine.appendSwitch("force-color-profile", "srgb");
+    } else {
+      app.commandLine.appendSwitch("disable-color-correct-rendering");
+    }
   }
   private setAuthedUsers(_: IpcMainEvent, userIds: string[]) {
     if (!Array.isArray(storage.settings.authedUserIDs)) {

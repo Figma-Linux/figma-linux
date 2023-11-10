@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { randomUUID } from "crypto";
   import { ipcRenderer } from "electron";
   import { InputRange, CheckBox, InputText, ListBox } from "Common/Input";
   import { Text, Label, Flex, FlexItem, Line } from "Common";
@@ -8,6 +9,7 @@
   import { settings, modalBounds } from "../../../store";
 
   import DirectoryListItem from "./DirectoryListItem.svelte";
+  import SwitchListItem from "./SwitchListItem.svelte";
 
   export let zIndex: number;
 
@@ -16,6 +18,16 @@
     id: dir,
     text: dir,
     item: DirectoryListItem,
+  }));
+
+  let switchItems: Types.TabItem[] = [];
+  $: switchItems = $settings.app.commandSwitches.map((item) => ({
+    id: randomUUID(),
+    text: item.switch,
+    itemArgs: {
+      item,
+    },
+    item: SwitchListItem,
   }));
 
   async function onChangeExportPath(event: CustomEvent) {
@@ -30,6 +42,19 @@
   function onItemRemoveClick(item: Types.TabItem) {
     $settings.app.fontDirs = items.filter((dir) => dir.id !== item.id).map((item) => item.id);
   }
+  function onSwitchItemRemoveClick(item: Types.TabItem) {
+    $settings.app.commandSwitches = switchItems.reduce<Types.CommandSwitch[]>((result, swtch) => {
+      if (swtch.id !== item.id) {
+        const sw = swtch.itemArgs.item as Types.CommandSwitch;
+        result.push({
+          switch: sw.switch,
+          value: sw.value,
+        });
+      }
+
+      return result;
+    }, []);
+  }
   async function onAddDirectory(event: CustomEvent) {
     const directory = await ipcRenderer.invoke("selectExportDirectory");
 
@@ -40,8 +65,17 @@
     $settings.app.fontDirs.push(directory);
     $settings.app.fontDirs = $settings.app.fontDirs;
   }
+  async function onAddSwicth(event: CustomEvent) {
+    $settings.app.commandSwitches.push({
+      switch: "",
+    });
+    $settings.app.commandSwitches = $settings.app.commandSwitches;
+  }
   function onClearList(event: CustomEvent) {
     $settings.app.fontDirs = [];
+  }
+  function onClearSwicthList(event: CustomEvent) {
+    $settings.app.commandSwitches = [];
   }
 
   let bodyHeight: number;
@@ -129,12 +163,18 @@
         <SecondaryButton on:buttonClick={onAddDirectory}>Add directory</SecondaryButton>
       </Flex>
     </Flex>
-    <!-- <Flex width="120px" /> -->
-    <!-- <Flex der="column" width="-webkit-fill-available"> -->
-    <!-- TODO: -->
-    <!-- <Label>UI font</Label> -->
-    <!-- <InputText bind:value={textValue} /> -->
-    <!-- </Flex> -->
+    <Flex width="120px" />
+    <Flex der="column" width="-webkit-fill-available">
+      <Label>Chromium command line switches</Label>
+      <ListBox items={switchItems} onItemRemoveClick={onSwitchItemRemoveClick} height="160px" />
+      <Flex height="10px" />
+      <Flex>
+        <FlexItem grow={1} />
+        <SecondaryButton on:buttonClick={onClearSwicthList}>Clear list</SecondaryButton>
+        <Flex width="10px" />
+        <SecondaryButton on:buttonClick={onAddSwicth}>Add Switch</SecondaryButton>
+      </Flex>
+    </Flex>
   </Flex>
 </div>
 

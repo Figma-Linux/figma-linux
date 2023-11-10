@@ -2,6 +2,7 @@ export { default as ArrowLeft } from "./ArrowLeft.svelte";
 export { default as ArrowRight } from "./ArrowRight.svelte";
 export { default as Burger } from "./Burger.svelte";
 export { default as Close } from "./Close.svelte";
+export { default as Trash } from "./Trash.svelte";
 export { default as CloseModal } from "./CloseModal.svelte";
 export { default as CloseTab } from "./CloseTab.svelte";
 export { default as Component } from "./Component.svelte";

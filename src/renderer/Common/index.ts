@@ -24,6 +24,7 @@ export { default as ArrowLeft } from "./Icons/ArrowLeft.svelte";
 export { default as ArrowRight } from "./Icons/ArrowRight.svelte";
 export { default as Burger } from "./Icons/Burger.svelte";
 export { default as Close } from "./Icons/Close.svelte";
+export { default as Trash } from "./Icons/Trash.svelte";
 export { default as CloseModal } from "./Icons/CloseModal.svelte";
 export { default as CloseTab } from "./Icons/CloseTab.svelte";
 export { default as Component } from "./Icons/Component.svelte";

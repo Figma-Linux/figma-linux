@@ -67,6 +67,10 @@ declare namespace Types {
     tabs: SavedTab[];
   }
 
+  interface CommandSwitch {
+    switch: string;
+    value?: string;
+  }
   interface SettingsInterface {
     clientId: string;
     userId: string;
@@ -83,6 +87,7 @@ declare namespace Types {
       exportDir: string;
       fontDirs: string[];
       recentlyClosedTabs: SavedTab[];
+      commandSwitches: CommandSwitch[];
       windowsState: {
         [key: string]: WindowState;
       };

@@ -476,6 +476,8 @@ export default class WindowManager {
   public closeSettingsView(_: IpcMainEvent, settings: Types.SettingsInterface) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
+    settings.app.commandSwitches = settings.app.commandSwitches.filter((sw) => sw.switch !== "");
+
     storage.settings = settings;
     storage.save();
 

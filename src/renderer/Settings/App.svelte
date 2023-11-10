@@ -21,6 +21,7 @@
   });
 
   function onCloseModalHandler(event: SvelteEvents.Empty) {
+    settings.trim();
     ipcRenderer.send("closeSettingsView", $settings);
   }
 </script>

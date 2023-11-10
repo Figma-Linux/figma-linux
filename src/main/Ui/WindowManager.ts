@@ -476,7 +476,18 @@ export default class WindowManager {
   public closeSettingsView(_: IpcMainEvent, settings: Types.SettingsInterface) {
     const window = this.windows.get(this.lastFocusedwindowId);
 
-    settings.app.commandSwitches = settings.app.commandSwitches.filter((sw) => sw.switch !== "");
+    if (storage.settings.app.enableColorSpaceSrgb !== settings.app.enableColorSpaceSrgb) {
+      app.emit("enableColorSpaceSrgbWasChanged", true);
+    }
+    if (storage.settings.app.disableThemes !== settings.app.disableThemes) {
+      app.emit("disableThemesChanged", true);
+    }
+    if (
+      JSON.stringify(storage.settings.app.commandSwitches) !==
+      JSON.stringify(settings.app.commandSwitches)
+    ) {
+      app.emit("chromiumFlagsChanged", true);
+    }
 
     storage.settings = settings;
     storage.save();

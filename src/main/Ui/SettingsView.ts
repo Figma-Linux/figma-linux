@@ -7,6 +7,7 @@ import { dialogs } from "Main/Dialogs";
 export default class SettingsView {
   private enableColorSpaceSrgbWasChanged = false;
   private disableThemesChanged = false;
+  private chromiumFlagsChanged = false;
 
   public view: BrowserView;
 
@@ -50,6 +51,16 @@ export default class SettingsView {
         defaultFocusedButton: "Ok",
       });
     }
+    if (this.chromiumFlagsChanged) {
+      id = dialogs.showMessageBoxSync({
+        type: "question",
+        title: "Figma",
+        message: "Restart to apply Chromium flags?",
+        detail: `Figma needs to be restarted to ppply Chromium flags.`,
+        textOkButton: "Restart",
+        defaultFocusedButton: "Ok",
+      });
+    }
     if (this.disableThemesChanged) {
       let text = "Restart to disable themes?";
       const disableThemes = storage.settings.app.disableThemes;
@@ -75,6 +86,8 @@ export default class SettingsView {
 
   public updateProps(bounds: Rectangle) {
     this.enableColorSpaceSrgbWasChanged = false;
+    this.disableThemesChanged = false;
+    this.chromiumFlagsChanged = false;
     this.view.setBounds({
       height: bounds.height,
       width: bounds.width,
@@ -87,7 +100,7 @@ export default class SettingsView {
     this.view.webContents.send("toggleThemeCreatorPreviewMask");
   }
 
-  private enableColorSpaceSrgbChange(_: IpcMainEvent, enabled: boolean) {
+  private enableColorSpaceSrgbChange(enabled: boolean) {
     const previousValue = storage.settings.app.enableColorSpaceSrgb;
 
     if (enabled === previousValue) {
@@ -96,7 +109,10 @@ export default class SettingsView {
 
     this.enableColorSpaceSrgbWasChanged = true;
   }
-  private disableThemesChange(_: IpcMainEvent, enabled: boolean) {
+  private chromiumFlagsChange(enabled: boolean) {
+    this.chromiumFlagsChanged = enabled;
+  }
+  private disableThemesChange(enabled: boolean) {
     const previousValue = storage.settings.app.disableThemes;
 
     if (enabled === previousValue) {
@@ -129,11 +145,12 @@ export default class SettingsView {
   }
 
   private registerEvents() {
-    ipcMain.on("enableColorSpaceSrgbWasChanged", this.enableColorSpaceSrgbChange.bind(this));
-    ipcMain.on("disableThemesChanged", this.disableThemesChange.bind(this));
     ipcMain.on("changeTheme", this.changeTheme.bind(this));
     ipcMain.on("frontReady", this.handleFrontReady.bind(this));
 
+    app.on("enableColorSpaceSrgbWasChanged", this.enableColorSpaceSrgbChange.bind(this));
+    app.on("chromiumFlagsChanged", this.chromiumFlagsChange.bind(this));
+    app.on("disableThemesChanged", this.disableThemesChange.bind(this));
     app.on("syncThemesStart", this.syncThemesStart.bind(this));
     app.on("syncThemesEnd", this.syncThemesEnd.bind(this));
     app.on("loadCurrentTheme", this.loadCurrentTheme.bind(this));

@@ -69,6 +69,9 @@ declare namespace Electron {
       event: "handleCallbackForTab",
       listener: (tabId: number, callbackID: number, args: any) => void,
     ): this;
+    on(event: "enableColorSpaceSrgbWasChanged", listener: (enable: boolean) => void): this;
+    on(event: "chromiumFlagsChanged", listener: (enable: boolean) => void): this;
+    on(event: "disableThemesChanged", listener: (enable: boolean) => void): this;
 
     emit(event: string, ...args: any[]): boolean;
     emit(event: "newFile", sender: Electron.WebContents): boolean;
@@ -121,6 +124,9 @@ declare namespace Electron {
       actionCheckedState?: { [key: string]: boolean },
     ): void;
     emit(event: "handleCallbackForTab", tabId: number, callbackID: number, args: any): void;
+    emit(event: "enableColorSpaceSrgbWasChanged", enable: boolean): void;
+    emit(event: "chromiumFlagsChanged", enable: boolean): void;
+    emit(event: "disableThemesChanged", enable: boolean): void;
   }
 
   interface IpcMain extends NodeJS.EventEmitter {
@@ -152,14 +158,7 @@ declare namespace Electron {
       channel: "themeCreatorRemoveTheme",
       listener: (event: IpcMainInvokeEvent, themeId: string) => void,
     ): this;
-    on(
-      channel: "enableColorSpaceSrgbWasChanged",
-      listener: (event: IpcMainInvokeEvent, enabled: boolean) => void,
-    ): this;
-    on(
-      channel: "disableThemesChanged",
-      listener: (event: IpcMainInvokeEvent, enabled: boolean) => void,
-    ): this;
+    on(channel: "enabled", listener: (event: IpcMainInvokeEvent, enabled: boolean) => void): this;
     on(
       channel: "updateFigmaUiScale",
       listener: (event: IpcMainInvokeEvent, scale: number) => void,
@@ -440,8 +439,7 @@ declare namespace Electron {
     send(channel: "themeCreatorExportTheme", theme: Themes.Theme): this;
     send(channel: "themeCreatorAddTheme", theme: Themes.Theme): this;
     send(channel: "themeCreatorRemoveTheme", themeId: string): this;
-    send(channel: "enableColorSpaceSrgbWasChanged", enabled: boolean): this;
-    send(channel: "disableThemesChanged", enabled: boolean): this;
+    send(channel: "enabled", enabled: boolean): this;
     send(channel: "updateFigmaUiScale", scale: number): this;
     send(channel: "logDebug", ...args: any[]): this;
     send(channel: "logInfo", ...args: any[]): this;

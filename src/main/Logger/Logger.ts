@@ -31,7 +31,19 @@ export class Logger {
 
     const dateTime = this.getDateTime();
 
-    return `[${dateTime}]:[${this.levels[level]}] - ` + argv;
+    return (
+      `[${dateTime}]:[${this.levels[level]}] - ` +
+      argv.map((msg) =>
+        msg instanceof Error
+          ? JSON.stringify({
+              name: msg.name,
+              message: msg.message,
+              cause: msg.cause,
+              stack: msg.stack,
+            })
+          : msg,
+      )
+    );
   };
 
   public debug = (...argv: unknown[]): void => {

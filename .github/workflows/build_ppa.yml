@@ -22,12 +22,12 @@ jobs:
       - name: Checkout on latest tag
         run: |
           # git tag
-          # git tag | tail -1
-          # git checkout $(git tag | tail -1)
+          # git tag --sort=version:refname | tail -1
+          # git checkout $(git tag --sort=version:refname | tail -1)
           # git status
           chmod +x ./**/*.sh
           chmod +x ./**/*.pl
-          perl ./scripts/update_rev_changelog.pl "$(git tag | tail -1 | tr -d 'v')" "${{ github.event.inputs.rev }}"
+          perl ./scripts/update_rev_changelog.pl "$(git tag --sort=version:refname | tail -1 | tr -d 'v')" "${{ github.event.inputs.rev }}"
 
       - name: Cache src
         id: cache-src

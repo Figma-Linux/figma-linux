@@ -7,7 +7,7 @@ if ($version eq "") {
   exit 1;
 }
 
-my $prevVersion = `git tag | tail -n1 | tr -d 'v' | tr -d '\n'`;
+my $prevVersion = `git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n'`;
 
 printf("Bump %s to %s version.\n", $prevVersion, $version);
 

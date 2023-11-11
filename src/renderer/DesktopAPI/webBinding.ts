@@ -149,27 +149,17 @@ const initWebBindings = (): void => {
   E.ipcRenderer.on("handleSetFullScreen", (event: IpcRendererEvent, fullscreen: boolean) => {
     webPort.postMessage({ name: "handleSetFullScreen", args: { fullscreen } });
   });
+  E.ipcRenderer.on("showFlashMessage", (event: IpcRendererEvent, flashErrorMessage: string) => {
+    webPort.postMessage({
+      name: "showFlashMessage",
+      args: { flashErrorMessage },
+    });
+  });
   E.ipcRenderer.on("handlePageCommand", (_: IpcRendererEvent, command: string) => {
-    const fullscreenFocusTargetFocused =
-      document.activeElement && document.activeElement.classList.contains("focus-target");
-    if (fullscreenFocusTargetFocused) {
-      let action = null;
-      switch (command) {
-        case "redo":
-        case "undo":
-          action = command;
-          break;
-        case "selectAll":
-          action = "select-all";
-          break;
-      }
-
-      if (action) {
-        webPort.postMessage({ name: "handleAction", args: { action, source: "os-menu" } });
-      }
-    } else {
-      document.execCommand(command);
-    }
+    webPort.postMessage({
+      name: "handlePageCommand",
+      args: { pageCommand: command, source: "os-menu" },
+    });
   });
 
   E.ipcRenderer.on("redeemAppAuth", (event: IpcRendererEvent, gSecret: string) => {

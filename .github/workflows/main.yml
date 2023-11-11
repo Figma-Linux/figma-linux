@@ -156,7 +156,7 @@ jobs:
   upload_ppa_amd64:
     name: Upload to Launchpad PPA
     runs-on: ubuntu-latest
-    needs: build_amd64
+    needs: [release_amd64, release_arm64v8]
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -189,7 +189,7 @@ jobs:
   upload_aur:
     name: Upload to AUR
     runs-on: ubuntu-latest
-    needs: release_amd64
+    needs: [release_amd64, release_arm64v8]
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -254,7 +254,7 @@ jobs:
   flatpak:
     name: Update Flatpak
     runs-on: ubuntu-latest
-    needs: release_amd64
+    needs: [release_amd64, release_arm64v8]
     steps:
       - uses: actions/download-artifact@v3
         with:

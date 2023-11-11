@@ -277,12 +277,8 @@ jobs:
         run: |
           git config --global --add user.name "${{ secrets.USER_NAME }}"
           git config --global --add user.email "${{ secrets.EMAIL }}"
-          git clone git@github.com:Figma-Linux/io.github.Figma_Linux.figma_linux.git ./flatpak-repo
+          git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./flatpak-repo
           cd ./flatpak-repo
-          git remote add main git@github.com:flathub/io.github.Figma_Linux.figma_linux.git
-          git pull main master --no-ff
-          git push origin master
-          git push origin --delete bump-version || echo ''
 
       - name: Update configs
         id: update
@@ -304,7 +300,6 @@ jobs:
           prevVersion=$(cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
           version="$(cat ./build/installers/version)"
           echo "Bump version from $prevVersion to $version"
-          sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
           sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
           echo "Updating sums..."
           export sha256sums_x86_64="$(sha256sum ./build/installers/figma-linux_${version}_linux_amd64.deb | awk '{print $1}' | tr -d '\n')"

@@ -1,5 +1,5 @@
 import * as E from "electron";
-import { DEFAULT_THEME, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR } from "Const";
+import { DEFAULT_THEME, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, CHROME_GPU } from "Const";
 import { getColorsMap, variablesColorsMap } from "Utils/Common";
 
 export class ThemesApplier {
@@ -183,6 +183,12 @@ export class ThemesApplier {
     this.targetElements.add(document.body);
 
     const figmaCoreStylesheet = this.getCoreStylesheet();
+    if (location.href.match(CHROME_GPU)) {
+      const newStyles = document.createElement("style");
+      newStyles.innerText = "html { background-color: cadetblue; }";
+
+      document.head.appendChild(newStyles);
+    }
 
     if (!figmaCoreStylesheet) {
       return;

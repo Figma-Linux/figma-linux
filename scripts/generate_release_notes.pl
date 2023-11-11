@@ -39,10 +39,6 @@ sub generate {
 
   `echo "$title" >> $release_note_file_path`;
 
-  if ($isHtml) {
-    `echo "<ul>" >> $release_note_file_path`;
-  }
-
   for my $msg (@list) {
     my $issue = `echo "$msg" | grep -Eo "#.*" | tr -d '\n'`;
     $msg =~ s/^(feat|other|fix|chore|impr): //gi;
@@ -66,7 +62,7 @@ sub generate {
   }
 
   if ($isHtml) {
-    `echo "</ul>" >> $release_note_file_path`;
+    `echo "<li></li>" >> $release_note_file_path`;
   }
 }
 

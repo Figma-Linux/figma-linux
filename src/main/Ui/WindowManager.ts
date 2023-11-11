@@ -1,6 +1,14 @@
 import * as fs from "fs";
 import * as path from "path";
-import { app, shell, clipboard, ipcMain, screen, IpcMainEvent, WebContents } from "electron";
+import {
+  app,
+  shell,
+  clipboard,
+  ipcMain,
+  IpcMainEvent,
+  WebContents,
+  IpcMainInvokeEvent,
+} from "electron";
 
 import Window from "./Window";
 import MenuManager from "./MenuManager";
@@ -187,12 +195,12 @@ export default class WindowManager {
   private toggleCurrentWindowFullscreen(event: IpcMainEvent) {
     const window = this.getWindowByWebContentsId(event.sender.id || this.lastFocusedwindowId);
 
-    window.win.setFullScreen(!window.win.isFullScreen());
+    window.toggleFullScreen();
   }
   private toggleCurrentWindowFullscreenFromMenu(windowId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
 
-    window.win.setFullScreen(!window.win.isFullScreen());
+    window.toggleFullScreen();
   }
   private reopenClosedTabFromMenu(windowId: number) {
     const window = this.windows.get(windowId || this.lastFocusedwindowId);
@@ -379,7 +387,7 @@ export default class WindowManager {
   private async themesIsDisabled(event: IpcMainEvent) {
     return storage.settings.app.disableThemes;
   }
-  private async writeFiles(event: IpcMainEvent, args: WebApi.WriteFiles) {
+  private async writeFiles(event: IpcMainInvokeEvent, args: WebApi.WriteFiles) {
     const files = args.files;
 
     if (!files.length) {

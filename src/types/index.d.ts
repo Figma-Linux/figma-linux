@@ -430,6 +430,10 @@ declare namespace Electron {
       listener: (event: IpcRendererEvent, zoom: number) => void,
     ): this;
     on(channel: "openCommunity", listener: (event: IpcRendererEvent) => void): this;
+    on(
+      channel: "handleSetFullScreen",
+      listener: (event: IpcRendererEvent, fullscreen: boolean) => void,
+    ): this;
 
     send(channel: string, ...args: any[]): void;
     send(channel: "setTitle", data: { id: number; title: string }): this;
@@ -536,6 +540,7 @@ declare namespace Electron {
     send(channel: "loadSettings", settings: Types.SettingsInterface): this;
     send(channel: "getThemeCreatorPalette", palette: Themes.Palette): this;
     send(channel: "changeZoomFactor", zoom: number): this;
+    send(channel: "handleSetFullScreen", fullscreen: boolean): this;
     send(channel: "openCommunity"): this;
 
     destroy(): void;

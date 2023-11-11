@@ -322,6 +322,27 @@ export default class Window {
 
     this.settingsView.postClose();
   }
+  public toggleFullScreen() {
+    if (this.window.isFullScreen()) {
+      this.window.setFullScreen(false);
+    } else {
+      this.window.setFullScreen(true);
+    }
+  }
+  private onEnterFullScreen() {
+    const tab = this.tabManager.getById(this.tabManager.lastFocusedTab);
+
+    if (tab) {
+      tab.view.webContents.send("handleSetFullScreen", true);
+    }
+  }
+  private onLeaveFullScreen() {
+    const tab = this.tabManager.getById(this.tabManager.lastFocusedTab);
+
+    if (tab) {
+      tab.view.webContents.send("handleSetFullScreen", false);
+    }
+  }
   private applyState() {
     const { x, y, height, width, userId, tabs, isMaximized } = this.state;
     userId && this.setUserId(userId);
@@ -448,7 +469,12 @@ export default class Window {
   public setFocusToMainTab() {
     const mainTab = this.tabManager.mainTab;
 
-    this.window.setTopBrowserView(mainTab.view);
+    try {
+      this.window.setTopBrowserView(mainTab.view);
+    } catch (error) {
+      this.window.addBrowserView(mainTab.view);
+      this.window.setTopBrowserView(mainTab.view);
+    }
     this.tabManager.focusMainTab();
     this.closeNewFileTab();
     this.window.webContents.send("focusTab", "mainTab");
@@ -459,7 +485,12 @@ export default class Window {
     const bounds = this.calcBoundsForTabView();
     const communityTab = this.tabManager.communityTab;
 
-    this.window.setTopBrowserView(communityTab.view);
+    try {
+      this.window.setTopBrowserView(communityTab.view);
+    } catch (error) {
+      this.window.addBrowserView(communityTab.view);
+      this.window.setTopBrowserView(communityTab.view);
+    }
     this.tabManager.focusCommunityTab();
     this.closeNewFileTab();
     this.tabManager.communityTab.setBounds(bounds);
@@ -581,6 +612,8 @@ export default class Window {
     this.window.on("unmaximize", () => setTimeout(this.updateTabsBounds.bind(this), 100));
     this.window.on("move", () => setTimeout(this.updateTabsBounds.bind(this), 100));
     this.window.on("focus", () => app.emit("windowFocus", this.window.id));
+    this.window.on("enter-full-screen", this.onEnterFullScreen.bind(this));
+    this.window.on("leave-full-screen", this.onLeaveFullScreen.bind(this));
 
     this.window.webContents.on("did-finish-load", this.webContentDidFinishLoad.bind(this));
   }

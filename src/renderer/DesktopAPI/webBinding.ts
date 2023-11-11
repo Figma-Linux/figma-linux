@@ -3,6 +3,7 @@ import * as E from "electron";
 
 import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
 import { themes } from "./ThemesApplier";
+import { isPrototypeUrl, isValidFigjamLink, isValidProjectLink } from "Utils/Common";
 
 interface IntiApiOptions {
   version: number;
@@ -145,6 +146,9 @@ const initWebBindings = (): void => {
   E.ipcRenderer.on("handleUrl", (_: IpcRendererEvent, path: string, params: string) => {
     webPort.postMessage({ name: "handleUrl", args: { path, params } });
   });
+  E.ipcRenderer.on("handleSetFullScreen", (event: IpcRendererEvent, fullscreen: boolean) => {
+    webPort.postMessage({ name: "handleSetFullScreen", args: { fullscreen } });
+  });
   E.ipcRenderer.on("handlePageCommand", (_: IpcRendererEvent, command: string) => {
     const fullscreenFocusTargetFocused =
       document.activeElement && document.activeElement.classList.contains("focus-target");
@@ -178,7 +182,11 @@ const initWebBindings = (): void => {
 };
 
 function keydownHandler(event: KeyboardEvent) {
-  if (event.code === "F11") {
+  const url = location.href;
+  if (
+    event.code === "F11" &&
+    (isValidProjectLink(url) || isValidFigjamLink(url) || isPrototypeUrl(url))
+  ) {
     E.ipcRenderer.send("toggleCurrentWindowFullscreen");
   }
 }

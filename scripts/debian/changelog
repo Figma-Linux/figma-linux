@@ -1,3 +1,207 @@
+figma-linux (0.11.0-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.0 version
+
+  ## Features:
+  * add fullscreen
+  * added the ability to set Chromium flags from the app settings
+  * save and restore windows state
+  * add window state
+  * add the Recently Closed Tabs menu item
+  * rewrite the code related with generating the desktop menu to a new API
+  * restore community tab after close the app
+  * add context menu for the main and the community tabs
+  * implement community tab
+  * rewrite create new file
+  * implement multiple windows
+  * Rework frontend. Delete React, Mobx, Webpack, node-sass and etc. And add RollUp and Svelte
+
+  ## Bug Fixes:
+  * display themes list after first sync
+  * transparent bg color on the Chrome GPU page
+  * reload main tab after signin
+  * toggle fullscreen mode
+  * restart the app after change a few options
+  * disable the loading indicator for the GPU tab
+  * redirect after finish authorization
+  * hot reload plugins after add it
+  * update theme rules
+  * set tab loading
+  * apply theme's colors
+  * bugs with window control
+  * plugin API and hot reload plugins
+  * open a poject under another user
+  * add more authed users
+  * chromeGpu page
+  * open devTools for tabs and close tab from menu
+  * update panel amd Figm UI scale
+  * open devTools for window
+  * close the new file tab after switch to file browser through a main menu item
+  * handle messages for messageHandler in webBinding
+  * set tab focus
+  * open link on the community tab
+  * focus on the file browser from the community tab and focus on the community tab from the file browser
+  * tab focus after close the new file tab
+  * sort tabs after open another tab
+  * open Community Tab
+  * setTitle for Community Tab
+  * change theme for all windows
+  * open settings popup inside a window
+  * circular dependency in menu
+  * focus on window while launch second instance
+  * color palette styles
+  * docker files
+  * apply current theme after page reload
+  * apply a theme for tabs
+  * srollbar style in the file browser page view
+  * load themes
+  * load default theme for the main UI if themes is disabled
+  * docker files
+  * move font manager on nodeJS side
+  * init settings if file exists with partial data
+  * error when try restore empty tab list
+  * mic access. [#317](https://github.com/Figma-Linux/figma-linux/issues/317)
+  * export files. [#203](https://github.com/Figma-Linux/figma-linux/issues/203)
+  * remove a tab object from the svelte store after the close tab from context menu
+  * copy a project url, and reload a tab
+  * save and restore tabs after open a window
+  * clicks on the toolbar in ZoomView
+  * reset the color palette to default
+  * height of the empty dropdown
+  * display tutorial
+  * Call rerender of the BrowserView after open the Settings at first time
+  * prod preload script paths
+  * update color palette apply rules
+  * icon color on tool bar for themes
+  * remove double scroll bar in the settings body
+  * apply default theme while app start
+  * apply CreatorTheme's theme while start the app
+  * click handler for the ButtonTool component
+  * Button click event in the Settings body component
+  * disabled text color for Figma UI popups
+  * popup box shadow
+  * the name and the author text fields in ThemeCreator
+  * calc panel height after change of the panel scale
+  * sync themes
+  * change zoom for the ZoomView component
+  * toggling the main menu
+  * Fix build-id conflicts with other packages ( [#310)](https://github.com/Figma-Linux/figma-linux/issues/310))
+  * Local plugins are reset on application exit. [#296](https://github.com/Figma-Linux/figma-linux/issues/296)
+
+  ## Other Changes:
+  * fix get git tag
+  * fix get git tag in generate_release_notes.pl script
+  * foramt Error in logs
+  * update default settings
+  * update the handlePageCommand and add the showFlashMessage
+  * remove widget menu item
+  * replace deprecated protocol.registerHttpProtocol on protocol.handle
+  * enable Vulkan, OpenGL, WebGPU
+  * Bump Electron to 27.0.4
+  * update readme
+  * update icon
+  * remove old files
+  * Logger
+  * Bump Electron to 27.0.3
+  * main menu
+  * clean up code
+  * fix
+  * remove unnecessary import and property
+  * remove a few logs
+  * Bump Electron to 24.8.2
+  * fix docker files
+  * move svelte-dnd-action dependency inside the project
+  * update docker files
+  * update snapcraft file
+  * update roolup renderer config
+  * update import of the package.json
+  * update rollup renderer config
+  * Bump Electron to 22.3.5
+  * update README
+  * update apply theme rules
+  * Bump figma-linux-rust-binding to 0.2.9
+  * Bump figma-linux-rust-binding 0.2.8
+  * mode the setUsingMicrophone and the setIsInVoiceCall methods inside the WindowManager
+  * add validate on theme exists
+  * update style of the toolbar in theme previewer
+  * update apply theme rules
+  * reset theme if the removed theme was the current
+  * Implement the copy and paste colors in the ThemeCreator
+  * add the reset to template button in the ThemeCreator's popup menu
+  * add a tutorial fir the ThemeCreator previewer
+  * change key for toggle the ThemeCreator mask
+  * update validate logic
+  * remove scroll bar for common settings body
+  * mplement validators for the name and  the author fields in ThemeCreator
+  * change logic of toggling of the previewers
+  * add a flag for use the old previewer in ThemeCreator
+  * set user select to none for the body settings
+  * update palette rules
+  * change logic of the settings body components
+  * change zoom factor in ThemeCreator preview by mouse wheel
+  * add mask for the ThemeCreator preview
+  * Add array of webview in the previewer
+  * Implement Figma UI theme previwer
+  * Sync themes each time  when the app starts
+  * save in the app settings state of DropDown component on the Themes page
+  * remove old file of the old ThemeCreator
+  * remove the CreatorTheme's BrowserView
+  * implement remove of the CreatorTheme's theme
+  * implement reset CreatorTheme's theme to default theme
+  * implement edit of the CreatorTheme's theme
+  * implement disabled property for the Button component
+  * implement load ThemeCreator's themes in settings and add theme to the ThemeCreator's themes
+  * remove unused svelte  component FromTemplate
+  * made up popup menu for the ThemeCreator
+  * update name of css variables for font size
+  * update the Text component
+  * update the List component
+  * Add popup base component
+  * Add new icons for popup menu
+  * imlement upload a color palette from a theme to the ThemeCreator
+  * Add flag canEdit for themes
+  * plans to add buttons in ThemeCreator header
+  * update theme tumbl in theme list
+  * fix apply and save General settings and themes
+  * close settings UI by click on area beyond modal
+  * Add the padding property for Grid component
+  * update grid for the theme list
+  * styles for tab body in the ThemeCreator UI
+  * replace Flex on Grid for theme list
+  * replace Flex on Grid for list of template in the ThemeCreator UI
+  * Made up the theme creator UI
+  * output themes on the themes settings view
+  * Implement dropdown container
+  * Made up the general settings UI
+  * Add checkbox input
+  * Implement input components
+  * update styles
+  * Add the margin porperty for the button component
+  * update TabView type, add second component
+  * Implement the TabView for Settings UI body
+  * Start creating the settings UI. Refactoring of button components
+  * change event
+  * update logic of main menu button
+  * update main menu button
+  * update button's code
+  * update logic of home button
+  * Add hover and active styles for a button component
+  * Execute rerender of a BroserView by set tab bounds
+  * implement highlighting of an active tab
+  * focus on main tab after open any project
+  * tab swapping by mouse
+  * replace svelte-dnd-action on my fork repository
+  * complete work for tab behavior
+  * update cursor style while dragging a tab
+  * remove auto open in dev move of dev tools for tabs
+  * remove unnecessary ipc handler
+  * move newProject, closeTab, setTabFocus handler in the WindowManager class
+  * move the openTabMenu handler to the WindowsManager
+  * cleaned up the code a bit
+  * move the setFocusToMainTab handler to WindowsManager class
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 11 Nov 2023 16:39:36 +0300
+
 figma-linux (0.10.1-1ubuntu0) devel; urgency=medium
 
   * Publish 0.10.1 version

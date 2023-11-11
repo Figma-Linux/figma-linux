@@ -21,7 +21,7 @@ jobs:
 
       - name: Clone repo
         id: clone
-        run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./
+        run: git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git
 
       - name: Update configs
         id: update

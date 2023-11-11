@@ -12,14 +12,14 @@ for my $param (@ARGV) {
   }
 }
 
-my $features=`git log \$(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "feat:.*" | uniq`;
-my $fixes=`git log \$(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "fix:.*" | uniq`;
-my $other=`git log \$(git tag | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "other:.*" | uniq`;
+my $features=`git log \$(git tag --sort=version:refname | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "feat:.*" | uniq`;
+my $fixes=`git log \$(git tag --sort=version:refname | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "fix:.*" | uniq`;
+my $other=`git log \$(git tag --sort=version:refname | tail -n2 | head -n1)..HEAD --no-merges --oneline | grep -Eo "(other|chore|impr):.*" | uniq`;
 
 if ($latest) {
-  $features=`git log \$(git tag | tail -n1)..HEAD --no-merges --oneline | grep -Eo "feat:.*" | uniq`;
-  $fixes=`git log \$(git tag | tail -n1)..HEAD --no-merges --oneline | grep -Eo "fix:.*" | uniq`;
-  $other=`git log \$(git tag | tail -n1)..HEAD --no-merges --oneline | grep -Eo "other:.*" | uniq`;
+  $features=`git log \$(git tag --sort=version:refname | tail -n1)..HEAD --no-merges --oneline | grep -Eo "feat:.*" | uniq`;
+  $fixes=`git log \$(git tag --sort=version:refname | tail -n1)..HEAD --no-merges --oneline | grep -Eo "fix:.*" | uniq`;
+  $other=`git log \$(git tag --sort=version:refname | tail -n1)..HEAD --no-merges --oneline | grep -Eo "(other|chore|impr):.*" | uniq`;
 }
 
 my $hasFeatures=`printf "$features" | wc -l | tr -d '\n'`;
@@ -45,7 +45,7 @@ sub generate {
 
   for my $msg (@list) {
     my $issue = `echo "$msg" | grep -Eo "#.*" | tr -d '\n'`;
-    $msg =~ s/^(feat|other|fix): //gi;
+    $msg =~ s/^(feat|other|fix|chore|impr): //gi;
 
     if ($issue ne "") {
       my $issueId = substr $issue, 1;

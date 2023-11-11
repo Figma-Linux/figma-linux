@@ -1,10 +1,10 @@
-export const getColorPallet = (theme: Themes.Theme): React.CSSProperties => {
-  const props = {} as CSSStyleDeclaration;
+export const getColorPallet = (theme: Themes.Theme) => {
+  const props: string[] = [];
 
   for (const key of Object.keys(theme.palette)) {
     const prop = theme.palette[key];
-    props[`--${key}`] = prop;
+    props.push(`--${key}: ${prop}`);
   }
 
-  return props as React.CSSProperties;
+  return props;
 };

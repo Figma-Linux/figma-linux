@@ -1,4 +1,4 @@
-import * as E from "electron";
+import { ipcMain } from "electron";
 
 import { storage } from "../Storage";
 import { NativeDialogs } from "./Native";
@@ -10,7 +10,7 @@ export class Provider {
   constructor() {
     let provider: Dialogs.Providers = "Native";
 
-    if (storage.get().app.useZenity) {
+    if (storage.settings.app.useZenity) {
       provider = "Zenity";
     }
 
@@ -20,7 +20,7 @@ export class Provider {
   }
 
   private initListeners = () => {
-    E.ipcMain.on("set-use-zenity", (event, value) => {
+    ipcMain.on("set-use-zenity", (_, value) => {
       if (value) {
         this.provider = this.makeProvider("Zenity");
       } else {

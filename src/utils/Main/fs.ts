@@ -1,7 +1,7 @@
 import * as fs from "fs";
 
 export async function mkdirIfNotExists(path: string) {
-  fs.mkdir(path, error => {
+  fs.mkdir(path, (error) => {
     if (error && error.code !== "EEXIST") {
       throw error;
     }
@@ -27,6 +27,6 @@ export function accessSync(path: string): boolean {
   }
 }
 
-export async function mkPath(path: string): Promise<void> {
+export async function mkPath(path: string) {
   return fs.promises.mkdir(path, { recursive: true });
 }

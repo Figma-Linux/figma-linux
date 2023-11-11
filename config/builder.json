@@ -3,9 +3,11 @@
   "productName": "figma-linux",
   "extraMetadata": "main/main.js",
   "icon": "resources/icons",
-  "extraFiles": [{
-    "from": "lib/"
-  }],
+  "extraFiles": [
+    {
+      "from": "lib/"
+    }
+  ],
   "files": [
     "**/*"
   ],
@@ -14,7 +16,6 @@
     "buildResources": "build/installers",
     "output": "build/installers"
   },
-
   "fileAssociations": [
     {
       "ext": "fig",
@@ -22,24 +23,27 @@
       "role": "Editor"
     }
   ],
-
-  "protocols": [{
-    "name": "figma",
-    "role": "Viewer",
-    "schemes": [
-      "figma"
+  "protocols": [
+    {
+      "name": "figma",
+      "role": "Viewer",
+      "schemes": [
+        "figma"
+      ]
+    }
+  ],
+  "rpm": {
+    "fpm": [
+      "--rpm-rpmbuild-define=_build_id_links none"
     ]
-  }],
-
+  },
   "pacman": {
     "depends": []
   },
-
   "appImage": {
     "category": "Graphics",
     "desktop": "resources/figma-linux-appimage.desktop"
   },
-
   "linux": {
     "description": "Unofficial desktop application for linux",
     "icon": "resources/icons",

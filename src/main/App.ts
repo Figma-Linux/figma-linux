@@ -1,120 +1,222 @@
-import * as E from "electron";
+import {
+  app,
+  net,
+  session,
+  clipboard,
+  nativeImage,
+  ipcMain,
+  Event,
+  IpcMainEvent,
+  IpcMainInvokeEvent,
+  protocol,
+  ProtocolRequest,
+  ProtocolResponse,
+} from "electron";
 
 import * as Const from "Const";
+import { request } from "Utils/Main";
 import { isAppAuthLink, isValidProjectLink } from "Utils/Common";
-import { mkdirIfNotExists, themesDirectory } from "Utils/Main";
 import Args from "./Args";
 import { logger } from "./Logger";
 import { storage } from "./Storage";
-import WindowManager from "./window/WindowManager";
-import { Session } from "./Session";
-import "./events/app";
+import ExtensionManager from "./ExtensionManager";
+import ThemeManager from "./Ui/ThemeManager";
+import WindowManager from "./Ui/WindowManager";
+import Session from "./Session";
+import FontManager from "./Fonts";
 
-class App {
-  windowManager: WindowManager;
-  session: Session;
-
-  constructor() {
-    const isSingleInstance = E.app.requestSingleInstanceLock();
+export default class App {
+  constructor(
+    private windowManager: WindowManager,
+    private extensionManager: ExtensionManager,
+    private session: Session,
+    private fontManager: FontManager,
+    private themeManager: ThemeManager,
+  ) {
+    const isSingleInstance = app.requestSingleInstanceLock();
 
     if (!isSingleInstance) {
-      E.app.quit();
+      app.emit("focusLastWindow");
+      app.quit();
       return;
-    } else {
-      E.app.on("second-instance", (event, argv) => {
-        let projectLink = "";
-        logger.debug("second-instance, argv: ", argv);
-
-        const paramIndex = argv.findIndex(i => isValidProjectLink(i));
-        const hasAppAuthorization = argv.find(i => isAppAuthLink(i));
-
-        if (this.windowManager.tryHandleAppAuthRedeemUrl(hasAppAuthorization)) {
-          return;
-        }
-
-        if (paramIndex !== -1) {
-          projectLink = argv[paramIndex];
-        }
-
-        if (this.windowManager && this.windowManager.mainWindow) {
-          if (projectLink !== "") {
-            this.windowManager.openUrl(projectLink);
-          }
-
-          this.windowManager.mainWindow.isMinimized() && this.windowManager.mainWindow.restore();
-          !this.windowManager.mainWindow.isVisible() && this.windowManager.mainWindow.show();
-
-          this.windowManager.mainWindow.focus();
-        }
-      });
-
-      this.session = new Session();
     }
 
-    // Chromium flags for better performance and GPU support
-    // Full flags reference: https://peter.sh/experiments/chromium-command-line-switches/
-    E.app.commandLine.appendSwitch("no-sandbox");
-    E.app.commandLine.appendSwitch("ignore-gpu-blocklist");
-    E.app.commandLine.appendSwitch("enable-gpu-rasterization");
-    E.app.commandLine.appendSwitch("enable-video-decode");
-    E.app.commandLine.appendSwitch("enable-accelerated-2d-canvas");
-    E.app.commandLine.appendSwitch("enable-experimental-canvas-features");
+    this.applySwitches();
 
-    const colorSpace = storage.get().app.enableColorSpaceSrgb;
-
-    if (colorSpace) {
-      E.app.commandLine.appendSwitch("force-color-profile", "srgb");
-    } else {
-      E.app.commandLine.appendSwitch("disable-color-correct-rendering");
+    if (!app.isDefaultProtocolClient(Const.PROTOCOL)) {
+      app.setAsDefaultProtocolClient(Const.PROTOCOL);
     }
 
-    mkdirIfNotExists(themesDirectory).catch(error => {
-      logger.error("mkdirIfNotExists error: ", error);
-    });
-
-    this.appEvent();
+    this.registerEvents();
   }
-
-  private appEvent = (): void => {
-    if (!E.app.isDefaultProtocolClient(Const.PROTOCOL)) {
-      E.app.setAsDefaultProtocolClient(Const.PROTOCOL);
-    }
-    E.app.allowRendererProcessReuse = false;
-
-    E.app.on("ready", this.ready);
-    E.app.on("browser-window-created", (e, window) => window.setMenu(null));
-    E.app.on("window-all-closed", this.onWindowAllClosed);
-  };
 
   private ready = (): void => {
     const { figmaUrl } = Args();
 
-    this.windowManager = WindowManager.instance;
+    this.windowManager.restoreState();
     this.session.handleAppReady();
 
     setTimeout(() => {
-      figmaUrl !== "" && this.windowManager.openUrl(figmaUrl);
+      if (figmaUrl !== "") {
+        this.windowManager.openUrl(figmaUrl);
+      }
     }, 1500);
 
-    E.protocol.registerHttpProtocol(Const.PROTOCOL, (req: E.ProtocolRequest, cb: (req: E.ProtocolResponse) => void) => {
+    protocol.handle(Const.PROTOCOL, (req: GlobalRequest) => {
+      logger.info("protocol.handle, req.url: ", req.url);
       if (this.windowManager.tryHandleAppAuthRedeemUrl(req.url)) {
-        return;
+        return new Response();
       }
 
-      this.windowManager.addTab("loadMainContent.js", req.url);
+      this.windowManager.openUrl(req.url);
 
-      cb({
-        url: req.url,
-        method: req.method,
-      });
+      return net.fetch(req.url, { method: req.method });
     });
   };
 
-  private onWindowAllClosed = (): void => {
-    E.app.quit();
+  private secondInstance(event: Event, argv: string[]) {
+    let projectLink = "";
+    logger.debug("second-instance, argv: ", argv);
+
+    const paramIndex = argv.findIndex((i) => isValidProjectLink(i));
+    const hasAppAuthorization = argv.find((i) => isAppAuthLink(i));
+
+    logger.debug("second-instance, hasAppAuthorization: ", hasAppAuthorization);
+
+    if (this.windowManager.tryHandleAppAuthRedeemUrl(hasAppAuthorization)) {
+      return;
+    }
+
+    if (paramIndex !== -1) {
+      projectLink = argv[paramIndex];
+    }
+
+    if (projectLink !== "") {
+      this.windowManager.focusLastWindow();
+      this.windowManager.openUrl(projectLink);
+    }
+  }
+  private frontReady(_: IpcMainEvent) {
+    if (!this.session.hasFigmaSession) {
+      app.emit("closeAllTab");
+    }
+
+    this.themeManager.loadThemes();
+    this.themeManager.loadCreatorTheme();
+  }
+  private applySwitches() {
+    // Chromium flags for better performance and GPU support
+    // Full flags reference: https://peter.sh/experiments/chromium-command-line-switches/
+    const switches = storage.settings.app.commandSwitches;
+
+    if (!switches.length) {
+      return;
+    }
+
+    for (const item of switches) {
+      app.commandLine.appendSwitch(item.switch, item.value);
+    }
+
+    const colorSpace = storage.settings.app.enableColorSpaceSrgb;
+
+    if (colorSpace) {
+      app.commandLine.appendSwitch("force-color-profile", "srgb");
+    } else {
+      app.commandLine.appendSwitch("disable-color-correct-rendering");
+    }
+  }
+  private setAuthedUsers(_: IpcMainEvent, userIds: string[]) {
+    if (!Array.isArray(storage.settings.authedUserIDs)) {
+      storage.settings.authedUserIDs = userIds;
+      storage.save();
+    }
+
+    storage.settings.authedUserIDs = [...new Set([...storage.settings.authedUserIDs, ...userIds])];
+  }
+  private setWorkspaceName(_: IpcMainEvent, name: string) {
+    logger.warn("The setWorkspaceName not implemented, workspaceName: ", name);
+  }
+  private setFigjamEnabled(_: IpcMainEvent, enabled: boolean) {
+    logger.warn("The setFigjamEnabled not implemented, enabled: ", enabled);
+  }
+  private setClipboardData(_: IpcMainEvent, data: WebApi.SetClipboardData) {
+    const format = data.format;
+    const buffer = Buffer.from(data.data);
+
+    if (["image/jpeg", "image/png"].indexOf(format) !== -1) {
+      clipboard.writeImage(nativeImage.createFromBuffer(buffer));
+    } else if (format === "image/svg+xml") {
+      clipboard.writeText(buffer.toString());
+    } else if (format === "application/pdf") {
+      clipboard.writeBuffer("Portable Document Format", buffer);
+    } else {
+      clipboard.writeBuffer(format, buffer);
+    }
+  }
+  private async getFonts(_: IpcMainInvokeEvent) {
+    const dirs = storage.settings.app.fontDirs;
+
+    return this.fontManager.getFonts(dirs);
+  }
+  private async getFontFile(_: IpcMainInvokeEvent, data: WebApi.GetFontFile) {
+    const file = await this.fontManager.getFontFile(data.path);
+
+    if (file && file.byteLength > 0) {
+      return file;
+    }
+
+    return null;
+  }
+  private async logout() {
+    await request({
+      url: Const.LOGOUT_PAGE,
+      useSessionCookies: true,
+    });
+
+    // TODO: remove only current user's id
+    storage.settings.authedUserIDs = [];
+
+    try {
+      await Promise.all([
+        session.defaultSession.clearStorageData(),
+        session.defaultSession.clearCache(),
+      ]);
+    } catch (error) {
+      logger.error(error);
+    }
+
+    this.windowManager.closeTabOnAllWindows();
+    this.windowManager.loadLoginPageAllWindows();
+  }
+  private onWindowAllClosed() {
+    app.quit();
+  }
+  private relaunchApp() {
+    app.relaunch();
+    app.quit();
+  }
+  private quitApp() {
+    this.windowManager.saveState();
+    storage.save();
+
+    app.quit();
+  }
+
+  private registerEvents = (): void => {
+    ipcMain.on("frontReady", this.frontReady.bind(this));
+    ipcMain.on("setAuthedUsers", this.setAuthedUsers.bind(this));
+    ipcMain.on("setWorkspaceName", this.setWorkspaceName.bind(this));
+    ipcMain.on("setFigjamEnabled", this.setFigjamEnabled.bind(this));
+    ipcMain.on("setClipboardData", this.setClipboardData.bind(this));
+
+    ipcMain.handle("getFonts", this.getFonts.bind(this));
+    ipcMain.handle("getFontFile", this.getFontFile.bind(this));
+
+    app.on("ready", this.ready.bind(this));
+    app.on("second-instance", this.secondInstance.bind(this));
+    app.on("window-all-closed", this.onWindowAllClosed.bind(this));
+    app.on("relaunchApp", this.relaunchApp.bind(this));
+    app.on("signOut", this.logout.bind(this));
+    app.on("quitApp", this.quitApp.bind(this));
   };
 }
-
-export default (): void => {
-  new App();
-};

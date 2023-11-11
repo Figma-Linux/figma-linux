@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { version } = require("./../../package.json");
+const { version } = require("./../package.json");
 
 export default (): { figmaUrl: string } => {
   const argv = process.argv;
@@ -11,7 +11,7 @@ export default (): { figmaUrl: string } => {
     process.exit(0);
   }
 
-  const urlIndex = argv.findIndex(i => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i));
+  const urlIndex = argv.findIndex((i) => /^(figma:\/\/|https?:\/\/w{0,3}?\.?figma\.com)/.test(i));
   if (urlIndex !== -1) {
     figmaUrl = argv[urlIndex];
   }

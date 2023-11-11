@@ -15,23 +15,23 @@ jobs:
     steps:
       - name: Checkout project
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Checkout on latest tag
         run: |
           # git tag
-          # git tag | tail -1
-          # git checkout $(git tag | tail -1)
+          # git tag --sort=version:refname | tail -1
+          # git checkout $(git tag --sort=version:refname | tail -1)
           # git status
           chmod +x ./**/*.sh
           chmod +x ./**/*.pl
-          perl ./scripts/update_rev_changelog.pl "$(git tag | tail -1 | tr -d 'v')" "${{ github.event.inputs.rev }}"
+          perl ./scripts/update_rev_changelog.pl "$(git tag --sort=version:refname | tail -1 | tr -d 'v')" "${{ github.event.inputs.rev }}"
 
       - name: Cache src
         id: cache-src
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: repo
           path: ./*
@@ -41,7 +41,7 @@ jobs:
     name: build for amd64
     needs: setup
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: repo
           path: ./
@@ -61,7 +61,7 @@ jobs:
 
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: amd64
           path: build/installers/*
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build_amd64
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           path: ./
 

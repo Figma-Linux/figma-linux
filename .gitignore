@@ -1,4 +1,6 @@
 node_modules
+.cache
+.env
 *.log
 dist
 gpg

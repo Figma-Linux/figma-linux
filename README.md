@@ -26,7 +26,7 @@ Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](
 	</a>
 </p>
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade)
+<!-- [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade) -->
 [![Snap](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
 
 <p>
@@ -113,11 +113,7 @@ sudo dnf install figma-linux-*.x86_64.rpm
 git clone https://github.com/Figma-Linux/figma-linux
 cd figma-linux
 ```
-2. Install Rust:
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
-3. Install prerequisites from npm:
+2. Install prerequisites from npm:
 ```bash
 npm i
 ```
@@ -127,6 +123,7 @@ npm run dev
 ```
 Aside from that, you can also run:
 
+- ```npm run dev``` to run the app in development mode
 - ```npm run build``` to built the app for production
 - ```npm run start``` to run the built version
 - ```npm run builder``` to package the app for distribution.
@@ -135,8 +132,12 @@ Aside from that, you can also run:
 - * This depends on [AppImageTool](https://appimage.github.io/appimagetool/) being installed.
 
 
-ATTENTION:
-When you do changes in middleware component, You need to rebuild (`npm run build`) and restart the app each time, because the middleware execute only on run the app, Hot Reload won't work.
+Example of **.env** for local development:
+```
+NODE_ENV=dev
+DEV_PANEL_PORT=3330
+DEV_SETTINGS_PORT=3331
+```
 
 
 

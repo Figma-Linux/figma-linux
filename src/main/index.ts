@@ -1,13 +1,23 @@
-import appInit from "./App";
+import App from "./App";
+import Session from "./Session";
+import FontManager from "./Fonts";
+import ExtensionManager from "./ExtensionManager";
+import ThemeManager from "./Ui/ThemeManager";
+import ThemeValidator from "./Ui/ThemeManager/ThemeValidator";
+import WindowManager from "./Ui/WindowManager";
+import { logger } from "./Logger";
 
-// Catch unhandling unexpected exceptions
 process.on("uncaughtException", (error: Error) => {
-  console.error(`uncaughtException: `, error);
+  logger.error(`uncaughtException: `, error);
+});
+process.on("unhandledRejection", (reason: Error) => {
+  logger.error(`unhandledRejection: `, reason);
 });
 
-// Catch unhandling rejected promises
-process.on("unhandledRejection", (reason: any) => {
-  console.error(`unhandledRejection: `, reason);
-});
-
-appInit();
+new App(
+  new WindowManager(),
+  new ExtensionManager(),
+  new Session(),
+  new FontManager(),
+  new ThemeManager(new ThemeValidator()),
+);

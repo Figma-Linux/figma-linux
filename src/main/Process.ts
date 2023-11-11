@@ -1,5 +1,5 @@
-import * as util from "util";
-import * as cp from "child_process";
+import { promisify } from "util";
+import { exec as cp_exec, execSync } from "child_process";
 
 import { logger } from "./Logger";
 
@@ -7,7 +7,7 @@ export class Process {
   constructor() {}
 
   public exec = async (command: string): Promise<string> => {
-    const exec = util.promisify(cp.exec);
+    const exec = promisify(cp_exec);
 
     const result = await exec(command);
 
@@ -20,7 +20,7 @@ export class Process {
   };
 
   public execSync = (command: string): string => {
-    const result = cp.execSync(command);
+    const result = execSync(command);
 
     return result.toString();
   };

@@ -1,3 +1,3 @@
-export * from "./_defaultSettings";
-export * from "./_other";
-export * from "./_app";
+export * from "./window";
+export * from "./other";
+export * from "./app";

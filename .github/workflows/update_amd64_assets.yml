@@ -9,13 +9,13 @@ jobs:
     steps:
       - name: Checkout project
         id: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Cache src
         id: cache-src
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: repo
           path: ./*
@@ -25,7 +25,7 @@ jobs:
     name: build for amd64
     needs: setup
     steps:
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: repo
           path: ./
@@ -46,7 +46,7 @@ jobs:
 
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: amd64
           path: build/installers/*
@@ -59,7 +59,7 @@ jobs:
       - name: mkdir installers
         run: mkdir -p ./build/installers
 
-      - uses: actions/download-artifact@v2
+      - uses: actions/download-artifact@v3
         with:
           name: amd64
           path: ./build/installers

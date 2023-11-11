@@ -12,7 +12,7 @@ grade: stable
 confinement: strict
 architectures:
   - build-on: [amd64, arm64]
-    build-for: [amd64, arm64]
+    build-for: [amd64]
 
 plugs:
   gnome-3-28-1804:

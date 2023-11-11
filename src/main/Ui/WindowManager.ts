@@ -14,7 +14,7 @@ import Window from "./Window";
 import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
-import { CHROME_GPU, DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE } from "Const";
+import { CHROME_GPU, DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
 import { mkPath } from "Utils/Main";
 
@@ -128,6 +128,9 @@ export default class WindowManager {
       if (secret) {
         for (const [_, window] of this.windows) {
           window.redeemAppAuth(secret);
+          setTimeout(() => {
+            window.loadUrlMainTab(RECENT_FILES);
+          }, 1000);
         }
         return true;
       }

@@ -81,6 +81,8 @@ export default class App {
     const paramIndex = argv.findIndex((i) => isValidProjectLink(i));
     const hasAppAuthorization = argv.find((i) => isAppAuthLink(i));
 
+    logger.debug("second-instance, hasAppAuthorization: ", hasAppAuthorization);
+
     if (this.windowManager.tryHandleAppAuthRedeemUrl(hasAppAuthorization)) {
       return;
     }

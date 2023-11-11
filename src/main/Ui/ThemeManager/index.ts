@@ -17,7 +17,6 @@ export default class ThemeManager {
   private creatorTheme: Themes.Theme;
   private themesDirectory: string;
   private creatorThemeDirectory: string;
-  private creatorThemeThemesDirectory: string;
   private creatorThemeFileName: string;
 
   constructor(private validator: ThemeValidator) {
@@ -25,7 +24,6 @@ export default class ThemeManager {
 
     this.themesDirectory = path.resolve(userData, "Themes");
     this.creatorThemeDirectory = path.resolve(userData, "ThemeCreator");
-    this.creatorThemeThemesDirectory = path.resolve(userData, "ThemeCreator", "Themes");
     this.creatorThemeFileName = "theme.json";
     this.creatorTheme = {
       ...DEFAULT_THEME,
@@ -44,7 +42,7 @@ export default class ThemeManager {
 
     await Promise.all([
       this.loadFromDirectory(this.themes),
-      this.loadFromDirectory(this.creatorThemes, this.creatorThemeThemesDirectory),
+      this.loadFromDirectory(this.creatorThemes, this.creatorThemeDirectory),
     ]);
 
     app.emit("syncThemesEnd", [...this.themes.values()]);
@@ -145,7 +143,7 @@ export default class ThemeManager {
 
   private async removeCreatorTheme(_: IpcMainEvent, themeId: string): Promise<void> {
     const themeName = `${themeId}.json`;
-    const filepath = path.resolve(this.creatorThemeThemesDirectory, themeName);
+    const filepath = path.resolve(this.creatorThemeDirectory, themeName);
 
     this.creatorThemes.delete(themeId);
 
@@ -164,7 +162,7 @@ export default class ThemeManager {
 
     const themeId = theme.name.replace(/\s/g, "_");
     const themeName = `${themeId}.json`;
-    const filepath = path.resolve(this.creatorThemeThemesDirectory, themeName);
+    const filepath = path.resolve(this.creatorThemeDirectory, themeName);
 
     this.creatorThemes.set(themeId, {
       ...theme,

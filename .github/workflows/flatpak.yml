@@ -28,6 +28,7 @@ jobs:
         run: |
           node -v
           npm -v
+          ls -la
 
       # - name: Push
       #   id: push

@@ -4,18 +4,23 @@ on: workflow_dispatch
 
 jobs:
   setup:
+    name: Setup
     uses: ./.github/workflows/reuse_setup.yml
 
-  build_arm64v8:
-    uses: ./.github/workflows/reuse_build_arm64v8.yml
-    needs: setup
+  # build_arm64v8:
+  #   name: Build arm64v8
+  #   uses: ./.github/workflows/reuse_build_arm64v8.yml
+  #   needs: setup
   build_amd64:
+    name: Build amd64
     uses: ./.github/workflows/reuse_build_amd64.yml
     needs: setup
 
-  release_arm64v8:
-    uses: ./.github/workflows/reuse_release_arm64v8.yml
-    needs: build_arm64v8
+  # release_arm64v8:
+  #   name: Release arm64v8
+  #   uses: ./.github/workflows/reuse_release_arm64v8.yml
+  #   needs: build_arm64v8
   release_amd64:
+    name: Release amd64
     uses: ./.github/workflows/reuse_release_amd64.yml
     needs: build_amd64

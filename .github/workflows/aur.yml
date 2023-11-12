@@ -11,11 +11,27 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
         with:
+          path: ./repo
           fetch-depth: 0
 
       - name: Prepare artifacts
         run: |
+          sudo apt install libarchive-dev bsdtar
           ls -la .
+          LATEST_VERSION=$(cd ./repo; git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
+          echo "LATEST_VERSION: $LATEST_VERSION"
+          wget "https://github.com/Figma-Linux/figma-linux/releases/download/v$LATEST_VERSION/figma-linux_$LATEST_VERSION_linux_amd64.zip"
+          wget "https://github.com/Figma-Linux/figma-linux/releases/download/v$LATEST_VERSION/figma-linux_$LATEST_VERSION_linux_arm64.zip"
+          ls -la .
+          git clone git://projects.archlinux.org/pacman.git
+          cd pacman
+          ./autogen.sh
+          ./configure --disable-doc
+          make
+          sudo make install
+          ls -la .
+          whereis pacman
+          whereis makepkg
 
       - name: Import SSH key
         id: key

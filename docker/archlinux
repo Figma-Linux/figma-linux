@@ -2,7 +2,7 @@ FROM archlinux
 
 WORKDIR /usr/src/figma-linux-aur
 
-COPY ./build/installers/ /usr/src/
+COPY ./build/installers/ ./
 
 RUN pacman -Sy sudo git nano binutils --noconfirm && \
   git clone https://aur.archlinux.org/figma-linux.git . && \

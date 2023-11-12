@@ -16,25 +16,12 @@ jobs:
 
       - name: Prepare artifacts
         run: |
-          sudo apt update
-          sudo apt install libarchive-dev libarchive-tools pacman
-          ls -la .
           LATEST_VERSION=$(cd ./repo; git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
           echo "LATEST_VERSION: $LATEST_VERSION"
           wget -q "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_amd64.zip"
           wget -q "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_arm64.zip"
-          ls -la .
-          mkdir -p ./build/installers
-          mv ./figma-linux_*.zip ./build/installers/
-          ls -la .
-          ls -la ./build/installers/
-          whereis pacman
-          whereis makepkg
-          sudo find /bin -name "makepkg" 
-          sudo find /sbin -name "makepkg" 
-          sudo find /usr/sbin -name "makepkg" 
-          sudo find /usr/bin -name "makepkg" 
-          sudo find / -name "makepkg" 
+          mkdir -p ./repo/build/installers
+          mv ./figma-linux_*.zip ./repo/build/installers/
 
       - name: Import SSH key
         id: key
@@ -50,17 +37,18 @@ jobs:
 
       - name: Checkout AUR repo
         id: checkoutAur
-        run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
+        run: git clone https://aur.archlinux.org/figma-linux.git ./aur
 
       - name: Update PKGBUILD
         id: pkgbuild
         run: |
           mkdir new-aur
-          cd ./src
+          ls -la .
+          cd ./repo
           docker build -t 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux -f ./docker/archlinux .
           docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-docker-image-archlinux)://usr/src/figma-linux-aur/. ../new-aur
-          cp -rf ../new-aur/PKGBUILD ../aur/
-          cp -rf ../new-aur/.SRCINFO ../aur/
+          # cp -rf ../new-aur/PKGBUILD ../aur/
+          # cp -rf ../new-aur/.SRCINFO ../aur/
           echo ::set-output name=release::$version
           cat ../new-aur/PKGBUILD
           cat ../new-aur/.SRCINFO

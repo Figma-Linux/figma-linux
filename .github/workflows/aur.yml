@@ -30,11 +30,11 @@ jobs:
           ls -la ./build/installers/
           whereis pacman
           whereis makepkg
-          find /bin -name "makepkg" 
-          find /sbin -name "makepkg" 
-          find /usr/sbin -name "makepkg" 
-          find /usr/bin -name "makepkg" 
-          find / -name "makepkg" 
+          sudo find /bin -name "makepkg" 
+          sudo find /sbin -name "makepkg" 
+          sudo find /usr/sbin -name "makepkg" 
+          sudo find /usr/bin -name "makepkg" 
+          sudo find / -name "makepkg" 
 
       - name: Import SSH key
         id: key

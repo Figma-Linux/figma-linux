@@ -1,4 +1,4 @@
-name: Release Build
+name: Old Main
 
 on:
   create:

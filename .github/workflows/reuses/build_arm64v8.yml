@@ -1,0 +1,40 @@
+name: Build arm64v8
+
+on: workflow_call
+
+jobs:
+  build_arm64v8:
+    name: build for arm64v8
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: repo
+        path: ./
+
+    - name: Setup
+      run: |
+        chmod +wr . -R
+        chmod +x ./**/*.sh
+        chmod +x ./**/*.pl
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build in Docker
+      id: build
+      run: |
+        docker buildx build --platform linux/arm64 -t 4tqrgqe5yrgfd/figma-linux-artefacts-arm --load -f ./docker/Build_artefacts_arm64v8 .
+        mkdir -p ./build/installers
+        docker cp $(docker create 4tqrgqe5yrgfd/figma-linux-artefacts-arm)://usr/src/figma-linux/build/installers/. ./build/installers
+        perl ./scripts/generate_release_notes.pl
+
+    - name: Cache arm64v8 artifacts
+      id: cache-arm64v8-artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: arm64v8
+        path: build/installers/*

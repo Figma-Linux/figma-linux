@@ -29,7 +29,7 @@ jobs:
           echo "Step completed"
 
       - name: Checkout AUR repo
-        id: checkout
+        id: checkoutAur
         run: git clone ssh://aur@aur.archlinux.org/figma-linux.git ./
 
       - name: Update PKGBUILD

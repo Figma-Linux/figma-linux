@@ -59,12 +59,14 @@ jobs:
           cp -rf ../new-aur/PKGBUILD ../aur/
           cp -rf ../new-aur/.SRCINFO ../aur/
           echo ::set-output name=release::$version
+          cat ../new-aur/PKGBUILD
+          cat ../new-aur/.SRCINFO
 
-      - name: Push to AUR
-        id: push
-        run: |
-          git config --global --add user.name "${{ secrets.USER_NAME }}"
-          git config --global --add user.email "${{ secrets.EMAIL }}"
-          git add .
-          git commit -m "Release v$version"
-          git push origin master
+      # - name: Push to AUR
+      #   id: push
+      #   run: |
+      #     git config --global --add user.name "${{ secrets.USER_NAME }}"
+      #     git config --global --add user.email "${{ secrets.EMAIL }}"
+      #     git add .
+      #     git commit -m "Release v$version"
+      #     git push origin master

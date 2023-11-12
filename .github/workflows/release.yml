@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   setup:
-    uses: ./.github/workflows/reuses/setup.yml
+    uses: Figma-Linux/figma-linux/.github/workflows/reuses/setup.yml@dev
 
   build_arm64v8:
     uses: ./.github/workflows/reuses/build_arm64v8.yml

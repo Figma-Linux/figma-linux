@@ -16,8 +16,8 @@ jobs:
 
       - name: Prepare artifacts
         run: |
-          sudo aptitude update
-          sudo aptitude install libarchive-dev bsdtar
+          sudo apt update
+          sudo apt install libarchive-dev bsdtar
           ls -la .
           LATEST_VERSION=$(cd ./repo; git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
           echo "LATEST_VERSION: $LATEST_VERSION"

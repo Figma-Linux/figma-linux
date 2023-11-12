@@ -17,13 +17,17 @@ jobs:
       - name: Prepare artifacts
         run: |
           sudo apt update
-          sudo apt install libarchive-dev libarchive-tools pacman
+          sudo apt install libarchive-dev libarchive-tools pacman makepkg
           ls -la .
           LATEST_VERSION=$(cd ./repo; git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
           echo "LATEST_VERSION: $LATEST_VERSION"
           wget -q "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_amd64.zip"
           wget -q "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_arm64.zip"
           ls -la .
+          mkdir -p ./build/installers
+          mv ./figma-linux_*.zip ./build/installers/
+          ls -la .
+          ls -la ./build/installers/
           whereis pacman
           whereis makepkg
 
@@ -31,6 +35,7 @@ jobs:
         id: key
         run: |
           echo "Importing SSH ley..."
+          mkdir ~/.ssh
           echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
           echo "Updating ~/.ssh/known_hosts..."
           ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts

@@ -24,8 +24,8 @@ jobs:
           wget "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_amd64.zip"
           wget "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_arm64.zip"
           ls -la .
-          git clone git://projects.archlinux.org/pacman.git
-          cd pacman
+          git clone https://aur.archlinux.org/pacman-git.git
+          cd pacman-git
           ./autogen.sh
           ./configure --disable-doc
           make

@@ -22,6 +22,7 @@ jobs:
           wget -q "https://github.com/Figma-Linux/figma-linux/releases/download/v${LATEST_VERSION}/figma-linux_${LATEST_VERSION}_linux_arm64.zip"
           mkdir -p ./repo/build/installers
           mv ./figma-linux_*.zip ./repo/build/installers/
+          echo "$LATEST_VERSION" > ./repo/build/installers/version
 
       - name: Import SSH key
         id: key

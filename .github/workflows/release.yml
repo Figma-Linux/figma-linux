@@ -4,18 +4,18 @@ on: workflow_dispatch
 
 jobs:
   setup:
-    uses: Figma-Linux/figma-linux/.github/workflows/reuses/setup.yml@dev
+    uses: ./.github/workflows/reuse_setup.yml
 
   build_arm64v8:
-    uses: ./.github/workflows/reuses/build_arm64v8.yml
+    uses: ./.github/workflows/reuse_build_arm64v8.yml
     needs: setup
   build_amd64:
-    uses: ./.github/workflows/reuses/build_amd64.yml
+    uses: ./.github/workflows/reuse_build_amd64.yml
     needs: setup
 
   release_arm64v8:
-    uses: ./.github/workflows/reuses/release_arm64v8.yml
+    uses: ./.github/workflows/reuse_release_arm64v8.yml
     needs: build_arm64v8
   release_amd64:
-    uses: ./.github/workflows/reuses/release_amd64.yml
+    uses: ./.github/workflows/reuse_release_amd64.yml
     needs: build_amd64

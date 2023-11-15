@@ -7,6 +7,10 @@ jobs:
     name: Upload to AUR
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: ./
+
       - name: Check
         run: |
           ls -la .

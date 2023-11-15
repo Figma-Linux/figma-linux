@@ -1,0 +1,13 @@
+name: Upload to AUR
+
+on: workflow_dispatch
+
+jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/reuse_setup.yml
+
+  aur:
+    name: Upload to AUR
+    uses: ./.github/workflows/reuse_aur.yml
+    needs: setup

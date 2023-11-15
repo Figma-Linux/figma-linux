@@ -1,6 +1,6 @@
 name: Upload to AUR
 
-on: workflow_dispatch
+on: workflow_call
 
 jobs:
   upload_aur:

@@ -29,7 +29,7 @@ jobs:
 
       - name: Publish AUR
         id: figma-linux-actions
-        uses: Figma-Linux/figma-linux-actions@1.0.4
+        uses: Figma-Linux/figma-linux-actions@main
         with:
           action: publish_aur
           token: ${{ secrets.GITHUB_TOKEN }}

@@ -96,8 +96,13 @@ sudo apt install figma-linux_*_amd64.deb
 Figma-linux is available on the [AUR](https://aur.archlinux.org/packages/figma-linux/).
 You can use an AUR helper like `yay` to install it:
 ```bash
-yay -S figma-linux
+yay -S figma-linux-bin
 ```
+Other AUR packages:
+ - [figma-linux](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package install binary version from release tag
+ - [figma-linux-bin](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package install binary version from release tag
+ - [figma-linux-git](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package build the app from Githab from latest release tag
+ - [figma-linux-git-dev](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package build the app from Githab from latest commit on the dev branch
 ### RPM-based distros
 Download the .rpm package from our [Releases](https://github.com/Figma-Linux/figma-linux/releases/latest) page, then install it:
 

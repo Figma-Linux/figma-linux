@@ -1,4 +1,4 @@
-name: Upload to AUR
+name: Manually Upload to AUR
 
 on: workflow_dispatch
 

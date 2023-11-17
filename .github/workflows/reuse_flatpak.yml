@@ -46,4 +46,4 @@ jobs:
         uses: Figma-Linux/figma-linux-actions@main
         with:
           action: publish_flatpak
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACTION_TOKEN }}

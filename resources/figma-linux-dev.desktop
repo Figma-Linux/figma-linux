@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Figma Linux Dev Build
+Comment=Unofficial desktop application for linux
+Exec=/opt/figma-linux-dev/figma-linux-dev %U
+Terminal=false
+Type=Application
+Icon=figma-linux
+StartupWMClass=figma-linux
+Categories=Graphics;
+MimeType=application/figma;x-scheme-handler/figma;

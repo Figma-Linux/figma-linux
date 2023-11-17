@@ -11,8 +11,8 @@ RUN pacman -Sy sudo git nano binutils --noconfirm && \
   export lineStartPos="$(grep -onE '[a-z0-9]{64,64}' ./PKGBUILD | awk -F":" '{print $1}' | head -1)" && \
   export lineEndPos="$(grep -onE '[a-z0-9]{64,64}' ./PKGBUILD | awk -F":" '{print $1}' | tail -1)" && \
   cp -rf /usr/src/*.zip /usr/src/figma-linux-aur/ && \
-  export sha256sums_x86_64="$(sha256sum /usr/src/figma-linux-aur/figma-linux_0.7.3_linux_amd64.zip)" && \
-  export sha256sums_aarch64="$(sha256sum /usr/src/figma-linux-aur/figma-linux_0.7.3_linux_arm64.zip)" && \
+  export sha256sums_x86_64="$(sha256sum /usr/src/figma-linux-aur/figma-linux_*_linux_amd64.zip)" && \
+  export sha256sums_aarch64="$(sha256sum /usr/src/figma-linux-aur/figma-linux_*_linux_arm64.zip)" && \
   sed -i ./PKGBUILD -re "${lineStartPos},${lineEndPos}d" && \
   echo "Bump version from $prevVersion to $version" && \
   echo "New sha256sums for x86_64: ${sha256sums_x86_64}" && \

@@ -1,0 +1,33 @@
+name: arm64v8
+
+on: workflow_call
+
+jobs:
+  release_arm64v8:
+    name: arm64v8
+    runs-on: ubuntu-latest
+    steps:
+      - name: mkdir installers
+        run: mkdir -p ./build/installers
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: arm64v8
+          path: ./build/installers
+
+      - name: Get version
+        id: version
+        run: |
+          echo ::set-output name=release::$(cat build/installers/version)
+          sha256sum ./build/installers/figma-linux* || echo ""
+          ls -la .
+
+      - name: Upload release assets
+        id: release
+        uses: ChugunovRoman/action-gh-release@master
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          name: Figma Linux ${{ steps.version.outputs.release }}
+          files: build/installers/figma-linux*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

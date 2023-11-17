@@ -1,0 +1,39 @@
+name: AUR GIT
+
+on: workflow_call
+
+jobs:
+  upload_aur:
+    environment: Main
+    name: AUR GIT
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: ./
+
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          mkdir ~/.ssh
+          echo "$SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "Step completed"
+        env:
+          SSH_KEY: ${{ secrets.ID_RSA }}
+
+      - name: Set user name and email for git
+        run: |
+          git config --global user.name "${{ secrets.USER_NAME }}"
+          git config --global user.email "${{ secrets.EMAIL}}"
+
+      - name: Publish AUR
+        id: figma-linux-actions
+        uses: Figma-Linux/figma-linux-actions@main
+        with:
+          action: publish_aur_git
+          token: ${{ secrets.GITHUB_TOKEN }}

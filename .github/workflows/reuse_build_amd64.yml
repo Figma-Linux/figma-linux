@@ -1,0 +1,39 @@
+name: amd64
+
+on: workflow_call
+
+jobs:
+  build_amd64:
+    runs-on: ubuntu-latest
+    name: amd64
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: repo
+          path: ./
+
+      - name: Setup
+        run: |
+          chmod +wr . -R
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+
+      - name: Build in Docker
+        id: build
+        run: |
+          docker build -t figma-linux-artefacts -f "./docker/Build_artefacts_local" --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) .
+          mkdir -p ./build/installers
+          docker cp $(docker create figma-linux-artefacts:latest)://usr/src/figma-linux/build/installers/. ./build/installers
+          mv ./build/installers/figma-linux_$(cat build/installers/version)_linux_x64.zip ./build/installers/figma-linux_$(cat build/installers/version)_linux_amd64.zip
+          perl ./scripts/generate_release_notes.pl
+
+      # uses: nanoufo/action-upload-artifacts-and-release-assets@main
+      # with:
+      #   path: build/installers/figma-linux_*.*
+      - name: Cache amd64 artifacts
+        id: cache-amd64-artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          path: |
+            ./release_notes
+            build/installers/*

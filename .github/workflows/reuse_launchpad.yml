@@ -1,0 +1,44 @@
+name: Launchpad PPA
+
+on: workflow_call
+
+jobs:
+  launchpad:
+    name: Launchpad PPA
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          path: ./
+
+      - name: Get Artefacts
+        run: |
+          cd ./repo
+          newVersion=$(git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
+          wget https://github.com/Figma-Linux/figma-linux/releases/download/v${newVersion}/figma-linux_${newVersion}_linux_amd64.zip
+          mkdir -p build/installers/linux-unpacked
+          echo "$newVersion" > build/installers/version
+          unzip figma-linux_${newVersion}_linux_amd64.zip -d ./build/installers/linux-unpacked/
+          cd ..
+          mv ./repo/* ./
+          rm -rf ./repo
+          chmod +x ./**/*.sh
+          chmod +x ./**/*.pl
+
+      - name: Import keys
+        run: |
+          mkdir ./gpg
+          echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
+          echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key
+          echo "${{ secrets.GPG_PASSPHRASE_KEY }}" | base64 -d > ./gpg/passphrase
+          echo "${{ secrets.ID_RSA }}" | base64 -d > ./gpg/id_rsa
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Upload PPA
+        run: |
+          ./scripts/build_ppa.sh "1"

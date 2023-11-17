@@ -11,11 +11,11 @@ base: core22
 grade: stable
 confinement: strict
 architectures:
-  - build-on: amd64
-    run-on: amd64
+  - build-on: [amd64, arm64]
+    build-for: [amd64]
 
-  - build-on: arm64
-    run-on: arm64
+  - build-on: [arm64]
+    build-for: [arm64]
 
 plugs:
   gnome-3-28-1804:

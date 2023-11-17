@@ -161,6 +161,18 @@ export default class Tab {
     callback: (permissionGranted: boolean) => void,
     details: PermissionRequestHandlerHandlerDetails,
   ) {
+    const allowByDefault = [
+      "fullscreen",
+      "pointerLock",
+      "clipboard-read",
+      "clipboard-write",
+      "clipboard-sanitized-write",
+    ];
+
+    if (allowByDefault.includes(permission)) {
+      return callback(true);
+    }
+
     if (permission === "media") {
       if (this.isUsingMicrophone) {
         return callback(true);

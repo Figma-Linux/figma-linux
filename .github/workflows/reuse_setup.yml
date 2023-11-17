@@ -1,0 +1,19 @@
+name: Clone Repo
+
+on: workflow_call
+
+jobs:
+  setup:
+    name: Clone Repo
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Cache src
+        uses: actions/upload-artifact@v3
+        with:
+          name: repo
+          path: ./*

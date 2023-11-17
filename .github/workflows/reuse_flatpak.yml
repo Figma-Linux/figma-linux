@@ -1,0 +1,49 @@
+name: Flathub
+
+on: workflow_call
+
+jobs:
+  flatpak:
+    name: Flathub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        id: checkout
+        uses: actions/checkout@v4
+        with:
+          path: ./repo
+          fetch-depth: 0
+
+      - name: Set user name and email for git
+        run: |
+          git config --global user.name "${{ secrets.USER_NAME }}"
+          git config --global user.email "${{ secrets.EMAIL}}"
+
+      - name: Generate version and release notes files
+        id: genfiles
+        run: |
+          cd ./repo
+          echo ::set-output name=version::$(git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
+          perl ./scripts/generate_release_notes.pl --html
+          mv ./release_notes ../
+
+      - name: Import SSH key
+        id: key
+        run: |
+          echo "Importing SSH ley..."
+          mkdir ~/.ssh
+          echo "$SSH_KEY" | base64 -d > ~/.ssh/id_rsa
+          echo "Updating ~/.ssh/known_hosts..."
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
+          chmod 700 ~/.ssh
+          chmod 600 ~/.ssh/id_rsa
+          echo "Step completed"
+        env:
+          SSH_KEY: ${{ secrets.ID_RSA }}
+
+      - name: Publish on Flathub
+        id: figma-linux-actions
+        uses: Figma-Linux/figma-linux-actions@main
+        with:
+          action: publish_flatpak
+          token: ${{ secrets.ACTION_TOKEN }}

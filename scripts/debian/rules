@@ -17,6 +17,8 @@ override_dh_auto_install:
 
 	rm -rf ./resources/icon ./resources/figma-linux.desktop
 
+	xdg-mime default figma-linux.desktop x-scheme-handler/figma
+
 
 override_dh_shlibdeps:
 

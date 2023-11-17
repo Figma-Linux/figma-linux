@@ -2,6 +2,23 @@ figma-linux (0.11.1-1ubuntu0) devel; urgency=medium
 
   * Publish 0.11.1 version
 
+  ## Bug Fixes:
+  * copy as png. [#350](https://github.com/Figma-Linux/figma-linux/issues/350)
+
+  ## Other Changes:
+  * update deb files
+  * add desktop file for dev build
+  * update readme
+  * update snapcraft config
+  * update generate release notes
+  * update ci
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 18 Nov 2023 00:12:45 +0300
+
+figma-linux (0.11.1-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.1 version
+
 
  -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 18 Nov 2023 00:12:33 +0300
 

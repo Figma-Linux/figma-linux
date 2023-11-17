@@ -17,3 +17,8 @@ jobs:
         with:
           name: repo
           path: ./*
+
+      - name: Set user name and email for git
+        run: |
+          git config --global user.name "$USER_NAME"
+          git config --global user.email "$EMAIL"

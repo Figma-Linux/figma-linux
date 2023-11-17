@@ -1,0 +1,18 @@
+name: Update AUR DEV GIT
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  setup:
+    name: Setup
+    uses: ./.github/workflows/reuse_setup.yml
+    secrets: inherit
+
+  aur_dev_git:
+    name: Upload
+    uses: ./.github/workflows/reuse_aur_dev_git.yml
+    secrets: inherit
+    needs: setup

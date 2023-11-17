@@ -14,6 +14,11 @@ jobs:
           path: ./repo
           fetch-depth: 0
 
+      - name: Set user name and email for git
+        run: |
+          git config --global user.name "${{ secrets.USER_NAME }}"
+          git config --global user.email "${{ secrets.EMAIL}}"
+
       - name: Generate version and release notes files
         id: genfiles
         run: |

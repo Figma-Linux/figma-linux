@@ -25,6 +25,7 @@ jobs:
           chmod +x ./**/*.pl
 
       - name: Import keys
+        run: |
           mkdir ./gpg
           echo "${{ secrets.GPG_PUB_KEY }}" | base64 -d > ./gpg/pub.key
           echo "${{ secrets.GPG_SECRET_KEY }}" | base64 -d > ./gpg/secret.key

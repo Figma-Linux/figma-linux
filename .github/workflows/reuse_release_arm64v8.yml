@@ -7,12 +7,9 @@ jobs:
     name: arm64v8
     runs-on: ubuntu-latest
     steps:
-      - name: mkdir installers
-        run: mkdir -p ./build/installers
-
       - uses: actions/download-artifact@v3
         with:
-          name: arm64v8
+          name: arm64
           path: ./build/installers
 
       - name: Get version

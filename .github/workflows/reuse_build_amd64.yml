@@ -34,6 +34,7 @@ jobs:
         id: cache-amd64-artifacts
         uses: actions/upload-artifact@v3
         with:
+          name: amd64
           path: |
             ./release_notes
             build/installers/*

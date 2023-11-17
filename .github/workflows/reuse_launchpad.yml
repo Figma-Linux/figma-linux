@@ -17,6 +17,7 @@ jobs:
           newVersion=$(git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
           wget https://github.com/Figma-Linux/figma-linux/releases/download/v${newVersion}/figma-linux_${newVersion}_linux_amd64.zip
           mkdir -p build/installers/linux-unpacked
+          echo "$newVersion" > build/installers/version
           unzip figma-linux_${newVersion}_linux_amd64.zip -d ./build/installers/linux-unpacked/
           cd ..
           mv ./repo/* ./

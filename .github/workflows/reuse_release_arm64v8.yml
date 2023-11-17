@@ -10,7 +10,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: arm64
-          path: ./build/installers
+          path: ./
 
       - name: Get version
         id: version

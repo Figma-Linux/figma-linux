@@ -1,11 +1,11 @@
-name: Build amd64
+name: amd64
 
 on: workflow_call
 
 jobs:
   build_amd64:
     runs-on: ubuntu-latest
-    name: build for amd64
+    name: amd64
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -27,6 +27,9 @@ jobs:
           mv ./build/installers/figma-linux_$(cat build/installers/version)_linux_x64.zip ./build/installers/figma-linux_$(cat build/installers/version)_linux_amd64.zip
           perl ./scripts/generate_release_notes.pl
 
+      # uses: nanoufo/action-upload-artifacts-and-release-assets@main
+      # with:
+      #   path: build/installers/figma-linux_*.*
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
         uses: actions/upload-artifact@v3

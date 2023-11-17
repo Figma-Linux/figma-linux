@@ -1,26 +1,70 @@
 name: Release Build
 
-on: workflow_dispatch
+on:
+  create:
+    tags:
+    - 'v*.*.*'
 
 jobs:
   setup:
     name: Setup
     uses: ./.github/workflows/reuse_setup.yml
+    secrets: inherit
 
-  # build_arm64v8:
-  #   name: Build arm64v8
-  #   uses: ./.github/workflows/reuse_build_arm64v8.yml
-  #   needs: setup
+  build_arm64v8:
+    name: Build
+    uses: ./.github/workflows/reuse_build_arm64v8.yml
+    secrets: inherit
+    needs: setup
   build_amd64:
-    name: Build amd64
+    name: Build
     uses: ./.github/workflows/reuse_build_amd64.yml
     needs: setup
+    secrets: inherit
 
-  # release_arm64v8:
-  #   name: Release arm64v8
-  #   uses: ./.github/workflows/reuse_release_arm64v8.yml
-  #   needs: build_arm64v8
+  release_arm64v8:
+    name: Release
+    uses: ./.github/workflows/reuse_release_arm64v8.yml
+    secrets: inherit
+    needs: build_arm64v8
   release_amd64:
-    name: Release amd64
+    name: Release
     uses: ./.github/workflows/reuse_release_amd64.yml
     needs: build_amd64
+    secrets: inherit
+
+  aur:
+    name: Upload
+    uses: ./.github/workflows/reuse_aur.yml
+    secrets: inherit
+    needs: [release_amd64, release_arm64v8]
+
+  aur_bin:
+    name: Upload
+    uses: ./.github/workflows/reuse_aur_bin.yml
+    secrets: inherit
+    needs: [release_amd64, release_arm64v8]
+
+  aur_git:
+    name: Upload
+    uses: ./.github/workflows/reuse_aur_git.yml
+    secrets: inherit
+    needs: [release_amd64, release_arm64v8]
+
+  aur_dev_git:
+    name: Upload
+    uses: ./.github/workflows/reuse_aur_dev_git.yml
+    secrets: inherit
+    needs: [release_amd64, release_arm64v8]
+
+  flathub:
+    name: Upload
+    uses: ./.github/workflows/reuse_flatpak.yml
+    secrets: inherit
+    needs: [release_amd64, release_arm64v8]
+
+  launchpad:
+    name: Upload
+    uses: ./.github/workflows/reuse_launchpad.yml
+    secrets: inherit
+    needs: [release_amd64, release_arm64v8]

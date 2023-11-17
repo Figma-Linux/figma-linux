@@ -1,10 +1,10 @@
-name: Setup
+name: Clone Repo
 
 on: workflow_call
 
 jobs:
   setup:
-    name: Setup
+    name: Clone Repo
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project

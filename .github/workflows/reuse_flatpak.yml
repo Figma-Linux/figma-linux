@@ -1,86 +1,44 @@
-name: Flatpak
+name: Flathub
 
-on: workflow_dispatch
+on: workflow_call
 
 jobs:
   flatpak:
-    name: Update Flatpak
+    name: Flathub
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Checkout project
+        id: checkout
+        uses: actions/checkout@v4
         with:
-          path: ./
+          path: ./repo
+          fetch-depth: 0
+
+      - name: Generate version and release notes files
+        id: genfiles
+        run: |
+          cd ./repo
+          echo ::set-output name=version::$(git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
+          perl ./scripts/generate_release_notes.pl --html
+          mv ./release_notes ../
 
       - name: Import SSH key
         id: key
         run: |
           echo "Importing SSH ley..."
-          mkdir -p ~/.ssh
-          echo "${{ secrets.ID_RSA }}" | base64 -d > ~/.ssh/id_rsa
+          mkdir ~/.ssh
+          echo "$SSH_KEY" | base64 -d > ~/.ssh/id_rsa
           echo "Updating ~/.ssh/known_hosts..."
-          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+          ssh-keyscan aur.archlinux.org >> ~/.ssh/known_hosts
           chmod 700 ~/.ssh
           chmod 600 ~/.ssh/id_rsa
           echo "Step completed"
+        env:
+          SSH_KEY: ${{ secrets.ID_RSA }}
 
-      - name: Clone repo
-        id: clone
-        run: |
-          git config --global --add user.name "${{ secrets.USER_NAME }}"
-          git config --global --add user.email "${{ secrets.EMAIL }}"
-          git clone git@github.com:flathub/io.github.Figma_Linux.figma_linux.git ./flatpak-repo
-          cd ./flatpak-repo
-
-      - name: Update configs
-        id: update
-        run: |
-          sudo apt install libxml2-utils -y
-          mv ./amd64/* ./
-          mv ./arm64v8/* ./build/installers
-          rm -rf ./amd64
-          rm -rf ./arm64v8
-          find ./ -type f -iname "*.sh" -exec chmod +x {} \;
-          find ./ -type f -iname "*.pl" -exec chmod +x {} \;
-          cd ./repo
-          ./scripts/generate_release_notes.pl --html
-          cd ..
-          data=$(cat ./repo/release_notes | tr -d '\n')
-          echo "First Print *appdata.xml file:"
-          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          cat ./repo/release_notes
-          prevVersion=$(cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | grep -Eo 'release\sversion=".*"\s' | tr -d '[a-z=" \s\n]')
-          version="$(cat ./build/installers/version)"
-          echo "Bump version from $prevVersion to $version"
-          sed -i "s/$prevVersion/$version/g" ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
-          echo "Updating sums..."
-          export sha256sums_x86_64="$(sha256sum ./build/installers/figma-linux_${version}_linux_amd64.deb | awk '{print $1}' | tr -d '\n')"
-          export sha256sums_aarch64="$(sha256sum ./build/installers/figma-linux_${version}_linux_arm64.deb | awk '{print $1}' | tr -d '\n')"
-          echo "sha256sums_x86_64: $sha256sums_x86_64"
-          echo "sha256sums_aarch64: $sha256sums_aarch64"
-          perl -pe 's{sha256:.*}{++$n == 1 ? "sha256: $ENV{'sha256sums_x86_64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
-          perl -pe 's{sha256:.*}{++$n == 2 ? "sha256: $ENV{'sha256sums_aarch64'}" : $&}ge' -i ./flatpak-repo/io.github.Figma_Linux.figma_linux.yml
-          echo 'cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml after update sha sums'
-          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml | tr -d '\n' > /tmp/tmp1
-          sed -i "s|<releases>|<releases><release version=\"$version\" date=\"$(date '+%Y-%m-%d')\"><description><ul>$data<\/ul><\/description><\/release>|g" /tmp/tmp1
-          echo "Print before formatting /tmp/tmp1 xml file:"
-          cat /tmp/tmp1
-          xmllint --format /tmp/tmp1 > ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          echo "Print after formatting /tmp/tmp1 xml file:"
-          cat ./flatpak-repo/io.github.Figma_Linux.figma_linux.appdata.xml
-          echo ::set-output name=release::$version
-
-      - name: Push
-        id: push
-        run: |
-          git config --global --add user.name "${{ secrets.USER_NAME }}"
-          git config --global --add user.email "${{ secrets.EMAIL }}"
-          cd ./flatpak-repo
-          git checkout -b bump-version
-          git add .
-          git commit -m "Release v${{ steps.update.outputs.release }}"
-          git push origin bump-version
-
-      - name:  Create Pull Request
-        run: |
-          curl -X POST -u "ChugunovRoman:${{ secrets.REPO_ACCESS_TOKEN }}" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/flathub/io.github.Figma_Linux.figma_linux/pulls -d '{"title": "Release v${{ steps.update.outputs.release }} version","head":"Figma-Linux:bump-version","base":"master"}'
+      - name: Publish on Flathub
+        id: figma-linux-actions
+        uses: Figma-Linux/figma-linux-actions@main
+        with:
+          action: publish_flatpak
+          token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,3 +1,10 @@
+figma-linux (0.11.1-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.1 version
+
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 17 Nov 2023 21:38:49 +0300
+
 figma-linux (0.11.0-1ubuntu0) devel; urgency=medium
 
   * Publish 0.11.0 version

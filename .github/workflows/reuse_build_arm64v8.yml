@@ -39,4 +39,5 @@ jobs:
         id: cache-arm64v8-artifacts
         uses: actions/upload-artifact@v3
         with:
+          name: arm64
           path: build/installers/*

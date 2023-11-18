@@ -7,25 +7,19 @@ jobs:
     name: amd64
     runs-on: ubuntu-latest
     steps:
-      - name: mkdir installers
-        run: mkdir -p ./build/installers
-
       - uses: actions/download-artifact@v3
         with:
+          name: amd64
           path: ./
 
       - name: Get version
         id: version
         run: |
           ls -la .
-          ls -la ./artifact || echo ""
-          ls -la ./artifact/build || echo ""
-          ls -la ./artifact/build/installers || echo ""
-          ls -la ./build || echo ""
+          ls -la ./build
           ls -la ./build/installers || echo ""
           echo ::set-output name=release::$(cat build/installers/version)
           sha256sum ./build/installers/figma-linux* || echo ""
-          ls -la .
 
       - name: Upload release assets
         id: release

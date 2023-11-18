@@ -1,6 +1,11 @@
 name: Launchpad PPA
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      rev:
+        required: true
+        type: string
 
 jobs:
   launchpad:
@@ -41,4 +46,4 @@ jobs:
 
       - name: Build and Upload PPA
         run: |
-          ./scripts/build_ppa.sh "${FIGMA_LINUX_REV}"
+          ./scripts/build_ppa.sh "${{ github.event.inputs.rev }}"

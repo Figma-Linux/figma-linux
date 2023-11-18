@@ -19,5 +19,5 @@ jobs:
     uses: ./.github/workflows/reuse_launchpad.yml
     needs: setup
     secrets: inherit
-    env:
-      FIGMA_LINUX_REV: "${{ github.event.inputs.rev }}"
+    with:
+      rev: "${{ github.event.inputs.rev }}"

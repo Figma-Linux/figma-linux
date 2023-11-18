@@ -10,7 +10,7 @@ ENV USER=root
 COPY ./build ./build
 COPY ./gpg ./
 
-RUN apt install xdg-utils && cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
+RUN apt install xdg-utils -y && cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/figma-linux && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/chrome-sandbox && \
   chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/*.sh && \

@@ -66,6 +66,7 @@ jobs:
   launchpad:
     name: Upload
     uses: ./.github/workflows/reuse_launchpad.yml
+    secrets: inherit
     with:
       rev: 1
     needs: [release_amd64, release_arm64v8]

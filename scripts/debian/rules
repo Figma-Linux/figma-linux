@@ -12,6 +12,7 @@ override_dh_auto_install:
 	mkdir -p ./debian/figma-linux/usr/share/icons/hicolor
 	rsync -av --progress ./* ./debian/figma-linux/opt/figma-linux/ --exclude debian --exclude .pc --exclude resources/icon --exclude resources/figma-linux.desktop
 	cp -rf ./resources/figma-linux.desktop ./debian/figma-linux/usr/share/applications/
+	chmod 755 ./debian/figma-linux/opt/figma-linux/figma-linux
 
 	bash -c 'for file in ./resources/icon/*; do name=`basename $${file%.*}`; mkdir -p ./debian/figma-linux/usr/share/icons/hicolor/$${name}/apps; cp -rf "$$file" ./debian/figma-linux/usr/share/icons/hicolor/$${name}/apps/figma-linux.png; done'
 

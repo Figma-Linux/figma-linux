@@ -26,7 +26,7 @@ echo "figma-linux (${version}-${rev}ubuntu0) devel; urgency=medium" >> /tmp/tmp_
 echo "" >> /tmp/tmp_changelog
 echo "  * Publish ${version} version" >> /tmp/tmp_changelog
 echo "${notes}" >> /tmp/tmp_changelog
-echo " -- Chugunov Roman <Zebs-BMK\@yandex.ru>  $(date -R)" >> /tmp/tmp_changelog
+echo " -- Chugunov Roman <Zebs-BMK@yandex.ru>  $(date -R)" >> /tmp/tmp_changelog
 echo "" >> /tmp/tmp_changelog
 echo "$(cat /tmp/tmp_changelog ./scripts/debian/changelog)" > ./scripts/debian/changelog
 rm -rf /tmp/tmp_changelog

@@ -2,7 +2,7 @@ Source: figma-linux
 Section: graphics
 Priority: optional
 Maintainer: Chugunov Roman <Zebs-BMK@yandex.ru>
-Build-Depends: debhelper (>= 10), rsync
+Build-Depends: debhelper (>= 10), rsync, xdg-utils
 Standards-Version: 4.1.2
 Homepage: https://github.com/Figma-linux/figma-linux
 #Vcs-Git: https://anonscm.debian.org/git/collab-maint/figma-linux.git

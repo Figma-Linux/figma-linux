@@ -1,29 +1,6 @@
 name: Launchpad PPA
 
-on:
-  workflow_call:
-    secrets:
-      GPG_PUB_KEY:
-        required: true
-        description: ''
-      GPG_SECRET_KEY:
-        required: true
-        description: ''
-      GPG_PASSPHRASE_KEY:
-        required: true
-        description: ''
-      ID_RSA:
-        required: true
-        description: ''
-      DOCKER_USERNAME:
-        required: true
-        description: ''
-      DOCKER_PASSWORD:
-        required: true
-        description: ''
-      FIGMA_LINUX_REV:
-        required: true
-        description: ''
+on: workflow_call
 
 jobs:
   launchpad:
@@ -64,4 +41,4 @@ jobs:
 
       - name: Build and Upload PPA
         run: |
-          ./scripts/build_ppa.sh ${{ secrets.FIGMA_LINUX_REV }}
+          ./scripts/build_ppa.sh "${FIGMA_LINUX_REV}"

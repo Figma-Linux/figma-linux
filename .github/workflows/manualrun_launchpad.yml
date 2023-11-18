@@ -1,6 +1,12 @@
 name: Manually Upload to Launchpad PPA
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      rev:
+        description: 'FIGMA_LINUX_REV'
+        required: true
+        default: '2'
 
 jobs:
   setup:
@@ -8,8 +14,10 @@ jobs:
     uses: ./.github/workflows/reuse_setup.yml
     secrets: inherit
 
-  flathub:
+  launchpad:
     name: Upload
     uses: ./.github/workflows/reuse_launchpad.yml
-    secrets: inherit
     needs: setup
+    secrets: inherit
+    with:
+      rev: "${{ github.event.inputs.rev }}"

@@ -1,6 +1,11 @@
 name: Launchpad PPA
 
-on: workflow_call
+on:
+  workflow_call:
+    inputs:
+      rev:
+        required: true
+        type: string
 
 jobs:
   launchpad:
@@ -11,7 +16,7 @@ jobs:
         with:
           path: ./
 
-      - name: Get Artefacts
+      - name: Prepare
         run: |
           cd ./repo
           newVersion=$(git tag --sort=version:refname | tail -n1 | tr -d 'v' | tr -d '\n')
@@ -41,4 +46,4 @@ jobs:
 
       - name: Build and Upload PPA
         run: |
-          ./scripts/build_ppa.sh "1"
+          ./scripts/build_ppa.sh "${{ github.event.inputs.rev }}"

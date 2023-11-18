@@ -20,6 +20,17 @@ mkdir -p $workdir/resources/icon;
 
 echo "PWD: $(pwd)";
 
+rm -rf /tmp/tmp_changelog
+touch /tmp/tmp_changelog
+echo "figma-linux (${version}-${rev}ubuntu0) devel; urgency=medium" >> /tmp/tmp_changelog
+echo "" >> /tmp/tmp_changelog
+echo "  * Publish ${version} version" >> /tmp/tmp_changelog
+echo "${notes}" >> /tmp/tmp_changelog
+echo " -- Chugunov Roman <Zebs-BMK@yandex.ru>  $(date -R)" >> /tmp/tmp_changelog
+echo "" >> /tmp/tmp_changelog
+echo "$(cat /tmp/tmp_changelog ./scripts/debian/changelog)" > ./scripts/debian/changelog
+rm -rf /tmp/tmp_changelog
+
 cp -rf ./scripts/debian $workdir;
 cp -rf ${linux_unpacked}/* $workdir;
 cp -rf ${linux_unpacked}/icons/* $workdir/resources/icon;

@@ -10,10 +10,10 @@ ENV USER=root
 COPY ./build ./build
 COPY ./gpg ./
 
-RUN apt update &&  apt install xdg-utils -y && cat ./build/figma-linux-${FIGMA_LINUX_VERSION}/debian/changelog && \
-  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/figma-linux && \
-  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/chrome-sandbox && \
-  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}/*.sh && \
+RUN apt update &&  apt install xdg-utils -y && cat ./build/figma-linux-${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}/debian/changelog && \
+  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}/figma-linux && \
+  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}/chrome-sandbox && \
+  chmod a+x ./build/figma-linux-${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}/*.sh && \
   gpg --import --no-tty --batch --yes ./pub.key && \
   gpg --import --no-tty --batch --yes ./secret.key && \
   gpg -k && \
@@ -21,7 +21,7 @@ RUN apt update &&  apt install xdg-utils -y && cat ./build/figma-linux-${FIGMA_L
   chmod 600 ~/.ssh/id_rsa && \
   cd ./build/installers/linux-unpacked && \
   tar cJf ../../figma-linux_${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV}.orig.tar.xz ./* && \
-  cd ../../figma-linux-${FIGMA_LINUX_VERSION} && \
+  cd ../../figma-linux-${FIGMA_LINUX_VERSION}-${FIGMA_LINUX_REV} && \
   chmod a+x debian/rules debian/postinst debian/postrm && \
   EDITOR=/bin/true dpkg-source -q --commit . patchsetname && \
   debuild -S -sa -p"gpg --batch --passphrase-file /usr/src/figma-linux/passphrase --pinentry-mode loopback" && \

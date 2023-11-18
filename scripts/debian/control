@@ -9,6 +9,6 @@ Homepage: https://github.com/Figma-linux/figma-linux
 #Vcs-Browser: https://anonscm.debian.org/cgit/collab-maint/figma-linux.git
 
 Package: figma-linux
-Depends: libnss3 (>= 3.26)
+Depends: libnss3 (>= 3.26), xdg-utils
 Architecture: amd64
 Description: Figma is the first interface design tool based in the browser, making it easier for teams to create software.

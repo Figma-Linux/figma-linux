@@ -3,7 +3,7 @@ name: Manually Upload to Launchpad PPA
 on:
   workflow_dispatch:
     inputs:
-      age:
+      rev:
         description: 'FIGMA_LINUX_REV'
         required: true
         default: '2'
@@ -19,10 +19,10 @@ jobs:
     uses: ./.github/workflows/reuse_launchpad.yml
     needs: setup
     secrets:
-      GPG_PUB_KEY: ${{ secrets.GPG_PUB_KEY }}
-      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
-      GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
-      ID_RSA: ${{ secrets.ID_RSA }}
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      FIGMA_LINUX_REV: 1
+      GPG_PUB_KEY: "${{ secrets.GPG_PUB_KEY }}"
+      GPG_SECRET_KEY: "${{ secrets.GPG_SECRET_KEY }}"
+      GPG_PASSPHRASE_KEY: "${{ secrets.GPG_PASSPHRASE_KEY }}"
+      ID_RSA: "${{ secrets.ID_RSA }}"
+      DOCKER_USERNAME: "${{ secrets.DOCKER_USERNAME }}"
+      DOCKER_PASSWORD: "${{ secrets.DOCKER_PASSWORD }}"
+      FIGMA_LINUX_REV: "${{ github.event.inputs.rev }}"

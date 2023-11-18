@@ -1,6 +1,29 @@
 name: Launchpad PPA
 
-on: workflow_call
+on:
+  workflow_call:
+    secrets:
+      GPG_PUB_KEY:
+        required: true
+        description: ''
+      GPG_SECRET_KEY:
+        required: true
+        description: ''
+      GPG_PASSPHRASE_KEY:
+        required: true
+        description: ''
+      ID_RSA:
+        required: true
+        description: ''
+      DOCKER_USERNAME:
+        required: true
+        description: ''
+      DOCKER_PASSWORD:
+        required: true
+        description: ''
+      FIGMA_LINUX_REV:
+        required: true
+        description: ''
 
 jobs:
   launchpad:

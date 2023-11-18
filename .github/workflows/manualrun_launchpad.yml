@@ -1,6 +1,12 @@
 name: Manually Upload to Launchpad PPA
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      age:
+        description: 'FIGMA_LINUX_REV'
+        required: true
+        default: '2'
 
 jobs:
   setup:
@@ -8,8 +14,15 @@ jobs:
     uses: ./.github/workflows/reuse_setup.yml
     secrets: inherit
 
-  flathub:
+  launchpad:
     name: Upload
     uses: ./.github/workflows/reuse_launchpad.yml
-    secrets: inherit
     needs: setup
+    secrets:
+      GPG_PUB_KEY: ${{ secrets.GPG_PUB_KEY }}
+      GPG_SECRET_KEY: ${{ secrets.GPG_SECRET_KEY }}
+      GPG_PASSPHRASE_KEY: ${{ secrets.GPG_PASSPHRASE_KEY }}
+      ID_RSA: ${{ secrets.ID_RSA }}
+      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      FIGMA_LINUX_REV: 1

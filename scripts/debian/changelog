@@ -1,3 +1,15 @@
+figma-linux (0.11.2-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.2 version
+
+  ## Bug Fixes:
+  * update files for build on  launchpad
+
+  ## Other Changes:
+  * update build ppa script
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sat, 18 Nov 2023 22:03:04 +0300
+
 figma-linux (0.11.1-1ubuntu0) devel; urgency=medium
 
   * Publish 0.11.1 version

@@ -14,7 +14,7 @@ if [ $arch == "aarch64" ]; then
   linux_unpacked="build/installers/linux-arm64-unpacked";
 fi
 
-workdir="build/figma-linux-${version}-${rev}";
+workdir="build/figma-linux-${version}";
 mkdir -p $workdir;
 mkdir -p $workdir/resources/icon;
 

@@ -15,8 +15,8 @@ const postcss = require("rollup-plugin-postcss");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const panelPort = process.env.DEV_PANEL_PORT;
-const settingsPort = process.env.DEV_SETTINGS_PORT;
+const panelPort = process.env.DEV_PANEL_PORT ?? 3330;
+const settingsPort = process.env.DEV_SETTINGS_PORT ?? 3331;
 const production = process.env.NODE_ENV !== "dev";
 const watch = process.env.ROLLUP_WATCH === "true";
 const projectRootDir = path.resolve(__dirname);

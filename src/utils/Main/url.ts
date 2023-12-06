@@ -1,7 +1,7 @@
 import { resolve } from "path";
 
-export const panelUrlDev = `http://localhost:${process.env.DEV_PANEL_PORT}`;
-export const settingsUrlDev = `http://localhost:${process.env.DEV_SETTINGS_PORT}`;
+export const panelUrlDev = `http://localhost:${process.env.DEV_PANEL_PORT ?? 3330}`;
+export const settingsUrlDev = `http://localhost:${process.env.DEV_SETTINGS_PORT ?? 3331}`;
 
 export const panelUrlProd = `file://${resolve(__dirname, "../index.html")}`;
 export const settingsUrlProd = `file://${resolve(__dirname, "../settings.html")}`;

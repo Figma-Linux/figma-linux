@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { themeApp } from "../Common/Store/Themes";
-  import { initCommonIpc } from "../Common/Ipc";
   import { getColorPallet } from "Utils/Render/themes";
+  import { initCommonIpc } from "../Common/Ipc";
+  import { themeApp } from "../Common/Store/Themes";
+  import { Left, Right, Tabs } from "./Components";
   import { initIpc } from "./ipc";
   import { panelZoom } from "./store";
-  import { Left, Right, Tabs } from "./Components";
 
   initCommonIpc();
   initIpc();

@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
-  import { themeApp } from "../Common/Store/Themes";
   import { getColorPallet } from "Utils/Render/themes";
+  import { ipcRenderer } from "electron";
   import { initCommonIpc } from "../Common/Ipc";
+  import { themeApp } from "../Common/Store/Themes";
   import { initIpc } from "./ipc";
   import { settings } from "./store";
 

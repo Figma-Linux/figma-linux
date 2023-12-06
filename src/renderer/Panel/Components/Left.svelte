@@ -1,8 +1,15 @@
 <script lang="ts">
-  import { Figma, Community, Plus } from "Icons";
-  import { ButtonWindow, ButtonTool } from "Common/Buttons";
-  import { newFileVisible, communityTabVisible, currentTab } from "../store";
-  import { onClickHome, onClickNewProject, onClickCommunity } from "./utils";
+  import { ButtonTool, ButtonWindow } from "Common/Buttons";
+  import { Community, Figma, Plus } from "Icons";
+  import { communityTabVisible, currentTab, newFileVisible } from "../store";
+  import { onClickCommunity, onClickHome, onClickNewProject } from "./utils";
+
+
+  const sizesIcons = {
+    figma: 24,
+    community: 20,
+    plus: 16
+  };
 </script>
 
 <div class="panel-left">
@@ -13,7 +20,7 @@
     isActive={$currentTab === "mainTab"}
     on:buttonClick={onClickHome}
   >
-    <Figma size="22" />
+    <Figma size={`${String(sizesIcons.figma)}`} />
   </ButtonWindow>
 
   {#if $communityTabVisible}
@@ -24,12 +31,12 @@
       isActive={$currentTab === "communityTab"}
       on:buttonClick={onClickCommunity}
     >
-      <Community size="20" />
+      <Community size={`${String(sizesIcons.community)}`} />
     </ButtonWindow>
   {/if}
   {#if $newFileVisible}
     <ButtonTool padding={"0px 8px"} on:buttonClick={onClickNewProject}>
-      <Plus size="15" />
+      <Plus size={`${String(sizesIcons.plus)}`} />
     </ButtonTool>
   {/if}
 </div>
@@ -37,6 +44,6 @@
 <style>
   .panel-left {
     display: flex;
-    align-items: stretch;
+    align-items: stretch; 
   }
 </style>

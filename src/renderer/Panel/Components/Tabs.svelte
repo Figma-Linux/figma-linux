@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import type { MouseWheelInputEvent } from "electron";
-  import { tabs, currentTab } from "../store";
-  import { closeTab, tabFocus } from "./utils";
-  import List from "./List.svelte";
+  import { ipcRenderer } from "electron";
   import { NEW_FILE_TAB_TITLE } from "../../../constants/other";
+  import { currentTab, tabs } from "../store";
+  import List from "./List.svelte";
+  import { closeTab, tabFocus } from "./utils";
 
   let currentTabId: number | undefined;
 

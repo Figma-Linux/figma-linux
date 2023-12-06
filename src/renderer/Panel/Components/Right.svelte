@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
-  import { Minimize, Maximize, Close, Corner } from "Icons";
   import { ButtonWindow } from "Common/Buttons";
-  import { tabs, isMenuOpen } from "../store";
+  import { Close, Corner, Maximize, Minimize } from "Icons";
+  import { ipcRenderer } from "electron";
+  import { isMenuOpen, tabs } from "../store";
 
   function clickMenu() {
     if ($isMenuOpen) {
@@ -20,7 +20,7 @@
 
 <div class="panel-right">
   <ButtonWindow isActive={$isMenuOpen} on:buttonClick={clickMenu}>
-    <Corner size="14" />
+    <Corner size="16" />
   </ButtonWindow>
   <ButtonWindow on:buttonClick={() => ipcRenderer.send("windowMinimize")}>
     <Minimize size="16" />
@@ -36,6 +36,6 @@
 <style>
   .panel-right {
     display: flex;
-    align-items: stretch;
+    align-items: stretch
   }
 </style>

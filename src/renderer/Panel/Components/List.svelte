@@ -1,10 +1,10 @@
 <script lang="ts">
+  import { Spiner } from "Common";
+  import { ButtonTool } from "Common/Buttons";
+  import { CHROME_GPU, NEW_FILE_TAB_TITLE } from "Const";
+  import { Close, Loader } from "Icons";
   import { flip } from "svelte/animate";
   import { dndzone } from "../../svelte-dnd-action";
-  import { ButtonTool } from "Common/Buttons";
-  import { Loader, Close } from "Icons";
-  import { Spiner } from "Common";
-  import { CHROME_GPU, NEW_FILE_TAB_TITLE } from "Const";
 
   export let currentTabId: number | undefined;
   export let items: Types.TabFront[] = [];
@@ -71,7 +71,7 @@
         </ButtonTool>
       {/if} -->
       <ButtonTool
-        padding="0 7px"
+        padding="0 8px"
         {normalBgColor}
         {hoverBgColor}
         on:buttonClick={(e) => onClickClose(e, item.id)}
@@ -102,12 +102,9 @@
     outline: none !important;
   }
   .text {
-    display: flex;
-    min-width: 60px;
-    max-width: 200px;
+    display: inline-flex;
     align-items: center;
     user-select: none;
-    padding: 0 0 0 12px;
     color: var(--fg-tab);
     font-size: var(--text-size-tab);
     outline: none !important;
@@ -123,10 +120,10 @@
     outline: none !important;
   }
   .panel-tab {
-    display: flex;
-    align-items: stretch;
-    margin: 0 0 0 2px;
-    border-radius: 3px 3px 0 0px;
+    display: inline-flex;
+    gap: 0.6rem;
+    border-radius: 2px;
+    padding: 0.68rem 0.5rem;
     background-color: var(--bg-tab);
     transition: all 0.08s ease;
     outline: none !important;

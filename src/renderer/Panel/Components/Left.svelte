@@ -14,7 +14,6 @@
 
 <div class="panel-left">
   <ButtonWindow
-    padding={"0px 10px"}
     hoverBgColor={"var(--bg-tab-hover)"}
     activeBgColor={"var(--bg-tab-hover)"}
     isActive={$currentTab === "mainTab"}
@@ -22,7 +21,6 @@
   >
     <Figma size={`${String(sizesIcons.figma)}`} />
   </ButtonWindow>
-
   {#if $communityTabVisible}
     <ButtonWindow
       padding={"0px 10px"}
@@ -35,7 +33,7 @@
     </ButtonWindow>
   {/if}
   {#if $newFileVisible}
-    <ButtonTool padding={"0px 8px"} on:buttonClick={onClickNewProject}>
+    <ButtonTool padding={"0px 16px"} on:buttonClick={onClickNewProject}>
       <Plus size={`${String(sizesIcons.plus)}`} />
     </ButtonTool>
   {/if}
@@ -44,6 +42,6 @@
 <style>
   .panel-left {
     display: flex;
-    align-items: stretch; 
+    align-items: stretch;
   }
 </style>

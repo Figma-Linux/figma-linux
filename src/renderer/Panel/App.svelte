@@ -28,7 +28,6 @@
 <style>
   #panel {
     display: flex;
-    height: 40px;
     background-color: var(--bg-header);
   }
 

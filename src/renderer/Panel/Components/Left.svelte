@@ -14,6 +14,7 @@
 
 <div class="panel-left">
   <ButtonWindow
+    padding={"0px 10px"}
     hoverBgColor={"var(--bg-tab-hover)"}
     activeBgColor={"var(--bg-tab-hover)"}
     isActive={$currentTab === "mainTab"}

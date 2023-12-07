@@ -28,6 +28,7 @@
 <style>
   #panel {
     display: flex;
+    min-height: 3vh;
     background-color: var(--bg-header);
   }
 

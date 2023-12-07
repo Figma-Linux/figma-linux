@@ -4,12 +4,12 @@
   import { communityTabVisible, currentTab, newFileVisible } from "../store";
   import { onClickCommunity, onClickHome, onClickNewProject } from "./utils";
 
-
   const sizesIcons = {
     figma: 24,
     community: 20,
     plus: 16
   };
+
 </script>
 
 <div class="panel-left">

@@ -438,7 +438,7 @@ export default class ExtensionManager {
     if (
       !FILE_WHITE_LIST.includes(file.name) &&
       (!FILE_EXTENSION_WHITE_LIST.includes(extname(file.name)) ||
-        !/^\w+(?:\.\w+)*\.\w+/.test(file.name) ||
+        !/^[\w/]+(?:\.\w+)*\.\w+/.test(file.name) ||
         file.name !== sanitizeFileName(file.name))
     ) {
       throw new Error(`Filename "${file.name}" not allowed`);

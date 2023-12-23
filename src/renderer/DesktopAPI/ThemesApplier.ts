@@ -258,7 +258,7 @@ export class ThemesApplier {
           cssRule.style["fill"] = `var(--text-active)`;
         }
         if (
-          /search--searchInput__OLD|public-DraftEditorPlaceholder-root|css_builder_color--colorTextSecondary/.test(
+          /search--searchInput__OLD|type_panel--fontPickerTextStyle|public-DraftEditorPlaceholder-root|css_builder_color--colorTextSecondary/.test(
             cssRule.selectorText,
           )
         ) {

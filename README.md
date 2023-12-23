@@ -110,6 +110,11 @@ Download the .rpm package from our [Releases](https://github.com/Figma-Linux/fig
 sudo dnf install figma-linux-*.x86_64.rpm
 ```
 
+### Nixos
+On Nixos, you may add `figma-linux` in the `environment.systemPackages` list of your `/etc/nixos/configuration.nix` and run:
+```bash
+sudo nixos-rebuild switch
+```
 
 ## Building from source
 

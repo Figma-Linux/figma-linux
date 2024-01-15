@@ -3,6 +3,7 @@ import * as path from "path";
 import * as fs from "fs";
 
 import { DEFAULT_SETTINGS, accessSync } from "Utils/Main";
+import { logger } from "./Logger";
 
 /**
  * This class has dual initialization: in main process and renderer process
@@ -50,7 +51,16 @@ export class Storage {
   private readSync = (): Types.SettingsInterface => {
     const content = fs.readFileSync(this.filePath).toString();
 
-    return JSON.parse(content);
+    let settings: Types.SettingsInterface;
+    try {
+      settings = JSON.parse(content);
+    } catch (error) {
+      logger.error("Parse settings.json file error: ", error);
+      logger.warn("Apply default settings instead file settings.");
+      settings = DEFAULT_SETTINGS;
+    }
+
+    return settings;
   };
   private writeSync = (settings: Types.SettingsInterface): void => {
     fs.writeFileSync(this.filePath, JSON.stringify(settings, null, 2));

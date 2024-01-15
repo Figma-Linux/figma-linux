@@ -201,10 +201,7 @@ export default class Tab {
   private windowOpenHandler(details: HandlerDetails) {
     const url = details.url;
 
-    if (isFigmaUrl(url)) {
-      shell.openExternal(url);
-      return { action: "deny" };
-    }
+    shell.openExternal(url);
 
     return { action: "deny" };
   }

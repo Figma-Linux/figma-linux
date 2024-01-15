@@ -8,7 +8,7 @@ import { dialogs } from "./Dialogs";
 import { storage } from "Storage";
 import { logger } from "./Logger";
 import { FILE_EXTENSION_WHITE_LIST, FILE_WHITE_LIST, MANIFEST_FILE_NAME } from "Const";
-import { ALLOW_CODE_FILES, ALLOW_EXT_FILES, ALLOW_UI_FILES, sanitizeFileName } from "Utils/Common";
+import { ALLOW_CODE_FILES, ALLOW_EXT_FILES, ALLOW_UI_FILES } from "Utils/Common";
 import { access, mkPath } from "Utils/Main";
 
 type ObserverCallback = (args: any) => void;
@@ -438,8 +438,7 @@ export default class ExtensionManager {
     if (
       !FILE_WHITE_LIST.includes(file.name) &&
       (!FILE_EXTENSION_WHITE_LIST.includes(extname(file.name)) ||
-        !/^\w+(?:\.\w+)*\.\w+/.test(file.name) ||
-        file.name !== sanitizeFileName(file.name))
+        !/^[\w/]+(?:\.\w+)*\.\w+/.test(file.name))
     ) {
       throw new Error(`Filename "${file.name}" not allowed`);
     }

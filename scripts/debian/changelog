@@ -1,3 +1,21 @@
+figma-linux (0.11.3-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.3 version
+
+  ## Bug Fixes:
+  * open any url from tab's BrowserView. [#359](https://github.com/Figma-Linux/figma-linux/issues/359)
+  * import a plugin from manifest.json. [#358](https://github.com/Figma-Linux/figma-linux/issues/358)
+  * visible font selection field. [#356](https://github.com/Figma-Linux/figma-linux/issues/356)
+  * use default settings if can not parse settings.json file. [#357](https://github.com/Figma-Linux/figma-linux/issues/357)
+  * validate file path for extension file. [#352](https://github.com/Figma-Linux/figma-linux/issues/352)
+
+  ## Other Changes:
+  * Bump Electron from 27.2.0 to 27.2.2
+  * Bump Electron from 27.0.4 to 27.2.0
+  * set default values for dev ports
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Tue, 16 Jan 2024 01:44:08 +0300
+
 figma-linux (0.11.2-1ubuntu0) devel; urgency=medium
 
   * Publish 0.11.2 version

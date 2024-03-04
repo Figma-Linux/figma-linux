@@ -565,7 +565,7 @@ export default class ExtensionManager {
             for (const file of Object.values(manifestJson.ui)) {
               files.push({ name: file, content: "" });
             }
-          } else {
+          } else if (typeof manifestJson.ui === "string") {
             files.push({ name: manifestJson.ui, content: "" });
           }
 

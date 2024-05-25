@@ -8,6 +8,7 @@ interface Window
     WindowEventHandlers {
   __figmaDesktop: {
     version: number;
+    appVersion: string;
     fileBrowser: boolean;
 
     postMessage(name: string, args?: any, transferList?: Transferable[]): void;

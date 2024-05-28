@@ -8,6 +8,7 @@ import {
   BrowserWindow,
   DidCreateWindowDetails,
   Event,
+  HandlerDetails,
 } from "electron";
 
 import { LOGIN_PAGE, RECENT_FILES } from "Const";
@@ -182,7 +183,20 @@ export default class MainTab {
     shell.openExternal(url);
   }
 
+  private windowOpenHandler(details: HandlerDetails) {
+    const { url } = details;
+
+    if (isPrototypeUrl(url) || isValidProjectLink(url) || isFigmaBoardLink(url) || isFigmaDesignLink(url)) {
+      app.emit("openUrlInNewTab", url);
+    } else {
+      shell.openExternal(url);
+    }
+
+    return { action: "deny" };
+  }
+
   private registerEvents() {
+    this.view.webContents.setWindowOpenHandler(this.windowOpenHandler.bind(this));
     this.view.webContents.on("will-navigate", this.onMainTabWillNavigate.bind(this));
     this.view.webContents.on("will-navigate", this.onMainWindowWillNavigate.bind(this));
     this.view.webContents.on("dom-ready", this.onDomReady.bind(this));

@@ -188,11 +188,10 @@ export default class MainTab {
 
     if (isPrototypeUrl(url) || isValidProjectLink(url) || isFigmaBoardLink(url) || isFigmaDesignLink(url)) {
       app.emit("openUrlInNewTab", url);
+      return { action: "deny" };
     } else {
-      shell.openExternal(url);
+      return { action: "allow" };
     }
-
-    return { action: "deny" };
   }
 
   private registerEvents() {

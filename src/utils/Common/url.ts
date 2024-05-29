@@ -57,3 +57,7 @@ export const isValidFigjamLink = (url: string) =>
 
 export const isFigmaDocLink = (url: string) =>
   /^https:\/\/w{0,3}?.figma.com\/plugin-docs/.test(url);
+export const isFigmaBoardLink = (url: string) =>
+  /^https:\/\/w{0,3}?.figma.com\/board/.test(url);
+export const isFigmaDesignLink = (url: string) =>
+  /^https:\/\/w{0,3}?.figma.com\/design/.test(url);

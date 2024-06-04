@@ -49,10 +49,10 @@ COMMON OPTIONS:
     for size in 24 36 48 64 72 96 128 192 256 384 512; do
       mkdir -p "/usr/share/icons/hicolor/${size}x${size}/apps"
       mkdir -p "/usr/share/icons/hicolor/scalable/apps"
-      cp -rf "$APPDIR/icons/${size}x${size}.png" "/usr/share/icons/hicolor/${size}x${size}/apps/figma-linux.png"
+      cp -rf "$APPDIR/icons/${size}x${size}.png" "/usr/share/icons/hicolor/${size}x${size}/apps/select-for-figma.png"
     done
 
-    cp -rf "$APPDIR/icons/scalable.svg" "/usr/share/icons/hicolor/scalable/apps/figma-linux.svg"
+    cp -rf "$APPDIR/icons/scalable.svg" "/usr/share/icons/hicolor/scalable/apps/select-for-figma.svg"
 
     echo "install completed"
 
@@ -75,10 +75,10 @@ COMMON OPTIONS:
     echo "remove icons"
 
     for size in 24 36 48 64 72 96 128 192 256 384 512; do
-      rm -rf "/usr/share/icons/hicolor/${size}x${size}/apps/figma-linux.png"
+      rm -rf "/usr/share/icons/hicolor/${size}x${size}/apps/select-for-figma.png"
     done
 
-    rm -rf "/usr/share/icons/hicolor/scalable/apps/figma-linux.svg"
+    rm -rf "/usr/share/icons/hicolor/scalable/apps/select-for-figma.svg"
 
     echo "remove $APPIMAGE"
 

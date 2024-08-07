@@ -1,10 +1,10 @@
 [Desktop Entry]
 Name=Select for Figma
 Comment=Unofficial desktop application for linux
-Exec=/opt/select-for-figma/select-for-figma %U
+Exec=/opt/figma-linux/figma-linux %U
 Terminal=false
 Type=Application
 Icon=select-for-figma
-StartupWMClass=select-for-figma
+StartupWMClass=figma-linux
 Categories=Graphics;
 MimeType=application/figma;x-scheme-handler/figma;

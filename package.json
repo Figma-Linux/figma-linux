@@ -74,8 +74,8 @@
     "rollup-plugin-livereload": "^2.0.5",
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-svelte": "^7.1.0",
-    "svelte-check": "^3.0.3",
-    "svelte-preprocess": "^5.0.1",
+    "svelte-check": "^3.8.6",
+    "svelte-preprocess": "^5.1.4",
     "typescript": "^4.9.4"
   },
   "keywords": [

@@ -1,7 +1,7 @@
 name: Release Build
 
 on:
-  create:
+  push:
     tags:
     - 'v*.*.*'
 
@@ -45,11 +45,11 @@ jobs:
     secrets: inherit
     needs: [release_amd64, release_arm64v8]
 
-  aur_git:
-    name: Upload
-    uses: ./.github/workflows/reuse_aur_git.yml
-    secrets: inherit
-    needs: [release_amd64, release_arm64v8]
+  # aur_git:
+  #   name: Upload
+  #   uses: ./.github/workflows/reuse_aur_git.yml
+  #   secrets: inherit
+  #   needs: [release_amd64, release_arm64v8]
 
   aur_dev_git:
     name: Upload

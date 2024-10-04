@@ -1,3 +1,45 @@
+figma-linux (0.11.4-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.4 version
+
+  ## Bug Fixes:
+  * set appVersion to ignore version checking. [#371 #372 #373 (#374)](https://github.com/Figma-Linux/figma-linux/issues/371 #372 #373 (#374))
+
+  ## Other Changes:
+  * update the release ci
+  * Bump Electron from 29.1.6 to 30.0.8
+  * Bump Electron from 27.2.2 to 29.1.6 ( [#367)](https://github.com/Figma-Linux/figma-linux/issues/367))
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 26 May 2024 21:53:24 +0300
+
+figma-linux (0.11.4-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.4 version
+
+  ## Bug Fixes:
+  * set appVersion to ignore version checking. [#371 #372 #373 (#374)](https://github.com/Figma-Linux/figma-linux/issues/371 #372 #373 (#374))
+
+  ## Other Changes:
+  * update the release ci
+  * Bump Electron from 29.1.6 to 30.0.8
+  * Bump Electron from 27.2.2 to 29.1.6 ( [#367)](https://github.com/Figma-Linux/figma-linux/issues/367))
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 26 May 2024 21:51:48 +0300
+
+figma-linux (0.11.4-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.4 version
+
+  ## Bug Fixes:
+  * set appVersion to ignore version checking. [#371 #372 #373 (#374)](https://github.com/Figma-Linux/figma-linux/issues/371 #372 #373 (#374))
+
+  ## Other Changes:
+  * update the release ci
+  * Bump Electron from 29.1.6 to 30.0.8
+  * Bump Electron from 27.2.2 to 29.1.6 ( [#367)](https://github.com/Figma-Linux/figma-linux/issues/367))
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Sun, 26 May 2024 20:56:50 +0300
+
 figma-linux (0.11.3-1ubuntu0) devel; urgency=medium
 
   * Publish 0.11.3 version

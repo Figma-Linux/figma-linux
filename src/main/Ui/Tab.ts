@@ -9,7 +9,6 @@ import {
   HandlerDetails,
   DidCreateWindowDetails,
   BrowserViewConstructorOptions,
-  PermissionRequestHandlerHandlerDetails,
 } from "electron";
 
 import { preloadScriptPathDev, preloadScriptPathProd } from "Utils/Main";
@@ -159,7 +158,6 @@ export default class Tab {
       | "window-management"
       | "unknown",
     callback: (permissionGranted: boolean) => void,
-    details: PermissionRequestHandlerHandlerDetails,
   ) {
     const allowByDefault = [
       "fullscreen",
@@ -199,9 +197,13 @@ export default class Tab {
   }
 
   private windowOpenHandler(details: HandlerDetails) {
-    const url = details.url;
+    const { url } = details;
 
-    shell.openExternal(url);
+    if (isPrototypeUrl(url) || isValidProjectLink(url)) {
+      app.emit("openUrlInNewTab", url);
+    } else {
+      shell.openExternal(url);
+    }
 
     return { action: "deny" };
   }

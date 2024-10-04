@@ -7,10 +7,12 @@ import { isPrototypeUrl, isValidFigjamLink, isValidProjectLink } from "Utils/Com
 
 interface IntiApiOptions {
   version: number;
+  appVersion: string;
   fileBrowser: boolean;
 }
 
-const API_VERSION = 100;
+const API_VERSION = 111;
+const APP_VERSION = '999.0.0';
 let webPort: MessagePort;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 
@@ -78,6 +80,7 @@ const initWebApi = (props: IntiApiOptions) => {
 
   window.__figmaDesktop = {
     version: props.version,
+    appVersion: props.appVersion,
     fileBrowser: props.fileBrowser,
     postMessage: function (name, args, transferList): void {
       console.log("postMessage, name, args, transferList: ", name, args, transferList);
@@ -389,6 +392,16 @@ const publicAPI: any = {
     return { data: fonts };
   },
 
+  async getModifiedFonts(args: WebApi.GetFonts) {
+    const fonts = await E.ipcRenderer.invoke("getFonts");
+    return { data: fonts };
+  },
+
+  async getFontsModifiedAt(args: WebApi.GetFonts) {
+    const fonts = await E.ipcRenderer.invoke("getFonts");
+    return { data: fonts };
+  },
+
   async getFontFile(args: WebApi.GetFontFile) {
     const fontBuffer = await E.ipcRenderer.invoke("getFontFile", args);
 
@@ -477,6 +490,7 @@ const init = (fileBrowser: boolean): void => {
 
   const initWebOptions: IntiApiOptions = {
     version: API_VERSION,
+    appVersion: APP_VERSION,
     fileBrowser: fileBrowser,
   };
 

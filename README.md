@@ -29,11 +29,6 @@ Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](
 <!-- [![Codacy Badge](https://api.codacy.com/project/badge/Grade/d80ff1e7c3fe4da28e2e50a28d4ead7c)](https://www.codacy.com/manual/ChugunovRoman/figma-linux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ChugunovRoman/figma-linux&amp;utm_campaign=Badge_Grade) -->
 [![Snap](https://snapcraft.io/figma-linux/badge.svg)](https://snapcraft.io/figma-linux)
 
-<p>
-	<span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/U5hnMuASy" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
-	<span class="badge-paypal"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4DNBUKPV6FBCY&source=url" title="Donate to this project using Paypal"><img src="https://img.shields.io/badge/paypal-donate-yellow.svg" alt="PayPal donate button" /></a></span>
-</p>
-
 ## Installation
 ### Universal
 You can install Figma-linux from Snap [here.](https://snapcraft.io/figma-linux)
@@ -99,9 +94,9 @@ You can use an AUR helper like `yay` to install it:
 yay -S figma-linux-bin
 ```
 Other AUR packages:
- - [figma-linux](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package install binary version from release tag
- - [figma-linux-bin](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package install binary version from release tag
- - [figma-linux-git](https://aur.archlinux.org/packages/figma-linux-git-dev) - the package build the app from Githab from latest release tag
+ - [figma-linux](https://aur.archlinux.org/packages/figma-linux) - the package install binary version from release tag
+ - [figma-linux-bin](https://aur.archlinux.org/packages/figma-linux-bin) - the package install binary version from release tag
+ - [figma-linux-git](https://aur.archlinux.org/packages/figma-linux-git) - the package build the app from Githab from latest release tag
  - [figma-linux-dev-git](https://aur.archlinux.org/packages/figma-linux-dev-git) - the package build the app from Githab from latest commit on the dev branch
 ### RPM-based distros
 Download the .rpm package from our [Releases](https://github.com/Figma-Linux/figma-linux/releases/latest) page, then install it:

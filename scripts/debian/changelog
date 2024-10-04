@@ -1,3 +1,15 @@
+figma-linux (0.11.5-1ubuntu0) devel; urgency=medium
+
+  * Publish 0.11.5 version
+
+  ## Bug Fixes:
+  * docker
+
+  ## Other Changes:
+  * useless services for receiving donations have been removed
+
+ -- Chugunov Roman <Zebs-BMK@yandex.ru>  Fri, 04 Oct 2024 16:15:01 +0300
+
 figma-linux (0.11.4-1ubuntu0) devel; urgency=medium
 
   * Publish 0.11.4 version

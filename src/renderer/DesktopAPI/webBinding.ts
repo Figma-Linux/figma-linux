@@ -392,6 +392,16 @@ const publicAPI: any = {
     return { data: fonts };
   },
 
+  async getModifiedFonts(args: WebApi.GetFonts) {
+    const fonts = await E.ipcRenderer.invoke("getFonts");
+    return { data: fonts };
+  },
+
+  async getFontsModifiedAt(args: WebApi.GetFonts) {
+    const fonts = await E.ipcRenderer.invoke("getFonts");
+    return { data: fonts };
+  },
+
   async getFontFile(args: WebApi.GetFontFile) {
     const fontBuffer = await E.ipcRenderer.invoke("getFontFile", args);
 

@@ -78,7 +78,7 @@ jobs:
 
       - name: Upload release assets
         id: release
-        uses: ChugunovRoman/action-gh-release@master
+        uses: softprops/action-gh-release@v2
         with:
           name: Figma Linux ${{ steps.version.outputs.release }}
           tag_name: v${{ steps.version.outputs.release }}
@@ -142,7 +142,7 @@ jobs:
 
       - name: Upload release assets
         id: release
-        uses: ChugunovRoman/action-gh-release@master
+        uses: softprops/action-gh-release@v2
         with:
           name: Figma Linux ${{ steps.version.outputs.release }}
           tag_name: v${{ steps.version.outputs.release }}

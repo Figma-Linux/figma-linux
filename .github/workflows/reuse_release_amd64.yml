@@ -23,7 +23,7 @@ jobs:
 
       - name: Upload release assets
         id: release
-        uses: ChugunovRoman/action-gh-release@master
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           body_path: ./release_notes

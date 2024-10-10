@@ -1,8 +1,12 @@
-# <img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/resources/icons/128x128.png" width="32"> Figma electron app (unofficial)
 
+<p align="center">
+	<img src="./resources/icons/192.png">
+</p>
+<h1 align="center">Select for Figma</h1>
 
-Figma-linux is an unofficial [Electron](http://electron.atom.io)-based  [Figma](https://figma.com) desktop app for Linux.
-
+<p align="center">
+An unofficial <a href="http://electron.atom.io">Electron</a>-based  <a href="https://figma.com">Figma</a> desktop app for Linux.
+</p><br>
 <p>
 	<img src="https://raw.githubusercontent.com/ChugunovRoman/figma-linux/master/images/screenshot1.jpg">
 </p>

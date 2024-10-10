@@ -25,7 +25,7 @@ jobs:
     name: build for arm64v8
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4.1.7
       with:
         name: repo
         path: ./
@@ -64,7 +64,7 @@ jobs:
       - name: mkdir installers
         run: mkdir -p ./build/installers
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: arm64v8
           path: ./build/installers
@@ -94,7 +94,7 @@ jobs:
     name: build for amd64
     needs: setup
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: repo
           path: ./
@@ -128,7 +128,7 @@ jobs:
       - name: mkdir installers
         run: mkdir -p ./build/installers
 
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           name: amd64
           path: ./build/installers

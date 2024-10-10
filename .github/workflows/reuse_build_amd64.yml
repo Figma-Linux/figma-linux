@@ -32,7 +32,7 @@ jobs:
       #   path: build/installers/figma-linux_*.*
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: amd64
           path: |

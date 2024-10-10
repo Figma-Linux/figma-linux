@@ -15,7 +15,7 @@ jobs:
 
       - name: Cache src
         id: cache-src
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: repo
           path: ./*
@@ -46,7 +46,7 @@ jobs:
 
       - name: Cache amd64 artifacts
         id: cache-amd64-artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: amd64
           path: build/installers/*

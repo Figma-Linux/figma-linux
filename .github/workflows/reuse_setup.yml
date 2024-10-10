@@ -13,7 +13,7 @@ jobs:
           fetch-depth: 0
 
       - name: Cache src
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: repo
           path: ./*

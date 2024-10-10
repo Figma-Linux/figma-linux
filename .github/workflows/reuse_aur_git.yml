@@ -8,7 +8,7 @@ jobs:
     name: AUR GIT
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4.1.7
         with:
           path: ./
 

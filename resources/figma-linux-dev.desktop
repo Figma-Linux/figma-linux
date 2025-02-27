@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Figma Linux Dev Build
+Name=Select for Figma Dev Build
 Comment=Unofficial desktop application for linux
 Exec=/opt/figma-linux-dev/figma-linux-dev %U
 Terminal=false

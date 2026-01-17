@@ -1,4 +1,4 @@
-import { app, ipcMain, IpcMainEvent, ipcRenderer } from "electron";
+import { app, ipcMain, IpcMainEvent } from "electron";
 import * as path from "path";
 import * as fs from "fs";
 
@@ -76,13 +76,13 @@ export class Storage {
       ...data.featureFlags,
     };
   }
-  public getSettings(event: IpcMainEvent) {
-    event.returnValue = this.settings;
+  public getSettings() {
+    return this.settings;
   }
 
   private registerEvents() {
     ipcMain.on("setFeatureFlags", this.setFeatureFlags.bind(this));
-    ipcMain.on("getSettings", this.getSettings.bind(this));
+    ipcMain.handle("getSettings", this.getSettings.bind(this));
   }
 }
 

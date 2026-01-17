@@ -62,7 +62,8 @@ export default class Tab {
       webPreferences: {
         nodeIntegration: false,
         webgl: true,
-        contextIsolation: false,
+        contextIsolation: true,
+        sandbox: false, // Required for preload script to work with webFrame.executeJavaScript
         zoomFactor: 1,
         preload: isDev ? preloadScriptPathDev : preloadScriptPathProd,
       },

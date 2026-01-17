@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { createEventDispatcher } from "svelte";
   import { themes, creatorsThemes, creatorTheme, settings, modalBounds } from "../../../store";
   import { DropDown, Flex, Grid } from "Common";
@@ -10,6 +9,7 @@
 
   export let zIndex: number;
 
+  const api = window.settingsAPI;
   const dispatch = createEventDispatcher();
 
   $: isCreatorThemesEmpty = $creatorsThemes.length === 0;
@@ -21,13 +21,13 @@
       [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
     );
 
-    ipcRenderer.send("changeTheme", theme);
+    api.changeTheme(theme);
     $settings.theme.currentTheme = themeId;
   }
   function onDeleteTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
     const themeId = event.detail.themeId;
 
-    ipcRenderer.send("themeCreatorRemoveTheme", themeId);
+    api.themeCreatorRemoveTheme(themeId);
 
     if (themeId === $themeApp.id) {
       onApplyTheme(new CustomEvent("applyTheme", { detail: { themeId: DEFAULT_THEME.id } }));

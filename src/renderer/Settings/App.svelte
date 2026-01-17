@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { themeApp } from "../Common/Store/Themes";
   import { getColorPallet } from "Utils/Render/themes";
   import { initCommonIpc } from "../Common/Ipc";
@@ -7,6 +6,8 @@
   import { settings } from "./store";
 
   import Body from "./Components/Body.svelte";
+
+  const api = window.settingsAPI;
 
   initCommonIpc();
   initIpc();
@@ -22,7 +23,7 @@
 
   function onCloseModalHandler(event: SvelteEvents.Empty) {
     settings.trim();
-    ipcRenderer.send("closeSettingsView", $settings);
+    api.closeSettingsView();
   }
 </script>
 

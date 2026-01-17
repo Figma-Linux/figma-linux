@@ -4,28 +4,30 @@
     "baseUrl": "./",
     "noImplicitAny": true,
     "allowJs": false,
-    "target": "ESNext",
+    "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "preserveConstEnums": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "allowUnusedLabels": true,
+    "noImplicitThis": true,
+    "allowUnusedLabels": false,
     "noUnusedLocals": false,
     "strictNullChecks": false,
+    "skipLibCheck": true,
     "lib": [
-      "dom",
-      "es7",
-      "esnext"
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
     ],
     "typeRoots": [
       "node_modules/@types",
-      "src/types/**/*.d.ts"
+      "src/types"
     ],
     "paths": {
       "Main": ["src/main"],
@@ -57,7 +59,8 @@
   "include": [
     "src/constants/**/*",
     "src/main/**/*",
+    "src/preload/**/*",
     "src/types/**/*",
-    "src/utils/**/*",
+    "src/utils/**/*"
   ]
 }

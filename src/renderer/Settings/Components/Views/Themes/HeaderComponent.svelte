@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { Flex, Button, Sync, Spiner } from "Common";
 
   import { themesLoaded } from "../../../store";
 
+  const api = window.settingsAPI;
+
   function onThemeSync(event: CustomEvent) {
-    ipcRenderer.send("syncThemes");
+    api.syncThemes();
     themesLoaded.set(false);
   }
 </script>

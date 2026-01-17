@@ -6,15 +6,15 @@ export const WINDOW_DEFAULT_OPTIONS: BrowserWindowConstructorOptions = {
   frame: false,
   resizable: true,
   webPreferences: {
-    sandbox: false,
+    sandbox: true,
     zoomFactor: 1,
-    nodeIntegration: true,
+    nodeIntegration: false,
     nodeIntegrationInWorker: false,
     webviewTag: false,
-    webSecurity: false,
+    webSecurity: true,
     webgl: true,
-    experimentalFeatures: true,
-    contextIsolation: false,
+    experimentalFeatures: false,
+    contextIsolation: true,
   },
 };
 

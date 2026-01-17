@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { Popup, ListBox } from "Common";
   import { Download, Plus, Reset, Save2 } from "Common/Icons";
   import { validateThemeName, validateThemeAuthor } from "../../../validators";
   import { creatorTheme, creatorsThemes, themes } from "../../../store";
 
   import MenuItem from "./MenuItem.svelte";
+
+  const api = window.settingsAPI;
 
   let isOpen = false;
 
@@ -100,7 +101,7 @@
       return;
     }
 
-    ipcRenderer.send("themeCreatorAddTheme", $creatorTheme.theme);
+    api.themeCreatorAddTheme($creatorTheme.theme);
 
     creatorTheme.reset();
   }
@@ -112,7 +113,7 @@
       return;
     }
 
-    ipcRenderer.send("themeCreatorExportTheme", $creatorTheme.theme);
+    api.themeCreatorExportTheme($creatorTheme.theme.id);
   }
 </script>
 

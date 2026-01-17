@@ -1,10 +1,17 @@
-import { ipcRenderer } from "electron";
-import type { IpcRendererEvent } from "electron";
-
 import { themeApp } from "../Store/Themes";
 
+// Common IPC initialization - uses the panelAPI or settingsAPI depending on context
 export function initCommonIpc() {
-  ipcRenderer.on("loadCurrentTheme", (_: IpcRendererEvent, theme: Themes.Theme) => {
-    themeApp.set(theme);
-  });
+  // For panel context
+  if (window.panelAPI) {
+    window.panelAPI.onLoadCurrentTheme((theme: Themes.Theme) => {
+      themeApp.set(theme);
+    });
+  }
+  // For settings context
+  else if (window.settingsAPI) {
+    window.settingsAPI.onLoadCurrentTheme((theme: Themes.Theme) => {
+      themeApp.set(theme);
+    });
+  }
 }

@@ -13,7 +13,13 @@ import {
   NEW_FILE_TAB_TITLE,
 } from "Const";
 import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl, parseURL } from "Utils/Common";
-import { panelUrlDev, panelUrlProd, toggleDetachedDevTools } from "Utils/Main";
+import {
+  panelUrlDev,
+  panelUrlProd,
+  toggleDetachedDevTools,
+  preloadPanelPathDev,
+  preloadPanelPathProd,
+} from "Utils/Main";
 import Tab from "./Tab";
 
 export default class Window {
@@ -25,7 +31,13 @@ export default class Window {
   private _userId: string;
 
   constructor(state: Types.WindowState) {
-    this.window = new BrowserWindow(WINDOW_DEFAULT_OPTIONS);
+    this.window = new BrowserWindow({
+      ...WINDOW_DEFAULT_OPTIONS,
+      webPreferences: {
+        ...WINDOW_DEFAULT_OPTIONS.webPreferences,
+        preload: isDev ? preloadPanelPathDev : preloadPanelPathProd,
+      },
+    });
     this.tabManager = new TabManager(this.window.id);
     this.settingsView = new SettingsView();
     this.state = state;

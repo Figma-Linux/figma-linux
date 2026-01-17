@@ -1,20 +1,21 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import { Minimize, Maximize, Close, Corner } from "Icons";
   import { ButtonWindow } from "Common/Buttons";
   import { tabs, isMenuOpen } from "../store";
+
+  const api = window.panelAPI;
 
   function clickMenu() {
     if ($isMenuOpen) {
       return;
     }
 
-    ipcRenderer.send("openMainMenu");
+    api.openMainMenu();
     isMenuOpen.toggle();
   }
 
   function closeHandler() {
-    ipcRenderer.send("windowClose", $tabs);
+    api.windowClose();
   }
 </script>
 
@@ -22,10 +23,10 @@
   <ButtonWindow isActive={$isMenuOpen} on:buttonClick={clickMenu}>
     <Corner size="14" />
   </ButtonWindow>
-  <ButtonWindow on:buttonClick={() => ipcRenderer.send("windowMinimize")}>
+  <ButtonWindow on:buttonClick={() => api.windowMinimize()}>
     <Minimize size="16" />
   </ButtonWindow>
-  <ButtonWindow on:buttonClick={() => ipcRenderer.send("windowMaximize")}>
+  <ButtonWindow on:buttonClick={() => api.windowMaximize()}>
     <Maximize size="16" />
   </ButtonWindow>
   <ButtonWindow hoverBgColor={"var(--bg-window-close)"} on:buttonClick={closeHandler}>

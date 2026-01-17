@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { ipcRenderer } from "electron";
   import type { MouseWheelInputEvent } from "electron";
   import { tabs, currentTab } from "../store";
   import { closeTab, tabFocus } from "./utils";
   import List from "./List.svelte";
   import { NEW_FILE_TAB_TITLE } from "../../../constants/other";
+
+  const api = window.panelAPI;
 
   let currentTabId: number | undefined;
 
@@ -18,7 +19,7 @@
     }
   }
   function dblclickHandler(e: MouseEvent) {
-    ipcRenderer.send("windowMaximize");
+    api.windowMaximize();
     e.preventDefault();
     e.stopImmediatePropagation();
     e.stopPropagation();
@@ -38,7 +39,7 @@
       }
       // right mouse button
       case 2: {
-        ipcRenderer.send("openTabMenu", id);
+        api.openTabMenu(id, event.clientX, event.clientY);
         break;
       }
     }

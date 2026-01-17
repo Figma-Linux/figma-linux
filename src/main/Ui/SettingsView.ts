@@ -1,7 +1,13 @@
 import { app, ipcMain, BrowserView, Rectangle, IpcMainEvent } from "electron";
 import { storage } from "Main/Storage";
 import { isDev } from "Utils/Common";
-import { settingsUrlProd, settingsUrlDev, toggleDetachedDevTools } from "Utils/Main";
+import {
+  settingsUrlProd,
+  settingsUrlDev,
+  toggleDetachedDevTools,
+  preloadSettingsPathDev,
+  preloadSettingsPathProd,
+} from "Utils/Main";
 import { dialogs } from "Main/Dialogs";
 
 export default class SettingsView {
@@ -14,10 +20,12 @@ export default class SettingsView {
   constructor() {
     this.view = new BrowserView({
       webPreferences: {
-        nodeIntegration: true,
-        contextIsolation: false,
+        nodeIntegration: false,
+        contextIsolation: true,
+        sandbox: true,
         experimentalFeatures: false,
-        webviewTag: true,
+        webviewTag: false,
+        preload: isDev ? preloadSettingsPathDev : preloadSettingsPathProd,
       },
     });
 

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { randomUUID } from "crypto";
-  import { ipcRenderer } from "electron";
   import { InputRange, CheckBox, InputText, ListBox } from "Common/Input";
   import { Text, Label, Flex, FlexItem, Line } from "Common";
   import { ButtonTool, SecondaryButton } from "Common/Buttons";
@@ -11,7 +9,13 @@
   import DirectoryListItem from "./DirectoryListItem.svelte";
   import SwitchListItem from "./SwitchListItem.svelte";
 
+  const api = window.settingsAPI;
+
   export let zIndex: number;
+
+  // Generate unique IDs for items
+  let itemIdCounter = 0;
+  const generateId = () => `item-${itemIdCounter++}`;
 
   let items: Types.TabItem[] = [];
   $: items = $settings.app.fontDirs.map((dir) => ({
@@ -22,7 +26,7 @@
 
   let switchItems: Types.TabItem[] = [];
   $: switchItems = $settings.app.commandSwitches.map((item) => ({
-    id: randomUUID(),
+    id: generateId(),
     text: item.switch,
     itemArgs: {
       item,
@@ -31,7 +35,7 @@
   }));
 
   async function onChangeExportPath(event: CustomEvent) {
-    const directory = await ipcRenderer.invoke("selectExportDirectory");
+    const directory = await api.selectExportDirectory();
 
     if (!directory) {
       return;
@@ -56,7 +60,7 @@
     }, []);
   }
   async function onAddDirectory(event: CustomEvent) {
-    const directory = await ipcRenderer.invoke("selectExportDirectory");
+    const directory = await api.selectExportDirectory();
 
     if (!directory) {
       return;
@@ -86,10 +90,10 @@
   }
 
   $: {
-    ipcRenderer.invoke("updateFigmaUiScale", $settings.ui.scaleFigmaUI);
+    api.updateFigmaUiScale($settings.ui.scaleFigmaUI);
   }
   $: {
-    ipcRenderer.invoke("updatePanelScale", $settings.ui.scalePanel);
+    api.updatePanelScale($settings.ui.scalePanel);
     $settings.app.panelHeight = Math.floor(TOPPANELHEIGHT * $settings.ui.scalePanel);
   }
 </script>

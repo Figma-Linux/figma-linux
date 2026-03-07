@@ -1,4 +1,5 @@
 export * from "./color";
 export * from "./themes";
 export * from "./defaultSettings";
-export * from "./webBindingsHelpers";
+// webBindingsHelpers is not exported here - it uses ipcRenderer directly
+// and should only be imported by preload scripts and DesktopAPI code

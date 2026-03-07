@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount } from "svelte";
   import { HeaderModal, Button, CloseModal, FlexItem } from "Common";
   import { TabView, TabViewHeaderItem } from "Common/TabView";
   import { General } from "./Views/General";
@@ -7,7 +7,11 @@
   import { ThemeCreator, ThemeCreatorHeaderComponent } from "./Views/ThemeCreator";
   import { modalBounds } from "../store";
 
-  const dispatch = createEventDispatcher();
+  interface BodyProps {
+    oncloseSettings?: (event: MouseEvent | CustomEvent) => void;
+  }
+
+  let { oncloseSettings }: BodyProps = $props();
 
   const items: Types.SetingsTabItem[] = [
     {
@@ -41,14 +45,14 @@
     },
   ];
 
-  let currentItem = items[0];
-  let currentId = currentItem.id;
+  let currentItem = $state(items[0]);
+  let currentId = $state(items[0].id);
 
   function onTabItemClick(item: Types.SetingsTabItem) {
     currentItem = item;
   }
-  function onSetTabViewIndex(event: CustomEvent<SvelteEvents.SetSettingsTabViewIndex>) {
-    currentItem = items[event.detail.index];
+  function onSetTabViewIndex(detail: { index: number }) {
+    currentItem = items[detail.index];
     currentId = currentItem.id;
   }
 
@@ -60,7 +64,11 @@
     modalBounds.set(modal.getBoundingClientRect());
   }
   onMount(getModalBounds);
-  window.addEventListener("resize", getModalBounds);
+
+  $effect(() => {
+    window.addEventListener("resize", getModalBounds);
+    return () => window.removeEventListener("resize", getModalBounds);
+  });
 </script>
 
 <div bind:this={modal}>
@@ -68,11 +76,14 @@
     <FlexItem grow={1}>
       <TabView {items} bind:currentId initItemId={"general"} onItemClick={onTabItemClick} />
     </FlexItem>
-    <svelte:component this={currentItem.headerComponent} />
+    {#if currentItem.headerComponent}
+      {@const HeaderComponent = currentItem.headerComponent}
+      <HeaderComponent />
+    {/if}
     <Button
       size={32}
       round={3}
-      on:buttonClick={() => dispatch("closeSettings")}
+      onClick={oncloseSettings}
       hoverBgColor="var(--borders)"
     >
       <CloseModal color="var(--text)" />
@@ -80,10 +91,10 @@
   </HeaderModal>
   <settingsBody>
     {#each items as item (item.id)}
-      <svelte:component
-        this={item.bodyComponent}
+      {@const BodyComponent = item.bodyComponent}
+      <BodyComponent
         zIndex={item.id === currentItem.id ? 2 : 0}
-        on:setSettingsTabViewIndex={onSetTabViewIndex}
+        onsetSettingsTabViewIndex={onSetTabViewIndex}
       />
     {/each}
   </settingsBody>

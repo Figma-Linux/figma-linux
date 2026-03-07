@@ -1,32 +1,47 @@
 <script lang="ts">
-  export let width = "auto";
-  export let padding = "auto";
-  export let whiteSpace = "nowrap";
-  export let overflow = "auto";
-  export let textOverflow = "auto";
-  export let size = "auto";
-  export let color = "var(--text)";
-  export let disabledColor = "var(--text-disabled)";
+  import type { Snippet } from "svelte";
 
-  export let disabled: boolean | undefined = false;
-
-  if (typeof disabled === "boolean" && disabled) {
-    color = disabledColor;
+  interface TextProps {
+    width?: string;
+    padding?: string;
+    whiteSpace?: string;
+    overflow?: string;
+    textOverflow?: string;
+    size?: string;
+    color?: string;
+    disabledColor?: string;
+    disabled?: boolean;
+    children?: Snippet;
   }
+
+  let {
+    width = "auto",
+    padding = "auto",
+    whiteSpace = "nowrap",
+    overflow = "auto",
+    textOverflow = "auto",
+    size = "auto",
+    color = "var(--text)",
+    disabledColor = "var(--text-disabled)",
+    disabled = false,
+    children,
+  }: TextProps = $props();
+
+  let effectiveColor = $derived(disabled ? disabledColor : color);
 </script>
 
 <span
   style={`
     --size: ${size};
     --width: ${width};
-    --color: ${color};
+    --color: ${effectiveColor};
     --padding: ${padding};
     --overflow: ${overflow};
     --whiteSpace: ${whiteSpace};
     --textOverflow: ${textOverflow};
   `}
 >
-  <slot />
+  {@render children?.()}
 </span>
 
 <style>

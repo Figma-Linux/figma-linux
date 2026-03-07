@@ -7,7 +7,7 @@
 
   const api = window.panelAPI;
 
-  let currentTabId: number | undefined;
+  let currentTabId = $state<number | undefined>(undefined);
 
   let item: HTMLDivElement;
 
@@ -64,16 +64,19 @@
     );
   }
 
-  currentTab.subscribe((id) => {
-    if (typeof id === "number") {
-      currentTabId = id;
-    } else {
-      currentTabId = undefined;
-    }
+  $effect(() => {
+    const unsubscribe = currentTab.subscribe((id) => {
+      if (typeof id === "number") {
+        currentTabId = id;
+      } else {
+        currentTabId = undefined;
+      }
+    });
+    return unsubscribe;
   });
 </script>
 
-<div class="panel-tabs" bind:this={item} on:mousewheel={wheelHandler} on:dblclick={dblclickHandler}>
+<div class="panel-tabs" bind:this={item} onmousewheel={wheelHandler} ondblclick={dblclickHandler}>
   <List
     bind:items={$tabs}
     {currentTabId}

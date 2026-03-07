@@ -1,0 +1,20 @@
+.panelTabs {
+  display: flex;
+  flex-grow: 1;
+  align-items: stretch;
+  flex-flow: row;
+  width: 100%;
+  scrollbar-width: none;
+  overflow-x: scroll;
+  outline: none !important;
+  color: var(--fg-tab) !important;
+  -webkit-app-region: drag;
+}
+
+.panelTabs:focus-visible {
+  outline: none !important;
+}
+
+.panelTabs::-webkit-scrollbar {
+  display: none;
+}

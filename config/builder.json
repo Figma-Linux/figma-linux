@@ -42,7 +42,9 @@
   },
   "appImage": {
     "category": "Graphics",
-    "desktop": "resources/figma-linux-appimage.desktop"
+    "desktop": {
+      "entry": "resources/figma-linux-appimage.desktop"
+    }
   },
   "linux": {
     "description": "Unofficial desktop application for linux",

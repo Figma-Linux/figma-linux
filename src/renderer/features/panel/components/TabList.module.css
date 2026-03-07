@@ -1,0 +1,73 @@
+.section:focus-visible {
+  outline: none !important;
+}
+
+.section {
+  display: flex;
+  outline: none !important;
+}
+
+.text:focus-visible {
+  outline: none !important;
+}
+
+.text {
+  display: flex;
+  min-width: 60px;
+  max-width: 200px;
+  align-items: center;
+  user-select: none;
+  padding: 0 0 0 12px;
+  color: var(--fg-tab);
+  font-size: var(--text-size-tab);
+  outline: none !important;
+  -webkit-app-region: no-drag;
+  cursor: pointer;
+}
+
+.text span {
+  display: inline;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panelTab:focus-visible {
+  outline: none !important;
+}
+
+.panelTab {
+  display: flex;
+  align-items: stretch;
+  margin: 0 0 0 2px;
+  border-radius: 3px 3px 0 0px;
+  background-color: var(--bg-tab);
+  transition: all 0.08s ease;
+  outline: none !important;
+  -webkit-app-region: no-drag;
+}
+
+.panelTab:hover {
+  background-color: var(--bg-tab-hover);
+}
+
+.panelTabActive {
+  background-color: var(--bg-tab-hover);
+}
+
+.panelTab:hover span {
+  color: var(--fg-tab-hover);
+}
+
+.panelTabActive span {
+  color: var(--fg-tab-hover);
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.overlay {
+  background-color: var(--bg-tab-hover);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}

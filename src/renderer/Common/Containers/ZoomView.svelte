@@ -1,20 +1,44 @@
 <script lang="ts">
   import type { MouseWheelInputEvent } from "electron";
+  import type { Snippet } from "svelte";
   import { onMount, onDestroy } from "svelte";
 
-  export let zoom: number;
-  export let minZoom: number;
-  export let maxZoom: number;
-  export let width = "auto";
-  export let height = "auto";
-  export let isMaskActive = true;
-  export let maskBounds = { width: 0, height: 0 };
+  interface MaskBounds {
+    width: number;
+    height: number;
+  }
+
+  interface ZoomViewProps {
+    zoom: number;
+    minZoom: number;
+    maxZoom: number;
+    width?: string;
+    height?: string;
+    isMaskActive?: boolean;
+    maskBounds?: MaskBounds;
+    children?: Snippet;
+    toolBar?: Snippet;
+    layout_1?: Snippet;
+  }
+
+  let {
+    zoom = $bindable(),
+    minZoom,
+    maxZoom,
+    width = "auto",
+    height = "auto",
+    isMaskActive = $bindable(true),
+    maskBounds = $bindable({ width: 0, height: 0 }),
+    children,
+    toolBar,
+    layout_1,
+  }: ZoomViewProps = $props();
 
   let div: HTMLDivElement;
   let mask: HTMLDivElement;
   let area: HTMLDivElement;
-  let pos = { top: 0, left: 0, x: 0, y: 0 };
-  let isMoving = false;
+  let pos = $state({ top: 0, left: 0, x: 0, y: 0 });
+  let isMoving = $state(false);
 
   function aboveArea(event: MouseEvent) {
     if (
@@ -100,11 +124,11 @@
 
 <zoomArea
   bind:this={area}
-  on:mousedown={mouseDownHandler}
-  on:mouseup={mouseUpHandler}
-  on:mousemove={mouseMoveHandler}
-  on:mouseleave={mouseLeaveHandler}
-  on:mousewheel={mouseWheelHandler}
+  onmousedown={mouseDownHandler}
+  onmouseup={mouseUpHandler}
+  onmousemove={mouseMoveHandler}
+  onmouseleave={mouseLeaveHandler}
+  onmousewheel={mouseWheelHandler}
   style={`
     width: ${width};
     height: ${height};
@@ -116,7 +140,7 @@
       zoom: ${zoom};
     `}
   >
-    <slot />
+    {@render children?.()}
     <maskZoomArea
       bind:this={mask}
       style={`
@@ -124,14 +148,14 @@
         width: ${maskBounds.width}px;
         height: ${maskBounds.height}px;
       `}
-    />
+    ></maskZoomArea>
   </div>
   <zoomAreaToolBarWrap>
     <zoomAreaToolBar>
-      <slot name="toolBar" />
+      {@render toolBar?.()}
     </zoomAreaToolBar>
   </zoomAreaToolBarWrap>
-  <slot name="layout_1" />
+  {@render layout_1?.()}
 </zoomArea>
 
 <style>

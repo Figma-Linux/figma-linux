@@ -22,9 +22,9 @@ export default class SettingsView {
       webPreferences: {
         nodeIntegration: false,
         contextIsolation: true,
-        sandbox: true,
+        sandbox: false, // Required for webviewTag to work properly
         experimentalFeatures: false,
-        webviewTag: false,
+        webviewTag: true, // Required for Theme Creator preview webviews
         preload: isDev ? preloadSettingsPathDev : preloadSettingsPathProd,
       },
     });
@@ -36,7 +36,8 @@ export default class SettingsView {
       vertical: true,
     });
 
-    this.view.webContents.loadURL(isDev ? settingsUrlDev : settingsUrlProd);
+    const url = isDev ? settingsUrlDev : settingsUrlProd;
+    this.view.webContents.loadURL(url);
 
     this.registerEvents();
   }

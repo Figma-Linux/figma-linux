@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { getColorPallet } from "Utils/Render";
 
   import { Text, Label, Flex, FlexItem, Rotate } from "Common";
@@ -15,24 +14,38 @@
     Delete,
   } from "Common/Icons";
 
-  export let canEdit = false;
-  export let canDelete = false;
-  export let currentThemeId: string;
-  export let theme: Themes.Theme;
+  interface ThemeItemProps {
+    canEdit?: boolean;
+    canDelete?: boolean;
+    currentThemeId?: string;
+    theme: Themes.Theme;
+    onapplyTheme?: () => void;
+    ondeleteTheme?: () => void;
+    oneditTheme?: () => void;
+    onuseColorPalette?: () => void;
+  }
 
-  let radio: ConstructorOfATypedSvelteComponent;
-  $: radio = currentThemeId === theme.id ? RadioChecked : RadioNormal;
+  let {
+    canEdit = false,
+    canDelete = false,
+    currentThemeId = $bindable(""),
+    theme,
+    onapplyTheme,
+    ondeleteTheme,
+    oneditTheme,
+    onuseColorPalette,
+  }: ThemeItemProps = $props();
 
-  const dispatch = createEventDispatcher();
+  let radio = $derived(currentThemeId === theme.id ? RadioChecked : RadioNormal);
 </script>
 
 <div>
   <div
     class="themeview_item_tumbl"
-    on:mouseup={() => dispatch("applyTheme", { themeId: theme.id })}
+    onmouseup={onapplyTheme}
     style={getColorPallet(theme).join(";")}
   >
-    <div class="themeview_item_tumbl_top" />
+    <div class="themeview_item_tumbl_top"></div>
     <div class="themeview_item_tumbl_toolpanel">
       <div>
         <Burger color="var(--text)" />
@@ -47,11 +60,11 @@
     </div>
     <div class="themeview_item_tumbl_body">
       <div class="themeview_item_tumbl_body_left">
-        <div class="themeview_item_tumbl_body_left_text1" />
-        <div class="themeview_item_tumbl_body_left_text2" />
+        <div class="themeview_item_tumbl_body_left_text1"></div>
+        <div class="themeview_item_tumbl_body_left_text2"></div>
       </div>
-      <div class="themeview_item_tumbl_body_center" />
-      <div class="themeview_item_tumbl_body_right" />
+      <div class="themeview_item_tumbl_body_center"></div>
+      <div class="themeview_item_tumbl_body_right"></div>
     </div>
   </div>
   <Flex
@@ -72,7 +85,7 @@
         {#if canEdit}
           <ButtonTool
             normalBgColor="tarsparent"
-            on:buttonClick={() => dispatch("editTheme", { themeId: theme.id })}
+            onClick={oneditTheme}
           >
             <Pencil2 color="var(--text)" size="16" />
           </ButtonTool>
@@ -80,7 +93,7 @@
         <Flex width="10px" />
         <ButtonTool
           normalBgColor="tarsparent"
-          on:buttonClick={() => dispatch("useColorPalette", { themeId: theme.id })}
+          onClick={onuseColorPalette}
         >
           <Rotate deg={-90}>
             <Download color="var(--text)" size="16" />
@@ -89,15 +102,16 @@
         <Flex width="10px" />
         <ButtonTool
           normalBgColor="tarsparent"
-          on:buttonClick={() => dispatch("applyTheme", { themeId: theme.id })}
+          onClick={onapplyTheme}
         >
-          <svelte:component this={radio} color="var(--text)" />
+          {@const RadioIcon = radio}
+          <RadioIcon color="var(--text)" />
         </ButtonTool>
         {#if canDelete}
           <Flex width="20px" />
           <ButtonTool
             normalBgColor="tarsparent"
-            on:buttonClick={() => dispatch("deleteTheme", { themeId: theme.id })}
+            onClick={ondeleteTheme}
           >
             <Delete color="var(--text)" size="18" />
           </ButtonTool>

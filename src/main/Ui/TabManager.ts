@@ -244,6 +244,10 @@ export default class TabManager {
     }
   }
   public sortTabs(tabs: Types.TabFront[]) {
+    if (!tabs || !Array.isArray(tabs)) {
+      return;
+    }
+
     const entries = [...this.tabs.entries()];
 
     this.tabs.clear();
@@ -251,7 +255,9 @@ export default class TabManager {
     for (const tab of tabs) {
       const needed = entries.find(([_, t]) => t.id === tab.id);
 
-      this.tabs.set(needed[0], needed[1]);
+      if (needed) {
+        this.tabs.set(needed[0], needed[1]);
+      }
     }
   }
 

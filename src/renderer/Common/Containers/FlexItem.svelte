@@ -1,6 +1,13 @@
 <script lang="ts">
-  export let grow = 0;
-  export let flex = 0;
+  import type { Snippet } from "svelte";
+
+  interface FlexItemProps {
+    grow?: number;
+    flex?: number;
+    children?: Snippet;
+  }
+
+  let { grow = 0, flex = 0, children }: FlexItemProps = $props();
 </script>
 
 <div
@@ -9,5 +16,5 @@
     flex-grow: ${grow};
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>

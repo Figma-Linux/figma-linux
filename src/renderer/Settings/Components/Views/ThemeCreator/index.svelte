@@ -1,7 +1,15 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { resolve } from "path";
   import { Text, Label, Flex, Grid, ZoomView, ButtonTool } from "Common";
+
+  // Get the theme preview preload path from the settingsAPI (async)
+  let preloadPath = $state('');
+
+  onMount(async () => {
+    if (window.settingsAPI) {
+      preloadPath = await window.settingsAPI.getThemePreviewPreloadPath();
+    }
+  });
   import { RadioNormal, RadioChecked } from "Common/Icons";
   import { InputText, InputRange } from "Common/Input";
   import { getColorPallet } from "Utils/Render";
@@ -18,26 +26,20 @@
   import ColorPalette from "./ColorPalette.svelte";
   import Tutorial from "./Tutorial.svelte";
 
-  export let zIndex: number;
-
-  let zoomViewHeight: number;
-  $: {
-    if ($modalBounds) {
-      zoomViewHeight = $modalBounds.height - 238;
-    }
+  interface ThemeCreatorProps {
+    zIndex: number;
+    onsetSettingsTabViewIndex?: (detail: { index: number }) => void;
   }
 
-  let bodyHeight: number;
-  $: {
-    if ($modalBounds) {
-      bodyHeight = $modalBounds.height - 94;
-    }
-  }
+  let { zIndex, onsetSettingsTabViewIndex }: ThemeCreatorProps = $props();
+
+  let zoomViewHeight = $derived($modalBounds ? $modalBounds.height - 238 : 0);
+  let bodyHeight = $derived($modalBounds ? $modalBounds.height - 94 : 0);
 
   let previewer: HTMLDivElement;
-  let maskBounds = { width: 0, height: 0 };
+  let maskBounds = $state({ width: 0, height: 0 });
 
-  let webviews: any[] = [];
+  let webviews: any[] = $state([]);
 
   onMount(() => {
     webviews.forEach((webview, index) => {
@@ -66,8 +68,8 @@
     });
   });
 
-  $: isValidName = $themeNameError === "";
-  $: isValidAuthor = $themeAuthorError === "";
+  let isValidName = $derived($themeNameError === "");
+  let isValidAuthor = $derived($themeAuthorError === "");
 </script>
 
 <div style={`z-index: ${zIndex}; height: ${bodyHeight}px;`}>
@@ -109,98 +111,88 @@
           bind:isMaskActive={$creatorTheme.previewMaskVisible}
           height={`${zoomViewHeight}px`}
         >
-          <toolBar slot="toolBar">
-            <ButtonTool
-              normalBgColor="tarsparent"
-              on:buttonClick={creatorTheme.togglePreviewVisible}
+          {#snippet toolBar()}
+            <toolBarElem>
+              <ButtonTool
+                normalBgColor="tarsparent"
+                onClick={creatorTheme.togglePreviewVisible}
+              >
+                {#if $creatorTheme.previewMaskVisible}
+                  <RadioChecked color="var(--text)" size="14" />
+                {:else}
+                  <RadioNormal color="var(--text)" size="14" />
+                {/if}
+              </ButtonTool>
+            </toolBarElem>
+          {/snippet}
+          {#snippet children()}
+            <iframeView
+              style={`
+                ${getColorPallet($creatorTheme.theme).join(";")};
+                z-index: ${$settings.app.useOldPreviewer ? 2 : 0};
+                display: ${$settings.app.useOldPreviewer ? "block" : "none"};
+                user-select: ${$settings.app.useOldPreviewer ? "all" : "none"};
+              `}
             >
-              {#if $creatorTheme.previewMaskVisible}
-                <RadioChecked color="var(--text)" size="14" />
-              {:else}
-                <RadioNormal color="var(--text)" size="14" />
-              {/if}
-            </ButtonTool>
-          </toolBar>
-          <iframeView
-            style={`
-              ${getColorPallet($creatorTheme.theme).join(";")};
-              z-index: ${$settings.app.useOldPreviewer ? 2 : 0};
-              display: ${$settings.app.useOldPreviewer ? "block" : "none"};
-              user-select: ${$settings.app.useOldPreviewer ? "all" : "none"};
-            `}
-          >
-            <Preview />
-          </iframeView>
-          <iframeView
-            bind:this={previewer}
-            style={`
-              z-index: ${$settings.app.useOldPreviewer ? 0 : 2};
-              display: ${$settings.app.useOldPreviewer ? "none" : "grid"};
-              user-select: ${$settings.app.useOldPreviewer ? "none" : "all"};
-            `}
-          >
-            <webview
-              bind:this={webviews[0]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
+              <Preview />
+            </iframeView>
+            <iframeView
+              bind:this={previewer}
               style={`
-                  user-select: none;
-                  width: 1099px;
-                  height: 609px;
-                `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <webview
-              bind:this={webviews[1]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                  user-select: none;
-                  width: 1099px;
-                  height: 609px;
-                `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <webview
-              bind:this={webviews[2]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                  user-select: none;
-                  width: 1099px;
-                  height: 609px;
-                `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-            <webview
-              bind:this={webviews[3]}
-              preload={`file://${resolve(
-                process.cwd(),
-                "dist/renderer",
-                "themePreviewPreload.js",
-              )}`}
-              style={`
-                  user-select: none;
-                  width: 1099px;
-                  height: 609px;
-                `}
-              title="Figma recent files"
-              src="https://www.figma.com/files/recent"
-            />
-          </iframeView>
-          <Tutorial slot="layout_1" />
+                z-index: ${$settings.app.useOldPreviewer ? 0 : 2};
+                display: ${$settings.app.useOldPreviewer ? "none" : "grid"};
+                user-select: ${$settings.app.useOldPreviewer ? "none" : "all"};
+              `}
+            >
+              <webview
+                bind:this={webviews[0]}
+                preload={preloadPath}
+                style={`
+                    user-select: none;
+                    width: 1099px;
+                    height: 609px;
+                  `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              ></webview>
+              <webview
+                bind:this={webviews[1]}
+                preload={preloadPath}
+                style={`
+                    user-select: none;
+                    width: 1099px;
+                    height: 609px;
+                  `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              ></webview>
+              <webview
+                bind:this={webviews[2]}
+                preload={preloadPath}
+                style={`
+                    user-select: none;
+                    width: 1099px;
+                    height: 609px;
+                  `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              ></webview>
+              <webview
+                bind:this={webviews[3]}
+                preload={preloadPath}
+                style={`
+                    user-select: none;
+                    width: 1099px;
+                    height: 609px;
+                  `}
+                title="Figma recent files"
+                src="https://www.figma.com/files/recent"
+              ></webview>
+            </iframeView>
+          {/snippet}
+          {#snippet layout_1()}
+            <Tutorial />
+          {/snippet}
         </ZoomView>
         <Flex height="10px" />
         <InputRange bind:value={$creatorTheme.zoom} min={0.2} max={1.5} step={0.05} />
@@ -237,7 +229,7 @@
     gap: 2vmin;
     padding: 20px;
   }
-  toolBar {
+  toolBarElem {
     display: flex;
     background-color: var(--bg-panel);
     border: 1px solid var(--borders);

@@ -1,53 +1,76 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import type { Snippet } from "svelte";
 
-  const dispatch = createEventDispatcher();
-
-  export let round: number = 0;
-  export let size: number | undefined = undefined;
-  export let width = "inherit";
-  export let height = "inherit";
-
-  export let padding = "inherit";
-  export let margin = "inherit";
-  export let normalFgColor = "var(--text)";
-  export let activeFgColor = "var(--text-active)";
-  export let hoverFgColor = "var(--text-active)";
-
-  export let normalBgAlpha = "1";
-  export let activeBgAlpha = "1";
-  export let hoverBgAlpha = "1";
-
-  export let normalBgColor = "transparent";
-  export let hoverBgColor = "var(--bg-tab-hover)";
-  export let activeBgColor = "var(--bg-tab-hover)";
-  export let disabledBgColor = "var(--borders)";
-
-  export let normalBorder = "none";
-  export let activeBorder = "none";
-  export let hoverBorder = "none";
-
-  export let normalCursor = "default";
-  export let activeCursor = "default";
-  export let hoverCursor = "default";
-
-  export let isActive = false;
-  export let disabled: boolean | undefined = false;
-
-  if (size) {
-    width = `${size}px`;
-    height = `${size}px`;
+  interface ButtonProps {
+    round?: number;
+    size?: number;
+    width?: string;
+    height?: string;
+    padding?: string;
+    margin?: string;
+    normalFgColor?: string;
+    activeFgColor?: string;
+    hoverFgColor?: string;
+    normalBgAlpha?: string;
+    activeBgAlpha?: string;
+    hoverBgAlpha?: string;
+    normalBgColor?: string;
+    hoverBgColor?: string;
+    activeBgColor?: string;
+    disabledBgColor?: string;
+    normalBorder?: string;
+    activeBorder?: string;
+    hoverBorder?: string;
+    normalCursor?: string;
+    activeCursor?: string;
+    hoverCursor?: string;
+    isActive?: boolean;
+    disabled?: boolean;
+    onClick?: (event: MouseEvent) => void;
+    children?: Snippet;
   }
+
+  let {
+    round = 0,
+    size = undefined,
+    width = "inherit",
+    height = "inherit",
+    padding = "inherit",
+    margin = "inherit",
+    normalFgColor = "var(--text)",
+    activeFgColor = "var(--text-active)",
+    hoverFgColor = "var(--text-active)",
+    normalBgAlpha = "1",
+    activeBgAlpha = "1",
+    hoverBgAlpha = "1",
+    normalBgColor = "transparent",
+    hoverBgColor = "var(--bg-tab-hover)",
+    activeBgColor = "var(--bg-tab-hover)",
+    disabledBgColor = "var(--borders)",
+    normalBorder = "none",
+    activeBorder = "none",
+    hoverBorder = "none",
+    normalCursor = "default",
+    activeCursor = "default",
+    hoverCursor = "default",
+    isActive = false,
+    disabled = false,
+    onClick,
+    children,
+  }: ButtonProps = $props();
+
+  let effectiveWidth = $derived(size ? `${size}px` : width);
+  let effectiveHeight = $derived(size ? `${size}px` : height);
 
   function clickHandler(event: MouseEvent) {
     if (!disabled) {
-      dispatch("buttonClick", event);
+      onClick?.(event);
     }
   }
 </script>
 
 <div
-  on:mouseup|capture={clickHandler}
+  onmouseup={clickHandler}
   class={`
     ${isActive ? "button__active " : ""}
     ${disabled ? "button__disabled" : ""}
@@ -55,8 +78,8 @@
   style={`
     --padding: ${padding};
     --margin: ${margin};
-    --width: ${width};
-    --height: ${height};
+    --width: ${effectiveWidth};
+    --height: ${effectiveHeight};
     --border-radius: ${round}px;
 
     --normal-bg-alpha: ${normalBgAlpha};
@@ -81,7 +104,7 @@
     --hover-cursor: ${hoverCursor};
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>
@@ -100,6 +123,7 @@
     margin: var(--margin);
     transition: all 0.08s ease;
     user-select: none;
+    -webkit-app-region: no-drag;
   }
   div:hover {
     border: var(--hover-border);

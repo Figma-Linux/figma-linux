@@ -1,5 +1,15 @@
+<script lang="ts">
+  import type { Snippet } from "svelte";
+
+  interface HeaderTextProps {
+    children?: Snippet;
+  }
+
+  let { children }: HeaderTextProps = $props();
+</script>
+
 <span>
-  <slot />
+  {@render children?.()}
 </span>
 
 <style>

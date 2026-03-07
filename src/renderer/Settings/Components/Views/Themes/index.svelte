@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { themes, creatorsThemes, creatorTheme, settings, modalBounds } from "../../../store";
   import { DropDown, Flex, Grid } from "Common";
   import { themeApp } from "Common/Store/Themes";
@@ -7,16 +6,19 @@
 
   import ThemeItem from "./ThemeItem.svelte";
 
-  export let zIndex: number;
+  interface ThemesProps {
+    zIndex: number;
+    onsetSettingsTabViewIndex?: (detail: { index: number }) => void;
+  }
+
+  let { zIndex, onsetSettingsTabViewIndex }: ThemesProps = $props();
 
   const api = window.settingsAPI;
-  const dispatch = createEventDispatcher();
 
-  $: isCreatorThemesEmpty = $creatorsThemes.length === 0;
-  $: isThemesEmpty = $themes.length === 0;
+  let isCreatorThemesEmpty = $derived($creatorsThemes.length === 0);
+  let isThemesEmpty = $derived($themes.length === 0);
 
-  function onApplyTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
-    const themeId = event.detail.themeId;
+  function onApplyTheme(themeId: string) {
     const theme: Themes.Theme = structuredClone(
       [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
     );
@@ -24,43 +26,33 @@
     api.changeTheme(theme);
     $settings.theme.currentTheme = themeId;
   }
-  function onDeleteTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
-    const themeId = event.detail.themeId;
-
+  function onDeleteTheme(themeId: string) {
     api.themeCreatorRemoveTheme(themeId);
 
     if (themeId === $themeApp.id) {
-      onApplyTheme(new CustomEvent("applyTheme", { detail: { themeId: DEFAULT_THEME.id } }));
+      onApplyTheme(DEFAULT_THEME.id);
     }
   }
-  function onEditTheme(event: CustomEvent<SvelteEvents.ApplyTheme>) {
-    const themeId = event.detail.themeId;
-
+  function onEditTheme(themeId: string) {
     const theme: Themes.Theme = structuredClone(
       $creatorsThemes.find((theme) => theme.id === themeId),
     );
 
     creatorTheme.setEditTheme(theme);
 
-    dispatch("setSettingsTabViewIndex", { index: 2 });
+    onsetSettingsTabViewIndex?.({ index: 2 });
   }
-  function onUseColorPalette(event: CustomEvent<SvelteEvents.ApplyTheme>) {
-    const themeId = event.detail.themeId;
+  function onUseColorPalette(themeId: string) {
     const theme: Themes.Theme = structuredClone(
       [...$themes, ...$creatorsThemes].find((theme) => theme.id === themeId),
     );
 
     creatorTheme.setPaletteTheme(theme);
 
-    dispatch("setSettingsTabViewIndex", { index: 2 });
+    onsetSettingsTabViewIndex?.({ index: 2 });
   }
 
-  let zoomViewHeight: number;
-  $: {
-    if ($modalBounds) {
-      zoomViewHeight = $modalBounds.height - 94;
-    }
-  }
+  let zoomViewHeight = $derived($modalBounds ? $modalBounds.height - 94 : 0);
 </script>
 
 <div style={`z-index: ${zIndex}; height: ${zoomViewHeight}px;`}>
@@ -73,10 +65,10 @@
       {#if $creatorsThemes.length > 0}
         {#each $creatorsThemes as theme (theme.id)}
           <ThemeItem
-            on:deleteTheme={onDeleteTheme}
-            on:editTheme={onEditTheme}
-            on:useColorPalette={onUseColorPalette}
-            on:applyTheme={onApplyTheme}
+            ondeleteTheme={() => onDeleteTheme(theme.id)}
+            oneditTheme={() => onEditTheme(theme.id)}
+            onuseColorPalette={() => onUseColorPalette(theme.id)}
+            onapplyTheme={() => onApplyTheme(theme.id)}
             {theme}
             canDelete
             canEdit
@@ -85,7 +77,7 @@
         {/each}
         {#if $creatorsThemes.length < 6}
           {#each Array(6 - $creatorsThemes.length) as _, i (i)}
-            <themeFake />
+            <themeFake></themeFake>
           {/each}
         {/if}
       {/if}
@@ -101,15 +93,15 @@
       {#if $themes.length > 0}
         {#each $themes as theme (theme.id)}
           <ThemeItem
-            on:useColorPalette={onUseColorPalette}
-            on:applyTheme={onApplyTheme}
+            onuseColorPalette={() => onUseColorPalette(theme.id)}
+            onapplyTheme={() => onApplyTheme(theme.id)}
             {theme}
             bind:currentThemeId={$settings.theme.currentTheme}
           />
         {/each}
         {#if $themes.length < 6}
           {#each Array(6 - $themes.length) as _, i (i)}
-            <themeFake />
+            <themeFake></themeFake>
           {/each}
         {/if}
       {/if}

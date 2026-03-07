@@ -1,0 +1,4 @@
+.rotate {
+  display: flex;
+  transform: rotate(var(--deg));
+}

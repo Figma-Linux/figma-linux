@@ -20,6 +20,8 @@
     "noUnusedLocals": false,
     "strictNullChecks": false,
     "skipLibCheck": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
     "lib": [
       "DOM",
       "DOM.Iterable",
@@ -32,21 +34,12 @@
     "paths": {
       "Main": ["src/main"],
       "Main/*": ["src/main/*"],
-      "Icons": ["src/renderer/Common/Icons"],
-      "Icons/*": ["src/renderer/Common/Icons/*"],
-      "Common": ["src/renderer/Common"],
-      "Common/*": ["src/renderer/Common/*"],
-      "Components": ["src/renderer/components"],
-      "Components/*": ["src/renderer/components/*"],
-      "Containers": ["src/renderer/Common/Containers"],
-      "Containers/*": ["src/renderer/Common/Containers/*"],
-      "Elements/*": ["src/renderer/elements/*"],
-      "Elements": ["src/renderer/elements"],
-      "Store": ["src/renderer/stores"],
-      "Store/*": ["src/renderer/stores/*"],
-      "DesktopAPI": ["DesktopAPI"],
-      "DesktopAPI/*": ["DesktopAPI/*"],
+      "Shared": ["src/renderer/shared"],
+      "Shared/*": ["src/renderer/shared/*"],
+      "Features": ["src/renderer/features"],
+      "Features/*": ["src/renderer/features/*"],
       "Const": ["src/constants"],
+      "Const/*": ["src/constants/*"],
       "Utils": ["src/utils"],
       "Utils/*": ["src/utils/*"],
       "Enums": ["src/types/enums.ts"],
@@ -61,6 +54,7 @@
     "src/main/**/*",
     "src/preload/**/*",
     "src/types/**/*",
-    "src/utils/**/*"
+    "src/utils/**/*",
+    "src/renderer/**/*"
   ]
 }

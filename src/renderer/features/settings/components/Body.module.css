@@ -1,0 +1,13 @@
+.container {
+  width: 90vw;
+  height: 80vh;
+  overflow: hidden;
+  background: var(--bg-panel);
+}
+
+.settingsBody {
+  position: relative;
+  display: block;
+  scroll-behavior: smooth;
+  height: calc(80vh - 46px);
+}

@@ -1,5 +1,12 @@
 <script lang="ts">
-  export let bgColor = "var(--bg-header)";
+  import type { Snippet } from "svelte";
+
+  interface HeaderModalProps {
+    bgColor?: string;
+    children?: Snippet;
+  }
+
+  let { bgColor = "var(--bg-header)", children }: HeaderModalProps = $props();
 </script>
 
 <div
@@ -7,7 +14,7 @@
     --bg-color: ${bgColor};
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

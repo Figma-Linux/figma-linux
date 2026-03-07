@@ -1,7 +1,6 @@
-// eslint-disable-next-line
-/// <reference path="../../../node_modules/svelte/types/runtime/index.d.ts" />
+import { mount } from "svelte";
 import App from "./App.svelte";
 
-new App({
+mount(App, {
   target: document.body,
 });

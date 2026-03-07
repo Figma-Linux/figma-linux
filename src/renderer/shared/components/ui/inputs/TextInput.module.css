@@ -1,0 +1,28 @@
+.container {
+  display: flex;
+  border: 1px solid var(--borders);
+  border-radius: 3px;
+  padding: 8px;
+  width: var(--inputWidth);
+}
+
+.inputError {
+  border: 1px solid var(--bg-window-close);
+}
+
+.input {
+  background-color: transparent;
+  outline: none;
+  color: var(--text);
+  border: 0;
+  margin-left: 6px;
+  width: 100%;
+}
+
+.input:hover,
+.input:active,
+.input:focus {
+  background-color: transparent;
+  outline: none;
+  border: 0;
+}

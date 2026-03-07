@@ -1,0 +1,23 @@
+.colorPicker {
+  width: var(--inputWidth);
+  height: var(--inputHeight);
+  background-color: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+}
+
+.colorPicker::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.colorPicker::-webkit-color-swatch {
+  border: 0;
+  border-radius: 3px;
+}
+
+.colorPicker:focus,
+.colorPicker:active {
+  background-color: transparent;
+}

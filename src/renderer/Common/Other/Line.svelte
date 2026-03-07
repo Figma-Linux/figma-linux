@@ -1,27 +1,31 @@
 <script lang="ts">
-  export let width: string | undefined = undefined;
-  export let height: string | undefined = undefined;
-  export let type: "H" | "V" = "H";
+  import type { Snippet } from "svelte";
 
-  switch (type) {
-    case "H": {
-      width = width || "100%";
-      break;
-    }
-    case "V": {
-      height = height || "100%";
-      break;
-    }
+  interface LineProps {
+    width?: string;
+    height?: string;
+    type?: "H" | "V";
+    children?: Snippet;
   }
+
+  let {
+    width = undefined,
+    height = undefined,
+    type = "H",
+    children,
+  }: LineProps = $props();
+
+  let effectiveWidth = $derived(type === "H" ? (width ?? "100%") : width);
+  let effectiveHeight = $derived(type === "V" ? (height ?? "100%") : height);
 </script>
 
 <div
   style={`
-    --width: ${width};
-    --height: ${height};
+    --width: ${effectiveWidth};
+    --height: ${effectiveHeight};
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

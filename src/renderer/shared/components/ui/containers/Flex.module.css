@@ -1,0 +1,19 @@
+.flex {
+  display: flex;
+  flex-direction: var(--direction);
+  justify-content: var(--justifyContent);
+  justify-items: var(--justifyItems);
+  overflow: var(--overflow);
+  border: var(--border);
+  border-top: var(--tborder);
+  border-right: var(--rborder);
+  border-bottom: var(--bborder);
+  border-left: var(--lborder);
+  border-radius: var(--bradius);
+  align-items: var(--alignItems);
+  width: var(--width);
+  height: var(--height);
+  padding: var(--padding);
+  margin: var(--margin);
+  background-color: var(--bgColor);
+}

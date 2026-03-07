@@ -43,7 +43,23 @@ export default class App {
 
     this.applySwitches();
 
-    if (!app.isDefaultProtocolClient(Const.PROTOCOL)) {
+    // Register as protocol handler
+    // Check if we're running from a development environment (not an installed app)
+    // This is detected by checking if electron is in node_modules
+    const isDevEnvironment = process.execPath.includes('node_modules');
+
+    if (isDevEnvironment) {
+      // In development mode, we need to force-register with explicit paths
+      // so the currently running dev build receives the auth callback
+      // Remove any existing registration first
+      app.removeAsDefaultProtocolClient(Const.PROTOCOL);
+      // Register with explicit electron path and main script
+      const mainScript = import.meta.dirname
+        ? import.meta.dirname + '/main.mjs'
+        : process.argv[1];
+      app.setAsDefaultProtocolClient(Const.PROTOCOL, process.execPath, [mainScript]);
+      logger.info("Registered as protocol handler (dev mode):", process.execPath, mainScript);
+    } else if (!app.isDefaultProtocolClient(Const.PROTOCOL)) {
       app.setAsDefaultProtocolClient(Const.PROTOCOL);
     }
 

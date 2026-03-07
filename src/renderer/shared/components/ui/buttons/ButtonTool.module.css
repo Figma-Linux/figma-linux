@@ -1,0 +1,20 @@
+.buttonTool {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--normal-bg-color);
+  color: var(--normal-fg-color);
+  border-radius: var(--border-radius);
+  width: var(--width);
+  height: var(--height);
+  padding: var(--padding);
+  opacity: var(--normal-opacity);
+  transition: all 0.1s ease;
+  -webkit-app-region: no-drag;
+}
+
+.buttonTool:hover {
+  fill: var(--hover-fg-color);
+  color: var(--hover-fg-color);
+  opacity: var(--hover-opacity);
+}

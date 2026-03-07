@@ -1,19 +1,29 @@
 <script lang="ts">
-  import { clipboard } from "electron";
   import { Popup, ListBox } from "Common";
   import { isValidColor, HexToRgb } from "Utils/Render";
   import { creatorTheme } from "../../../store";
 
   import MenuItem from "./MenuItem.svelte";
 
-  export let key = "";
-  export let color = "";
-  export let isOpen = false;
-  export let cornerX = 0;
-  export let x = 0;
-  export let y = 0;
+  interface PopupColorMenuProps {
+    key?: string;
+    color?: string;
+    isOpen?: boolean;
+    cornerX?: number;
+    x?: number;
+    y?: number;
+  }
 
-  let items: Types.ThemeCreatorPopupMenuItem[] = [
+  let {
+    key = $bindable(""),
+    color = $bindable(""),
+    isOpen = $bindable(false),
+    cornerX = $bindable(0),
+    x = $bindable(0),
+    y = $bindable(0),
+  }: PopupColorMenuProps = $props();
+
+  let items = $state<Types.ThemeCreatorPopupMenuItem[]>([
     {
       id: "paste",
       text: "Paste color",
@@ -32,7 +42,7 @@
       handler: onCopyRgb,
       item: MenuItem,
     },
-  ];
+  ]);
 
   function onItemClick(item: Types.ThemeCreatorPopupMenuItem) {
     item.handler();
@@ -43,13 +53,20 @@
   }
 
   function onCopyHex() {
-    clipboard.writeText(color);
+    if (window.settingsAPI) {
+      window.settingsAPI.clipboardWriteText(color);
+    }
   }
   function onCopyRgb() {
-    clipboard.writeText(HexToRgb(color));
+    if (window.settingsAPI) {
+      window.settingsAPI.clipboardWriteText(HexToRgb(color));
+    }
   }
   function onPaste() {
-    const value = clipboard.readText();
+    if (!window.settingsAPI) {
+      return;
+    }
+    const value = window.settingsAPI.clipboardReadText();
 
     if (!isValidColor(value)) {
       return;
@@ -60,9 +77,13 @@
 </script>
 
 <Popup bind:isOpen bind:cornerX bind:x bind:y bradius="3px">
-  <div slot="popupButton" />
+  {#snippet popupButton()}
+    <div></div>
+  {/snippet}
 
-  <ListBox bind:items slot="popupBody" border="0" padding="0" bradius="0" {onItemClick} />
+  {#snippet popupBody()}
+    <ListBox {items} border="0" padding="0" bradius="0" {onItemClick} />
+  {/snippet}
 </Popup>
 
 <style>

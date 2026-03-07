@@ -1,8 +1,10 @@
 /**
  * Secure preload script for Figma tabs with contextBridge
  * This script exposes a safe API to the renderer process
+ *
+ * NOTE: Uses CommonJS require() because Electron preload scripts must be CommonJS
  */
-import { contextBridge, ipcRenderer, clipboard, webFrame, IpcRendererEvent } from 'electron';
+const { contextBridge, ipcRenderer, clipboard, webFrame } = require('electron');
 
 // Type definitions for the exposed API
 interface FigmaDesktopAPI {
@@ -94,7 +96,7 @@ let nextCallbackID = 0;
 const registeredCallbacks = new Map<number, (result: any) => void>();
 
 // Handle callbacks from main process
-ipcRenderer.on('handleCallback', (_: IpcRendererEvent, callbackID: number, result: any) => {
+ipcRenderer.on('handleCallback', (_: any, callbackID: number, result: any) => {
   const callback = registeredCallbacks.get(callbackID);
   if (callback) {
     callback(result);
@@ -170,47 +172,47 @@ const figmaAPI: FigmaDesktopAPI = {
     return () => ipcRenderer.removeListener('newFile', handler);
   },
   onHandleAction: (callback) => {
-    const handler = (_: IpcRendererEvent, action: string, source: string) => callback(action, source);
+    const handler = (_: any, action: string, source: string) => callback(action, source);
     ipcRenderer.on('handleAction', handler);
     return () => ipcRenderer.removeListener('handleAction', handler);
   },
   onHandleUrl: (callback) => {
-    const handler = (_: IpcRendererEvent, path: string, params: string) => callback(path, params);
+    const handler = (_: any, path: string, params: string) => callback(path, params);
     ipcRenderer.on('handleUrl', handler);
     return () => ipcRenderer.removeListener('handleUrl', handler);
   },
   onHandleSetFullScreen: (callback) => {
-    const handler = (_: IpcRendererEvent, fullscreen: boolean) => callback(fullscreen);
+    const handler = (_: any, fullscreen: boolean) => callback(fullscreen);
     ipcRenderer.on('handleSetFullScreen', handler);
     return () => ipcRenderer.removeListener('handleSetFullScreen', handler);
   },
   onShowFlashMessage: (callback) => {
-    const handler = (_: IpcRendererEvent, message: string) => callback(message);
+    const handler = (_: any, message: string) => callback(message);
     ipcRenderer.on('showFlashMessage', handler);
     return () => ipcRenderer.removeListener('showFlashMessage', handler);
   },
   onHandlePageCommand: (callback) => {
-    const handler = (_: IpcRendererEvent, command: string) => callback(command);
+    const handler = (_: any, command: string) => callback(command);
     ipcRenderer.on('handlePageCommand', handler);
     return () => ipcRenderer.removeListener('handlePageCommand', handler);
   },
   onRedeemAppAuth: (callback) => {
-    const handler = (_: IpcRendererEvent, gSecret: string) => callback(gSecret);
+    const handler = (_: any, gSecret: string) => callback(gSecret);
     ipcRenderer.on('redeemAppAuth', handler);
     return () => ipcRenderer.removeListener('redeemAppAuth', handler);
   },
   onHandlePluginMenuAction: (callback) => {
-    const handler = (_: IpcRendererEvent, action: any) => callback(action);
+    const handler = (_: any, action: any) => callback(action);
     ipcRenderer.on('handlePluginMenuAction', handler);
     return () => ipcRenderer.removeListener('handlePluginMenuAction', handler);
   },
   onLoadCurrentTheme: (callback) => {
-    const handler = (_: IpcRendererEvent, theme: any) => callback(theme);
+    const handler = (_: any, theme: any) => callback(theme);
     ipcRenderer.on('loadCurrentTheme', handler);
     return () => ipcRenderer.removeListener('loadCurrentTheme', handler);
   },
   onHandleCallback: (callback) => {
-    const handler = (_: IpcRendererEvent, callbackID: number, result: any) => callback(callbackID, result);
+    const handler = (_: any, callbackID: number, result: any) => callback(callbackID, result);
     ipcRenderer.on('handleCallback', handler);
     return () => ipcRenderer.removeListener('handleCallback', handler);
   },

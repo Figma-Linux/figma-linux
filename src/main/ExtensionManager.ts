@@ -103,7 +103,7 @@ export default class ExtensionManager {
             const watcher = Chokidar.watch(filepath, undefined);
 
             watcher.on("all", () => this.codeWatcher(id));
-            watcher.on("error", (error) =>
+            watcher.on("error", (error: Error) =>
               logger.error(`chokidar error for ${filepath}: ${error.name}: ${error.message}`),
             );
 
@@ -141,7 +141,7 @@ export default class ExtensionManager {
           const watcher = Chokidar.watch(filepath, undefined);
 
           watcher.on("all", () => this.manifestWatcher(id));
-          watcher.on("error", (error) =>
+          watcher.on("error", (error: Error) =>
             logger.error(`chokidar error for ${filepath}: ${error.name}: ${error.message}`),
           );
 
@@ -191,7 +191,7 @@ export default class ExtensionManager {
 
         this.extensionMap.set(id, {
           ...rest,
-          observeFiles: new Map((files ?? []).map((f) => [f, null])),
+          observeFiles: new Map((files ?? []).map((f): [string, null] => [f, null])),
         });
       }
     }
@@ -390,7 +390,7 @@ export default class ExtensionManager {
 
     this.extensionMap.set(id, {
       path,
-      observeFiles: new Map(observeFiles.map((v) => [v, null])),
+      observeFiles: new Map(observeFiles.map((v): [string, null] => [v, null])),
       lastKnownName: manifest.name,
       lastKnownPluginId: manifest.id,
       cachedContainsWidget: false,

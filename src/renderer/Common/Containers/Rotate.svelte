@@ -1,5 +1,12 @@
 <script lang="ts">
-  export let deg = 0;
+  import type { Snippet } from "svelte";
+
+  interface RotateProps {
+    deg?: number;
+    children?: Snippet;
+  }
+
+  let { deg = 0, children }: RotateProps = $props();
 </script>
 
 <div
@@ -7,7 +14,7 @@
     --deg: ${deg}deg;
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

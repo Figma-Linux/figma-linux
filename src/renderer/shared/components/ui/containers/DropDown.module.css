@@ -1,0 +1,52 @@
+.container {
+  width: 100%;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  user-select: none;
+}
+
+.span {
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid var(--borders);
+  padding-left: 24px;
+  color: var(--text);
+}
+
+.span::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 0;
+  height: 0;
+  border-top: 5px solid var(--borders);
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+  transform: rotate(-90deg);
+  transition: all 0.1s ease;
+}
+
+.spanOpen::before {
+  transform: rotate(0deg);
+}
+
+.blockContent {
+  display: block;
+}
+
+.block {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  transition-property: height;
+  transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.input {
+  display: none;
+}

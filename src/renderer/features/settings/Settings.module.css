@@ -1,0 +1,21 @@
+.settings {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.errorBox {
+  background: #333;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.errorBox button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  cursor: pointer;
+}

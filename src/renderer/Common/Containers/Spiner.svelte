@@ -1,9 +1,16 @@
 <script lang="ts">
-  export let spin = false;
+  import type { Snippet } from "svelte";
+
+  interface SpinerProps {
+    spin?: boolean;
+    children?: Snippet;
+  }
+
+  let { spin = false, children }: SpinerProps = $props();
 </script>
 
 <div class={spin ? "spin" : ""}>
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

@@ -1,16 +1,18 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
   import { getColorPallet } from "Utils/Render";
 
   import { PrimaryButton } from "Common/Buttons";
   import { Burger, Hand, Component } from "Common/Icons";
 
-  export let theme: Themes.Theme;
+  interface ThemeItemProps {
+    theme: Themes.Theme;
+    onapplyTemplate?: () => void;
+  }
 
-  const dispatch = createEventDispatcher();
+  let { theme, onapplyTemplate }: ThemeItemProps = $props();
 </script>
 
-<div on:mousedown={() => dispatch("applyTemplate", { themeId: theme.id })}>
+<div onmousedown={onapplyTemplate}>
   <div class="themeview_item_tumbl" style={getColorPallet(theme).join(";")}>
     <div class="themeview_item_tumbl_top" />
     <div class="themeview_item_tumbl_toolpanel">

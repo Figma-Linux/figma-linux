@@ -1,23 +1,46 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
   import Button from "./Button.svelte";
 
-  export let padding = "0 7px";
-  export let width = "auto";
-  export let height = "36px";
-  export let normalFgColor = "var(--text)";
-  export let hoverFgColor = "var(--text-active)";
-  export let normalBgColor = "transparent";
-  export let activeBgColor = "transparent";
-  export let hoverBgColor = "transparent";
-  export let isActive = false;
+  interface SecondaryButtonProps {
+    padding?: string;
+    width?: string;
+    height?: string;
+    normalFgColor?: string;
+    hoverFgColor?: string;
+    normalBgColor?: string;
+    activeBgColor?: string;
+    hoverBgColor?: string;
+    isActive?: boolean;
+    normalBorder?: string;
+    activeBorder?: string;
+    hoverBorder?: string;
+    normalCursor?: string;
+    activeCursor?: string;
+    hoverCursor?: string;
+    onClick?: (event: MouseEvent) => void;
+    children?: Snippet;
+  }
 
-  export let normalBorder = "1px solid var(--text)";
-  export let activeBorder = "1px solid var(--text-active)";
-  export let hoverBorder = "1px solid var(--text-active)";
-
-  export let normalCursor = "pointer";
-  export let activeCursor = "pointer";
-  export let hoverCursor = "pointer";
+  let {
+    padding = "0 7px",
+    width = "auto",
+    height = "36px",
+    normalFgColor = "var(--text)",
+    hoverFgColor = "var(--text-active)",
+    normalBgColor = "transparent",
+    activeBgColor = "transparent",
+    hoverBgColor = "transparent",
+    isActive = false,
+    normalBorder = "1px solid var(--text)",
+    activeBorder = "1px solid var(--text-active)",
+    hoverBorder = "1px solid var(--text-active)",
+    normalCursor = "pointer",
+    activeCursor = "pointer",
+    hoverCursor = "pointer",
+    onClick,
+    children,
+  }: SecondaryButtonProps = $props();
 </script>
 
 <Button
@@ -36,8 +59,8 @@
   {normalCursor}
   {activeCursor}
   {hoverCursor}
+  {onClick}
   round={3}
-  on:buttonClick
 >
-  <slot />
+  {@render children?.()}
 </Button>

@@ -1,18 +1,27 @@
 <script lang="ts">
   import { ButtonTool, Text, Close, Flex } from "Common";
 
-  export let text: string;
+  interface DirectoryListItemProps {
+    text: string;
+    disabled?: boolean;
+    onItemClick?: () => void;
+    onItemRemoveClick?: () => void;
+  }
 
-  export let onItemClick = () => {};
-  export let onItemRemoveClick = () => {};
+  let {
+    text,
+    disabled = false,
+    onItemClick = () => {},
+    onItemRemoveClick = () => {},
+  }: DirectoryListItemProps = $props();
 </script>
 
 <div>
-  <ButtonTool normalBgColor="tarsparent" on:buttonClick={onItemRemoveClick}>
+  <ButtonTool normalBgColor="tarsparent" onClick={onItemRemoveClick}>
     <Close color="var(--text)" size="16" />
   </ButtonTool>
   <Flex width="10px" />
-  <Text on:mouseup={onItemClick}>{text}</Text>
+  <Text onmouseup={onItemClick}>{text}</Text>
 </div>
 
 <style>

@@ -63,7 +63,6 @@ export function onClickCommunity(svelteEvent: { detail: MouseEvent }) {
   }
 }
 export function onClickNewProject() {
-  console.log("onClickNewProject");
   api().newProject("design");
   newFileVisible.set(false);
 }

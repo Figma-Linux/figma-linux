@@ -1,11 +1,8 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { Flex, Text, SecondaryButton, CheckBox } from "Common";
   import { settings } from "../../../store";
 
-  let display = "block";
-
-  $: display = $settings.app.dontShowTutorialCreator ? "none" : "block";
+  let display = $derived($settings.app.dontShowTutorialCreator ? "none" : "block");
 </script>
 
 <div style={`display: ${display};`}>

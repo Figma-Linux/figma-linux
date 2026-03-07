@@ -9,13 +9,16 @@
   initCommonIpc();
   initIpc();
 
-  let pallet: string[] = [];
+  let pallet = $state<string[]>([]);
 
-  themeApp.subscribe((theme) => {
-    if (!theme) {
-      return;
-    }
-    pallet = getColorPallet(theme);
+  $effect(() => {
+    const unsubscribe = themeApp.subscribe((theme) => {
+      if (!theme) {
+        return;
+      }
+      pallet = getColorPallet(theme);
+    });
+    return unsubscribe;
   });
 </script>
 
@@ -29,7 +32,17 @@
   #panel {
     display: flex;
     height: 40px;
-    background-color: var(--bg-header);
+    background-color: var(--bg-header, #2c2c2c);
+    -webkit-app-region: drag;
+  }
+
+  /* Allow clicks on interactive elements */
+  #panel :global(button),
+  #panel :global(a),
+  #panel :global([role="button"]),
+  #panel :global(.tab),
+  #panel :global(.clickable) {
+    -webkit-app-region: no-drag;
   }
 
   :global(html),

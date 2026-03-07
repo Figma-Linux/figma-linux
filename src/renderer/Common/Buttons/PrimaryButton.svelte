@@ -1,24 +1,46 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
   import Button from "./Button.svelte";
 
-  export let width = "inherit";
-  export let height = "36px";
-  export let margin = "inherit";
-  export let padding = "0 7px";
+  interface PrimaryButtonProps {
+    width?: string;
+    height?: string;
+    margin?: string;
+    padding?: string;
+    normalFgColor?: string;
+    normalBgColor?: string;
+    activeBgColor?: string;
+    hoverBgColor?: string;
+    isActive?: boolean;
+    normalBorder?: string;
+    activeBorder?: string;
+    hoverBorder?: string;
+    normalCursor?: string;
+    activeCursor?: string;
+    hoverCursor?: string;
+    onClick?: (event: MouseEvent) => void;
+    children?: Snippet;
+  }
 
-  export let normalFgColor = "var(--fg-toolbar-active)";
-  export let normalBgColor = "var(--bg-toolbar-active)";
-  export let activeBgColor = "var(--bg-toolbar-active"; // --color-bg-brand-pressed: #0a6dc2
-  export let hoverBgColor = "var(--bg-toolbar-active)";
-  export let isActive = false;
-
-  export let normalBorder = "none";
-  export let activeBorder = "none";
-  export let hoverBorder = "none";
-
-  export let normalCursor = "pointer";
-  export let activeCursor = "pointer";
-  export let hoverCursor = "pointer";
+  let {
+    width = "inherit",
+    height = "36px",
+    margin = "inherit",
+    padding = "0 7px",
+    normalFgColor = "var(--fg-toolbar-active)",
+    normalBgColor = "var(--bg-toolbar-active)",
+    activeBgColor = "var(--bg-toolbar-active)",
+    hoverBgColor = "var(--bg-toolbar-active)",
+    isActive = false,
+    normalBorder = "none",
+    activeBorder = "none",
+    hoverBorder = "none",
+    normalCursor = "pointer",
+    activeCursor = "pointer",
+    hoverCursor = "pointer",
+    onClick,
+    children,
+  }: PrimaryButtonProps = $props();
 </script>
 
 <Button
@@ -37,8 +59,8 @@
   {normalCursor}
   {activeCursor}
   {hoverCursor}
+  {onClick}
   round={3}
-  on:buttonClick
 >
-  <slot />
+  {@render children?.()}
 </Button>

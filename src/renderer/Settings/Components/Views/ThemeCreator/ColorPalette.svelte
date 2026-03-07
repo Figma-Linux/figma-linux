@@ -4,23 +4,27 @@
 
   import PopupColorMenu from "./PopupColorMenu.svelte";
 
-  export let creatorTheme: Themes.Theme;
+  interface ColorPaletteProps {
+    creatorTheme?: Themes.Theme;
+  }
 
-  let key = "";
-  let color = "";
-  let isOpen = false;
-  let cornerX = 0;
-  let x = 0;
-  let y = 0;
+  let { creatorTheme = $bindable() }: ColorPaletteProps = $props();
+
+  let key = $state("");
+  let color = $state("");
+  let isOpen = $state(false);
+  let cornerX = $state(0);
+  let x = $state(0);
+  let y = $state(0);
 
   const paletteKeys = Object.keys(creatorTheme.palette);
 
-  function onMouseUpHandler(event: CustomEvent<SvelteEvents.InputColorClick>) {
-    if (event.detail.button === 2) {
-      const bounds = event.detail.input.getBoundingClientRect();
+  function onMouseUpHandler(event: { input: EventTarget | null; button: number; value: string; key: string }) {
+    if (event.button === 2) {
+      const bounds = (event.input as HTMLElement).getBoundingClientRect();
 
-      color = event.detail.value;
-      key = event.detail.key;
+      color = event.value;
+      key = event.key;
       isOpen = true;
       cornerX = bounds.x + bounds.width / 2;
       x = bounds.x - 68;
@@ -30,16 +34,16 @@
 </script>
 
 <div>
-  {#each paletteKeys as key (key)}
+  {#each paletteKeys as paletteKey (paletteKey)}
     <Flex>
       <InputColor
         size={24}
-        {key}
-        bind:value={creatorTheme.palette[key]}
-        on:mouseClick={onMouseUpHandler}
+        key={paletteKey}
+        bind:value={creatorTheme.palette[paletteKey]}
+        onColorClick={onMouseUpHandler}
       />
       <Flex width="10px" />
-      <Text>{PALETTE_TEXT[key]}</Text>
+      <Text>{PALETTE_TEXT[paletteKey]}</Text>
     </Flex>
     <Flex height="6px" />
   {/each}

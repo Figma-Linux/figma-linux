@@ -50,6 +50,11 @@ declare global {
 export function initIpc() {
   const api = window.panelAPI;
 
+  if (!api) {
+    console.error("panelAPI not available - preload script may not have loaded");
+    return;
+  }
+
   api.frontReady();
 
   api.onCloseAllTabs(() => {

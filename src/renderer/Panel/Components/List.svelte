@@ -6,9 +6,25 @@
   import { Spiner } from "Common";
   import { CHROME_GPU, NEW_FILE_TAB_TITLE } from "Const";
 
-  export let currentTabId: number | undefined;
-  export let items: Types.TabFront[] = [];
-  const loadingItems: Dict<boolean> = {};
+  interface ListProps {
+    currentTabId?: number;
+    items?: Types.TabFront[];
+    onClickTitle?: (event: MouseEvent, id: number) => void;
+    onClickClose?: (event: MouseEvent, id: number) => void;
+    onDndConsider?: (event: CustomEvent) => void;
+    onDndFinalize?: (event: CustomEvent) => void;
+  }
+
+  let {
+    currentTabId = undefined,
+    items = $bindable([]),
+    onClickTitle = () => {},
+    onClickClose = () => {},
+    onDndConsider = () => {},
+    onDndFinalize = () => {},
+  }: ListProps = $props();
+
+  let loadingItems = $state<Dict<boolean>>({});
   const flipDurationMs = 150;
   const constrainAxisY = true;
   const cursorStartDrag = "default";
@@ -18,21 +34,18 @@
   const normalBgColor = "transparent";
   const hoverBgColor = "transparent";
 
-  export let onClickTitle = (event: MouseEvent, id: number) => {};
-  export let onClickClose = (event: CustomEvent, id: number) => {};
-  export let onDndConsider = (event: any) => {};
-  export let onDndFinalize = (event: any) => {};
-
-  function onHover(e: CustomEvent<MouseEvent>, itemId: number) {
+  function onHover(e: MouseEvent, itemId: number) {
     loadingItems[itemId] = false;
   }
-  function onLeave(e: CustomEvent<MouseEvent>, itemId: number) {
+  function onLeave(e: MouseEvent, itemId: number) {
     loadingItems[itemId] = true;
   }
 
-  $: for (const item of items) {
-    loadingItems[item.id] = true;
-  }
+  $effect(() => {
+    for (const item of items) {
+      loadingItems[item.id] = true;
+    }
+  });
 </script>
 
 <section
@@ -45,8 +58,8 @@
     cursorDrop,
     cursorHover,
   }}
-  on:consider={onDndConsider}
-  on:finalize={onDndFinalize}
+  onconsider={onDndConsider}
+  onfinalize={onDndFinalize}
 >
   {#each items as item (item.id)}
     <div
@@ -54,7 +67,7 @@
       {currentTabId === item.id ? 'panel-tab__active' : ''}"
       animate:flip={{ duration: flipDurationMs }}
     >
-      <div class="text" on:mouseup={(e) => onClickTitle(e, item.id)}>
+      <div class="text" onmouseup={(e) => onClickTitle(e, item.id)}>
         <span>
           {item.title}
         </span>
@@ -74,9 +87,9 @@
         padding="0 7px"
         {normalBgColor}
         {hoverBgColor}
-        on:buttonClick={(e) => onClickClose(e, item.id)}
-        on:mouseenter={(e) => onHover(e, item.id)}
-        on:mouseleave={(e) => onLeave(e, item.id)}
+        onClick={() => onClickClose(new MouseEvent('click'), item.id)}
+        onmouseenter={(e) => onHover(e, item.id)}
+        onmouseleave={(e) => onLeave(e, item.id)}
       >
         {#if item.loading && loadingItems[item.id] && item.title !== CHROME_GPU && item.title !== NEW_FILE_TAB_TITLE}
           <Spiner spin={true}>
@@ -111,6 +124,8 @@
     color: var(--fg-tab);
     font-size: var(--text-size-tab);
     outline: none !important;
+    -webkit-app-region: no-drag;
+    cursor: pointer;
   }
   span {
     display: inline;

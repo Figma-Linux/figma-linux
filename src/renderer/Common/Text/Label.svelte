@@ -1,5 +1,12 @@
 <script lang="ts">
-  export let padding = "0 0 20px 0";
+  import type { Snippet } from "svelte";
+
+  interface LabelProps {
+    padding?: string;
+    children?: Snippet;
+  }
+
+  let { padding = "0 0 20px 0", children }: LabelProps = $props();
 </script>
 
 <span
@@ -7,7 +14,7 @@
     --padding: ${padding}
   `}
 >
-  <slot />
+  {@render children?.()}
 </span>
 
 <style>

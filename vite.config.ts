@@ -1,7 +1,6 @@
 import { defineConfig } from 'vite';
-import { svelte } from '@sveltejs/vite-plugin-svelte';
+import solid from 'vite-plugin-solid';
 import electron from 'vite-plugin-electron';
-import electronRenderer from 'vite-plugin-electron-renderer';
 import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { resolve } from 'path';
 
@@ -15,18 +14,14 @@ const alias = {
   Const: resolve(__dirname, 'src/constants'),
   Enums: resolve(__dirname, 'src/types/enums.ts'),
   Storage: resolve(__dirname, 'src/main/Storage.ts'),
-  Common: resolve(__dirname, 'src/renderer/Common'),
-  Containers: resolve(__dirname, 'src/renderer/Common/Containers'),
-  Icons: resolve(__dirname, 'src/renderer/Common/Icons'),
+  // New SolidJS paths
+  Shared: resolve(__dirname, 'src/renderer/shared'),
+  Features: resolve(__dirname, 'src/renderer/features'),
 };
 
 export default defineConfig({
   plugins: [
-    svelte({
-      compilerOptions: {
-        dev: !production,
-      },
-    }),
+    solid(),
     electron([
       // Main process
       {
@@ -39,8 +34,8 @@ export default defineConfig({
             sourcemap: !production,
             lib: {
               entry: resolve(__dirname, 'src/main/index.ts'),
-              formats: ['cjs'],
-              fileName: () => 'main.js',
+              formats: ['es'],
+              fileName: () => 'main.mjs',
             },
             rollupOptions: {
               external: ['electron', 'adm-zip', 'chokidar', 'fs', 'path', 'url', 'crypto', 'util', 'child_process', 'fs/promises', 'node:child_process'],
@@ -48,7 +43,7 @@ export default defineConfig({
           },
         },
       },
-      // Preload scripts
+      // Preload scripts - MUST be CommonJS for Electron
       {
         entry: resolve(__dirname, 'src/preload/panel.ts'),
         vite: {
@@ -57,13 +52,14 @@ export default defineConfig({
             outDir: 'dist/preload',
             minify: production,
             sourcemap: !production,
-            lib: {
-              entry: resolve(__dirname, 'src/preload/panel.ts'),
-              formats: ['cjs'],
-              fileName: () => 'panel.js',
-            },
             rollupOptions: {
+              input: resolve(__dirname, 'src/preload/panel.ts'),
               external: ['electron'],
+              output: {
+                format: 'cjs',
+                entryFileNames: 'panel.js',
+                interop: 'auto',
+              },
             },
           },
         },
@@ -76,13 +72,14 @@ export default defineConfig({
             outDir: 'dist/preload',
             minify: production,
             sourcemap: !production,
-            lib: {
-              entry: resolve(__dirname, 'src/preload/settings.ts'),
-              formats: ['cjs'],
-              fileName: () => 'settings.js',
-            },
             rollupOptions: {
-              external: ['electron'],
+              input: resolve(__dirname, 'src/preload/settings.ts'),
+              external: ['electron', 'path', 'url', 'fs'],
+              output: {
+                format: 'cjs',
+                entryFileNames: 'settings.js',
+                interop: 'auto',
+              },
             },
           },
         },
@@ -95,13 +92,14 @@ export default defineConfig({
             outDir: 'dist/preload',
             minify: production,
             sourcemap: !production,
-            lib: {
-              entry: resolve(__dirname, 'src/preload/tab.ts'),
-              formats: ['cjs'],
-              fileName: () => 'tab.js',
-            },
             rollupOptions: {
+              input: resolve(__dirname, 'src/preload/tab.ts'),
               external: ['electron'],
+              output: {
+                format: 'cjs',
+                entryFileNames: 'tab.js',
+                interop: 'auto',
+              },
             },
           },
         },
@@ -165,7 +163,6 @@ export default defineConfig({
         },
       },
     ]),
-    electronRenderer(),
     viteStaticCopy({
       targets: [
         { src: 'src/package.json', dest: '.' },
@@ -191,6 +188,11 @@ export default defineConfig({
     },
   ],
   resolve: { alias },
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+    },
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: false, // Don't clear dist since electron plugin writes there too

@@ -1,24 +1,42 @@
 <script lang="ts">
-  export let text: string;
+  interface TabViewHeaderItemProps {
+    text: string;
+    round?: number;
+    width?: string;
+    height?: string;
+    padding?: string;
+    normalFgColor?: string;
+    normalBgColor?: string;
+    activeFgColor?: string;
+    activeBgColor?: string;
+    hoverFgColor?: string;
+    hoverBgColor?: string;
+    isActive?: boolean;
+    onmousedown?: (event: MouseEvent) => void;
+    onmouseup?: (event: MouseEvent) => void;
+  }
 
-  export let round: number = 0;
-  export let width = "inherit";
-  export let height = "inherit";
-
-  export let padding = "inherit";
-  export let normalFgColor = "var(--text)";
-  export let normalBgColor = "transparent";
-  export let activeFgColor = "var(--text-active)";
-  export let activeBgColor = "transparent";
-  export let hoverFgColor = "var(--text-active)";
-  export let hoverBgColor = "transparent";
-
-  export let isActive = false;
+  let {
+    text,
+    round = 0,
+    width = "inherit",
+    height = "inherit",
+    padding = "inherit",
+    normalFgColor = "var(--text)",
+    normalBgColor = "transparent",
+    activeFgColor = "var(--text-active)",
+    activeBgColor = "transparent",
+    hoverFgColor = "var(--text-active)",
+    hoverBgColor = "transparent",
+    isActive = false,
+    onmousedown,
+    onmouseup,
+  }: TabViewHeaderItemProps = $props();
 </script>
 
 <span
-  on:mousedown|capture
-  on:mouseup|capture
+  onmousedown={onmousedown}
+  onmouseup={onmouseup}
   class={isActive ? "active" : ""}
   style={`
     --width: ${width};

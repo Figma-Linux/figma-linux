@@ -1,19 +1,34 @@
 <script lang="ts">
-  export let gap = "";
+  import type { Snippet } from "svelte";
 
-  export let width = "auto";
-  export let height = "auto";
-  export let padding = "inherit";
-  export let columns = "auto";
-  export let rows = "auto";
-  export let columnGap = "auto";
-  export let rowGap = "auto";
-  export let areas = "auto";
-
-  if (gap) {
-    rowGap = gap;
-    columnGap = gap;
+  interface GridProps {
+    gap?: string;
+    width?: string;
+    height?: string;
+    padding?: string;
+    columns?: string;
+    rows?: string;
+    columnGap?: string;
+    rowGap?: string;
+    areas?: string;
+    children?: Snippet;
   }
+
+  let {
+    gap = "",
+    width = "auto",
+    height = "auto",
+    padding = "inherit",
+    columns = "auto",
+    rows = "auto",
+    columnGap = "auto",
+    rowGap = "auto",
+    areas = "auto",
+    children,
+  }: GridProps = $props();
+
+  let effectiveColumnGap = $derived(gap ? gap : columnGap);
+  let effectiveRowGap = $derived(gap ? gap : rowGap);
 </script>
 
 <div
@@ -24,11 +39,11 @@
     --columns: ${columns};
     --rows: ${rows};
     --areas: ${areas};
-    --grid-column-gap: ${columnGap};
-    --grid-row-gap: ${rowGap};
+    --grid-column-gap: ${effectiveColumnGap};
+    --grid-row-gap: ${effectiveRowGap};
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>

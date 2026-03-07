@@ -1,14 +1,26 @@
 <script lang="ts">
+  import type { Snippet } from "svelte";
   import { onMount } from "svelte";
   import { tweened } from "svelte/motion";
   import { cubicOut } from "svelte/easing";
 
-  export let title: string;
-  export let isEmpty = false;
-  export let open = false;
-  export let duration = 400;
+  interface DropDownProps {
+    title: string;
+    isEmpty?: boolean;
+    open?: boolean;
+    duration?: number;
+    children?: Snippet;
+  }
 
-  let height = 0;
+  let {
+    title,
+    isEmpty = $bindable(false),
+    open = $bindable(false),
+    duration = 400,
+    children,
+  }: DropDownProps = $props();
+
+  let height = $state(0);
   let content: HTMLDivElement;
   const bodyHeight = tweened(0, {
     duration,
@@ -28,6 +40,7 @@
       bodyHeight.set(height);
     }
   }
+
   function onChange(event: Event) {
     const elem = event.target as HTMLInputElement;
 
@@ -42,12 +55,15 @@
 
   onMount(calcHeight);
 
-  window.addEventListener("resize", calcHeight);
+  $effect(() => {
+    window.addEventListener("resize", calcHeight);
+    return () => window.removeEventListener("resize", calcHeight);
+  });
 </script>
 
 <div>
   <label>
-    <input type="checkbox" bind:checked={open} on:change={onChange} on:focusin={onChange} />
+    <input type="checkbox" bind:checked={open} onchange={onChange} onfocusin={onChange} />
     <span>{title}</span>
   </label>
   <block
@@ -56,7 +72,7 @@
     `}
   >
     <blockContent bind:this={content}>
-      <slot />
+      {@render children?.()}
     </blockContent>
   </block>
 </div>

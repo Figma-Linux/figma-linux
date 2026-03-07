@@ -1,30 +1,51 @@
 <script lang="ts">
+  import { untrack } from "svelte";
   import { tabView } from "../Store/TabView";
 
-  export let items: Types.TabItem[] = [];
-  export let currentId = "";
-  export let initItemId: string | undefined = undefined;
-
-  export let padding = "inherit";
-  export let flexDirection = "row";
-  export let normalFgColor = "var(--fg-header)";
-  export let normalBgColor = "inherit";
-
-  export let onItemClick = (item: Types.TabItem) => {};
-
-  const id = items.map((i) => i.id).join(".");
-
-  if (initItemId) {
-    tabView.set(id, initItemId);
-    currentId = initItemId;
+  interface TabViewProps {
+    items?: Types.TabItem[];
+    currentId?: string;
+    initItemId?: string;
+    padding?: string;
+    flexDirection?: string;
+    normalFgColor?: string;
+    normalBgColor?: string;
+    onItemClick?: (item: Types.TabItem) => void;
+    onmousedown?: (event: MouseEvent) => void;
+    onmouseup?: (event: MouseEvent) => void;
   }
 
-  $: tabView.set(id, currentId);
+  let {
+    items = [],
+    currentId = $bindable(""),
+    initItemId = undefined,
+    padding = "inherit",
+    flexDirection = "row",
+    normalFgColor = "var(--fg-header)",
+    normalBgColor = "inherit",
+    onItemClick = () => {},
+    onmousedown,
+    onmouseup,
+  }: TabViewProps = $props();
+
+  const id = $derived(items.map((i) => i.id).join("."));
+
+  // Initialize once with initItemId if provided
+  untrack(() => {
+    if (initItemId) {
+      tabView.set(id, initItemId);
+      currentId = initItemId;
+    }
+  });
+
+  $effect(() => {
+    tabView.set(id, currentId);
+  });
 </script>
 
 <div
-  on:mousedown|capture
-  on:mouseup|capture
+  onmousedown={onmousedown}
+  onmouseup={onmouseup}
   style={`
     --padding: ${padding};
     --flex-direction: ${flexDirection};
@@ -33,12 +54,12 @@
   `}
 >
   {#each items as item (item.id)}
-    <svelte:component
-      this={item.item}
+    {@const ItemComponent = item.item}
+    <ItemComponent
       isActive={item.id === $tabView[id]}
       text={item.text}
       {...item.itemArgs}
-      on:mouseup={() => {
+      onmouseup={() => {
         currentId = item.id;
         tabView.set(id, item.id);
         onItemClick(item);

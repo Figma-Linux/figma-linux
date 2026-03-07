@@ -222,7 +222,9 @@ export default class MenuManager {
       enabled,
       visible,
       id,
-      click: (_, window) => app.emit(id, window.id),
+      click: (_, window) => {
+        app.emit(id, window?.id);
+      },
     };
 
     if (accelerator) {

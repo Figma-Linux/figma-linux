@@ -1,0 +1,11 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  border: var(--border);
+  border-radius: var(--bradius);
+  padding: var(--padding);
+  width: var(--width);
+  height: var(--height);
+  overflow-x: auto;
+  overflow-y: auto;
+}

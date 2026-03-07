@@ -1,4 +1,4 @@
-import { LOGLEVEL } from "Const";
+import { LOGLEVEL } from "Const/main";
 import { LogLevel } from "Types/enums";
 import { storage } from "../Storage";
 

@@ -7,11 +7,11 @@ import { logger } from "../Logger";
 
 import {
   HOMEPAGE,
-  WINDOW_DEFAULT_OPTIONS,
   TOPPANELHEIGHT,
   NEW_PROJECT_TAB_URL,
   NEW_FILE_TAB_TITLE,
 } from "Const";
+import { WINDOW_DEFAULT_OPTIONS } from "Const/window";
 import { isDev, isCommunityUrl, isAppAuthRedeem, normalizeUrl, parseURL } from "Utils/Common";
 import {
   panelUrlDev,
@@ -48,7 +48,6 @@ export default class Window {
     this.registerEvents();
 
     this.window.loadURL(isDev ? panelUrlDev : panelUrlProd);
-    isDev && toggleDetachedDevTools(this.window.webContents);
     this.applyState();
   }
 
@@ -164,8 +163,8 @@ export default class Window {
     this.setFocusToMainTab();
   }
   public handlePluginManageAction(type: string) {
-    this.tabManager.mainTab.view.webContents.send("handlePluginMenuAction", { type });
-    this.setFocusToMainTab();
+    // Send to the active tab instead of always mainTab
+    this.tabManager.handlePluginMenuAction({ type });
   }
   public handlePluginMenuAction(pluginMenuAction: Menu.MenuAction) {
     this.tabManager.handlePluginMenuAction(pluginMenuAction);
@@ -316,8 +315,7 @@ export default class Window {
     this.settingsView.updateProps(bounds);
 
     this.window.addBrowserView(this.settingsView.view);
-
-    isDev && toggleDetachedDevTools(this.settingsView.view.webContents);
+    this.window.setTopBrowserView(this.settingsView.view);
 
     setTimeout(() => {
       this.settingsView.updateProps(bounds);
@@ -399,6 +397,9 @@ export default class Window {
     }
   }
   private webContentDidFinishLoad() {
+    // DEBUG: Auto-open devtools to debug panel issues
+    this.window.webContents.openDevTools({ mode: 'detach' });
+
     if (this.state.hasOpenedCommunityTab) {
       this.openCommunity({
         path: "/@figma_linux",
@@ -609,6 +610,8 @@ export default class Window {
   public handleFrontReady() {
     this.window.webContents.send("loadSettings", storage.settings);
     this.showHandler(null);
+    // Request theme reload so panel gets the current theme
+    app.emit("reloadCurrentTheme");
   }
 
   public close() {

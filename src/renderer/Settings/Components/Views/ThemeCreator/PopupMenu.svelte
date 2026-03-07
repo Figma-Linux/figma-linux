@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { untrack } from "svelte";
+  import type { Snippet } from "svelte";
   import { Popup, ListBox } from "Common";
   import { Download, Plus, Reset, Save2 } from "Common/Icons";
   import { validateThemeName, validateThemeAuthor } from "../../../validators";
@@ -6,11 +8,17 @@
 
   import MenuItem from "./MenuItem.svelte";
 
+  interface PopupMenuProps {
+    children?: Snippet;
+  }
+
+  let { children }: PopupMenuProps = $props();
+
   const api = window.settingsAPI;
 
-  let isOpen = false;
+  let isOpen = $state(false);
 
-  let items: Types.ThemeCreatorPopupMenuItem[] = [
+  let items = $state<Types.ThemeCreatorPopupMenuItem[]>([
     {
       id: "reset",
       text: "Reset",
@@ -57,22 +65,26 @@
       handler: onExport,
       item: MenuItem,
     },
-  ];
+  ]);
 
-  $: {
-    items = items.map((item) => {
-      if (item.id === "save") {
-        item.disabled = $creatorTheme.state !== "edit";
-      }
-      return item;
+  $effect(() => {
+    // Read the reactive values we want to track
+    const state = $creatorTheme.state;
+    const loadedTemplateId = $creatorTheme.loadedTemplateId;
+
+    // Use untrack to prevent reading items from triggering the effect again
+    untrack(() => {
+      items = items.map((item) => {
+        if (item.id === "save") {
+          item.disabled = state !== "edit";
+        }
+        if (item.id === "resetTmp") {
+          item.disabled = loadedTemplateId === "";
+        }
+        return item;
+      });
     });
-    items = items.map((item) => {
-      if (item.id === "resetTmp") {
-        item.disabled = $creatorTheme.loadedTemplateId === "";
-      }
-      return item;
-    });
-  }
+  });
 
   function onItemClick(item: Types.ThemeCreatorPopupMenuItem) {
     item.handler();
@@ -118,9 +130,13 @@
 </script>
 
 <Popup bind:isOpen bradius="3px">
-  <slot slot="popupButton" />
+  {#snippet popupButton()}
+    {@render children?.()}
+  {/snippet}
 
-  <ListBox bind:items slot="popupBody" border="0" padding="0" bradius="0" {onItemClick} />
+  {#snippet popupBody()}
+    <ListBox {items} border="0" padding="0" bradius="0" {onItemClick} />
+  {/snippet}
 </Popup>
 
 <style>

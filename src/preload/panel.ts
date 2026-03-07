@@ -1,8 +1,10 @@
 /**
  * Secure preload script for the main panel with contextBridge
  * This handles the tab bar and window controls
+ *
+ * NOTE: Uses CommonJS require() because Electron preload scripts must be CommonJS
  */
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+const { contextBridge, ipcRenderer } = require('electron');
 
 interface PanelAPI {
   // Send handlers
@@ -65,52 +67,52 @@ const panelAPI: PanelAPI = {
     return () => ipcRenderer.removeListener('closeAllTabs', handler);
   },
   onDidTabAdd: (callback) => {
-    const handler = (_: IpcRendererEvent, data: any) => callback(data);
+    const handler = (_: any, data: any) => callback(data);
     ipcRenderer.on('didTabAdd', handler);
     return () => ipcRenderer.removeListener('didTabAdd', handler);
   },
   onSetTitle: (callback) => {
-    const handler = (_: IpcRendererEvent, data: { id: number; title: string }) => callback(data);
+    const handler = (_: any, data: { id: number; title: string }) => callback(data);
     ipcRenderer.on('setTitle', handler);
     return () => ipcRenderer.removeListener('setTitle', handler);
   },
   onTabWasClosed: (callback) => {
-    const handler = (_: IpcRendererEvent, tabId: number) => callback(tabId);
+    const handler = (_: any, tabId: number) => callback(tabId);
     ipcRenderer.on('tabWasClosed', handler);
     return () => ipcRenderer.removeListener('tabWasClosed', handler);
   },
   onFocusTab: (callback) => {
-    const handler = (_: IpcRendererEvent, tabId: number) => callback(tabId);
+    const handler = (_: any, tabId: number) => callback(tabId);
     ipcRenderer.on('focusTab', handler);
     return () => ipcRenderer.removeListener('focusTab', handler);
   },
   onNewFileBtnVisible: (callback) => {
-    const handler = (_: IpcRendererEvent, visible: boolean) => callback(visible);
+    const handler = (_: any, visible: boolean) => callback(visible);
     ipcRenderer.on('newFileBtnVisible', handler);
     return () => ipcRenderer.removeListener('newFileBtnVisible', handler);
   },
   onSetUsingMicrophone: (callback) => {
-    const handler = (_: IpcRendererEvent, data: { id: number; isUsingMicrophone: boolean }) => callback(data);
+    const handler = (_: any, data: { id: number; isUsingMicrophone: boolean }) => callback(data);
     ipcRenderer.on('setUsingMicrophone', handler);
     return () => ipcRenderer.removeListener('setUsingMicrophone', handler);
   },
   onSetIsInVoiceCall: (callback) => {
-    const handler = (_: IpcRendererEvent, data: { id: number; isInVoiceCall: boolean }) => callback(data);
+    const handler = (_: any, data: { id: number; isInVoiceCall: boolean }) => callback(data);
     ipcRenderer.on('setIsInVoiceCall', handler);
     return () => ipcRenderer.removeListener('setIsInVoiceCall', handler);
   },
   onIsMainMenuOpen: (callback) => {
-    const handler = (_: IpcRendererEvent, isOpen: boolean) => callback(isOpen);
+    const handler = (_: any, isOpen: boolean) => callback(isOpen);
     ipcRenderer.on('isMainMenuOpen', handler);
     return () => ipcRenderer.removeListener('isMainMenuOpen', handler);
   },
   onSetPanelScale: (callback) => {
-    const handler = (_: IpcRendererEvent, scale: number) => callback(scale);
+    const handler = (_: any, scale: number) => callback(scale);
     ipcRenderer.on('setPanelScale', handler);
     return () => ipcRenderer.removeListener('setPanelScale', handler);
   },
   onLoadSettings: (callback) => {
-    const handler = (_: IpcRendererEvent, settings: any) => callback(settings);
+    const handler = (_: any, settings: any) => callback(settings);
     ipcRenderer.on('loadSettings', handler);
     return () => ipcRenderer.removeListener('loadSettings', handler);
   },
@@ -125,12 +127,12 @@ const panelAPI: PanelAPI = {
     return () => ipcRenderer.removeListener('communityTabWasClose', handler);
   },
   onSetLoading: (callback) => {
-    const handler = (_: IpcRendererEvent, tabId: number, loading: boolean) => callback(tabId, loading);
+    const handler = (_: any, tabId: number, loading: boolean) => callback(tabId, loading);
     ipcRenderer.on('setLoading', handler);
     return () => ipcRenderer.removeListener('setLoading', handler);
   },
   onLoadCurrentTheme: (callback) => {
-    const handler = (_: IpcRendererEvent, theme: any) => callback(theme);
+    const handler = (_: any, theme: any) => callback(theme);
     ipcRenderer.on('loadCurrentTheme', handler);
     return () => ipcRenderer.removeListener('loadCurrentTheme', handler);
   },

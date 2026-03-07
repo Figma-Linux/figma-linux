@@ -1,14 +1,25 @@
 <script lang="ts">
-  export let items: Types.TabItem[] = [];
+  interface ListProps {
+    items?: Types.TabItem[];
+    width?: string;
+    height?: string;
+    border?: string;
+    padding?: string;
+    bradius?: string;
+    onItemClick?: (item: Types.TabItem) => void;
+    onItemRemoveClick?: (item: Types.TabItem) => void;
+  }
 
-  export let width = "auto";
-  export let height = "auto";
-  export let border = "1px solid var(--borders)";
-  export let padding = "8px 8px 8px 16px";
-  export let bradius = "3px";
-
-  export let onItemClick = (item: Types.TabItem) => {};
-  export let onItemRemoveClick = (item: Types.TabItem) => {};
+  let {
+    items = [],
+    width = "auto",
+    height = "auto",
+    border = "1px solid var(--borders)",
+    padding = "8px 8px 8px 16px",
+    bradius = "3px",
+    onItemClick = () => {},
+    onItemRemoveClick = () => {},
+  }: ListProps = $props();
 </script>
 
 <div
@@ -21,11 +32,11 @@
 `}
 >
   {#each items as item (item.id)}
-    <svelte:component
-      this={item.item}
+    {@const ItemComponent = item.item}
+    <ItemComponent
       text={item.text}
       {...item.itemArgs}
-      bind:disabled={item.disabled}
+      disabled={item.disabled ?? false}
       onItemRemoveClick={() => {
         onItemRemoveClick(item);
       }}

@@ -1,32 +1,33 @@
 <script lang="ts">
   import { Text, Flex, Button } from "Common";
 
-  export let text: string;
-  export let disabled: boolean | undefined;
-  export let Icon: ConstructorOfATypedSvelteComponent | undefined = undefined;
-
-  export let onItemClick = () => {};
-  export let onItemRemoveClick = () => {};
-
-  let color = "var(--fg-overlay)";
-
-  $: {
-    color = "var(--fg-overlay)";
-
-    if (typeof disabled === "boolean" && disabled) {
-      color = "var(--text-disabled)";
-    }
+  interface MenuItemProps {
+    text: string;
+    disabled?: boolean;
+    Icon?: ConstructorOfATypedSvelteComponent;
+    onItemClick?: () => void;
+    onItemRemoveClick?: () => void;
   }
+
+  let {
+    text,
+    disabled = false,
+    Icon = undefined,
+    onItemClick = () => {},
+    onItemRemoveClick = () => {},
+  }: MenuItemProps = $props();
+
+  let color = $derived(disabled ? "var(--text-disabled)" : "var(--fg-overlay)");
 </script>
 
-<Button bind:disabled disabledBgColor="transparent" on:buttonClick={onItemClick}>
+<Button {disabled} disabledBgColor="transparent" onClick={onItemClick}>
   <Flex alignItems="center" padding="6px 0" width="100%">
     <Flex width="14px" />
     {#if Icon}
-      <Icon bind:color />
+      <Icon {color} />
       <Flex width="8px" />
     {/if}
-    <Text size="var(--text-size-popup)" bind:color bind:disabled>{text}</Text>
+    <Text size="var(--text-size-popup)" {color} {disabled}>{text}</Text>
     <Flex width="20px" />
   </Flex>
 </Button>

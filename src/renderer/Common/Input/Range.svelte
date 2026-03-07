@@ -1,14 +1,27 @@
 <script lang="ts">
-  export let value: number;
+  interface RangeProps {
+    value?: number;
+    readonly?: boolean;
+    max?: number;
+    min?: number;
+    step?: number;
+    width?: string;
+    thumbSize?: string;
+    trackSize?: string;
+    onchange?: (event: Event) => void;
+  }
 
-  export let readonly = false;
-  export let max = 0;
-  export let min = 100;
-  export let step = 1;
-
-  export let width = "auto";
-  export let thumbSize = "16px";
-  export let trackSize = "2px";
+  let {
+    value = $bindable(0),
+    readonly = false,
+    max = 100,
+    min = 0,
+    step = 1,
+    width = "auto",
+    thumbSize = "16px",
+    trackSize = "2px",
+    onchange,
+  }: RangeProps = $props();
 </script>
 
 <input
@@ -23,7 +36,7 @@
   {max}
   {step}
   bind:value
-  on:change
+  onchange={onchange}
 />
 
 <style>

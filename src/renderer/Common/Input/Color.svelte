@@ -1,22 +1,36 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
-
-  const dispatch = createEventDispatcher();
-
-  export let size: number | undefined = undefined;
-  export let value: string;
-
-  export let key = "";
-  export let width = "auto";
-  export let height = "auto";
-
-  if (size) {
-    width = `${size}px`;
-    height = `${size}px`;
+  interface ColorClickEvent {
+    input: EventTarget | null;
+    button: number;
+    value: string;
+    key: string;
   }
 
+  interface ColorProps {
+    size?: number;
+    value?: string;
+    key?: string;
+    width?: string;
+    height?: string;
+    onchange?: (event: Event) => void;
+    onColorClick?: (event: ColorClickEvent) => void;
+  }
+
+  let {
+    size = undefined,
+    value = $bindable("#000000"),
+    key = "",
+    width = "auto",
+    height = "auto",
+    onchange,
+    onColorClick,
+  }: ColorProps = $props();
+
+  let effectiveWidth = $derived(size ? `${size}px` : width);
+  let effectiveHeight = $derived(size ? `${size}px` : height);
+
   function onMouseDownHandler(event: MouseEvent) {
-    dispatch("mouseClick", { input: event.target, button: event.button, value, key });
+    onColorClick?.({ input: event.target, button: event.button, value, key });
   }
 </script>
 
@@ -24,11 +38,11 @@
   bind:value
   type="color"
   style={`
-    --inputWidth: ${width};
-    --inputHeight: ${height};
+    --inputWidth: ${effectiveWidth};
+    --inputHeight: ${effectiveHeight};
   `}
-  on:change
-  on:mousedown={onMouseDownHandler}
+  onchange={onchange}
+  onmousedown={onMouseDownHandler}
 />
 
 <style>

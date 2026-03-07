@@ -1,0 +1,11 @@
+.grid {
+  display: grid;
+  grid-template-columns: var(--columns);
+  grid-template-rows: var(--rows);
+  grid-template-areas: var(--areas);
+  grid-column-gap: var(--grid-column-gap);
+  grid-row-gap: var(--grid-row-gap);
+  width: var(--width);
+  height: var(--height);
+  padding: var(--padding);
+}

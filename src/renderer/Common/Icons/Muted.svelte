@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let color = "var(--fg-header)";
+  let { color = "var(--fg-header)" } = $props();
 </script>
 
 <svg width="9" height="11" viewBox="0 0 9 10" fill="none" xmlns="http://www.w3.org/2000/svg">

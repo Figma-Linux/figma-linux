@@ -10,7 +10,18 @@ import {
 declare global {
   interface Window {
     settingsAPI: {
+      // Invoke handlers
       getSettings: () => Promise<any>;
+      selectExportDirectory: () => Promise<string | null>;
+      updatePanelScale: (scale: number) => Promise<void>;
+      updateFigmaUiScale: (scale: number) => Promise<void>;
+      getThemePreviewPreloadPath: () => Promise<string>;
+
+      // Clipboard
+      clipboardWriteText: (text: string) => void;
+      clipboardReadText: () => string;
+
+      // Send handlers
       frontReady: () => void;
       changeTheme: (theme: any) => void;
       syncThemes: () => void;
@@ -18,8 +29,10 @@ declare global {
       themeCreatorAddTheme: (theme: any) => void;
       themeCreatorRemoveTheme: (themeId: string) => void;
       themeCreatorExportTheme: (themeId: string) => void;
-      closeSettingsView: () => void;
+      closeSettingsView: (settings: any) => void;
       setUseZenity: (value: boolean) => void;
+
+      // Event listeners with cleanup
       onThemesLoaded: (callback: (themes: any[]) => void) => () => void;
       onLoadCreatorThemes: (callback: (themes: any[]) => void) => () => void;
       onToggleThemeCreatorPreviewMask: (callback: () => void) => () => void;
@@ -31,6 +44,11 @@ declare global {
 
 export async function initIpc() {
   const api = window.settingsAPI;
+
+  if (!api) {
+    console.error("[Settings IPC] settingsAPI not available - preload script may not have loaded");
+    return;
+  }
 
   api.onThemesLoaded((themes: Themes.Theme[]) => {
     themesStore.set(themes);
@@ -46,8 +64,12 @@ export async function initIpc() {
   });
 
   // Get settings asynchronously
-  const settings = await api.getSettings();
-  settingsStore.set(settings);
+  try {
+    const settings = await api.getSettings();
+    settingsStore.set(settings);
+  } catch (error) {
+    console.error("[Settings IPC] Failed to get settings:", error);
+  }
 
   api.frontReady();
 }

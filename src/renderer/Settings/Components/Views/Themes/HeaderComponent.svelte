@@ -5,7 +5,7 @@
 
   const api = window.settingsAPI;
 
-  function onThemeSync(event: CustomEvent) {
+  function onThemeSync() {
     api.syncThemes();
     themesLoaded.set(false);
   }
@@ -13,7 +13,7 @@
 
 <Flex>
   <Button
-    on:buttonClick={onThemeSync}
+    onClick={onThemeSync}
     size={32}
     round={3}
     margin={"0 4px 0 0"}

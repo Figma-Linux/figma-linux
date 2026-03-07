@@ -1,7 +1,7 @@
 import type { IpcRendererEvent } from "electron";
 import * as E from "electron";
 
-import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render";
+import { sendMsgToMain, registerCallbackWithMainProcess } from "Utils/Render/webBindingsHelpers";
 import { themes } from "./ThemesApplier";
 import { isPrototypeUrl, isValidFigjamLink, isValidProjectLink } from "Utils/Common";
 
@@ -13,8 +13,30 @@ interface IntiApiOptions {
 
 const API_VERSION = 111;
 const APP_VERSION = '999.0.0';
-let webPort: MessagePort;
+let webPort: MessagePort | null = null;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
+const pendingMessages: Array<{ name: string; args: any }> = [];
+
+// Safe wrapper to post messages - queues if webPort isn't ready
+function safePostMessage(name: string, args: any) {
+  if (webPort) {
+    webPort.postMessage({ name, args });
+  } else {
+    console.warn("[webBinding] webPort not ready, queuing message:", name);
+    pendingMessages.push({ name, args });
+  }
+}
+
+// Flush queued messages when webPort becomes available
+function flushPendingMessages() {
+  if (!webPort) return;
+  while (pendingMessages.length > 0) {
+    const msg = pendingMessages.shift();
+    if (msg) {
+      webPort.postMessage({ name: msg.name, args: msg.args });
+    }
+  }
+}
 
 const onWebMessage = (event: MessageEvent) => {
   const msg = event.data;
@@ -141,36 +163,30 @@ const initWebApi = (props: IntiApiOptions) => {
 
 const initWebBindings = (): void => {
   E.ipcRenderer.on("newFile", () => {
-    webPort.postMessage({ name: "newFile", args: {} });
+    safePostMessage("newFile", {});
   });
   E.ipcRenderer.on("handleAction", (_: IpcRendererEvent, action: string, source: string) => {
-    webPort.postMessage({ name: "handleAction", args: { action, source } });
+    safePostMessage("handleAction", { action, source });
   });
   E.ipcRenderer.on("handleUrl", (_: IpcRendererEvent, path: string, params: string) => {
-    webPort.postMessage({ name: "handleUrl", args: { path, params } });
+    safePostMessage("handleUrl", { path, params });
   });
   E.ipcRenderer.on("handleSetFullScreen", (event: IpcRendererEvent, fullscreen: boolean) => {
-    webPort.postMessage({ name: "handleSetFullScreen", args: { fullscreen } });
+    safePostMessage("handleSetFullScreen", { fullscreen });
   });
   E.ipcRenderer.on("showFlashMessage", (event: IpcRendererEvent, flashErrorMessage: string) => {
-    webPort.postMessage({
-      name: "showFlashMessage",
-      args: { flashErrorMessage },
-    });
+    safePostMessage("showFlashMessage", { flashErrorMessage });
   });
   E.ipcRenderer.on("handlePageCommand", (_: IpcRendererEvent, command: string) => {
-    webPort.postMessage({
-      name: "handlePageCommand",
-      args: { pageCommand: command, source: "os-menu" },
-    });
+    safePostMessage("handlePageCommand", { pageCommand: command, source: "os-menu" });
   });
 
   E.ipcRenderer.on("redeemAppAuth", (event: IpcRendererEvent, gSecret: string) => {
-    webPort.postMessage({ name: "redeemAppAuth", args: { gSecret } });
+    safePostMessage("redeemAppAuth", { gSecret });
   });
 
   E.ipcRenderer.on("handlePluginMenuAction", (event: IpcRendererEvent, pluginMenuAction: any) => {
-    webPort.postMessage({ name: "handlePluginMenuAction", args: { pluginMenuAction } });
+    safePostMessage("handlePluginMenuAction", { pluginMenuAction });
   });
 };
 
@@ -484,6 +500,8 @@ const init = (fileBrowser: boolean): void => {
 
       webPort = event.ports[0];
       webPort.onmessage = onWebMessage;
+      // Flush any messages that were queued before webPort was ready
+      flushPendingMessages();
     },
     { once: true },
   );

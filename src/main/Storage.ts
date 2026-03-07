@@ -80,9 +80,17 @@ export class Storage {
     return this.settings;
   }
 
+  public getThemePreviewPreloadPath() {
+    // Compute the path to themePreviewPreload.js from the main process
+    // Return just the file path, not a file:// URL - webview preload only accepts file paths
+    const preloadPath = path.resolve(import.meta.dirname, '..', 'renderer', 'themePreviewPreload.js');
+    return preloadPath;
+  }
+
   private registerEvents() {
     ipcMain.on("setFeatureFlags", this.setFeatureFlags.bind(this));
     ipcMain.handle("getSettings", this.getSettings.bind(this));
+    ipcMain.handle("getThemePreviewPreloadPath", this.getThemePreviewPreloadPath.bind(this));
   }
 }
 

@@ -20,16 +20,16 @@
 </script>
 
 <div class="panel-right">
-  <ButtonWindow isActive={$isMenuOpen} on:buttonClick={clickMenu}>
+  <ButtonWindow isActive={$isMenuOpen} onClick={clickMenu}>
     <Corner size="14" />
   </ButtonWindow>
-  <ButtonWindow on:buttonClick={() => api.windowMinimize()}>
+  <ButtonWindow onClick={() => api.windowMinimize()}>
     <Minimize size="16" />
   </ButtonWindow>
-  <ButtonWindow on:buttonClick={() => api.windowMaximize()}>
+  <ButtonWindow onClick={() => api.windowMaximize()}>
     <Maximize size="16" />
   </ButtonWindow>
-  <ButtonWindow hoverBgColor={"var(--bg-window-close)"} on:buttonClick={closeHandler}>
+  <ButtonWindow hoverBgColor={"var(--bg-window-close)"} onClick={closeHandler}>
     <Close size="16" />
   </ButtonWindow>
 </div>

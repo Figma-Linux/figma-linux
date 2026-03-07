@@ -1,16 +1,37 @@
 <script lang="ts">
-  export let width = "auto";
-  export let height = "auto";
-  export let padding = "8px 0";
-  export let margin = "0";
-  export let border = "0";
-  export let bradius = "2px";
-  export let bgColor = "var(--bg-overlay)";
+  import type { Snippet } from "svelte";
 
-  export let isOpen = false;
-  export let x = 0;
-  export let y = 0;
-  export let cornerX = 0;
+  interface PopupProps {
+    width?: string;
+    height?: string;
+    padding?: string;
+    margin?: string;
+    border?: string;
+    bradius?: string;
+    bgColor?: string;
+    isOpen?: boolean;
+    x?: number;
+    y?: number;
+    cornerX?: number;
+    popupButton?: Snippet;
+    popupBody?: Snippet;
+  }
+
+  let {
+    width = "auto",
+    height = "auto",
+    padding = "8px 0",
+    margin = "0",
+    border = "0",
+    bradius = "2px",
+    bgColor = "var(--bg-overlay)",
+    isOpen = $bindable(false),
+    x = $bindable(0),
+    y = $bindable(0),
+    cornerX = $bindable(0),
+    popupButton,
+    popupBody: popupBodySnippet,
+  }: PopupProps = $props();
 
   let corner: HTMLDivElement;
   let button: HTMLDivElement;
@@ -66,12 +87,12 @@
     top: ${y}px;
   `}
   bind:this={corner}
-/>
+></corner>
 <div use:clickInside bind:this={button}>
-  <slot name="popupButton" />
+  {@render popupButton?.()}
 </div>
 
-<popupBody
+<popupBodyElem
   use:clickOutside
   bind:this={popupBody}
   style={`
@@ -89,11 +110,11 @@
     --bgColor: ${bgColor};
   `}
 >
-  <slot name="popupBody" />
-</popupBody>
+  {@render popupBodySnippet?.()}
+</popupBodyElem>
 
 <style>
-  popupBody {
+  popupBodyElem {
     display: block;
     position: fixed;
     z-index: 9998;

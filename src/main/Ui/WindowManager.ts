@@ -14,7 +14,9 @@ import Window from "./Window";
 import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
 import { dialogs } from "Main/Dialogs";
-import { CHROME_GPU, DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
+import { logger } from "Main/Logger";
+import { CHROME_GPU, HOMEPAGE, NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
+import { DEFAULT_WIN_OPTIONS } from "Const/window";
 import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
 import { mkPath } from "Utils/Main";
 
@@ -144,7 +146,9 @@ export default class WindowManager {
   public focusLastWindow() {
     const window = this.windows.get(this.lastFocusedwindowId);
 
-    window.focus();
+    if (window) {
+      window.focus();
+    }
   }
   public saveState() {
     storage.settings.app.windowsState = {};
@@ -376,7 +380,9 @@ export default class WindowManager {
   }
   private newProject(_: IpcMainEvent) {
     const window = this.windows.get(this.lastFocusedwindowId);
-
+    if (!window) {
+      return;
+    }
     window.newProject();
   }
   private async createFile(_: IpcMainEvent, args: WebApi.CreateFile) {
@@ -522,12 +528,18 @@ export default class WindowManager {
   }
   private handlePluginManageAction() {
     const window = this.windows.get(this.lastFocusedwindowId);
-
+    if (!window) {
+      console.error("[WindowManager] handlePluginManageAction: No window found");
+      return;
+    }
     window.handlePluginManageAction("manage");
   }
   private handleWidgetManageAction() {
     const window = this.windows.get(this.lastFocusedwindowId);
-
+    if (!window) {
+      console.error("[WindowManager] handleWidgetManageAction: No window found");
+      return;
+    }
     window.handlePluginManageAction("manage-widgets");
   }
   private handlePluginMenuAction(windowId: number, pluginMenuAction: Menu.MenuAction) {
@@ -611,6 +623,9 @@ export default class WindowManager {
   }
   private openMainMenuHandler(event: IpcMainEvent) {
     const window = this.getWindowByWebContentsId(event.sender.id);
+    if (!window) {
+      return;
+    }
     const width = window.getBounds().width;
 
     this.menuManager.openMainMenuHandler(
@@ -621,6 +636,10 @@ export default class WindowManager {
   }
   private openSettingsView() {
     const window = this.windows.get(this.lastFocusedwindowId);
+
+    if (!window) {
+      return;
+    }
 
     window.openSettingsView();
   }

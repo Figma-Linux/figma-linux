@@ -1,0 +1,55 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--normal-bg-color);
+  color: var(--normal-fg-color);
+  border: var(--normal-border);
+  cursor: var(--normal-cursor);
+  border-radius: var(--border-radius);
+  width: var(--width);
+  height: var(--height);
+  padding: var(--padding);
+  margin: var(--margin);
+  transition: all 0.08s ease;
+  user-select: none;
+  -webkit-app-region: no-drag;
+}
+
+.button:hover {
+  border: var(--hover-border);
+  cursor: var(--hover-cursor);
+  color: var(--hover-fg-color);
+  background-color: var(--hover-bg-color);
+}
+
+.button:active {
+  border: var(--active-border);
+  cursor: var(--active-cursor);
+  color: var(--active-fg-color);
+  background-color: var(--active-bg-color);
+}
+
+.active {
+  border: var(--active-border);
+  cursor: var(--active-cursor);
+  color: var(--active-fg-color);
+  background-color: var(--active-bg-color);
+}
+
+.active:hover {
+  border: var(--active-border);
+  cursor: var(--active-cursor);
+  color: var(--active-fg-color);
+  background-color: var(--active-bg-color);
+}
+
+.disabled {
+  user-select: none;
+  background-color: var(--disabled-bg-color);
+}
+
+.disabled:hover {
+  user-select: none;
+  background-color: var(--disabled-bg-color);
+}

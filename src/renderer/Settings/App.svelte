@@ -9,26 +9,39 @@
 
   const api = window.settingsAPI;
 
-  initCommonIpc();
-  initIpc();
+  let loadError = $state<string | null>(null);
+  let isLoaded = $state(false);
 
-  let pallet: string[] = [];
+  try {
+    initCommonIpc();
+    initIpc();
+    isLoaded = true;
+  } catch (e) {
+    loadError = String(e);
+  }
 
-  themeApp.subscribe((theme) => {
-    if (!theme) {
-      return;
-    }
-    pallet = getColorPallet(theme);
-  });
+  // Use $derived with store auto-subscription ($themeApp)
+  let pallet = $derived($themeApp ? getColorPallet($themeApp) : []);
 
-  function onCloseModalHandler(event: SvelteEvents.Empty) {
+  function onCloseModalHandler(event: MouseEvent | CustomEvent) {
     settings.trim();
-    api.closeSettingsView();
+    // Get current settings value from the store and pass to main process
+    let currentSettings: any;
+    settings.subscribe(s => currentSettings = s)();
+    api.closeSettingsView(currentSettings);
   }
 </script>
 
-<div on:mousedown|self={onCloseModalHandler} id="settings" style={pallet.join("; ")}>
-  <Body on:closeSettings={onCloseModalHandler} />
+<div onmousedown={(e) => e.target === e.currentTarget && onCloseModalHandler(e)} id="settings" style={pallet.join("; ")}>
+  {#if loadError}
+    <div class="error-box">
+      <h2>Settings Load Error</h2>
+      <p>{loadError}</p>
+      <button onclick={onCloseModalHandler}>Close</button>
+    </div>
+  {:else}
+    <Body oncloseSettings={onCloseModalHandler} />
+  {/if}
 </div>
 
 <style>
@@ -42,5 +55,16 @@
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+  }
+  .error-box {
+    background: #333;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    cursor: pointer;
   }
 </style>

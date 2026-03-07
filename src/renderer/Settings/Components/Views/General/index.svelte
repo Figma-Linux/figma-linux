@@ -11,30 +11,29 @@
 
   const api = window.settingsAPI;
 
-  export let zIndex: number;
+  interface GeneralProps {
+    zIndex: number;
+    onsetSettingsTabViewIndex?: (detail: { index: number }) => void;
+  }
 
-  // Generate unique IDs for items
-  let itemIdCounter = 0;
-  const generateId = () => `item-${itemIdCounter++}`;
+  let { zIndex, onsetSettingsTabViewIndex }: GeneralProps = $props();
 
-  let items: Types.TabItem[] = [];
-  $: items = $settings.app.fontDirs.map((dir) => ({
+  let items = $derived($settings.app.fontDirs.map((dir) => ({
     id: dir,
     text: dir,
     item: DirectoryListItem,
-  }));
+  })));
 
-  let switchItems: Types.TabItem[] = [];
-  $: switchItems = $settings.app.commandSwitches.map((item) => ({
-    id: generateId(),
+  let switchItems = $derived($settings.app.commandSwitches.map((item, index) => ({
+    id: `switch-${index}`,
     text: item.switch,
     itemArgs: {
       item,
     },
     item: SwitchListItem,
-  }));
+  })));
 
-  async function onChangeExportPath(event: CustomEvent) {
+  async function onChangeExportPath() {
     const directory = await api.selectExportDirectory();
 
     if (!directory) {
@@ -59,7 +58,7 @@
       return result;
     }, []);
   }
-  async function onAddDirectory(event: CustomEvent) {
+  async function onAddDirectory() {
     const directory = await api.selectExportDirectory();
 
     if (!directory) {
@@ -69,31 +68,30 @@
     $settings.app.fontDirs.push(directory);
     $settings.app.fontDirs = $settings.app.fontDirs;
   }
-  async function onAddSwicth(event: CustomEvent) {
+  async function onAddSwicth() {
     $settings.app.commandSwitches.push({
       switch: "",
+      value: "",
     });
     $settings.app.commandSwitches = $settings.app.commandSwitches;
   }
-  function onClearList(event: CustomEvent) {
+  function onClearList() {
     $settings.app.fontDirs = [];
   }
-  function onClearSwicthList(event: CustomEvent) {
+  function onClearSwicthList() {
     $settings.app.commandSwitches = [];
   }
 
-  let bodyHeight: number;
-  $: {
-    if ($modalBounds) {
-      bodyHeight = $modalBounds.height - 94;
-    }
-  }
+  let bodyHeight = $derived($modalBounds ? $modalBounds.height - 94 : 0);
 
-  $: {
+  // Use onchange handlers instead of effects to avoid infinite loops
+  function onScaleFigmaUIChange() {
     api.updateFigmaUiScale($settings.ui.scaleFigmaUI);
   }
-  $: {
+
+  function onScalePanelChange() {
     api.updatePanelScale($settings.ui.scalePanel);
+    // Update panel height when scale changes
     $settings.app.panelHeight = Math.floor(TOPPANELHEIGHT * $settings.ui.scalePanel);
   }
 </script>
@@ -102,7 +100,7 @@
   <Flex>
     <Flex der="column" width="-webkit-fill-available">
       <Label>Scale UI</Label>
-      <InputRange bind:value={$settings.ui.scaleFigmaUI} min={0.5} max={1.5} step={0.05} />
+      <InputRange bind:value={$settings.ui.scaleFigmaUI} min={0.5} max={1.5} step={0.05} onchange={onScaleFigmaUIChange} />
       <Flex der="column" alignItems="center" justifyContent="center">
         <Text padding="8px 0 0 0">{Math.floor($settings.ui.scaleFigmaUI * 100)}%</Text>
       </Flex>
@@ -110,7 +108,7 @@
     <Flex width="120px" />
     <Flex der="column" width="-webkit-fill-available">
       <Label>Scale Tabs</Label>
-      <InputRange bind:value={$settings.ui.scalePanel} min={0.5} max={1.5} step={0.05} />
+      <InputRange bind:value={$settings.ui.scalePanel} min={0.5} max={1.5} step={0.05} onchange={onScalePanelChange} />
       <Flex der="column" alignItems="center" justifyContent="center">
         <Text padding="8px 0 0 0">{Math.floor($settings.ui.scalePanel * 100)}%</Text>
       </Flex>
@@ -140,13 +138,13 @@
       <Flex>
         <FlexItem grow={1}>
           <InputText bind:value={$settings.app.exportDir}>
-            <ButtonTool normalBgColor="tarsparent" on:buttonClick={onChangeExportPath}>
+            <ButtonTool normalBgColor="tarsparent" onClick={onChangeExportPath}>
               <Folder color="var(--text)" size="18" />
             </ButtonTool>
           </InputText>
         </FlexItem>
         <Flex width="20px" />
-        <SecondaryButton on:buttonClick={onChangeExportPath}>Change</SecondaryButton>
+        <SecondaryButton onClick={onChangeExportPath}>Change</SecondaryButton>
       </Flex>
     </Flex>
   </Flex>
@@ -162,9 +160,9 @@
       <Flex height="10px" />
       <Flex>
         <FlexItem grow={1} />
-        <SecondaryButton on:buttonClick={onClearList}>Clear list</SecondaryButton>
+        <SecondaryButton onClick={onClearList}>Clear list</SecondaryButton>
         <Flex width="10px" />
-        <SecondaryButton on:buttonClick={onAddDirectory}>Add directory</SecondaryButton>
+        <SecondaryButton onClick={onAddDirectory}>Add directory</SecondaryButton>
       </Flex>
     </Flex>
     <Flex width="120px" />
@@ -174,9 +172,9 @@
       <Flex height="10px" />
       <Flex>
         <FlexItem grow={1} />
-        <SecondaryButton on:buttonClick={onClearSwicthList}>Clear list</SecondaryButton>
+        <SecondaryButton onClick={onClearSwicthList}>Clear list</SecondaryButton>
         <Flex width="10px" />
-        <SecondaryButton on:buttonClick={onAddSwicth}>Add Switch</SecondaryButton>
+        <SecondaryButton onClick={onAddSwicth}>Add Switch</SecondaryButton>
       </Flex>
     </Flex>
   </Flex>

@@ -1,0 +1,7 @@
+.tabView {
+  display: flex;
+  flex-direction: var(--flex-direction);
+  background-color: var(--normal-bg-color);
+  color: var(--normal-fg-color);
+  padding: var(--padding);
+}

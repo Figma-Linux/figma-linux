@@ -1,45 +1,62 @@
 <script lang="ts">
-  import { createEventDispatcher } from "svelte";
+  import type { Snippet } from "svelte";
 
-  const dispatch = createEventDispatcher();
-
-  export let round: number = 0;
-  export let size: number | undefined = undefined;
-  export let width = "auto";
-  export let height = "auto";
-
-  export let padding = "auto";
-  export let normalFgColor = "var(--fg-header)";
-  export let hoverFgColor = "var(--fg-tab-hover)";
-
-  export let normalBgColor = "var(--bg-header)";
-  export let hoverBgColor = "var(--bg-tab-hover)";
-
-  export let normalOpacity = 0.4;
-  export let hoverOpacity = 1;
-
-  export let disabled: boolean | undefined = false;
-
-  if (size) {
-    width = `${size}px`;
-    height = `${size}px`;
+  interface ButtonToolProps {
+    round?: number;
+    size?: number;
+    width?: string;
+    height?: string;
+    padding?: string;
+    normalFgColor?: string;
+    hoverFgColor?: string;
+    normalBgColor?: string;
+    hoverBgColor?: string;
+    normalOpacity?: number;
+    hoverOpacity?: number;
+    disabled?: boolean;
+    onClick?: () => void;
+    onmouseenter?: (e: MouseEvent) => void;
+    onmouseleave?: (e: MouseEvent) => void;
+    children?: Snippet;
   }
+
+  let {
+    round = 0,
+    size = undefined,
+    width = "auto",
+    height = "auto",
+    padding = "auto",
+    normalFgColor = "var(--fg-header)",
+    hoverFgColor = "var(--fg-tab-hover)",
+    normalBgColor = "var(--bg-header)",
+    hoverBgColor = "var(--bg-tab-hover)",
+    normalOpacity = 0.4,
+    hoverOpacity = 1,
+    disabled = false,
+    onClick,
+    onmouseenter,
+    onmouseleave,
+    children,
+  }: ButtonToolProps = $props();
+
+  let effectiveWidth = $derived(size ? `${size}px` : width);
+  let effectiveHeight = $derived(size ? `${size}px` : height);
 
   function clickHandler(event: MouseEvent) {
     if (!disabled) {
-      dispatch("buttonClick");
+      onClick?.();
     }
   }
 </script>
 
 <div
-  on:mouseup|capture={clickHandler}
-  on:mouseenter={(e) => dispatch("mouseenter", e)}
-  on:mouseleave={(e) => dispatch("mouseleave", e)}
+  onmouseup={clickHandler}
+  onmouseenter={(e) => onmouseenter?.(e)}
+  onmouseleave={(e) => onmouseleave?.(e)}
   style={`
     --padding: ${padding};
-    --width: ${width};
-    --height: ${height};
+    --width: ${effectiveWidth};
+    --height: ${effectiveHeight};
     --border-radius: ${round}px;
     --normal-bg-color: ${normalBgColor};
     --hover-bg-color: ${hoverBgColor};
@@ -51,7 +68,7 @@
     --hover-opacity: ${hoverOpacity};
   `}
 >
-  <slot />
+  {@render children?.()}
 </div>
 
 <style>
@@ -67,6 +84,7 @@
     padding: var(--padding);
     opacity: var(--normal-opacity);
     transition: all 0.1s ease;
+    -webkit-app-region: no-drag;
   }
   div:hover {
     fill: var(--hover-fg-color);

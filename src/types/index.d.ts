@@ -181,6 +181,10 @@ declare namespace Electron {
       listener: (event: IpcMainInvokeEvent, data: WebApi.SetInitOptions) => void,
     ): this;
     on(
+      channel: "setThemePreference",
+      listener: (event: IpcMainInvokeEvent, data: WebApi.SetThemePreference) => void,
+    ): this;
+    on(
       channel: "finishAppAuth",
       listener: (event: IpcMainInvokeEvent, auth: { redirectURL: string }) => void,
     ): this;
@@ -474,6 +478,7 @@ declare namespace Electron {
     send(channed: "windowClose", tabs: Types.TabFront[]): this;
     send(channed: "toggleThemeCreatorPreviewMask"): this;
     send(channed: "setInitialOptions", data: WebApi.SetInitOptions): this;
+    send(channed: "setThemePreference", data: WebApi.SetThemePreference): this;
     send(channed: "setUser", userId: string): this;
     send(channed: "toggleCurrentWindowFullscreen"): this;
     send(

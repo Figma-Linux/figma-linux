@@ -111,6 +111,7 @@ declare namespace Types {
     };
     theme: {
       currentTheme: string;
+      preference: WebApi.ThemePreference;
     };
     [path: string]: any;
   }

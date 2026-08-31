@@ -1,8 +1,9 @@
 import * as E from "electron";
 import { DEFAULT_THEME, SELECTORS_TO_IGNORE, PROPS_WITH_COLOR, CHROME_GPU } from "Const";
-import { getColorsMap, variablesColorsMap } from "Utils/Common";
+import { getColorsMap, getThemeColorScheme, variablesColorsMap } from "Utils/Common";
 
 export class ThemesApplier {
+  private enabled = false;
   private currentTheme: Themes.Theme;
   private targetElements: Set<HTMLElement | CSSStyleRule> = new Set();
 
@@ -14,6 +15,7 @@ export class ThemesApplier {
         return;
       }
 
+      this.enabled = true;
       this.registerEvents();
     });
   }
@@ -27,6 +29,15 @@ export class ThemesApplier {
     E.ipcRenderer.on("getThemeCreatorPalette", (_, palette: Themes.Palette) => {
       this.applyPalette(palette);
     });
+  }
+  public syncColorScheme() {
+    if (!this.enabled) {
+      return;
+    }
+
+    const colorScheme = getThemeColorScheme(this.currentTheme.palette);
+    document.body.dataset.preferredTheme = colorScheme;
+    document.body.style.colorScheme = colorScheme;
   }
 
   private changePalette(theme: Themes.Theme) {
@@ -68,6 +79,12 @@ export class ThemesApplier {
   }
   private applyPalette(palette: Themes.Palette, el: HTMLElement | CSSStyleRule = document.body) {
     const keys = Object.keys(palette);
+
+    if (el instanceof HTMLElement) {
+      const colorScheme = getThemeColorScheme(palette);
+      el.dataset.preferredTheme = colorScheme;
+      el.style.colorScheme = colorScheme;
+    }
 
     for (const key of keys) {
       const value = palette[key];

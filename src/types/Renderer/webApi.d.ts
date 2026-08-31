@@ -109,6 +109,10 @@ declare namespace WebApi {
     orgId: string | null;
     navigationConfig: NavigationConfig;
   }
+  type ThemePreference = "system" | "light" | "dark";
+  interface SetThemePreference {
+    themePreference: ThemePreference;
+  }
   interface WriteNewExtensionDirectoryToDiskFile {
     name: string;
     content: string;

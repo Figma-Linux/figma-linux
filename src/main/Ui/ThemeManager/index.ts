@@ -1,4 +1,4 @@
-import { app, ipcMain, IpcMainEvent } from "electron";
+import { app, ipcMain, IpcMainEvent, nativeTheme } from "electron";
 import Azip from "adm-zip";
 import * as fs from "fs";
 import * as path from "path";
@@ -7,7 +7,7 @@ import { storage } from "Main/Storage";
 import { logger } from "Main/Logger";
 
 import { DEFAULT_THEME, TEST_THEME_ID, DOWNLOAD_ZIP_URI, DOWNLOAD_ZIP_PATH } from "Const";
-import { keysToCamelCase, keysToKebabCase } from "Utils/Common";
+import { getThemeColorScheme, keysToCamelCase, keysToKebabCase } from "Utils/Common";
 import { mkPath, access, downloadFile } from "Utils/Main";
 import ThemeValidator from "./ThemeValidator";
 
@@ -51,10 +51,15 @@ export default class ThemeManager {
     const currentThemeId = storage.settings.theme.currentTheme;
     const disableThemes = storage.settings.app.disableThemes;
 
-    let currentTheme = this.themes.get(currentThemeId) || this.creatorThemes.get(currentThemeId);
+    let currentTheme =
+      this.themes.get(currentThemeId) || this.creatorThemes.get(currentThemeId) || DEFAULT_THEME;
 
     if (currentThemeId === DEFAULT_THEME.id || disableThemes) {
       currentTheme = DEFAULT_THEME;
+    }
+
+    if (!disableThemes) {
+      nativeTheme.themeSource = getThemeColorScheme(currentTheme.palette);
     }
 
     app.emit("loadCurrentTheme", currentTheme);

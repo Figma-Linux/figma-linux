@@ -8,14 +8,22 @@ import {
   IpcMainEvent,
   WebContents,
   IpcMainInvokeEvent,
+  nativeTheme,
 } from "electron";
 
 import Window from "./Window";
 import MenuManager from "./MenuManager";
 import { storage } from "Main/Storage";
+import { logger } from "Main/Logger";
 import { dialogs } from "Main/Dialogs";
 import { CHROME_GPU, DEFAULT_WIN_OPTIONS, HOMEPAGE, NEW_FILE_TAB_TITLE, RECENT_FILES } from "Const";
-import { normalizeUrl, isAppAuthGrandLink, isAppAuthRedeem, parseURL } from "Utils/Common";
+import {
+  getThemeColorScheme,
+  normalizeUrl,
+  isAppAuthGrandLink,
+  isAppAuthRedeem,
+  parseURL,
+} from "Utils/Common";
 import { mkPath } from "Utils/Main";
 
 export default class WindowManager {
@@ -27,6 +35,12 @@ export default class WindowManager {
 
   constructor() {
     this.menuManager = new MenuManager();
+
+    const themePreference = this.applyThemePreference(storage.settings.theme.preference);
+    if (themePreference !== storage.settings.theme.preference) {
+      storage.settings.theme.preference = themePreference;
+      storage.save();
+    }
 
     this.restoreData();
     this.registerEvents();
@@ -262,6 +276,30 @@ export default class WindowManager {
     const window = this.getWindowByWebContentsId(event.sender.id);
 
     window.setUserId(data.userId);
+  }
+  private setThemePreference(_: IpcMainEvent, data: WebApi.SetThemePreference) {
+    const preference = this.resolveThemePreference(data?.themePreference);
+
+    storage.settings.theme.preference = preference;
+    storage.save();
+
+    if (storage.settings.app.disableThemes) {
+      nativeTheme.themeSource = preference;
+    }
+  }
+  private resolveThemePreference(preference: unknown): WebApi.ThemePreference {
+    if (preference === "system" || preference === "light" || preference === "dark") {
+      return preference;
+    }
+
+    logger.warn(`Invalid theme preference "${preference}", falling back to system theme`);
+    return "system";
+  }
+  private applyThemePreference(preference: unknown): WebApi.ThemePreference {
+    const resolvedPreference = this.resolveThemePreference(preference);
+    nativeTheme.themeSource = resolvedPreference;
+
+    return resolvedPreference;
   }
   private startAppAuth(event: IpcMainEvent, data: { grantPath: string }) {
     if (isAppAuthGrandLink(data.grantPath)) {
@@ -600,6 +638,10 @@ export default class WindowManager {
   }
 
   private changeTheme(event: IpcMainEvent, theme: Themes.Theme) {
+    if (!storage.settings.app.disableThemes) {
+      nativeTheme.themeSource = getThemeColorScheme(theme.palette);
+    }
+
     for (const [_, window] of this.windows) {
       window.changeTheme(event, theme);
     }
@@ -655,6 +697,7 @@ export default class WindowManager {
     ipcMain.handle("writeFiles", this.writeFiles.bind(this));
 
     ipcMain.on("setInitialOptions", this.setInitialOptions.bind(this));
+    ipcMain.on("setThemePreference", this.setThemePreference.bind(this));
     ipcMain.on("setUser", this.setUser.bind(this));
     ipcMain.on("openDevTools", this.openDevTools.bind(this));
     ipcMain.on("startAppAuth", this.startAppAuth.bind(this));

@@ -12,7 +12,7 @@ interface IntiApiOptions {
 }
 
 const API_VERSION = 111;
-const APP_VERSION = '999.0.0';
+const APP_VERSION = "999.0.0";
 let webPort: MessagePort;
 const mainProcessCancelCallbacks: Map<number, () => void> = new Map();
 
@@ -308,10 +308,10 @@ const publicAPI: any = {
   setInitialOptions(args: WebApi.SetInitOptions) {
     sendMsgToMain("setInitialOptions", args);
   },
-  // setTheme(args: any) {
-  //   console.log("isTabOpen, args: ", args);
-  //   // n.send("setTheme", e.getString("theme", "dark"));
-  // },
+  setThemePreference(args: WebApi.SetThemePreference) {
+    themes.syncColorScheme();
+    sendMsgToMain("setThemePreference", args);
+  },
 
   setFeatureFlags(args: any) {
     sendMsgToMain("setFeatureFlags", args);

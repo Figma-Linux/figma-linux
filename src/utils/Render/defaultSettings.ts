@@ -41,6 +41,7 @@ export const DEFAULT_SETTINGS: Types.SettingsInterface = {
   },
   theme: {
     currentTheme: "0",
+    preference: "system",
   },
   ui: {
     scalePanel: 1,

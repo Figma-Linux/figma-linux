@@ -44,6 +44,10 @@ export class Storage {
         ...DEFAULT_SETTINGS.app,
         ...this.settings.app,
       },
+      theme: {
+        ...DEFAULT_SETTINGS.theme,
+        ...this.settings.theme,
+      },
     };
 
     this.writeSync(this.settings);

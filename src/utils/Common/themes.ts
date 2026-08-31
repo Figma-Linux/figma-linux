@@ -53,7 +53,23 @@ export const variablesColorsMap: Themes.ColorsMap = {
   "rgb(27, 196, 125)": "var(--bg-beta-label)",
 };
 
-export const getColorsMap = (palette: Themes.Palette, currentPalette?: Themes.ColorsMap): Themes.ColorsMap => {
+export const getThemeColorScheme = (palette: Themes.Palette): "light" | "dark" => {
+  const background = palette["bg-panel"];
+  const channels = [1, 3, 5].map(
+    (offset) => Number.parseInt(background.slice(offset, offset + 2), 16) / 255,
+  );
+  const [red, green, blue] = channels.map((channel) =>
+    channel <= 0.03928 ? channel / 12.92 : Math.pow((channel + 0.055) / 1.055, 2.4),
+  );
+  const luminance = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+
+  return luminance > 0.179 ? "light" : "dark";
+};
+
+export const getColorsMap = (
+  palette: Themes.Palette,
+  currentPalette?: Themes.ColorsMap,
+): Themes.ColorsMap => {
   const defaultColorsMap: Themes.ColorsMap = {
     "rgb(255, 255, 255)": palette["bg-panel"],
     "rgb(252, 252, 252)": palette["bg-panel"],
